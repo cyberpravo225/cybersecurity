@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Кибербезопасность — Главная</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- фавикон/иконки можно положить в assets/ и подключить здесь -->
+</head>
+<body class="page" data-page="home">
+  <!-- SITE CONTAINER -->
+  <div class="site">
+
+    <!-- TOP NAV -->
+    <header class="topbar glass" role="banner">
+      <div class="brand">
+        <a href="index.html" class="logo" aria-label="Главная">
+          <!-- inline svg logo -->
+          <svg width="34" height="34" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" rx="4" fill="currentColor" />
+          </svg>
+          <span class="brand-text">Кибербезопасность</span>
+        </a>
+      </div>
+
+      <nav class="nav" role="navigation" aria-label="Основное меню">
+        <button id="theme-toggle" class="btn icon-btn" aria-label="Переключить тему" title="Тема">
+          <!-- theme icon -->
+          <svg class="icon-theme" width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/></svg>
+        </button>
+
+        <button id="menu-toggle" class="btn icon-btn hamburger" aria-label="Открыть меню" aria-expanded="false">
+          <span class="hamburger-box"><span class="hamburger-inner"></span></span>
+        </button>
+
+        <ul class="nav-list" id="nav-list">
+          <li><a href="index.html" class="nav-link">Главная</a></li>
+          <li class="has-sub">
+            <button class="nav-link sub-toggle" aria-expanded="false">Школьники ▾</button>
+            <ul class="sub-menu">
+              <li><a href="students-1-4.html">1–4 классы</a></li>
+              <li><a href="students-5-8.html">5–8 классы</a></li>
+              <li><a href="students-9-11.html">9–11 классы</a></li>
+            </ul>
+          </li>
+          <li><a href="teachers.html" class="nav-link">Учителя / методисты</a></li>
+          <li><a href="seniors.html" class="nav-link">Безопасность — старшее поколение</a></li>
+          <li><a href="methodical.html" class="nav-link">Методическая копилка</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- HERO -->
+    <main class="main">
+      <section class="hero section parallax" data-parallax>
+        <div class="container">
+          <h1 class="title reveal">Сайт по кибербезопасности</h1>
+          <p class="lead reveal delay">Ресурс для разных возрастных групп: методические материалы, видеоуроки, презентации и обучающие игры.</p>
+
+          <div class="card-grid reveal delay-2">
+            <a class="card" href="students-5-8.html">
+              <div class="card-icon">🎒</div>
+              <h3>Школьники</h3>
+              <p>Материалы для младших, средних и старших классов</p>
+            </a>
+
+            <a class="card" href="teachers.html">
+              <div class="card-icon">📚</div>
+              <h3>Учителя / методисты</h3>
+              <p>Методики, презентации, планы уроков</p>
+            </a>
+
+            <a class="card" href="seniors.html">
+              <div class="card-icon">👵</div>
+              <h3>Старшее поколение</h3>
+              <p>Простые советы по безопасному использованию интернета</p>
+            </a>
+
+            <a class="card" href="methodical.html">
+              <div class="card-icon">🗂️</div>
+              <h3>Методическая копилка</h3>
+              <p>Документы и материалы — будет пополняться</p>
+            </a>
+          </div>
+
+          <!-- школьники — быстрый выбор -->
+          <div class="section small-section reveal delay-3">
+            <h2>Выберите возрастную группу (Школьники)</h2>
+            <div class="age-buttons">
+              <a class="btn primary" href="students-1-4.html">1–4 классы</a>
+              <a class="btn primary" href="students-5-8.html">5–8 классы</a>
+              <a class="btn primary" href="students-9-11.html">9–11 классы</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FOOTER SECTION: соцсети -->
+      <section class="section footer-section">
+        <div class="container">
+          <div class="footer-grid reveal">
+            <p>Следите за нами:</p>
+            <div class="social-links">
+              <!-- Placeholder links -->
+              <a class="social" href="#" aria-label="VK">VK</a>
+              <a class="social" href="#" aria-label="YouTube">YouTube</a>
+              <a class="social" href="#" aria-label="Telegram">Telegram</a>
+              <a class="social" href="#" aria-label="Instagram">Instagram</a>
+            </div>
+          </div>
+
+          <p class="muted">© 2026 — Образовательный ресурс по кибербезопасности</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
