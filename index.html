@@ -7,16 +7,21 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <header class="header">
-    <a href="index.html" class="logo">
-      <img src="assets/assets/Copilot_20260304_011456.png" alt="Логотип" class="site-logo">
-      <span class="brand-text">#КиберПраво</span>
-    </a>
+
+<header class="header">
+  <!-- пусто слева -->
+  <div></div>
+
+  <!-- Название по центру -->
+  <h1 class="site-title">#КиберПраво: твой щит в сети</h1>
+
+  <!-- Бургер и тема справа -->
+  <div class="header-controls">
+    <button id="theme-toggle" class="theme-toggle">🌙</button>
 
     <nav class="nav">
       <div class="burger-area">
         <div class="burger">☰</div>
-
         <ul class="burger-menu">
           <li class="submenu">
             <span>Школьники</span>
@@ -32,33 +37,48 @@
         </ul>
       </div>
     </nav>
-  </header>
+  </div>
+</header>
 
-  <main class="container">
-    <h1 class="title reveal">#КиберПраво: твой щит в сети</h1>
+<main class="container">
+  <p class="subtitle reveal">
+    Сайт предназначен для разных возрастных групп и включает методические материалы
+    по кибербезопасности, видеоуроки, презентации и обучающие игры.
+  </p>
 
-    <p class="subtitle reveal delay-1">
-      Сайт предназначен для разных возрастных групп и включает методические материалы
-      по кибербезопасности, видеоуроки, презентации и обучающие игры.
-    </p>
+  <!-- 4 блока с подписями -->
+  <div class="card-grid reveal delay-1 main-choices">
+    <a class="main-card" href="#">
+      <div class="icon">🎒</div>
+      <div class="text">Школьники</div>
+    </a>
+    <a class="main-card" href="teachers.html">
+      <div class="icon">📘</div>
+      <div class="text">Учителя / методисты</div>
+    </a>
+    <a class="main-card" href="seniors.html">
+      <div class="icon">👵</div>
+      <div class="text">Старшее поколение</div>
+    </a>
+    <a class="main-card" href="methodical.html">
+      <div class="icon">📂</div>
+      <div class="text">Методическая копилка</div>
+    </a>
+  </div>
+</main>
 
-    <div class="card-grid reveal delay-2 main-choices">
-      <a class="main-card" href="#">Школьники</a>
-      <a class="main-card" href="teachers.html">Учителя / методисты</a>
-      <a class="main-card" href="seniors.html">Старшее поколение</a>
-      <a class="main-card" href="methodical.html">Методическая копилка</a>
-    </div>
-  </main>
+<footer class="footer">
+  <p>Следите за нами:</p>
+  <div class="social-links">
+    <a href="#">VK</a>
+    <a href="#">YouTube</a>
+    <a href="#">Telegram</a>
+  </div>
+  <p class="copyright">
+    © 2026 — Образовательный ресурс по кибербезопасности
+  </p>
+</footer>
 
-  <footer class="footer reveal delay-3">
-    <p>Мы в соцсетях:</p>
-    <div class="social-links">
-      <a href="#">VK</a>
-      <a href="#">YouTube</a>
-      <a href="#">Telegram</a>
-    </div>
-  </footer>
-
-  <script src="js/main.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
