@@ -177,3 +177,97 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
 
 /* subtle glow in dark theme for active states */
 :root[data-theme="dark"] .card { box-shadow: 0 8px 24px rgba(0,0,0,0.6), 0 0 18px rgba(var(--shadow-color),0.06) }
+.site-logo {
+  width: 40px;
+  height: auto;
+}
+
+/* Бургер */
+.burger-area {
+  position: relative;
+}
+
+.burger {
+  font-size: 28px;
+  cursor: pointer;
+  color: var(--accent);
+}
+
+/* Меню */
+.burger-menu {
+  position: absolute;
+  right: 0;
+  top: 40px;
+  background: var(--bg);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  padding: 10px;
+  display: none;
+  animation: slideDown 0.2s ease forwards;
+}
+
+.burger-area:hover .burger-menu {
+  display: block;
+}
+
+.burger-menu li {
+  list-style: none;
+  margin: 6px 0;
+}
+
+.burger-menu a, .burger-menu span {
+  color: var(--fg);
+  text-decoration: none;
+  padding: 6px 14px;
+  display: block;
+  border-radius: 20px;
+  transition: all 0.18s ease;
+}
+
+.burger-menu a:hover, .burger-menu span:hover {
+  border: 2px solid var(--accent);
+}
+
+/* Подменю школьники */
+.submenu {
+  position: relative;
+}
+
+.submenu-list {
+  position: absolute;
+  right: 100%;
+  top: 0;
+  background: var(--bg);
+  padding: 8px;
+  border-radius: 12px;
+  display: none;
+}
+
+.submenu:hover .submenu-list {
+  display: block;
+}
+
+/* Центральные карточки */
+.main-choices {
+  margin-top: 60px;
+}
+
+.main-card {
+  padding: 40px;
+  text-align: center;
+  font-size: 20px;
+  border-radius: 20px;
+  text-decoration: none;
+  color: var(--fg);
+  transition: all 0.2s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+:root[data-theme="dark"] .main-card {
+  border: 3px solid var(--accent);
+}
+
+.main-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.4);
+}
