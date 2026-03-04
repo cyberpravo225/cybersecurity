@@ -46,27 +46,15 @@
    Mobile menu and submenus
    ========================= */
 (function(){
-  const menuToggle = document.getElementById('menu-toggle');
-  const navList = document.getElementById('nav-list');
+  const burger = document.querySelector('.burger');
+  const burgerArea = document.querySelector('.burger-area');
 
-  if (menuToggle && navList){
-    menuToggle.addEventListener('click', () => {
-      const open = menuToggle.getAttribute('aria-expanded') === 'true';
-      menuToggle.setAttribute('aria-expanded', String(!open));
-      navList.style.display = open ? 'none' : 'flex';
-      // animate hamburger
-      menuToggle.classList.toggle('is-open');
+  if (burger && burgerArea){
+    burger.addEventListener('click', () => {
+      burgerArea.classList.toggle('open');
     });
   }
-
-  // Submenu toggles for desk/mobile
-  document.querySelectorAll('.has-sub > .sub-toggle').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const sub = btn.nextElementSibling;
-      const open = btn.getAttribute('aria-expanded') === 'true';
-      btn.setAttribute('aria-expanded', String(!open));
-      if (sub) sub.style.display = open ? 'none' : 'block';
-    });
+})();
   });
 })();
 
