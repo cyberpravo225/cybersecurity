@@ -169,7 +169,25 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
 
 /* Responsive adjustments */
 @media (max-width: 900px){
-  .nav-list{display:none}
+  #nav-list {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+
+  opacity: 0;
+  transform: translateY(-10px) scale(0.98);
+  transition: 
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* когда меню открыто */
+#menu-toggle.is-open + #nav-list,
+#nav-list.open {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
   .hamburger{display:inline-block}
   .topbar{padding:10px}
   .hero .title{font-size:22px}
@@ -276,4 +294,11 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
   height: 40px;   /* нормальный размер */
   width: auto;
   margin-right: 8px;
+}
+#nav-list li {
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+#nav-list li:hover {
+  transform: translateX(4px);
 }
