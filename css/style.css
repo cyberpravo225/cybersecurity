@@ -271,3 +271,8 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
   transform: translateY(-6px) scale(1.03);
   box-shadow: 0 14px 40px rgba(0,0,0,0.4);
 }
+.site-logo {
+  height: 40px;   /* нормальный размер */
+  width: auto;
+  margin-right: 8px;
+}
