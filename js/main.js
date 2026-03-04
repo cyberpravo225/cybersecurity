@@ -131,10 +131,11 @@
     if (e.key === 'Escape') {
       const menuToggle = document.getElementById('menu-toggle');
       const navList = document.getElementById('nav-list');
-      if (menuToggle && navList){
-        menuToggle.setAttribute('aria-expanded','false');
-        navList.style.display = 'none';
-      }
+     if (menuToggle && navList){
+  menuToggle.setAttribute('aria-expanded','false');
+  navList.classList.remove('open');
+  menuToggle.classList.remove('is-open');
+}
     }
   });
 })();
