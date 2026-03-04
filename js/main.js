@@ -60,15 +60,16 @@
 }
 
   // Submenu toggles for desk/mobile
-document.querySelectorAll('.has-sub > .sub-toggle').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const sub = btn.nextElementSibling;
-    const open = btn.getAttribute('aria-expanded') === 'true';
-
-    btn.setAttribute('aria-expanded', String(!open));
-    if (sub) sub.classList.toggle('open');
+  document.querySelectorAll('.has-sub > .sub-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const sub = btn.nextElementSibling;
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      if (sub) sub.style.display = open ? 'none' : 'block';
+    });
   });
-});
+})();
+
 /* =========================
    Reveal on scroll (IntersectionObserver)
    ========================= */
@@ -136,18 +137,5 @@ document.querySelectorAll('.has-sub > .sub-toggle').forEach(btn => {
   menuToggle.classList.remove('is-open');
 }
     }
-  });
-})();
-/* =========================
-   School card age chooser
-   ========================= */
-(function(){
-  const card = document.getElementById('school-card');
-  const ages = document.getElementById('school-ages');
-
-  if (!card || !ages) return;
-
-  card.addEventListener('click', () => {
-    ages.classList.toggle('show');
   });
 })();
