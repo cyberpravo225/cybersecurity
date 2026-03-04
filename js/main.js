@@ -49,15 +49,15 @@
   const menuToggle = document.getElementById('menu-toggle');
   const navList = document.getElementById('nav-list');
 
-  if (menuToggle && navList){
-    menuToggle.addEventListener('click', () => {
-      const open = menuToggle.getAttribute('aria-expanded') === 'true';
-      menuToggle.setAttribute('aria-expanded', String(!open));
-      navList.style.display = open ? 'none' : 'flex';
-      // animate hamburger
-      menuToggle.classList.toggle('is-open');
-    });
-  }
+ if (menuToggle && navList){
+  menuToggle.addEventListener('click', () => {
+    const open = menuToggle.getAttribute('aria-expanded') === 'true';
+    menuToggle.setAttribute('aria-expanded', String(!open));
+
+    navList.classList.toggle('open');
+    menuToggle.classList.toggle('is-open');
+  });
+}
 
   // Submenu toggles for desk/mobile
   document.querySelectorAll('.has-sub > .sub-toggle').forEach(btn => {
