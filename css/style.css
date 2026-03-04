@@ -189,7 +189,22 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
 .parallax {background-image: radial-gradient(circle at top left, rgba(0,0,0,0.04), transparent 40%), linear-gradient(180deg, rgba(0,0,0,0.02), transparent 70%); background-attachment:fixed}
 
 /* Responsive adjustments */
+@media (max-width: 900px){
+  .topbar{padding:10px}
+  .hero .title{font-size:22px}
+  .container{padding:20px}
+}
+
+/* Burger menu (works on PC and mobile) */
+.hamburger{
+  display:inline-block;
+  background:none;
+  border:none;
+  cursor:pointer;
+}
+
 .nav-list{
+  list-style:none;
   display:flex;
   flex-direction:column;
   position:absolute;
@@ -211,13 +226,6 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
   transform: translateY(0);
   pointer-events:auto;
 }
-
-  .hamburger{display:inline-block}
-  .topbar{padding:10px}
-  .hero .title{font-size:22px}
-  .container{padding:20px}
-}
-
 /* subtle glow in dark theme for active states */
 :root[data-theme="dark"] .card { box-shadow: 0 8px 24px rgba(0,0,0,0.6), 0 0 18px rgba(var(--shadow-color),0.06) }
 .site-logo {
@@ -225,51 +233,6 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
   height: auto;
 }
 
-/* Бургер */
-.burger-area {
-  position: relative;
-}
-
-.burger {
-  font-size: 28px;
-  cursor: pointer;
-  color: var(--accent);
-}
-
-/* Меню */
-.burger-menu {
-  position: absolute;
-  right: 0;
-  top: 40px;
-  background: var(--bg);
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  padding: 10px;
-  display: none;
-  animation: slideDown 0.2s ease forwards;
-}
-
-.burger-area:hover .burger-menu {
-  display: block;
-}
-
-.burger-menu li {
-  list-style: none;
-  margin: 6px 0;
-}
-
-.burger-menu a, .burger-menu span {
-  color: var(--fg);
-  text-decoration: none;
-  padding: 6px 14px;
-  display: block;
-  border-radius: 20px;
-  transition: all 0.18s ease;
-}
-
-.burger-menu a:hover, .burger-menu span:hover {
-  border: 2px solid var(--accent);
-}
 
 /* Подменю школьники */
 .submenu {
