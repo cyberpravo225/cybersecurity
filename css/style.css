@@ -27,16 +27,17 @@
 }
 
 /* Dark theme */
+/* Dark theme */
 :root[data-theme="dark"]{
-  --bg: #000000;
-  --fg: #f8f7f2;
-  --muted: #9ca3af;
-  --accent: #ffcf34; /* yellow accent */
+  --bg: #1e1e1e;              /* тёмно-серый фон */
+  --fg: #f5f5f5;
+  --muted: #a1a1aa;
+  --accent: #ffcf34;         /* жёлтый акцент */
   --accent-2: #ffd86b;
   --accent-cta: #ffcf34;
-  --glass: rgba(255,255,255,0.04);
-  --card-bg: linear-gradient(180deg, rgba(6,6,6,0.6), rgba(14,14,14,0.4));
-  --shadow-color: 255,199,52; /* yellowish for subtle glow in dark mode */
+  --glass: rgba(255,255,255,0.05);
+  --card-bg: #2a2a2a;        /* более светлый серый для карточек */
+  --shadow-color: 255,199,52;
 }
 
 /* Basic reset */
