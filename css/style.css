@@ -111,26 +111,7 @@ body{
 .nav-list .nav-link, .nav-list button.nav-link {color:var(--fg); text-decoration:none; padding:8px 10px; border-radius:8px; font-weight:600; background:transparent; border:none; cursor:pointer}
 .nav-list .nav-link:hover, .nav-list button.nav-link:hover {transform:translateY(-2px); transition:transform var(--anim)}
 .has-sub {position:relative}
-.sub-menu {
-  position:absolute;
-  left:0;
-  top:44px;
-  background:var(--card-bg);
-  padding:8px;
-  border-radius:10px;
-  box-shadow:0 8px 30px rgba(2,6,23,0.3);
-
-  opacity: 0;
-  transform: translateY(-5px);
-  pointer-events: none;
-  transition: 0.2s ease;
-}
-
-.sub-menu.open {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
+.sub-menu {position:absolute; left:0; top:44px; display:none; background:var(--card-bg); padding:8px; border-radius:10px; box-shadow:0 8px 30px rgba(2,6,23,0.3)}
 .has-sub .sub-menu a {display:block; padding:6px 10px; color:var(--fg); text-decoration:none}
 .has-sub .sub-menu a:hover {background:rgba(0,0,0,0.06)}
 
@@ -320,26 +301,16 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
   cursor: pointer;
 }
 
-school-ages {
+.school-ages {
   margin-top: 14px;
-  display: flex;
+  display: none;
   gap: 10px;
   flex-wrap: wrap;
-
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(-6px);
-  transition: 
-    max-height 0.25s ease,
-    opacity 0.2s ease,
-    transform 0.2s ease;
 }
 
 .school-ages.show {
-  max-height: 200px; /* хватает для 3 кнопок */
-  opacity: 1;
-  transform: translateY(0);
+  display: flex;
+  animation: fadeIn 0.2s ease;
 }
 
 @keyframes fadeIn {
