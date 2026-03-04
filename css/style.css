@@ -1,319 +1,52 @@
-/* =========================================================
-   Основные переменные, темы, базовая стилизация и утилиты
-   ========================================================= */
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>#КиберПраво</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <img src="assets/assets/Copilot_20260304_011456.png" class="site-logo" alt="logo">
+  </div>
 
-/* Transition timing for micro-animations (between 150-250ms) */
-:root{
-  --anim: 180ms;
-  --radius: 12px;
-  --glass-alpha: 0.14;
-  --shadow-1: 0 6px 18px rgba(2,6,23,0.45);
-  --container-max: 1100px;
-  --gap: 18px;
-  --fz-base: 16px;
-}
+  <button id="theme-toggle">🌓</button>
 
-/* Light theme (default) */
-:root{
-  --bg: #ffffff;
-  --fg: #0b1220;
-  --muted: #6b7280;
-  --accent: #111827; /* dark accent */
-  --accent-2: #374151;
-  --accent-cta: #111827;
-  --glass: rgba(255,255,255,var(--glass-alpha));
-  --card-bg: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(250,250,250,0.6));
-  --shadow-color: 0,0,0;
-}
+  <button id="menu-toggle" aria-expanded="false">☰</button>
 
-/* Dark theme */
-/* Dark theme */
-:root[data-theme="dark"]{
-  --bg: #1e1e1e;              /* тёмно-серый фон */
-  --fg: #f5f5f5;
-  --muted: #a1a1aa;
-  --accent: #ffcf34;         /* жёлтый акцент */
-  --accent-2: #ffd86b;
-  --accent-cta: #ffcf34;
-  --glass: rgba(255,255,255,0.05);
-  --card-bg: #2a2a2a;        /* более светлый серый для карточек */
-  --shadow-color: 255,199,52;
-}
+  <ul id="nav-list">
+    <li class="has-sub">
+      <span>Школьники</span>
+      <ul class="sub-menu">
+        <li><a href="#">1–4</a></li>
+        <li><a href="#">5–8</a></li>
+        <li><a href="#">9–11</a></li>
+      </ul>
+    </li>
+    <li><a href="#">Учителя</a></li>
+    <li><a href="#">Старшее поколение</a></li>
+    <li><a href="#">Методическая копилка</a></li>
+  </ul>
+</header>
 
-/* Basic reset */
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  font-size:var(--fz-base);
-  background:var(--bg);
-  color:var(--fg);
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  transition: background var(--anim) ease, color var(--anim) ease;
-  line-height:1.45;
-}
+<main>
+  <h1>#КиберПраво: твой щит в сети</h1>
 
-/* Container */
-.container{
-  max-width:var(--container-max);
-  margin:0 auto;
-  padding:40px 20px;
-}
+  <div class="cards">
+    <div class="card">🎒 Школьники</div>
+    <div class="card">📚 Учителя</div>
+    <div class="card">👵 Старшее поколение</div>
+    <div class="card">🗂 Методическая копилка</div>
+  </div>
+</main>
 
-/* Topbar */
-.topbar{
-  position:sticky;
-  top:12px;
-  margin:12px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:10px 14px;
-  border-radius:16px;
-  backdrop-filter: blur(8px);
-  background:var(--glass);
-  box-shadow: var(--shadow-1);
-  transition: transform var(--anim), box-shadow var(--anim);
-  z-index:30;
-}
+<footer>
+  <p>Следите за нами: VK YouTube Telegram</p>
+  <p>© 2026 — Образовательный ресурс по кибербезопасности</p>
+</footer>
 
-/* brand */
-.brand {display:flex; align-items:center; gap:12px}
-.brand .brand-text{font-weight:700; margin-left:6px}
-.brand .logo {color:var(--fg); text-decoration:none; display:flex; gap:10px; align-items:center}
-
-/* Nav */
-.nav {display:flex; align-items:center; gap:8px}
-.nav-list {list-style:none; display:flex; gap:8px; margin:0; padding:0; align-items:center}
-.nav-list .nav-link, .nav-list button.nav-link {color:var(--fg); text-decoration:none; padding:8px 10px; border-radius:8px; font-weight:600; background:transparent; border:none; cursor:pointer}
-.nav-list .nav-link:hover, .nav-list button.nav-link:hover {transform:translateY(-2px); transition:transform var(--anim)}
-.has-sub {position:relative}
-.sub-menu {position:absolute; left:0; top:44px; display:none; background:var(--card-bg); padding:8px; border-radius:10px; box-shadow:0 8px 30px rgba(2,6,23,0.3)}
-.has-sub .sub-menu a {display:block; padding:6px 10px; color:var(--fg); text-decoration:none}
-.has-sub .sub-menu a:hover {background:rgba(0,0,0,0.06)}
-
-/* Burger menu for small screens */
-.hamburger {display:none}
-.hamburger .hamburger-box{display:inline-block; width:34px; height:24px; position:relative}
-.hamburger .hamburger-inner, .hamburger .hamburger-inner::before, .hamburger .hamburger-inner::after{
-  width:34px; height:3px; background:var(--fg); display:block; border-radius:3px; position:absolute; transition: transform var(--anim), opacity var(--anim), background var(--anim);
-}
-.hamburger .hamburger-inner{top:50%; transform:translateY(-50%)}
-.hamburger .hamburger-inner::before{content:""; top:-10px}
-.hamburger .hamburger-inner::after{content:""; top:10px}
-
-/* Site main */
-.main {padding:30px 0}
-
-/* Hero */
-.hero {padding:60px 0; border-radius:20px; margin:10px; overflow:hidden; position:relative}
-.hero .title{font-size:28px; margin:0 0 8px}
-.hero .lead{margin:0 0 20px; color:var(--muted)}
-
-/* Cards grid */
-.card-grid{display:grid; gap:16px; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr))}
-.card{display:block; padding:18px; border-radius:14px; background:var(--card-bg); color:var(--fg); text-decoration:none; box-shadow:0 8px 24px rgba(2,6,23,0.12); transition: transform var(--anim), box-shadow var(--anim), background var(--anim)}
-.card:hover{transform:translateY(-6px) scale(1.01); box-shadow:0 14px 32px rgba(2,6,23,0.18)}
-.card-icon{font-size:28px}
-
-/* Small sections */
-.small-section{margin-top:22px}
-.age-buttons .btn{margin-right:10px}
-
-/* Footer */
-.footer-section{margin-top:28px; padding:28px 20px}
-.footer-grid{display:flex; justify-content:space-between; align-items:center; gap:10px}
-.social-links a{margin-right:10px; text-decoration:none; color:var(--accent); font-weight:600}
-
-/* Resource blocks for content pages */
-.resource-block{margin:20px 0; padding:18px; background:var(--card-bg); border-radius:12px; box-shadow:0 8px 24px rgba(2,6,23,0.08)}
-.media-grid{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-.game-grid{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
-.media-card img, .media-card iframe{width:100%; border-radius:8px; display:block}
-.game-card{display:flex; align-items:center; justify-content:center; padding:16px; border-radius:10px; text-decoration:none; background:linear-gradient(135deg,var(--accent-2),var(--accent)); color:var(--bg); font-weight:700; box-shadow:0 10px 30px rgba(0,0,0,0.12); transform:translateY(0); transition:transform var(--anim)}
-.game-card:hover{transform:translateY(-6px)}
-
-/* Simple variant for pages that need simpler styling */
-.simple .lead, .simple .simple-text{font-size:1.05rem; color:var(--fg)}
-.simple .resource-block{background:transparent; box-shadow:none; padding-left:0}
-
-/* Glassmorphism and depth small utilities */
-.glass{background:var(--glass)}
-.card-glass{background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)); backdrop-filter: blur(6px)}
-
-/* Micro-animations: reveal */
-.reveal{opacity:0; transform:translateY(10px) scale(0.995); transition: opacity var(--anim) ease, transform var(--anim) ease}
-.reveal.in-view{opacity:1; transform:translateY(0) scale(1)}
-
-/* delays */
-.delay{transition-delay:60ms}
-.delay-2{transition-delay:110ms}
-.delay-3{transition-delay:170ms}
-
-/* small utilities */
-.btn{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:8px; background:transparent; color:var(--fg); border:1px solid rgba(0,0,0,0.06); cursor:pointer; text-decoration:none}
-.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:var(--bg); border:none}
-.icon-btn{background:transparent; border:none; cursor:pointer}
-.icon-theme{fill:var(--accent); transition: transform var(--anim)}
-
-/* Focus and active effects for accessibility */
-a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-offset:2px; transform:translateY(-2px) }
-
-/* Page transition fade-out class added by JS */
-.page.fade-out {opacity:0; transition: opacity var(--anim) ease}
-
-/* Parallax area */
-.parallax {background-image: radial-gradient(circle at top left, rgba(0,0,0,0.04), transparent 40%), linear-gradient(180deg, rgba(0,0,0,0.02), transparent 70%); background-attachment:fixed}
-
-/* Responsive adjustments */
-@media (max-width: 900px){
-  #nav-list {
-  display: none;
-  flex-direction: column;
-  gap: 10px;
-
-  opacity: 0;
-  transform: translateY(-10px) scale(0.98);
-  transition: 
-    opacity 0.2s ease,
-    transform 0.2s ease;
-}
-
-/* когда меню открыто */
-#menu-toggle.is-open + #nav-list,
-#nav-list.open {
-  display: flex;
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-  .hamburger{display:inline-block}
-  .topbar{padding:10px}
-  .hero .title{font-size:22px}
-  .container{padding:20px}
-}
-
-/* subtle glow in dark theme for active states */
-:root[data-theme="dark"] .card { box-shadow: 0 8px 24px rgba(0,0,0,0.6), 0 0 18px rgba(var(--shadow-color),0.06) }
-.site-logo {
-  width: 40px;
-  height: auto;
-}
-
-/* Бургер */
-.burger-area {
-  position: relative;
-}
-
-.burger {
-  font-size: 28px;
-  cursor: pointer;
-  color: var(--accent);
-}
-
-/* Меню */
-.burger-menu {
-  position: absolute;
-  right: 0;
-  top: 40px;
-  background: var(--bg);
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  padding: 10px;
-
-  opacity: 0;
-  transform: translateY(-10px) scale(0.95);
-  pointer-events: none;
-
-  transition: opacity 0.18s ease, transform 0.18s ease;
-}
-
-.burger-menu li {
-  list-style: none;
-  margin: 6px 0;
-}
-
-.burger-menu a, .burger-menu span {
-  color: var(--fg);
-  text-decoration: none;
-  padding: 6px 14px;
-  display: block;
-  border-radius: 20px;
-  transition: all 0.18s ease;
-}
-
-.burger-menu a:hover, .burger-menu span:hover {
-  border: 2px solid var(--accent);
-}
-
-/* Подменю школьники */
-.submenu {
-  position: relative;
-}
-
-.submenu-list {
-  position: absolute;
-  right: 100%;
-  top: 0;
-  background: var(--bg);
-  padding: 8px;
-  border-radius: 12px;
-  display: none;
-}
-
-.submenu:hover .submenu-list {
-  display: block;
-}
-
-/* Центральные карточки */
-.main-choices {
-  margin-top: 60px;
-}
-
-.main-card {
-  padding: 40px;
-  text-align: center;
-  font-size: 20px;
-  border-radius: 20px;
-  text-decoration: none;
-  color: var(--fg);
-  transition: all 0.2s ease;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-}
-
-:root[data-theme="dark"] .main-card {
-  border: 3px solid var(--accent);
-}
-
-.main-card:hover {
-  transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 14px 40px rgba(0,0,0,0.4);
-}
-.site-logo {
-  height: 40px;   /* нормальный размер */
-  width: auto;
-  margin-right: 8px;
-}
-#nav-list li {
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-#nav-list li:hover {
-  transform: translateX(4px);
-}
-.burger-area.open .burger-menu {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
-}
-#nav-list {
-  opacity: 0;
-  transform: translateY(-10px) scale(0.98);
-  transition: opacity 0.18s ease, transform 0.18s ease;
-}
-
-#menu-toggle[aria-expanded="true"] + #nav-list {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
+<script src="main.js"></script>
+</body>
+</html>
