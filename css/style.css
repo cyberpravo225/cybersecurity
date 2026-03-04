@@ -307,3 +307,13 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
   transform: translateY(0) scale(1);
   pointer-events: auto;
 }
+#nav-list {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.98);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+#menu-toggle[aria-expanded="true"] + #nav-list {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
