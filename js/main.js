@@ -139,3 +139,16 @@
     }
   });
 })();
+/* =========================
+   School card age chooser
+   ========================= */
+(function(){
+  const card = document.getElementById('school-card');
+  const ages = document.getElementById('school-ages');
+
+  if (!card || !ages) return;
+
+  card.addEventListener('click', () => {
+    ages.classList.toggle('show');
+  });
+})();
