@@ -60,16 +60,15 @@
 }
 
   // Submenu toggles for desk/mobile
-  document.querySelectorAll('.has-sub > .sub-toggle').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const sub = btn.nextElementSibling;
-      const open = btn.getAttribute('aria-expanded') === 'true';
-      btn.setAttribute('aria-expanded', String(!open));
-      if (sub) sub.style.display = open ? 'none' : 'block';
-    });
-  });
-})();
+document.querySelectorAll('.has-sub > .sub-toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const sub = btn.nextElementSibling;
+    const open = btn.getAttribute('aria-expanded') === 'true';
 
+    btn.setAttribute('aria-expanded', String(!open));
+    if (sub) sub.classList.toggle('open');
+  });
+});
 /* =========================
    Reveal on scroll (IntersectionObserver)
    ========================= */
