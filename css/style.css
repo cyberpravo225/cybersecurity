@@ -221,12 +221,12 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   padding: 10px;
-  display: none;
-  animation: slideDown 0.2s ease forwards;
-}
 
-.burger-area:hover .burger-menu {
-  display: block;
+  opacity: 0;
+  transform: translateY(-10px) scale(0.95);
+  pointer-events: none;
+
+  transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
 .burger-menu li {
@@ -301,4 +301,9 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
 
 #nav-list li:hover {
   transform: translateX(4px);
+}
+.burger-area.open .burger-menu {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
 }
