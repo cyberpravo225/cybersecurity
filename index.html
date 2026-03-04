@@ -12,40 +12,37 @@
   <div class="site">
 
     <!-- TOP NAV -->
-    <header class="topbar glass" role="banner">
-      <div class="brand">
-       <a href="index.html" class="logo" aria-label="Главная">
-  <img src="assets/assets/Copilot_20260304_011456.png" alt="Логотип" class="site-logo">
-  <span class="brand-text">Кибербезопасность</span>
-</a>
-      </div>
+ <header class="topbar glass" role="banner">
+  <div class="brand">
+    <a href="index.html" class="logo" aria-label="Главная">
+      <img src="assets/assets/Copilot_20260304_011456.png" alt="Логотип" class="site-logo">
+    </a>
+  </div>
 
-      <nav class="nav" role="navigation" aria-label="Основное меню">
-        <button id="theme-toggle" class="btn icon-btn" aria-label="Переключить тему" title="Тема">
-          <!-- theme icon -->
-          <svg class="icon-theme" width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/></svg>
-        </button>
+  <div class="burger-area">
+    <div class="burger" aria-label="Открыть меню">☰</div>
 
-        <button id="menu-toggle" class="btn icon-btn hamburger" aria-label="Открыть меню" aria-expanded="false">
-          <span class="hamburger-box"><span class="hamburger-inner"></span></span>
-        </button>
-
-        <ul class="nav-list" id="nav-list">
-          <li><a href="index.html" class="nav-link">Главная</a></li>
-          <li class="has-sub">
-            <button class="nav-link sub-toggle" aria-expanded="false">Школьники ▾</button>
-            <ul class="sub-menu">
-              <li><a href="students-1-4.html">1–4 классы</a></li>
-              <li><a href="students-5-8.html">5–8 классы</a></li>
-              <li><a href="students-9-11.html">9–11 классы</a></li>
-            </ul>
-          </li>
-          <li><a href="teachers.html" class="nav-link">Учителя / методисты</a></li>
-          <li><a href="seniors.html" class="nav-link">Безопасность — старшее поколение</a></li>
-          <li><a href="methodical.html" class="nav-link">Методическая копилка</a></li>
+    <ul class="burger-menu">
+      <li class="submenu">
+        <span>Школьники</span>
+        <ul class="submenu-list">
+          <li><a href="students-1-4.html">1–4 классы</a></li>
+          <li><a href="students-5-8.html">5–8 классы</a></li>
+          <li><a href="students-9-11.html">9–11 классы</a></li>
         </ul>
-      </nav>
-    </header>
+      </li>
+      <li><a href="teachers.html">Учителя / методисты</a></li>
+      <li><a href="seniors.html">Старшее поколение</a></li>
+      <li><a href="methodical.html">Методическая копилка</a></li>
+    </ul>
+  </div>
+
+  <button id="theme-toggle" class="btn icon-btn" aria-label="Переключить тему">
+    <svg class="icon-theme" width="20" height="20" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="5"/>
+    </svg>
+  </button>
+</header>
 
     <!-- HERO -->
     <main class="main">
