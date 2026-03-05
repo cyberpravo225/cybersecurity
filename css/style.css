@@ -386,3 +386,16 @@ body.dark .resource-block a {
 .resource-block a:hover {
   text-decoration: underline;
 }
+/* ссылки в блоках ресурсов */
+body.dark .resource-block a {
+  color: #ffd54a !important;
+}
+
+body:not(.dark) .resource-block a {
+  color: #1a1a1a !important;
+}
+
+/* hover */
+.resource-block a:hover {
+  text-decoration: underline;
+}
