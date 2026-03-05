@@ -332,7 +332,7 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
 }
 
 .school-ages.show {
-  max-height: 120px;
+  max-height: 300px;
   opacity: 1;
 }
 
