@@ -391,20 +391,3 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
 .resource-block a:hover{
   text-decoration:underline;
 }
-.card{
-  position:relative;
-  overflow:hidden;
-}
-
-.card::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: radial-gradient(circle at var(--x) var(--y), rgba(255,255,255,0.15), transparent 40%);
-  opacity:0;
-  transition:opacity 0.25s ease;
-}
-
-.card:hover::after{
-  opacity:1;
-}
