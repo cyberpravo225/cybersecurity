@@ -365,3 +365,24 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
   transform:translateX(-3px);
   opacity:0.85;
 }
+/* ссылки в ресурсах */
+.resource-block a {
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+/* светлая тема */
+body:not(.dark) .resource-block a {
+  color: #1a1a1a;
+}
+
+/* тёмная тема */
+body.dark .resource-block a {
+  color: #ffd54a;
+}
+
+/* hover эффект */
+.resource-block a:hover {
+  text-decoration: underline;
+}
