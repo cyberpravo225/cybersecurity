@@ -335,4 +335,33 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
   max-height: 300px;
   opacity: 1;
 }
+/* =================================
+   Back button (pages)
+================================= */
 
+.back-btn{
+  font-weight:700;
+  text-transform:uppercase;
+  text-decoration:none;
+  font-size:14px;
+  letter-spacing:0.5px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  transition:transform 0.18s ease, opacity 0.18s ease;
+}
+
+/* светлая тема */
+:root .back-btn{
+  color:#111827;
+}
+
+/* тёмная тема */
+:root[data-theme="dark"] .back-btn{
+  color:#ffcf34;
+}
+
+.back-btn:hover{
+  transform:translateX(-3px);
+  opacity:0.85;
+}
