@@ -87,11 +87,28 @@ body{
 /* Nav */
 .nav {display:flex; align-items:center; gap:8px}
 
-.nav-list .nav-link, .nav-list button.nav-link {color:var(--fg); text-decoration:none; padding:8px 10px; border-radius:8px; font-weight:600; background:transparent; border:none; cursor:pointer}
+.nav-list .nav-link,
+.nav-list button.nav-link {
+  color: var(--fg);
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;   /* одинаковый размер */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
 .nav-list .nav-link:hover, .nav-list button.nav-link:hover {transform:translateY(-2px); transition:transform var(--anim)}
 .has-sub {position:relative}
 .sub-menu {position:absolute; left:0; top:44px; display:none; background:var(--card-bg); padding:8px; border-radius:10px; box-shadow:0 8px 30px rgba(2,6,23,0.3)}
-.has-sub .sub-menu a {display:block; padding:6px 10px; color:var(--fg); text-decoration:none}
+.has-sub .sub-menu a {
+  display:block;
+  padding:6px 10px;
+  color:var(--fg);
+  text-decoration:none;
+  font-size:16px;   /* тот же размер */
+}
 .has-sub .sub-menu a:hover {background:rgba(0,0,0,0.06)}
 
 /* Burger menu for small screens */
