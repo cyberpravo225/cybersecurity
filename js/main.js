@@ -58,6 +58,16 @@
     menuToggle.classList.toggle('is-open');
   });
 }
+   // закрытие меню при клике вне него
+document.addEventListener('click', (e) => {
+  if (!navList.classList.contains('open')) return;
+
+  if (!navList.contains(e.target) && !menuToggle.contains(e.target)) {
+    navList.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded','false');
+    menuToggle.classList.remove('is-open');
+  }
+});
 
   // Submenu toggles for desk/mobile
   document.querySelectorAll('.has-sub > .sub-toggle').forEach(btn => {
@@ -148,7 +158,20 @@
 
   if (!card || !ages) return;
 
-  card.addEventListener('click', () => {
-    ages.classList.toggle('show');
+card.addEventListener('click', (e) => {
+
+  // чтобы клик по кнопкам внутри не закрывал меню
+  if (e.target.closest('.school-ages')) return;
+
+  ages.classList.toggle('show');
+});
+   document.querySelectorAll('#nav-list a').forEach(link => {
+  link.addEventListener('click', () => {
+    const menuToggle = document.getElementById('menu-toggle');
+    const navList = document.getElementById('nav-list');
+
+    navList.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded','false');
   });
+});
 })();
