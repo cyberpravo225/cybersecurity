@@ -391,20 +391,3 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
 .resource-block a:hover{
   text-decoration:underline;
 }
-.btn{
-  position:relative;
-  overflow:hidden;
-}
-
-.btn::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
-  transform:translateX(-100%);
-  transition:transform 0.5s ease;
-}
-
-.btn:hover::after{
-  transform:translateX(100%);
-}
