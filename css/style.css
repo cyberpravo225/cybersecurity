@@ -350,21 +350,6 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
   gap:6px;
   transition:transform 0.18s ease, opacity 0.18s ease;
 }
-
-/* светлая тема */
-:root .back-btn{
-  color:#111827;
-}
-
-/* тёмная тема */
-:root[data-theme="dark"] .back-btn{
-  color:#ffcf34;
-}
-
-.back-btn:hover{
-  transform:translateX(-3px);
-  opacity:0.85;
-}
 /* ссылки в ресурсах */
 .resource-block a {
   font-weight: 500;
@@ -372,25 +357,12 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
   transition: color 0.25s ease;
 }
 
-/* светлая тема */
-body:not(.dark) .resource-block a {
-  color: #1a1a1a;
-}
-
 /* тёмная тема */
-body.dark .resource-block a {
-  color: #ffd54a;
-}
-
-/* hover эффект */
-.resource-block a:hover {
-  text-decoration: underline;
-}
-/* ссылки в блоках ресурсов */
 body.dark .resource-block a {
   color: #ffd54a !important;
 }
 
+/* светлая тема */
 body:not(.dark) .resource-block a {
   color: #1a1a1a !important;
 }
