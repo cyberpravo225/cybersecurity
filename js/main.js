@@ -176,44 +176,85 @@ card.addEventListener('click', (e) => {
 });
 })();
 /* =========================
-   Tip of the day
+   База советов
 ========================= */
-
-(function(){
 
 const tips = [
 
 {
 title: "Никогда не сообщайте код из SMS",
-text: "Если вам звонят и просят назвать код подтверждения — это мошенники. Банк, полиция и службы поддержки никогда не спрашивают такие данные.",
+text: "Если вам звонят и просят назвать код подтверждения — это мошенники. Ни банк, ни полиция, ни служба поддержки никогда не спрашивают такие данные.",
 img: "assets/tip1.jpg"
 },
 
 {
 title: "Проверяйте адрес сайта",
-text: "Фишинговые сайты часто отличаются одной буквой в адресе.",
-img: "assets/tips/tip2.jpg"
+text: "Фишинговые сайты могут отличаться одной буквой.",
+img: "assets/tips/phishing.jpg"
 },
 
 {
-title: "Не добавляйте незнакомцев",
-text: "Мошенники могут притворяться друзьями или одноклассниками.",
-img: "assets/tips/tip3.jpg"
+title: "Не переходите по подозрительным ссылкам",
+text: "Ссылки из SMS могут вести на мошеннические сайты.",
+img: "assets/tips/link.jpg"
+},
+
+{
+title: "Используйте сложные пароли",
+text: "Пароль должен содержать буквы, цифры и специальные символы.",
+img: "assets/tips/password.jpg"
 }
 
 ];
 
+
+/* =========================
+   Совет дня (главная)
+========================= */
+
 const day = new Date().getDate();
-const tip = tips[day % tips.length];
+const todayIndex = day % tips.length;
+const todayTip = tips[todayIndex];
 
 const title = document.querySelector(".tip-content h2");
 const text = document.querySelector(".tip-content p");
 const img = document.querySelector(".tip-image img");
 
 if(title && text && img){
-title.textContent = tip.title;
-text.textContent = tip.text;
-img.src = tip.img;
+
+title.textContent = todayTip.title;
+text.textContent = todayTip.text;
+img.src = todayTip.img;
+
 }
 
-})();
+
+/* =========================
+   История советов
+========================= */
+
+const tipsContainer = document.querySelector(".tips-history");
+
+if(tipsContainer){
+
+for(let i = 0; i < todayIndex; i++){
+
+const tip = tips[i];
+
+const card = document.createElement("div");
+card.className = "tip-card";
+
+card.innerHTML = `
+<img src="${tip.img}" class="tip-image">
+
+<div class="tip-content">
+<h3>${tip.title}</h3>
+<p>${tip.text}</p>
+</div>
+`;
+
+tipsContainer.appendChild(card);
+
+}
+
+}
