@@ -457,3 +457,16 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
   }
 
 }
+/* страница советов */
+
+.tips-grid{
+margin-top:30px;
+}
+
+.tip-history{
+transition:transform .2s ease;
+}
+
+.tip-history:hover{
+transform:translateY(-5px);
+}
