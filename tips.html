@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body class="page">
+<body class="page" data-page="tips">
 
 <div class="site">
 
@@ -16,28 +16,34 @@
 
 <div class="brand">
 <a href="index.html" class="logo">
-<img src="assets/assets/Copilot_20260304_011456.png" class="site-logo">
+<img src="assets/assets/Copilot_20260304_011456.png" alt="Логотип" class="site-logo">
 <span class="brand-text">Кибербезопасность</span>
 </a>
 </div>
 
 <nav class="nav">
 
-<button id="theme-toggle" class="btn icon-btn">
+<button id="theme-toggle" class="btn icon-btn" aria-label="Переключить тему">
 <svg class="icon-theme" width="22" height="22" viewBox="0 0 24 24" fill="none">
 
+<!-- moon -->
 <path class="icon-moon" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>
 
+<!-- sun -->
 <g class="icon-sun">
 <circle cx="12" cy="12" r="4"/>
 <line x1="12" y1="1" x2="12" y2="4"/>
 <line x1="12" y1="20" x2="12" y2="23"/>
+<line x1="4.2" y1="4.2" x2="6.3" y2="6.3"/>
+<line x1="17.7" y1="17.7" x2="19.8" y2="19.8"/>
+<line x1="1" y1="12" x2="4" y2="12"/>
+<line x1="20" y1="12" x2="23" y2="12"/>
 </g>
 
 </svg>
 </button>
 
-<a href="index.html" class="btn back-btn">← Назад</a>
+<a href="index.html" class="back-btn">← НАЗАД</a>
 
 </nav>
 
@@ -47,93 +53,34 @@
 <!-- MAIN -->
 <main class="main">
 
-<section class="container">
+<section class="section container reveal">
 
-<h1 class="title reveal">Советы по кибербезопасности</h1>
-<p class="lead reveal delay">Подборка полезных советов, которые помогут защититься от интернет-мошенников.</p>
+<h1>История советов</h1>
+<p class="lead">Подборка рекомендаций по защите от интернет-мошенников.</p>
 
 
-<div class="card-grid tips-grid reveal delay-2">
+<!-- карточка совета -->
+<div class="tip-card">
 
-<!-- совет -->
-<div class="card tip-history">
+<img src="assets/tips/sms-code.jpg" class="tip-image" alt="Не сообщайте код из SMS">
+
+<div class="tip-content">
+
 <h3>Никогда не сообщайте код из SMS</h3>
+
 <p>
 Если вам звонят и просят назвать код подтверждения — это мошенники.
-Банк, полиция и службы поддержки никогда не спрашивают такие данные.
+Ни банк, ни полиция, ни служба поддержки никогда не спрашивают такие данные.
 </p>
-</div>
 
-<!-- совет -->
-<div class="card tip-history">
-<h3>Проверяйте адрес сайта</h3>
-<p>
-Фишинговые сайты могут отличаться одной буквой в адресе.
-Всегда внимательно смотрите на строку браузера.
-</p>
-</div>
-
-<!-- совет -->
-<div class="card tip-history">
-<h3>Не переходите по подозрительным ссылкам</h3>
-<p>
-Ссылки из SMS или неизвестных сообщений могут вести на мошеннические сайты.
-Лучше открыть сайт вручную.
-</p>
-</div>
-
-<!-- совет -->
-<div class="card tip-history">
-<h3>Используйте сложные пароли</h3>
-<p>
-Надёжный пароль должен содержать буквы, цифры и специальные символы.
-Не используйте один пароль для всех сайтов.
-</p>
-</div>
-
-<!-- совет -->
-<div class="card tip-history">
-<h3>Не добавляйте незнакомцев</h3>
-<p>
-Мошенники могут притворяться друзьями или одноклассниками.
-Проверяйте профили перед добавлением.
-</p>
-</div>
-
-<!-- совет -->
-<div class="card tip-history">
-<h3>Включайте двухфакторную защиту</h3>
-<p>
-Дополнительная проверка при входе делает аккаунт намного безопаснее.
-</p>
 </div>
 
 </div>
+
 
 </section>
 
 </main>
-
-
-<!-- FOOTER -->
-<section class="section footer-section">
-
-<div class="container">
-
-<p>Следите за нами:</p>
-
-<div class="social-links">
-<a href="#">VK</a>
-<a href="#">YouTube</a>
-<a href="#">Telegram</a>
-<a href="#">Instagram</a>
-</div>
-
-<p class="muted">© 2026 — Образовательный ресурс по кибербезопасности</p>
-
-</div>
-
-</section>
 
 
 </div>
