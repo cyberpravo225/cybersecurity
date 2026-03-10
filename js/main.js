@@ -212,8 +212,15 @@ img: "assets/tips/password.jpg"
    Совет дня (главная)
 ========================= */
 
-const day = new Date().getDate();
-const todayIndex = day % tips.length;
+/* считаем дни с запуска проекта */
+
+const startDate = new Date("2026-03-10"); 
+const today = new Date();
+
+const diffTime = today - startDate;
+const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+const todayIndex = diffDays % tips.length;
 const todayTip = tips[todayIndex];
 
 const title = document.querySelector(".tip-content h2");
