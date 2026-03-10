@@ -175,3 +175,45 @@ card.addEventListener('click', (e) => {
   });
 });
 })();
+/* =========================
+   Tip of the day
+========================= */
+
+(function(){
+
+const tips = [
+
+{
+title: "Никогда не сообщайте код из SMS",
+text: "Если вам звонят и просят назвать код подтверждения — это мошенники. Банк, полиция и службы поддержки никогда не спрашивают такие данные.",
+img: "assets/tip1.jpg"
+},
+
+{
+title: "Проверяйте адрес сайта",
+text: "Фишинговые сайты часто отличаются одной буквой в адресе.",
+img: "assets/tips/tip2.jpg"
+},
+
+{
+title: "Не добавляйте незнакомцев",
+text: "Мошенники могут притворяться друзьями или одноклассниками.",
+img: "assets/tips/tip3.jpg"
+}
+
+];
+
+const day = new Date().getDate();
+const tip = tips[day % tips.length];
+
+const title = document.querySelector(".tip-content h2");
+const text = document.querySelector(".tip-content p");
+const img = document.querySelector(".tip-image img");
+
+if(title && text && img){
+title.textContent = tip.title;
+text.textContent = tip.text;
+img.src = tip.img;
+}
+
+})();
