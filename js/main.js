@@ -223,9 +223,9 @@ const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 const todayIndex = diffDays % tips.length;
 const todayTip = tips[todayIndex];
 
-const title = document.querySelector(".tip-content h2");
-const text = document.querySelector(".tip-content p");
-const img = document.querySelector(".tip-image img");
+const title = document.querySelector(".tip-title");
+const text = document.querySelector(".tip-text");
+const img = document.querySelector(".tip-image");
 
 if(title && text && img){
 
