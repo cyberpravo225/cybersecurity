@@ -2,13 +2,12 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Советы по кибербезопасности</title>
-
 <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body class="page simple">
+<body class="page">
 
 <div class="site">
 
@@ -25,12 +24,20 @@
 <nav class="nav">
 
 <button id="theme-toggle" class="btn icon-btn">
-🌙
+<svg class="icon-theme" width="22" height="22" viewBox="0 0 24 24" fill="none">
+
+<path class="icon-moon" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>
+
+<g class="icon-sun">
+<circle cx="12" cy="12" r="4"/>
+<line x1="12" y1="1" x2="12" y2="4"/>
+<line x1="12" y1="20" x2="12" y2="23"/>
+</g>
+
+</svg>
 </button>
 
-<a href="index.html" class="btn back-btn">
-← Назад
-</a>
+<a href="index.html" class="btn back-btn">← Назад</a>
 
 </nav>
 
@@ -42,89 +49,62 @@
 
 <section class="container">
 
-<h1 class="title reveal">История советов по кибербезопасности</h1>
-
-<p class="lead reveal delay">
-Полезные советы, которые помогут защититься от интернет-мошенников.
-</p>
+<h1 class="title reveal">Советы по кибербезопасности</h1>
+<p class="lead reveal delay">Подборка полезных советов, которые помогут защититься от интернет-мошенников.</p>
 
 
-<div class="card-grid">
+<div class="card-grid tips-grid reveal delay-2">
 
-<!-- совет 1 -->
-<div class="card reveal">
-<div class="card-icon">📱</div>
-
+<!-- совет -->
+<div class="card tip-history">
 <h3>Никогда не сообщайте код из SMS</h3>
-
 <p>
-Если вам звонят и просят назвать код подтверждения —
-это мошенники. Настоящие банки никогда не спрашивают такие данные.
+Если вам звонят и просят назвать код подтверждения — это мошенники.
+Банк, полиция и службы поддержки никогда не спрашивают такие данные.
 </p>
 </div>
 
-
-<!-- совет 2 -->
-<div class="card reveal delay">
-<div class="card-icon">🌐</div>
-
+<!-- совет -->
+<div class="card tip-history">
 <h3>Проверяйте адрес сайта</h3>
-
 <p>
-Фишинговые сайты часто отличаются одной буквой в адресе.
-Всегда проверяйте URL перед вводом пароля.
+Фишинговые сайты могут отличаться одной буквой в адресе.
+Всегда внимательно смотрите на строку браузера.
 </p>
 </div>
 
-
-<!-- совет 3 -->
-<div class="card reveal delay-2">
-<div class="card-icon">👤</div>
-
-<h3>Не добавляйте незнакомцев</h3>
-
+<!-- совет -->
+<div class="card tip-history">
+<h3>Не переходите по подозрительным ссылкам</h3>
 <p>
-Мошенники могут притворяться знакомыми людьми или
-одноклассниками в социальных сетях.
+Ссылки из SMS или неизвестных сообщений могут вести на мошеннические сайты.
+Лучше открыть сайт вручную.
 </p>
 </div>
 
-
-<!-- совет 4 -->
-<div class="card reveal">
-<div class="card-icon">🔐</div>
-
+<!-- совет -->
+<div class="card tip-history">
 <h3>Используйте сложные пароли</h3>
-
 <p>
-Пароль должен содержать буквы, цифры и символы.
-Не используйте одинаковые пароли на разных сайтах.
+Надёжный пароль должен содержать буквы, цифры и специальные символы.
+Не используйте один пароль для всех сайтов.
 </p>
 </div>
 
-
-<!-- совет 5 -->
-<div class="card reveal delay">
-<div class="card-icon">📧</div>
-
-<h3>Будьте осторожны с письмами</h3>
-
+<!-- совет -->
+<div class="card tip-history">
+<h3>Не добавляйте незнакомцев</h3>
 <p>
-Не открывайте подозрительные вложения и ссылки,
-даже если письмо выглядит официальным.
+Мошенники могут притворяться друзьями или одноклассниками.
+Проверяйте профили перед добавлением.
 </p>
 </div>
 
-
-<!-- совет 6 -->
-<div class="card reveal delay-2">
-<div class="card-icon">💳</div>
-
-<h3>Не вводите данные карты на неизвестных сайтах</h3>
-
+<!-- совет -->
+<div class="card tip-history">
+<h3>Включайте двухфакторную защиту</h3>
 <p>
-Перед оплатой убедитесь, что сайт защищён
-и начинается с https.
+Дополнительная проверка при входе делает аккаунт намного безопаснее.
 </p>
 </div>
 
@@ -136,15 +116,25 @@
 
 
 <!-- FOOTER -->
-<footer class="footer-section">
+<section class="section footer-section">
 
 <div class="container">
 
-<p>© 2026 — Образовательный ресурс по кибербезопасности</p>
+<p>Следите за нами:</p>
+
+<div class="social-links">
+<a href="#">VK</a>
+<a href="#">YouTube</a>
+<a href="#">Telegram</a>
+<a href="#">Instagram</a>
+</div>
+
+<p class="muted">© 2026 — Образовательный ресурс по кибербезопасности</p>
 
 </div>
 
-</footer>
+</section>
+
 
 </div>
 
