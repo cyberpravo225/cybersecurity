@@ -1014,3 +1014,20 @@ padding:35px;
 border-radius:18px;
 box-shadow:0 10px 40px rgba(0,0,0,0.08);
 }
+/* прогресс бар теста */
+
+.progress-bar{
+width:100%;
+height:10px;
+background:rgba(0,0,0,0.08);
+border-radius:20px;
+overflow:hidden;
+margin-bottom:25px;
+}
+
+#progress-fill{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#4c8bf5,#6fdc8c);
+transition:0.4s;
+}
