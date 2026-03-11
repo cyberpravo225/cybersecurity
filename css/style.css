@@ -999,10 +999,12 @@ margin-bottom:10px;
 .test-level{
 display:inline-block;
 background:var(--card-bg);
-padding:6px 14px;
+padding:8px 18px;
 border-radius:20px;
-font-size:14px;
+font-size:17px;
+font-weight:600;
 color:var(--text-muted);
+margin-top:5px;
 }
 #quiz-container{
 max-width:720px;
