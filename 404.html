@@ -65,15 +65,14 @@
 
 <div class="paw-line">
 
-<span class="paw">🐾</span>
-<span class="paw">🐾</span>
-<span class="paw">🐾</span>
-<span class="paw">🐾</span>
-<span class="paw">🐾</span>
-<span class="paw">🐾</span>
+<span class="paw step1">🐾</span>
+<span class="paw step2">🐾</span>
+<span class="paw step3">🐾</span>
+<span class="paw step4">🐾</span>
+<span class="paw step5">🐾</span>
+<span class="paw step6">🐾</span>
 
 </div>
-
 <a href="index.html" class="btn primary error-btn">
 На главную
 </a>
@@ -85,6 +84,34 @@
 </div>
 
 <script src="js/main.js"></script>
+<script>
 
+const paws = document.querySelectorAll(".paw")
+const btn = document.querySelector(".error-btn")
+
+let i = 0
+
+function showNextPaw(){
+
+if(i < paws.length){
+
+paws[i].classList.add("show")
+i++
+
+setTimeout(showNextPaw,400)
+
+}
+
+else{
+
+btn.classList.add("pulse")
+
+}
+
+}
+
+setTimeout(showNextPaw,600)
+
+</script>
 </body>
 </html>
