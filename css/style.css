@@ -851,10 +851,11 @@ flex-wrap:wrap;
 
 .level-btn{
 border:none;
-padding:8px 16px;
+padding:10px 18px;
 border-radius:10px;
 cursor:pointer;
-font-size:14px;
+font-size:15px;
+font-weight:600;
 transition:0.2s;
 }
 
