@@ -1031,3 +1031,74 @@ width:0%;
 background:linear-gradient(90deg,#4c8bf5,#6fdc8c);
 transition:0.4s;
 }
+/* карточка результата */
+
+.result-card{
+display:none;
+text-align:center;
+padding:40px;
+background:var(--card-bg);
+border-radius:20px;
+box-shadow:0 15px 40px rgba(0,0,0,0.1);
+animation:resultAppear 0.6s ease;
+}
+
+/* обезьянка */
+
+.result-monkey{
+width:180px;
+margin-bottom:20px;
+animation:monkeyBounce 1.2s ease infinite alternate;
+}
+
+/* текст */
+
+#result-title{
+font-size:28px;
+margin-bottom:10px;
+}
+
+#result-score{
+font-size:20px;
+color:var(--text-muted);
+}
+
+
+/* появление карточки */
+
+@keyframes resultAppear{
+0%{
+opacity:0;
+transform:scale(0.8);
+}
+100%{
+opacity:1;
+transform:scale(1);
+}
+}
+
+/* подпрыгивание обезьянки */
+
+@keyframes monkeyBounce{
+0%{
+transform:translateY(0);
+}
+100%{
+transform:translateY(-12px);
+}
+}
+
+
+/* цвета результата */
+
+.result-good{
+border:3px solid #6fdc8c;
+}
+
+.result-mid{
+border:3px solid #ffd54f;
+}
+
+.result-bad{
+border:3px solid #ff6b6b;
+}
