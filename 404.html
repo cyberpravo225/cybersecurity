@@ -89,33 +89,31 @@
 const paws = document.querySelectorAll(".paw")
 const btn = document.querySelector(".error-btn")
 
-let i = 0
+function runSteps(){
 
-function showNextPaw(){
-
-if(i < paws.length){
-
-paws[i].classList.add("show")
+paws.forEach((paw,index)=>{
 
 setTimeout(()=>{
-paws[i].classList.add("hide")
+
+paw.classList.add("show")
+
+setTimeout(()=>{
+paw.classList.add("hide")
 },1200)
 
-i++
-
-setTimeout(showNextPaw,400)
-
-}
-
-else{
-
+if(index === paws.length-1){
+setTimeout(()=>{
 btn.classList.add("pulse")
+},400)
+}
+
+}, index*500)
+
+})
 
 }
 
-}
-
-setTimeout(showNextPaw,600)
+setTimeout(runSteps,600)
 
 </script>
 </body>
