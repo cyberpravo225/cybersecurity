@@ -923,14 +923,31 @@ transform:translateY(-3px);
 box-shadow:0 10px 20px rgba(0,0,0,0.08);
 }
 
+/* светлая тема */
+
 .answer-card.correct{
-border-color:#6fdc8c;
+border-color:#4CAF50;
 background:#e9f9ef;
 }
 
 .answer-card.wrong{
-border-color:#ff6b6b;
+border-color:#e53935;
 background:#ffecec;
+}
+
+
+/* тёмная тема */
+
+[data-theme="dark"] .answer-card.correct{
+background:#1f3d2b;
+border-color:#6fdc8c;
+color:#b9f6ca;
+}
+
+[data-theme="dark"] .answer-card.wrong{
+background:#3a1f1f;
+border-color:#ff6b6b;
+color:#ffcdd2;
 }
 
 #explanation{
@@ -947,4 +964,13 @@ margin-top:25px;
 text-align:center;
 margin-top:40px;
 font-size:22px;
+}
+.answer-card.correct::after{
+content:" ✔";
+font-weight:bold;
+}
+
+.answer-card.wrong::after{
+content:" ✖";
+font-weight:bold;
 }
