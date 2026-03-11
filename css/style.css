@@ -1181,44 +1181,45 @@ animation:monkeyFloat 3s ease-in-out infinite;
 .paw-line{
 display:flex;
 justify-content:flex-start;
-gap:25px;
+gap:35px;
 width:100%;
 max-width:500px;
-margin:10px 0 25px;
+margin:20px 0 30px;
 }
 
 .paw{
-font-size:26px;
+font-size:28px;
 opacity:0;
-animation:pawMove 2.5s infinite;
+transform:translateY(5px);
+transition:0.4s;
 }
 
-.paw:nth-child(1){animation-delay:0s}
-.paw:nth-child(2){animation-delay:0.4s}
-.paw:nth-child(3){animation-delay:0.8s}
-.paw:nth-child(4){animation-delay:1.2s}
-.paw:nth-child(5){animation-delay:1.6s}
-.paw:nth-child(6){animation-delay:2s}
+.paw.show{
+opacity:1;
+transform:translateY(0);
+}
 
-@keyframes pawMove{
+/* пульсация кнопки */
+
+.error-btn.pulse{
+animation:buttonPulse 0.6s ease;
+}
+
+@keyframes buttonPulse{
 
 0%{
-opacity:0;
-transform:translateX(-20px);
+transform:scale(1);
 }
 
-40%{
-opacity:1;
+50%{
+transform:scale(1.15);
 }
 
 100%{
-opacity:0;
-transform:translateX(40px);
+transform:scale(1);
 }
 
 }
-
-
 /* кнопка */
 
 .error-btn{
