@@ -874,7 +874,27 @@ background:#ffd166;
 background:#ff6b6b;
 color:white;
 }
+.level-btn{
+border:none;
+padding:8px 16px;
+border-radius:10px;
+cursor:pointer;
+font-size:14px;
+transition:0.2s;
 
+text-decoration:none;
+color:inherit;
+display:inline-block;
+}
+
+.level-btn:visited{
+color:inherit;
+}
+
+.level-btn:hover{
+transform:scale(1.08);
+text-decoration:none;
+}
 
 /* адаптив */
 
