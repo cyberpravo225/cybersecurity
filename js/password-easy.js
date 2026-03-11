@@ -226,19 +226,73 @@ function showResult(){
 
 document.getElementById("quiz-container").style.display="none"
 
-resultEl.innerHTML = `
-<h2>Ваш результат: ${score} / ${quizData.length}</h2>
-<p>${getLevel()}</p>
-`
+const resultCard = document.getElementById("result")
+const monkey = document.getElementById("result-monkey")
+const title = document.getElementById("result-title")
+const scoreText = document.getElementById("result-score")
+
+resultCard.style.display = "block"
+
+scoreText.innerHTML = `Ваш результат: ${score} / ${quizData.length}`
+
+if(score <=4){
+
+title.innerHTML = "Стоит повторить правила безопасности"
+monkey.src = "assets/rez1.png"
+resultCard.classList.add("result-bad")
+
+}
+
+else if(score <=7){
+
+title.innerHTML = "Неплохо, но можно лучше"
+monkey.src = "assets/rez2.png"
+resultCard.classList.add("result-mid")
+
+}
+
+else{
+
+title.innerHTML = "Отличный уровень безопасности!"
+monkey.src = "assets/rez3.png"
+resultCard.classList.add("result-good")
+
+launchConfetti()
+
+}
 
 }
 
 function getLevel(){
 
-if(score <=3) return "Нужно подтянуть знания 🔐"
-if(score <=7) return "Хороший уровень 👍"
-return "Отличный уровень безопасности 🛡️"
+if(score <=3) return "Нужно подтянуть знания"
+if(score <=7) return "Хороший уровень"
+return "Отличный уровень безопасности"
 
 }
 
 loadQuestion()
+function launchConfetti(){
+
+for(let i=0;i<40;i++){
+
+const conf = document.createElement("div")
+
+conf.style.position="fixed"
+conf.style.width="8px"
+conf.style.height="8px"
+conf.style.background=`hsl(${Math.random()*360},70%,60%)`
+conf.style.left=Math.random()*100+"%"
+conf.style.top="-10px"
+conf.style.opacity="0.8"
+conf.style.zIndex="999"
+
+conf.style.animation=`fall ${2+Math.random()*2}s linear`
+
+document.body.appendChild(conf)
+
+setTimeout(()=>conf.remove(),4000)
+
+}
+
+}
