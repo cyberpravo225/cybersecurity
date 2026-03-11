@@ -96,6 +96,11 @@ function showNextPaw(){
 if(i < paws.length){
 
 paws[i].classList.add("show")
+
+setTimeout(()=>{
+paws[i].classList.add("hide")
+},1200)
+
 i++
 
 setTimeout(showNextPaw,400)
