@@ -679,3 +679,49 @@ margin-bottom:10px;
 .test-card p{
 color:var(--text-muted);
 }
+.tests-banner{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:20px;
+background:var(--card-bg);
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
+transition:0.3s;
+margin-top:20px;
+}
+
+.tests-banner:hover{
+transform:translateY(-5px);
+box-shadow:0 15px 40px rgba(0,0,0,0.15);
+}
+
+.tests-banner-text h2{
+margin-bottom:10px;
+}
+
+.tests-banner-text p{
+margin-bottom:15px;
+color:var(--text-muted);
+}
+
+.tests-banner-icon{
+font-size:60px;
+opacity:0.8;
+}
+
+/* адаптив */
+
+@media (max-width:700px){
+
+.tests-banner{
+flex-direction:column;
+align-items:flex-start;
+}
+
+.tests-banner-icon{
+font-size:40px;
+}
+
+}
