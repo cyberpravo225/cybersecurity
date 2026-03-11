@@ -1179,10 +1179,12 @@ animation:monkeyFloat 3s ease-in-out infinite;
 /* дорожка лап */
 
 .paw-line{
-position:relative;
+position:fixed;
+left:0;
+bottom:140px;
 width:100%;
-height:70px;
-margin:30px 0 35px;
+height:120px;
+pointer-events:none;
 }
 
 /* лапки */
