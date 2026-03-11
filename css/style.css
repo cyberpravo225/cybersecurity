@@ -1102,3 +1102,11 @@ border:3px solid #ffd54f;
 .result-bad{
 border:3px solid #ff6b6b;
 }
+@keyframes fall{
+0%{
+transform:translateY(-10px) rotate(0deg);
+}
+100%{
+transform:translateY(110vh) rotate(360deg);
+}
+}
