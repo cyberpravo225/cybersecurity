@@ -1209,12 +1209,12 @@ transform:scale(0.7);
 
 /* позиции шагов (начинаются почти слева) */
 
-.step1{ left:5%; top:35px; }
-.step2{ left:20%; top:5px; }
-.step3{ left:35%; top:35px; }
-.step4{ left:50%; top:5px; }
-.step5{ left:65%; top:35px; }
-.step6{ left:80%; top:5px; }
+.step1{ left:2%; top:80px; }
+.step2{ left:18%; top:40px; }
+.step3{ left:34%; top:80px; }
+.step4{ left:50%; top:40px; }
+.step5{ left:66%; top:80px; }
+.step6{ left:82%; top:40px; }
 
 /* пульсация кнопки */
 
