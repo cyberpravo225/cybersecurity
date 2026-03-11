@@ -131,6 +131,7 @@ const answersEl = document.getElementById("answers")
 const nextBtn = document.getElementById("next-btn")
 const explanationEl = document.getElementById("explanation")
 const progressEl = document.getElementById("progress")
+const progressFill = document.getElementById("progress-fill")
 const resultEl = document.getElementById("result")
 
 function loadQuestion(){
@@ -141,6 +142,9 @@ explanationEl.innerHTML = ""
 const q = quizData[currentQuestion]
 
 progressEl.innerHTML = `Вопрос ${currentQuestion+1} из ${quizData.length}`
+
+const progressPercent = (currentQuestion / quizData.length) * 100
+progressFill.style.width = progressPercent + "%"
 
 questionEl.innerHTML = q.question
 
