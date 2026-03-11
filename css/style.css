@@ -1131,56 +1131,91 @@ transform:translateY(-10px) rotate(0deg);
 transform:translateY(110vh) rotate(360deg);
 }
 }
-<!doctype html>
-<html lang="ru">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>404 — Страница не найдена</title>
-<link rel="stylesheet" href="css/style.css">
-</head>
+/* 404 страница */
 
-<body class="page">
+.error-page{
+text-align:center;
+max-width:700px;
+margin:auto;
+padding-top:40px;
+display:flex;
+flex-direction:column;
+align-items:center;
+}
 
-<div class="site">
+.error-title{
+font-size:90px;
+margin-bottom:10px;
+}
 
-<header class="topbar glass">
+.error-subtitle{
+font-size:30px;
+margin-bottom:15px;
+}
 
-<a class="back-btn" href="index.html">
-← НА ГЛАВНУЮ
-</a>
+.error-text{
+font-size:18px;
+color:var(--text-muted);
+margin-bottom:5px;
+}
 
-</header>
+/* обезьянка */
 
-<main class="main">
+.error-monkey{
+width:220px;
+margin:25px 0;
+animation:monkeyFloat 3s ease-in-out infinite;
+}
 
-<section class="section container error-page">
+/* анимация обезьянки */
 
-<img src="images/monkey-detective.png" class="error-monkey" alt="Обезьянка ищет страницу">
+@keyframes monkeyFloat{
+0%{transform:translateY(0)}
+50%{transform:translateY(-10px)}
+100%{transform:translateY(0)}
+}
 
-<h1 class="error-title">404</h1>
 
-<h2 class="error-subtitle">
-След обезьянки потерян!
-</h2>
+/* следы лап */
 
-<p class="error-text">
-Мы искали, но не нашли нужную страницу.
-</p>
+.paw-trail{
+display:flex;
+gap:12px;
+font-size:24px;
+margin:10px 0 20px;
+}
 
-<p class="error-text">
-Вернуться в безопасную зону — на главную.
-</p>
+.paw-trail span{
+opacity:0;
+animation:pawWalk 2s infinite;
+}
 
-<a href="index.html" class="btn primary error-btn">
-Вернуться на главную
-</a>
+.paw-trail span:nth-child(1){animation-delay:0s}
+.paw-trail span:nth-child(2){animation-delay:0.3s}
+.paw-trail span:nth-child(3){animation-delay:0.6s}
+.paw-trail span:nth-child(4){animation-delay:0.9s}
+.paw-trail span:nth-child(5){animation-delay:1.2s}
 
-</section>
+@keyframes pawWalk{
+0%{
+opacity:0;
+transform:translateY(-5px);
+}
+50%{
+opacity:1;
+transform:translateY(0);
+}
+100%{
+opacity:0;
+transform:translateY(5px);
+}
+}
 
-</main>
 
-</div>
+/* кнопка */
 
-</body>
-</html>
+.error-btn{
+margin-top:10px;
+padding:14px 30px;
+font-size:18px;
+}
