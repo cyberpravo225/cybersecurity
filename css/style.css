@@ -644,3 +644,38 @@ background:#eef3ff;
 padding:4px 10px;
 border-radius:8px;
 }
+.tests-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:25px;
+margin-top:30px;
+}
+
+.test-card{
+background:var(--card-bg);
+padding:25px;
+border-radius:18px;
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
+text-decoration:none;
+color:inherit;
+transition:0.3s;
+display:block;
+}
+
+.test-card:hover{
+transform:translateY(-6px);
+box-shadow:0 15px 40px rgba(0,0,0,0.15);
+}
+
+.test-icon{
+font-size:36px;
+margin-bottom:10px;
+}
+
+.test-card h3{
+margin-bottom:10px;
+}
+
+.test-card p{
+color:var(--text-muted);
+}
