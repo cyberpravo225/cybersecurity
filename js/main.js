@@ -263,3 +263,24 @@ card.innerHTML = `
 tipsContainer.appendChild(card);
 
 }
+   // открытие выбора сложности
+
+const testCards = document.querySelectorAll(".test-card")
+const modal = document.getElementById("difficultyModal")
+const closeBtn = document.querySelector(".modal-close")
+
+if(testCards){
+testCards.forEach(card=>{
+card.addEventListener("click",()=>{
+modal.classList.add("active")
+})
+})
+}
+
+if(closeBtn){
+closeBtn.addEventListener("click",()=>{
+modal.classList.remove("active")
+})
+}
+
+}
