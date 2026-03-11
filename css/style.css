@@ -1179,27 +1179,43 @@ animation:monkeyFloat 3s ease-in-out infinite;
 /* дорожка лап */
 
 .paw-line{
-display:flex;
-justify-content:flex-start;
-gap:35px;
+position:relative;
 width:100%;
-max-width:500px;
-margin:20px 0 30px;
+max-width:520px;
+height:60px;
+margin:25px 0 35px;
 }
 
+/* сами лапки */
+
 .paw{
+position:absolute;
 font-size:28px;
 opacity:0;
-transform:translateY(5px);
-transition:0.4s;
+transform:scale(0.8);
+transition:opacity 0.6s, transform 0.6s;
 }
 
 .paw.show{
 opacity:1;
-transform:translateY(0);
+transform:scale(1);
 }
 
-/* пульсация кнопки */
+.paw.hide{
+opacity:0;
+transform:scale(0.8);
+}
+
+/* расположение лап (шаги) */
+
+.step1{ left:0px; top:20px; }
+.step2{ left:80px; top:0px; }
+.step3{ left:160px; top:20px; }
+.step4{ left:240px; top:0px; }
+.step5{ left:320px; top:20px; }
+.step6{ left:400px; top:0px; }
+
+/* пульс кнопки */
 
 .error-btn.pulse{
 animation:buttonPulse 0.6s ease;
@@ -1207,22 +1223,8 @@ animation:buttonPulse 0.6s ease;
 
 @keyframes buttonPulse{
 
-0%{
-transform:scale(1);
-}
+0%{transform:scale(1)}
+50%{transform:scale(1.15)}
+100%{transform:scale(1)}
 
-50%{
-transform:scale(1.15);
-}
-
-100%{
-transform:scale(1);
-}
-
-}
-/* кнопка */
-
-.error-btn{
-padding:16px 36px;
-font-size:18px;
 }
