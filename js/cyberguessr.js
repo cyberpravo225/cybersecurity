@@ -1,10 +1,9 @@
 const map = new maplibregl.Map({
 container: "map",
-style: "https://demotiles.maplibre.org/style.json",
+style: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
 center: [0,30],
 zoom: 2
 })
-
 let playerMarker = null
 let playerCoords = null
 
