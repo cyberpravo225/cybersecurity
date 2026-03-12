@@ -315,6 +315,7 @@ searchInput.addEventListener("input",()=>{
 const query = searchInput.value.toLowerCase()
 
 const terms = document.querySelectorAll(".dictionary-content p")
+
 const blocks = document.querySelectorAll(".dictionary-block")
 
 // если меньше 3 символов — показать всё
@@ -323,7 +324,6 @@ if(query.length < 3){
 
 terms.forEach(term=>{
 term.style.display="block"
-term.innerHTML = term.textContent
 })
 
 blocks.forEach(block=>{
@@ -339,6 +339,28 @@ content.style.maxHeight = null
 
 return
 }
+blocks.forEach(block=>{
+
+let blockHasResult = false
+
+const blockTerms = block.querySelectorAll("p")
+
+blockTerms.forEach(term=>{
+
+const text = term.innerText.toLowerCase()
+
+if(text.includes(query)){
+
+term.style.display="block"
+blockHasResult = true
+
+}else{
+
+term.style.display="none"
+
+}
+
+})
 
 blocks.forEach(block=>{
 
@@ -349,23 +371,16 @@ const content = block.querySelector(".dictionary-content")
 
 blockTerms.forEach(term=>{
 
-const originalText = term.textContent
-const text = originalText.toLowerCase()
+const text = term.innerText.toLowerCase()
 
 if(text.includes(query)){
 
 term.style.display="block"
-
-// подсветка
-const regex = new RegExp(`(${query})`, "gi")
-term.innerHTML = originalText.replace(regex,'<span class="highlight">$1</span>')
-
 blockHasResult = true
 
 }else{
 
 term.style.display="none"
-term.innerHTML = originalText
 
 }
 
@@ -390,11 +405,9 @@ block.style.display="none"
 
 })
 
+})
+
 }
-
-
-// кнопка очистки
-
 const clearBtn = document.getElementById("searchClear")
 
 if(searchInput && clearBtn){
