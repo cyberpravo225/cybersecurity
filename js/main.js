@@ -303,24 +303,10 @@ content.style.maxHeight = content.scrollHeight + "px"
 
 })
 
-// ===== ПОИСК В СЛОВАРЕ =====
+})
+// поиск терминов словаря
 
 const searchInput = document.getElementById("dictionarySearch")
-const clearBtn = document.getElementById("searchClear")
-
-// подсветка текста
-function highlightText(element, query){
-
-const text = element.textContent
-const regex = new RegExp(`(${query})`, "gi")
-
-element.innerHTML = text.replace(regex,'<span class="highlight">$1</span>')
-}
-
-// убрать подсветку
-function removeHighlight(element){
-element.innerHTML = element.textContent
-}
 
 if(searchInput){
 
@@ -329,14 +315,15 @@ searchInput.addEventListener("input",()=>{
 const query = searchInput.value.toLowerCase()
 
 const terms = document.querySelectorAll(".dictionary-content p")
+
 const blocks = document.querySelectorAll(".dictionary-block")
 
-// если меньше 3 символов
+// если меньше 3 символов — показать всё
+
 if(query.length < 3){
 
 terms.forEach(term=>{
 term.style.display="block"
-removeHighlight(term)
 })
 
 blocks.forEach(block=>{
@@ -352,8 +339,28 @@ content.style.maxHeight = null
 
 return
 }
+blocks.forEach(block=>{
 
-// основной поиск
+let blockHasResult = false
+
+const blockTerms = block.querySelectorAll("p")
+
+blockTerms.forEach(term=>{
+
+const text = term.innerText.toLowerCase()
+
+if(text.includes(query)){
+
+term.style.display="block"
+blockHasResult = true
+
+}else{
+
+term.style.display="none"
+
+}
+
+})
 
 blocks.forEach(block=>{
 
@@ -364,19 +371,16 @@ const content = block.querySelector(".dictionary-content")
 
 blockTerms.forEach(term=>{
 
-const text = term.textContent.toLowerCase()
+const text = term.innerText.toLowerCase()
 
 if(text.includes(query)){
 
 term.style.display="block"
-highlightText(term, query)
-
 blockHasResult = true
 
 }else{
 
 term.style.display="none"
-removeHighlight(term)
 
 }
 
@@ -385,6 +389,8 @@ removeHighlight(term)
 if(blockHasResult){
 
 block.style.display="block"
+
+/* автоматически раскрываем */
 
 block.classList.add("active")
 content.style.maxHeight = content.scrollHeight + "px"
@@ -399,12 +405,17 @@ block.style.display="none"
 
 })
 
-// кнопка очистки
+})
 
-if(clearBtn){
+}
+const clearBtn = document.getElementById("searchClear")
+
+if(searchInput && clearBtn){
 
 searchInput.addEventListener("input",()=>{
+
 clearBtn.style.display = searchInput.value.length ? "block" : "none"
+
 })
 
 clearBtn.addEventListener("click",()=>{
@@ -415,7 +426,5 @@ clearBtn.style.display="none"
 searchInput.dispatchEvent(new Event("input"))
 
 })
-
-}
 
 }
