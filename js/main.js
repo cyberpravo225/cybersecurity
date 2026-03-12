@@ -408,3 +408,23 @@ block.style.display="none"
 })
 
 }
+const clearBtn = document.getElementById("searchClear")
+
+if(searchInput && clearBtn){
+
+searchInput.addEventListener("input",()=>{
+
+clearBtn.style.display = searchInput.value.length ? "block" : "none"
+
+})
+
+clearBtn.addEventListener("click",()=>{
+
+searchInput.value = ""
+clearBtn.style.display="none"
+
+searchInput.dispatchEvent(new Event("input"))
+
+})
+
+}
