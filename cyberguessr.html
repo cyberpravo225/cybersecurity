@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>CyberGuessr</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<link
+rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+</head>
+
+<body class="page">
+
+<div class="site">
+
+<header class="topbar glass">
+
+<a class="back-btn" href="index.html">
+← НАЗАД
+</a>
+
+<h2>🌍 CyberGuessr</h2>
+
+</header>
+
+<main class="main">
+
+<section class="section container">
+
+<div class="cyberguessr">
+
+<div id="fact-card">
+
+<h3>Факт</h3>
+<p id="fact-text"></p>
+
+</div>
+
+<div id="map"></div>
+
+<button id="guess-btn" class="btn primary">
+Подтвердить точку
+</button>
+
+<div id="result"></div>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/cyberguessr.js"></script>
+
+</body>
+</html>
