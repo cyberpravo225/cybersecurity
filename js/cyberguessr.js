@@ -82,7 +82,10 @@ if(playerMarker){
 playerMarker.remove()
 }
 
-playerMarker = new maplibregl.Marker()
+const el = document.createElement("div")
+el.className = "marker-player"
+
+playerMarker = new maplibregl.Marker(el)
 .setLngLat([playerCoords.lng,playerCoords.lat])
 .addTo(map)
 
@@ -170,11 +173,15 @@ q.lng
 const score = calculateScore(dist)
 totalScore += score
 
-correctMarker = new maplibregl.Marker({color:"red"})
+const correctEl = document.createElement("div")
+correctEl.className = "marker-correct"
+
+correctMarker = new maplibregl.Marker(correctEl)
 .setLngLat([q.lng,q.lat])
 .addTo(map)
 
 drawLine(playerCoords,{lat:q.lat,lng:q.lng})
+  zoomToPoints(playerCoords,{lat:q.lat,lng:q.lng})
 
 document.getElementById("result").innerHTML = `
 Вы были в <b>${Math.round(dist)} км</b><br>
@@ -205,3 +212,74 @@ loadQuestion()
 }
 
 loadQuestion()
+function drawLine(player,correct){
+
+const steps = 60
+let i = 0
+
+const coords = []
+
+const lineData = {
+type:"Feature",
+geometry:{
+type:"LineString",
+coordinates:[]
+}
+}
+
+if(map.getSource("line")){
+map.removeLayer("line")
+map.removeSource("line")
+}
+
+map.addSource("line",{
+type:"geojson",
+data:lineData
+})
+
+map.addLayer({
+id:"line",
+type:"line",
+source:"line",
+paint:{
+"line-color":"#ffd54f",
+"line-width":4,
+"line-opacity":0.9
+}
+})
+
+function animate(){
+
+if(i > steps) return
+
+const lat = player.lat + (correct.lat-player.lat)*(i/steps)
+const lng = player.lng + (correct.lng-player.lng)*(i/steps)
+
+coords.push([lng,lat])
+
+lineData.geometry.coordinates = coords
+
+map.getSource("line").setData(lineData)
+
+i++
+
+requestAnimationFrame(animate)
+
+}
+
+animate()
+
+}
+function zoomToPoints(player,correct){
+
+const bounds = new maplibregl.LngLatBounds()
+
+bounds.extend([player.lng,player.lat])
+bounds.extend([correct.lng,correct.lat])
+
+map.fitBounds(bounds,{
+padding:100,
+duration:1500
+})
+
+}
