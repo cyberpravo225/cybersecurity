@@ -1,5 +1,4 @@
-questions.sort(()=>Math.random()-0.5)
-  let currentQuestion = 0
+let currentQuestion = 0
 let totalScore = 0
 let roundFinished = false
 
@@ -29,7 +28,8 @@ lat:37.3875,
 lng:-122.0575,
 place:"США"
 },
-  {
+
+{
 fact:"Атака Stuxnet была направлена на ядерную программу Ирана.",
 lat:35.6892,
 lng:51.3890,
@@ -51,6 +51,9 @@ place:"США"
 }
 
 ]
+
+// перемешиваем вопросы
+questions.sort(()=>Math.random()-0.5)
 
 function loadQuestion(){
 
@@ -185,7 +188,7 @@ document.getElementById("next-round").onclick = ()=>{
 
 currentQuestion++
 
-if(currentQuestion >= questions.length)
+if(currentQuestion >= questions.length){
 
 document.getElementById("result").innerHTML = `
 <h2>Игра окончена</h2>
