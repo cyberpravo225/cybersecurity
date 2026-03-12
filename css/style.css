@@ -1278,12 +1278,17 @@ display:flex;
 justify-content:center;
 }
 
+.search-box{
+position:relative;
+width:100%;
+max-width:420px;
+}
+
 #dictionarySearch{
 
 width:100%;
-max-width:420px;
 
-padding:14px 18px;
+padding:14px 40px 14px 18px;
 
 border-radius:12px;
 
@@ -1297,17 +1302,40 @@ font-size:16px;
 
 outline:none;
 
-transition:0.25s;
-}
-
-#dictionarySearch::placeholder{
-color:var(--muted);
+transition:.25s;
 }
 
 #dictionarySearch:focus{
-
 border-color:var(--accent);
-
 box-shadow:0 0 0 2px rgba(255,200,0,0.2);
+}
 
+/* крестик */
+
+#searchClear{
+
+position:absolute;
+
+right:10px;
+top:50%;
+
+transform:translateY(-50%);
+
+border:none;
+
+background:none;
+
+font-size:18px;
+
+cursor:pointer;
+
+color:var(--muted);
+
+display:none;
+
+transition:.2s;
+}
+
+#searchClear:hover{
+color:var(--accent);
 }
