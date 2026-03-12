@@ -1369,3 +1369,20 @@ flex-wrap:wrap;
 font-size:18px;
 font-weight:500;
 }
+.marker-player{
+width:18px;
+height:18px;
+background:#4da6ff;
+border-radius:50%;
+border:3px solid white;
+box-shadow:0 0 10px rgba(0,0,0,0.4);
+}
+
+.marker-correct{
+width:18px;
+height:18px;
+background:#ff3b3b;
+border-radius:50%;
+border:3px solid white;
+box-shadow:0 0 10px rgba(0,0,0,0.4);
+}
