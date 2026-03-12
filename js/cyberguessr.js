@@ -120,41 +120,6 @@ return 500
 
 }
 
-function drawLine(player, correct){
-
-const lineData = {
-type:"Feature",
-geometry:{
-type:"LineString",
-coordinates:[
-[player.lng,player.lat],
-[correct.lng,correct.lat]
-]
-}
-}
-
-if(map.getSource("line")){
-map.removeLayer("line")
-map.removeSource("line")
-}
-
-map.addSource("line",{
-type:"geojson",
-data:lineData
-})
-
-map.addLayer({
-id:"line",
-type:"line",
-source:"line",
-paint:{
-"line-color":"#ffcc00",
-"line-width":3
-}
-})
-
-}
-
 document.getElementById("guess-btn").onclick = ()=>{
 
 if(!playerCoords || roundFinished) return
