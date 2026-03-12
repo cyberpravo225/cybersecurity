@@ -284,42 +284,18 @@ modal.classList.remove("active")
 }
 
 }
-.dictionary{
-display:grid;
-gap:20px;
-margin-top:30px;
+const dictButtons = document.querySelectorAll(".dictionary-header")
+
+dictButtons.forEach(btn=>{
+btn.addEventListener("click",()=>{
+
+const content = btn.nextElementSibling
+
+if(content.style.maxHeight){
+content.style.maxHeight = null
+}else{
+content.style.maxHeight = content.scrollHeight + "px"
 }
 
-.dictionary-block{
-background:var(--card-bg);
-border-radius:16px;
-box-shadow:0 10px 30px rgba(0,0,0,0.15);
-overflow:hidden;
-}
-
-.dictionary-header{
-width:100%;
-text-align:left;
-padding:20px;
-font-size:18px;
-font-weight:600;
-border:none;
-background:none;
-cursor:pointer;
-}
-
-.dictionary-header:hover{
-background:rgba(0,0,0,0.05);
-}
-
-.dictionary-content{
-max-height:0;
-overflow:hidden;
-transition:max-height .35s ease;
-padding:0 20px;
-}
-
-.dictionary-content p{
-margin:10px 0;
-color:var(--muted);
-}
+})
+})
