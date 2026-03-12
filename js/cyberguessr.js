@@ -1,4 +1,5 @@
-let currentQuestion = 0
+questions.sort(()=>Math.random()-0.5)
+  let currentQuestion = 0
 let totalScore = 0
 let roundFinished = false
 
@@ -26,6 +27,19 @@ place:"Великобритания"
 fact:"Самая крупная утечка данных произошла в компании Yahoo.",
 lat:37.3875,
 lng:-122.0575,
+place:"США"
+},
+  {
+fact:"Атака Stuxnet была направлена на ядерную программу Ирана.",
+lat:35.6892,
+lng:51.3890,
+place:"Иран"
+},
+
+{
+fact:"Крупная утечка данных LinkedIn произошла в 2012 году.",
+lat:37.7749,
+lng:-122.4194,
 place:"США"
 },
 
@@ -162,7 +176,7 @@ drawLine(playerCoords,{lat:q.lat,lng:q.lng})
 document.getElementById("result").innerHTML = `
 Вы были в <b>${Math.round(dist)} км</b><br>
 Очки: <b>${score}</b><br>
-Раунд: ${currentQuestion+1}/5
+Раунд: ${currentQuestion+1}/${questions.length}
 `
 
 }
@@ -171,7 +185,7 @@ document.getElementById("next-round").onclick = ()=>{
 
 currentQuestion++
 
-if(currentQuestion >= 5){
+if(currentQuestion >= questions.length)
 
 document.getElementById("result").innerHTML = `
 <h2>Игра окончена</h2>
