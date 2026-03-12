@@ -1339,3 +1339,9 @@ transition:.2s;
 #searchClear:hover{
 color:var(--accent);
 }
+#map{
+height:500px;
+border-radius:16px;
+margin:20px 0;
+overflow:hidden;
+}
