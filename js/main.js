@@ -287,9 +287,13 @@ modal.classList.remove("active")
 const dictButtons = document.querySelectorAll(".dictionary-header")
 
 dictButtons.forEach(btn=>{
+
 btn.addEventListener("click",()=>{
 
+const block = btn.parentElement
 const content = btn.nextElementSibling
+
+block.classList.toggle("active")
 
 if(content.style.maxHeight){
 content.style.maxHeight = null
@@ -298,4 +302,5 @@ content.style.maxHeight = content.scrollHeight + "px"
 }
 
 })
+
 })
