@@ -1,14 +1,11 @@
-const map = L.map("map").setView([30,0],2)
-
-L.tileLayer(
-"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-{
-maxZoom:19
-}
-).addTo(map)
+const map = new maplibregl.Map({
+container: "map",
+style: "https://demotiles.maplibre.org/style.json",
+center: [0,30],
+zoom: 2
+})
 
 let playerMarker = null
-let correctMarker = null
 let playerCoords = null
 
 let currentQuestion = 0
@@ -58,15 +55,17 @@ map.removeLayer(correctMarker)
 
 }
 
-map.on("click",function(e){
+map.on("click",(e)=>{
 
-playerCoords = e.latlng
+playerCoords = e.lngLat
 
 if(playerMarker){
-map.removeLayer(playerMarker)
+playerMarker.remove()
 }
 
-playerMarker = L.marker(playerCoords).addTo(map)
+playerMarker = new maplibregl.Marker()
+.setLngLat([playerCoords.lng, playerCoords.lat])
+.addTo(map)
 
 })
 
@@ -102,7 +101,9 @@ q.lat,
 q.lng
 )
 
-correctMarker = L.marker([q.lat,q.lng]).addTo(map)
+correctMarker = new maplibregl.Marker({color:"red"})
+.setLngLat([q.lng,q.lat])
+.addTo(map)
 
 document.getElementById("result").innerHTML =
 `Вы были в <b>${Math.round(dist)} км</b> от правильного ответа.<br>
