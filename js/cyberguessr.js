@@ -1,3 +1,10 @@
+let currentQuestion = 0
+let totalScore = 0
+let roundFinished = false
+
+let playerMarker = null
+let correctMarker = null
+let line = null
 const map = new maplibregl.Map({
 container: "map",
 style: "https://tiles.openfreemap.org/styles/liberty",
@@ -44,29 +51,15 @@ document.getElementById("result").innerHTML = ""
 
 playerCoords = null
 
-if(playerMarker){
-map.removeLayer(playerMarker)
+if(playerMarker) playerMarker.remove()
+if(correctMarker) correctMarker.remove()
+
+if(map.getLayer("line")){
+map.removeLayer("line")
+map.removeSource("line")
 }
 
-if(correctMarker){
-map.removeLayer(correctMarker)
 }
-
-}
-
-map.on("click",(e)=>{
-
-playerCoords = e.lngLat
-
-if(playerMarker){
-playerMarker.remove()
-}
-
-playerMarker = new maplibregl.Marker()
-.setLngLat([playerCoords.lng, playerCoords.lat])
-.addTo(map)
-
-})
 
 function distance(lat1, lon1, lat2, lon2){
 
@@ -111,3 +104,95 @@ document.getElementById("result").innerHTML =
 }
 
 loadQuestion()
+function calculateScore(distance){
+
+if(distance < 50) return 5000
+if(distance < 200) return 4000
+if(distance < 1000) return 2500
+if(distance < 3000) return 1000
+return 500
+
+}
+function drawLine(player, correct){
+
+const lineData = {
+type:"Feature",
+geometry:{
+type:"LineString",
+coordinates:[
+[player.lng, player.lat],
+[correct.lng, correct.lat]
+]
+}
+}
+
+if(map.getSource("line")){
+map.removeLayer("line")
+map.removeSource("line")
+}
+
+map.addSource("line",{
+type:"geojson",
+data:lineData
+})
+
+map.addLayer({
+id:"line",
+type:"line",
+source:"line",
+paint:{
+"line-color":"#ffcc00",
+"line-width":3
+}
+})
+
+}
+document.getElementById("guess-btn").onclick = ()=>{
+
+if(!playerCoords || roundFinished) return
+
+roundFinished = true
+
+const q = questions[currentQuestion]
+
+const dist = distance(
+playerCoords.lat,
+playerCoords.lng,
+q.lat,
+q.lng
+)
+
+const score = calculateScore(dist)
+totalScore += score
+
+correctMarker = new maplibregl.Marker({color:"red"})
+.setLngLat([q.lng,q.lat])
+.addTo(map)
+
+drawLine(playerCoords,{lat:q.lat,lng:q.lng})
+
+document.getElementById("result").innerHTML = `
+Вы были в <b>${Math.round(dist)} км</b><br>
+Очки: <b>${score}</b><br>
+Раунд: ${currentQuestion+1}/5
+`
+
+}document.getElementById("next-round").onclick = ()=>{
+
+currentQuestion++
+
+if(currentQuestion >= 5){
+
+document.getElementById("result").innerHTML = `
+<h2>Игра окончена</h2>
+Ваш общий результат: <b>${totalScore}</b>
+`
+
+return
+}
+
+roundFinished = false
+
+loadQuestion()
+
+}
