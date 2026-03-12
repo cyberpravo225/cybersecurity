@@ -327,12 +327,18 @@ term.style.display="block"
 })
 
 blocks.forEach(block=>{
+
 block.style.display="block"
+
+const content = block.querySelector(".dictionary-content")
+
+block.classList.remove("active")
+content.style.maxHeight = null
+
 })
 
 return
 }
-
 blocks.forEach(block=>{
 
 let blockHasResult = false
