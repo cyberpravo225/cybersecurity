@@ -4,17 +4,14 @@ let roundFinished = false
 
 let playerMarker = null
 let correctMarker = null
-let line = null
+let playerCoords = null
+
 const map = new maplibregl.Map({
 container: "map",
 style: "https://tiles.openfreemap.org/styles/liberty",
 center: [0,30],
 zoom: 2
 })
-let playerMarker = null
-let playerCoords = null
-
-let currentQuestion = 0
 
 const questions = [
 
@@ -46,7 +43,6 @@ function loadQuestion(){
 const q = questions[currentQuestion]
 
 document.getElementById("fact-text").innerText = q.fact
-
 document.getElementById("result").innerHTML = ""
 
 playerCoords = null
@@ -60,6 +56,20 @@ map.removeSource("line")
 }
 
 }
+
+map.on("click",(e)=>{
+
+playerCoords = e.lngLat
+
+if(playerMarker){
+playerMarker.remove()
+}
+
+playerMarker = new maplibregl.Marker()
+.setLngLat([playerCoords.lng,playerCoords.lat])
+.addTo(map)
+
+})
 
 function distance(lat1, lon1, lat2, lon2){
 
@@ -80,30 +90,6 @@ return R * c
 
 }
 
-document.getElementById("guess-btn").onclick = ()=>{
-
-if(!playerCoords) return
-
-const q = questions[currentQuestion]
-
-const dist = distance(
-playerCoords.lat,
-playerCoords.lng,
-q.lat,
-q.lng
-)
-
-correctMarker = new maplibregl.Marker({color:"red"})
-.setLngLat([q.lng,q.lat])
-.addTo(map)
-
-document.getElementById("result").innerHTML =
-`Вы были в <b>${Math.round(dist)} км</b> от правильного ответа.<br>
-Правильная локация: ${q.place}`
-
-}
-
-loadQuestion()
 function calculateScore(distance){
 
 if(distance < 50) return 5000
@@ -113,6 +99,7 @@ if(distance < 3000) return 1000
 return 500
 
 }
+
 function drawLine(player, correct){
 
 const lineData = {
@@ -120,8 +107,8 @@ type:"Feature",
 geometry:{
 type:"LineString",
 coordinates:[
-[player.lng, player.lat],
-[correct.lng, correct.lat]
+[player.lng,player.lat],
+[correct.lng,correct.lat]
 ]
 }
 }
@@ -147,6 +134,7 @@ paint:{
 })
 
 }
+
 document.getElementById("guess-btn").onclick = ()=>{
 
 if(!playerCoords || roundFinished) return
@@ -177,7 +165,9 @@ document.getElementById("result").innerHTML = `
 Раунд: ${currentQuestion+1}/5
 `
 
-}document.getElementById("next-round").onclick = ()=>{
+}
+
+document.getElementById("next-round").onclick = ()=>{
 
 currentQuestion++
 
@@ -196,3 +186,5 @@ roundFinished = false
 loadQuestion()
 
 }
+
+loadQuestion()
