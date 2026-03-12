@@ -356,7 +356,46 @@ term.style.display="none"
 
 })
 
-block.style.display = blockHasResult ? "block" : "none"
+blocks.forEach(block=>{
+
+let blockHasResult = false
+
+const blockTerms = block.querySelectorAll("p")
+const content = block.querySelector(".dictionary-content")
+
+blockTerms.forEach(term=>{
+
+const text = term.innerText.toLowerCase()
+
+if(text.includes(query)){
+
+term.style.display="block"
+blockHasResult = true
+
+}else{
+
+term.style.display="none"
+
+}
+
+})
+
+if(blockHasResult){
+
+block.style.display="block"
+
+/* автоматически раскрываем */
+
+block.classList.add("active")
+content.style.maxHeight = content.scrollHeight + "px"
+
+}else{
+
+block.style.display="none"
+
+}
+
+})
 
 })
 
