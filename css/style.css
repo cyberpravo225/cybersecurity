@@ -1174,3 +1174,20 @@ animation:monkeyFloat 3s ease-in-out infinite;
 50%{transform:translateY(-12px)}
 100%{transform:translateY(0)}
 }
+/* уменьшить расстояние между советом дня и тестами */
+
+.tip-of-day{
+margin-bottom:20px;
+}
+
+.tests-banner{
+margin-top:0;
+}
+.tests-banner-text h2{
+margin-top:0;
+margin-bottom:10px;
+}
+
+.tests-banner-text p{
+margin:0 0 18px 0;
+}
