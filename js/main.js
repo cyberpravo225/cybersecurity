@@ -303,23 +303,23 @@ content.style.maxHeight = content.scrollHeight + "px"
 
 })
 
-// поиск терминов словаря
+// ===== ПОИСК В СЛОВАРЕ =====
 
 const searchInput = document.getElementById("dictionarySearch")
+const clearBtn = document.getElementById("searchClear")
 
+// подсветка текста
 function highlightText(element, query){
 
 const text = element.textContent
 const regex = new RegExp(`(${query})`, "gi")
 
 element.innerHTML = text.replace(regex,'<span class="highlight">$1</span>')
-
 }
 
+// убрать подсветку
 function removeHighlight(element){
-
 element.innerHTML = element.textContent
-
 }
 
 if(searchInput){
@@ -331,8 +331,7 @@ const query = searchInput.value.toLowerCase()
 const terms = document.querySelectorAll(".dictionary-content p")
 const blocks = document.querySelectorAll(".dictionary-block")
 
-// если меньше 3 символов — показать всё
-
+// если меньше 3 символов
 if(query.length < 3){
 
 terms.forEach(term=>{
@@ -354,7 +353,7 @@ content.style.maxHeight = null
 return
 }
 
-// поиск
+// основной поиск
 
 blocks.forEach(block=>{
 
@@ -400,19 +399,12 @@ block.style.display="none"
 
 })
 
-}
+// кнопка очистки
 
-
-// кнопка очистки поиска
-
-const clearBtn = document.getElementById("searchClear")
-
-if(searchInput && clearBtn){
+if(clearBtn){
 
 searchInput.addEventListener("input",()=>{
-
 clearBtn.style.display = searchInput.value.length ? "block" : "none"
-
 })
 
 clearBtn.addEventListener("click",()=>{
@@ -423,5 +415,7 @@ clearBtn.style.display="none"
 searchInput.dispatchEvent(new Event("input"))
 
 })
+
+}
 
 }
