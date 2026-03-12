@@ -3,24 +3,16 @@ const map = L.map("map").setView([30,0],2)
 L.tileLayer(
 "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 {
-maxZoom: 19
+maxZoom:19
 }
 ).addTo(map)
 
 let playerMarker = null
+let correctMarker = null
 let playerCoords = null
 
-map.on("click",function(e){
+let currentQuestion = 0
 
-playerCoords = e.latlng
-
-if(playerMarker){
-map.removeLayer(playerMarker)
-}
-
-playerMarker = L.marker(playerCoords).addTo(map)
-
-})
 const questions = [
 
 {
@@ -45,6 +37,39 @@ place:"США"
 }
 
 ]
+
+function loadQuestion(){
+
+const q = questions[currentQuestion]
+
+document.getElementById("fact-text").innerText = q.fact
+
+document.getElementById("result").innerHTML = ""
+
+playerCoords = null
+
+if(playerMarker){
+map.removeLayer(playerMarker)
+}
+
+if(correctMarker){
+map.removeLayer(correctMarker)
+}
+
+}
+
+map.on("click",function(e){
+
+playerCoords = e.latlng
+
+if(playerMarker){
+map.removeLayer(playerMarker)
+}
+
+playerMarker = L.marker(playerCoords).addTo(map)
+
+})
+
 function distance(lat1, lon1, lat2, lon2){
 
 const R = 6371
@@ -53,16 +78,17 @@ const dLat = (lat2-lat1) * Math.PI/180
 const dLon = (lon2-lon1) * Math.PI/180
 
 const a =
-Math.sin(dLat/2)*Math.sin(dLat/2) +
+Math.sin(dLat/2)**2 +
 Math.cos(lat1*Math.PI/180) *
 Math.cos(lat2*Math.PI/180) *
-Math.sin(dLon/2)*Math.sin(dLon/2)
+Math.sin(dLon/2)**2
 
 const c = 2 * Math.atan2(Math.sqrt(a),Math.sqrt(1-a))
 
 return R * c
 
 }
+
 document.getElementById("guess-btn").onclick = ()=>{
 
 if(!playerCoords) return
@@ -76,7 +102,12 @@ q.lat,
 q.lng
 )
 
+correctMarker = L.marker([q.lat,q.lng]).addTo(map)
+
 document.getElementById("result").innerHTML =
-`Вы были в ${Math.round(dist)} км от правильного ответа`
+`Вы были в <b>${Math.round(dist)} км</b> от правильного ответа.<br>
+Правильная локация: ${q.place}`
 
 }
+
+loadQuestion()
