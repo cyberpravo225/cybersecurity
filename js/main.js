@@ -304,3 +304,62 @@ content.style.maxHeight = content.scrollHeight + "px"
 })
 
 })
+// поиск терминов словаря
+
+const searchInput = document.getElementById("dictionarySearch")
+
+if(searchInput){
+
+searchInput.addEventListener("input",()=>{
+
+const query = searchInput.value.toLowerCase()
+
+const terms = document.querySelectorAll(".dictionary-content p")
+
+const blocks = document.querySelectorAll(".dictionary-block")
+
+// если меньше 3 символов — показать всё
+
+if(query.length < 3){
+
+terms.forEach(term=>{
+term.style.display="block"
+})
+
+blocks.forEach(block=>{
+block.style.display="block"
+})
+
+return
+}
+
+blocks.forEach(block=>{
+
+let blockHasResult = false
+
+const blockTerms = block.querySelectorAll("p")
+
+blockTerms.forEach(term=>{
+
+const text = term.innerText.toLowerCase()
+
+if(text.includes(query)){
+
+term.style.display="block"
+blockHasResult = true
+
+}else{
+
+term.style.display="none"
+
+}
+
+})
+
+block.style.display = blockHasResult ? "block" : "none"
+
+})
+
+})
+
+}
