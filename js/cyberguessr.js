@@ -1,6 +1,6 @@
 const map = new maplibregl.Map({
 container: "map",
-style: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+style: "https://tiles.openfreemap.org/styles/liberty",
 center: [0,30],
 zoom: 2
 })
