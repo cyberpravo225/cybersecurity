@@ -1406,6 +1406,13 @@ text-align:center;
 opacity:0.8;
 margin:10px 0 20px;
 }
+.game-card{
+background:linear-gradient(
+135deg,
+var(--card-bg),
+rgba(0,0,0,0.05)
+);
+}
 .game-modes{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
