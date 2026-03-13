@@ -144,7 +144,10 @@ totalScore += score
 const correctEl = document.createElement("div")
 correctEl.className = "marker marker-correct"
 
-correctMarker = new maplibregl.Marker(correctEl)
+correctMarker = new maplibregl.Marker({
+element: correctEl,
+anchor: "center"
+})
 .setLngLat([q.lng,q.lat])
 .addTo(map)
 drawLine(playerCoords,{lat:q.lat,lng:q.lng})
