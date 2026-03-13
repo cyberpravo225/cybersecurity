@@ -64,7 +64,7 @@ document.getElementById("result").innerHTML = ""
 
 playerCoords = null
 
-if() .remove()
+if(playerMarker) playerMarker.remove()
 if(correctMarker) correctMarker.remove()
 
 if(map.getLayer("line")){
@@ -78,8 +78,8 @@ map.on("click",(e)=>{
 
 playerCoords = e.lngLat
 
-if(){
-.remove()
+if(playerMarker){
+playerMarker.remove()
 }
 
 const el = document.createElement("div")
@@ -150,14 +150,13 @@ anchor: "center"
 })
 .setLngLat([q.lng,q.lat])
 .addTo(map)
-drawLine(playerCoords,{lat:q.lat,lng:q.lng})
-  zoomToPoints(playerCoords,{lat:q.lat,lng:q.lng})
 
-document.getElementById("result").innerHTML = `
-Вы были в <b>${Math.round(dist)} км</b><br>
+drawLine(playerCoords,{lat:q.lat,lng:q.lng})
+zoomToPoints(playerCoords,{lat:q.lat,lng:q.lng})
+
+document.getElementById("result").innerHTML = `Вы были в <b>${Math.round(dist)} км</b><br>
 Очки: <b>${score}</b><br>
-Раунд: ${currentQuestion+1}/${questions.length}
-`
+Раунд: ${currentQuestion+1}/${questions.length}`
 
 }
 
@@ -168,6 +167,7 @@ currentQuestion++
 if(currentQuestion >= questions.length){
 
 document.getElementById("result").innerHTML = `
+
 <h2>Игра окончена</h2>
 Ваш общий результат: <b>${totalScore}</b>
 `
@@ -176,12 +176,10 @@ return
 }
 
 roundFinished = false
-
 loadQuestion()
 
 }
 
-loadQuestion()
 function drawLine(player,correct){
 
 const steps = 60
@@ -240,6 +238,7 @@ requestAnimationFrame(animate)
 animate()
 
 }
+
 function zoomToPoints(player,correct){
 
 const bounds = new maplibregl.LngLatBounds()
@@ -253,3 +252,5 @@ duration:1500
 })
 
 }
+
+loadQuestion()
