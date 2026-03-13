@@ -21,6 +21,8 @@
 ← Назад
 </a>
 
+<h2 class="logo">🌍 CyberGuessr</h2>
+
 <nav class="nav">
 <button id="theme-toggle" class="btn icon-btn" aria-label="Тема"></button>
 </nav>
@@ -31,13 +33,19 @@
 
 <section class="section container">
 
-<h1 class="section-title">Выбери режим игры</h1>
+<h1 class="section-title">Выбери режим</h1>
+
+<p class="section-subtitle">
+Угадывай место киберинцидента на карте и получай очки за точность
+</p>
 
 <div class="game-modes">
 
-<a href="cyberguessr-world.html" class="mode-card">
+<a href="cyberguessr-world.html" class="mode-card world">
 
-<h3>🌎 Весь мир</h3>
+<div class="mode-icon">🌎</div>
+
+<h3>Весь мир</h3>
 
 <p>Кибератаки и события со всего мира</p>
 
@@ -48,9 +56,11 @@
 </a>
 
 
-<a href="cyberguessr-europe.html" class="mode-card">
+<a href="cyberguessr-europe.html" class="mode-card europe">
 
-<h3>🇪🇺 Европа</h3>
+<div class="mode-icon">🇪🇺</div>
+
+<h3>Европа</h3>
 
 <p>Угадывай события только в Европе</p>
 
@@ -61,11 +71,13 @@
 </a>
 
 
-<a href="cyberguessr-hard.html" class="mode-card">
+<a href="cyberguessr-hard.html" class="mode-card hard">
 
-<h3>🔥 Сложный режим</h3>
+<div class="mode-icon">🔥</div>
 
-<p>Более сложные и малоизвестные факты</p>
+<h3>Сложный режим</h3>
+
+<p>Более редкие и сложные киберинциденты</p>
 
 <div class="mode-info">
 10 раундов
@@ -80,6 +92,8 @@
 </main>
 
 </div>
+
 <script src="js/main.js"></script>
+
 </body>
 </html>
