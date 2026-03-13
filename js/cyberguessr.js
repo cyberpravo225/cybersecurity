@@ -83,7 +83,7 @@ playerMarker.remove()
 }
 
 const el = document.createElement("div")
-el.className = "marker-player"
+el.className = "marker marker-player"
 
 playerMarker = new maplibregl.Marker(el)
 .setLngLat([playerCoords.lng,playerCoords.lat])
@@ -139,12 +139,11 @@ const score = calculateScore(dist)
 totalScore += score
 
 const correctEl = document.createElement("div")
-correctEl.className = "marker-correct"
+correctEl.className = "marker marker-correct"
 
 correctMarker = new maplibregl.Marker(correctEl)
 .setLngLat([q.lng,q.lat])
 .addTo(map)
-
 drawLine(playerCoords,{lat:q.lat,lng:q.lng})
   zoomToPoints(playerCoords,{lat:q.lat,lng:q.lng})
 
