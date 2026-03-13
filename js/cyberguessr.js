@@ -64,7 +64,7 @@ document.getElementById("result").innerHTML = ""
 
 playerCoords = null
 
-if(playerMarker) playerMarker.remove()
+if() .remove()
 if(correctMarker) correctMarker.remove()
 
 if(map.getLayer("line")){
@@ -78,14 +78,17 @@ map.on("click",(e)=>{
 
 playerCoords = e.lngLat
 
-if(playerMarker){
-playerMarker.remove()
+if(){
+.remove()
 }
 
 const el = document.createElement("div")
 el.className = "marker marker-player"
 
-playerMarker = new maplibregl.Marker(el)
+playerMarker = new maplibregl.Marker({
+element: el,
+anchor: "center"
+})
 .setLngLat([playerCoords.lng,playerCoords.lat])
 .addTo(map)
 
