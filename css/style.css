@@ -1384,3 +1384,12 @@ background:#4da6ff;
 .marker-correct{
 background:#ff3b3b;
 }
+.game-card{
+margin-top:20px;
+text-align:center;
+}
+
+.game-card p{
+opacity:0.8;
+margin:10px 0 20px;
+}
