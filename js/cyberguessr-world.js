@@ -384,30 +384,12 @@ percent = 100
 }else{
 
 percent = Math.round(
-100 * (1 - (distance-perfectDistance)/(maxDistance-perfectDistance))
+100 * (1 - (distance - perfectDistance) / (maxDistance - perfectDistance))
 )
 
 }
 
 if(percent < 0) percent = 0
-
-return `
-<div style="margin-top:10px">
-<div style="height:8px;background:#333;border-radius:5px;overflow:hidden">
-<div style="
-width:${percent}%;
-height:100%;
-background:linear-gradient(90deg,#4caf50,#ffd54f);
-transition:1s;
-"></div>
-</div>
-<div style="font-size:14px;margin-top:4px">
-Точность: ${percent}%
-</div>
-</div>
-`
-
-}
 
 return `
 <div style="margin-top:10px">
