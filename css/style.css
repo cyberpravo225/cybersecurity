@@ -1665,6 +1665,7 @@ line-height:1.5;
 .game-card .btn{
 width:100%;
 text-align:center;
+display:block;
 }
 
 }
