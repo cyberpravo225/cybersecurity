@@ -1580,7 +1580,9 @@ animation:pop 0.4s;
 font-size:48px;
 margin:10px 0;
 }
-
+.final-card{
+position:relative;
+}
 .final-bar{
 height:10px;
 background:#333;
