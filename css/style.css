@@ -1644,7 +1644,6 @@ box-shadow:0 10px 30px rgba(0,0,0,0.12);
 transform:translateY(0);
 transition:transform var(--anim);
 
-max-width:420px;
 width:100%;
 box-sizing:border-box;
 }
