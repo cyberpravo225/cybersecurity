@@ -486,7 +486,28 @@ modal.className = "final-screen"
 modal.innerHTML = `
 <div class="final-card">
 
+<button class="close-results" onclick="this.closest('.final-screen').remove()">
+✕
+</button>
+
 <h2>🏆 Результаты игры</h2>
+
+<h1>${totalScore}</h1>
+
+<p>${message}</p>
+
+<div class="final-bar">
+<div style="width:${percent}%"></div>
+</div>
+
+<p>${percent}% точности</p>
+
+<button class="btn primary" onclick="location.reload()">
+Играть снова
+</button>
+
+</div>
+`
 
 <h1>${totalScore}</h1>
 
