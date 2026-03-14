@@ -59,7 +59,10 @@ function loadQuestion(){
 const q = questions[currentQuestion]
 
 document.getElementById("fact-text").innerText = q.fact
-document.getElementById("result").innerHTML = ""
+document.getElementById("result").scrollIntoView({
+behavior:"smooth",
+block:"start"
+})
 
 playerCoords = null
 
@@ -260,49 +263,16 @@ currentQuestion++
 
 if(currentQuestion >= 5){
 
-const maxScore = 25000
-const percent = Math.round(totalScore/maxScore*100)
-
-let message = "Неплохо"
-
-if(percent > 80) message = "Отличный результат"
-if(percent > 95) message = "Киберэксперт"
+document.getElementById("guess-btn").style.display="none"
+document.getElementById("next-round").style.display="none"
 
 document.getElementById("result").innerHTML = `
-<div style="
-background:var(--card-bg);
-padding:25px;
-border-radius:16px;
-text-align:center
-">
-
-<h2>🏆 Игра окончена</h2>
-
-<p>Ваш результат</p>
-
-<h1>${totalScore}</h1>
-
-<p>${message}</p>
-
-<div style="margin-top:10px">
-<div style="height:10px;background:#333;border-radius:6px;overflow:hidden">
-<div style="
-width:${percent}%;
-height:100%;
-background:linear-gradient(90deg,#4caf50,#ffd54f);
-"></div>
-</div>
-
-<p style="margin-top:6px">${percent}% точности</p>
-
-</div>
-
-<button class="btn primary" onclick="location.reload()">
-Играть снова
+<button id="show-final" class="btn primary">
+Узнать результаты
 </button>
-
-</div>
 `
+
+document.getElementById("show-final").onclick = showFinalResults
 
 return
 }
@@ -314,3 +284,42 @@ loadQuestion()
 }
 
 loadQuestion()
+function showFinalResults(){
+
+const maxScore = 25000
+const percent = Math.round(totalScore/maxScore*100)
+
+let message = "Неплохо"
+
+if(percent > 80) message = "Отличный результат"
+if(percent > 95) message = "Киберэксперт"
+
+const modal = document.createElement("div")
+
+modal.className = "final-screen"
+
+modal.innerHTML = `
+<div class="final-card">
+
+<h2>🏆 Результаты игры</h2>
+
+<h1>${totalScore}</h1>
+
+<p>${message}</p>
+
+<div class="final-bar">
+<div style="width:${percent}%"></div>
+</div>
+
+<p>${percent}% точности</p>
+
+<button class="btn primary" onclick="location.reload()">
+Играть снова
+</button>
+
+</div>
+`
+
+document.body.appendChild(modal)
+
+}
