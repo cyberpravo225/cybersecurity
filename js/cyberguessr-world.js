@@ -397,7 +397,7 @@ if(!playerCoords || roundFinished) return
 
 roundFinished = true
 
-const q = GameQuestions[currentQuestion]
+const q = gameQuestions[currentQuestion]
 
 const dist = distance(
 playerCoords.lat,
