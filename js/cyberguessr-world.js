@@ -509,23 +509,6 @@ modal.innerHTML = `
 </div>
 `
 
-<h1>${totalScore}</h1>
-
-<p>${message}</p>
-
-<div class="final-bar">
-<div style="width:${percent}%"></div>
-</div>
-
-<p>${percent}% точности</p>
-
-<button class="btn primary" onclick="location.reload()">
-Играть снова
-</button>
-
-</div>
-`
-
 document.body.appendChild(modal)
 
 }
