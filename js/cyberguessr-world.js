@@ -52,7 +52,6 @@ place:"США"
 
 ]
 
-// перемешиваем
 questions.sort(()=>Math.random()-0.5)
 
 function loadQuestion(){
@@ -119,17 +118,24 @@ return 500
 
 }
 
-function drawLine(player,correct){
+function drawAnimatedLine(player,correct){
+
+const steps = 60
+let i = 0
+
+const coords = []
 
 const lineData = {
 type:"Feature",
 geometry:{
 type:"LineString",
-coordinates:[
-[player.lng,player.lat],
-[correct.lng,correct.lat]
-]
+coordinates:[]
 }
+}
+
+if(map.getSource("line")){
+map.removeLayer("line")
+map.removeSource("line")
 }
 
 map.addSource("line",{
@@ -148,6 +154,27 @@ paint:{
 }
 })
 
+function animate(){
+
+if(i > steps) return
+
+const lat = player.lat + (correct.lat-player.lat)*(i/steps)
+const lng = player.lng + (correct.lng-player.lng)*(i/steps)
+
+coords.push([lng,lat])
+
+lineData.geometry.coordinates = coords
+
+map.getSource("line").setData(lineData)
+
+i++
+
+requestAnimationFrame(animate)
+
+}
+
+animate()
+
 }
 
 function zoomToPoints(player,correct){
@@ -161,6 +188,28 @@ map.fitBounds(bounds,{
 padding:100,
 duration:1500
 })
+
+}
+
+function accuracyBar(score){
+
+const percent = Math.round(score/5000*100)
+
+return `
+<div style="margin-top:10px">
+<div style="height:8px;background:#333;border-radius:5px;overflow:hidden">
+<div style="
+width:${percent}%;
+height:100%;
+background:linear-gradient(90deg,#4caf50,#ffd54f);
+transition:1s;
+"></div>
+</div>
+<div style="font-size:14px;margin-top:4px">
+Точность: ${percent}%
+</div>
+</div>
+`
 
 }
 
@@ -187,15 +236,18 @@ correctMarker = new maplibregl.Marker({color:"#ff4444"})
 .setLngLat([q.lng,q.lat])
 .addTo(map)
 
-drawLine(playerCoords,{lat:q.lat,lng:q.lng})
+drawAnimatedLine(playerCoords,{lat:q.lat,lng:q.lng})
 
 zoomToPoints(playerCoords,{lat:q.lat,lng:q.lng})
 
 document.getElementById("result").innerHTML = `
-<div style="background:var(--card-bg);padding:15px;border-radius:10px;">
+<div style="background:var(--card-bg);padding:15px;border-radius:12px">
 📍 Правильный ответ: <b>${q.place}</b><br>
 📏 Расстояние: <b>${Math.round(dist)} км</b><br>
-⭐ Очки: <b>${score}</b><br>
+⭐ Очки: <b>${score}</b>
+
+${accuracyBar(score)}
+
 Раунд: ${currentQuestion+1}/5
 </div>
 `
@@ -208,11 +260,47 @@ currentQuestion++
 
 if(currentQuestion >= 5){
 
+const maxScore = 25000
+const percent = Math.round(totalScore/maxScore*100)
+
+let message = "Неплохо"
+
+if(percent > 80) message = "Отличный результат"
+if(percent > 95) message = "Киберэксперт"
+
 document.getElementById("result").innerHTML = `
-<div style="text-align:center;padding:20px;">
+<div style="
+background:var(--card-bg);
+padding:25px;
+border-radius:16px;
+text-align:center
+">
+
 <h2>🏆 Игра окончена</h2>
-<p>Ваш результат:</p>
+
+<p>Ваш результат</p>
+
 <h1>${totalScore}</h1>
+
+<p>${message}</p>
+
+<div style="margin-top:10px">
+<div style="height:10px;background:#333;border-radius:6px;overflow:hidden">
+<div style="
+width:${percent}%;
+height:100%;
+background:linear-gradient(90deg,#4caf50,#ffd54f);
+"></div>
+</div>
+
+<p style="margin-top:6px">${percent}% точности</p>
+
+</div>
+
+<button class="btn primary" onclick="location.reload()">
+Играть снова
+</button>
+
 </div>
 `
 
