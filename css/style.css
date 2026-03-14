@@ -170,8 +170,6 @@ body{
 .media-grid{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 .game-grid{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
 .media-card img, .media-card iframe{width:100%; border-radius:8px; display:block}
-.game-card{display:flex; align-items:center; justify-content:center; padding:16px; border-radius:10px; text-decoration:none; background:linear-gradient(135deg,var(--accent-2),var(--accent)); color:var(--bg); font-weight:700; box-shadow:0 10px 30px rgba(0,0,0,0.12); transform:translateY(0); transition:transform var(--anim)}
-.game-card:hover{transform:translateY(-6px)}
 
 /* Simple variant for pages that need simpler styling */
 .simple .lead, .simple .simple-text{font-size:1.05rem; color:var(--fg)}
@@ -1626,4 +1624,48 @@ transition:0.2s;
 .close-results:hover{
 opacity:1;
 transform:scale(1.2);
+}
+.game-card{
+display:flex;
+flex-direction:column;
+align-items:flex-start;
+
+padding:18px;
+border-radius:10px;
+text-decoration:none;
+
+background:linear-gradient(135deg,var(--accent-2),var(--accent));
+color:var(--bg);
+
+font-weight:700;
+
+box-shadow:0 10px 30px rgba(0,0,0,0.12);
+
+transform:translateY(0);
+transition:transform var(--anim);
+
+max-width:420px;
+width:100%;
+box-sizing:border-box;
+}
+@media (max-width:600px){
+
+.game-card{
+padding:16px;
+}
+
+.game-card h3{
+font-size:20px;
+}
+
+.game-card p{
+font-size:14px;
+line-height:1.5;
+}
+
+.game-card .btn{
+width:100%;
+text-align:center;
+}
+
 }
