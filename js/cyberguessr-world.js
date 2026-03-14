@@ -240,10 +240,12 @@ document.getElementById("guess-btn").style.display="none"
 
 const nextBtn = document.getElementById("next-round")
 
+const nextBtn = document.getElementById("next-round")
+
 nextBtn.innerText = "Узнать результаты"
+nextBtn.className = "btn primary"
 
 nextBtn.onclick = showFinalResults
-
 }
 correctMarker = new maplibregl.Marker({color:"#ff4444"})
 .setLngLat([q.lng,q.lat])
