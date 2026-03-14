@@ -288,14 +288,15 @@ return R * c
 
 function calculateScore(d){
 
-if(d < 50) return 5000
-if(d < 200) return 4000
-if(d < 1000) return 2500
-if(d < 3000) return 1000
-return 500
+const maxDistance = 20000
+
+let score = Math.round(5000 * (1 - d/maxDistance))
+
+if(score < 0) score = 0
+
+return score
 
 }
-
 function drawAnimatedLine(player,correct){
 
 const steps = 60
@@ -369,9 +370,44 @@ duration:1500
 
 }
 
-function accuracyBar(score){
+function accuracyBar(distance){
 
-const percent = Math.round(score/5000*100)
+const maxDistance = 20000
+const perfectDistance = 40
+
+let percent
+
+if(distance <= perfectDistance){
+
+percent = 100
+
+}else{
+
+percent = Math.round(
+100 * (1 - (distance-perfectDistance)/(maxDistance-perfectDistance))
+)
+
+}
+
+if(percent < 0) percent = 0
+
+return `
+<div style="margin-top:10px">
+<div style="height:8px;background:#333;border-radius:5px;overflow:hidden">
+<div style="
+width:${percent}%;
+height:100%;
+background:linear-gradient(90deg,#4caf50,#ffd54f);
+transition:1s;
+"></div>
+</div>
+<div style="font-size:14px;margin-top:4px">
+Точность: ${percent}%
+</div>
+</div>
+`
+
+}
 
 return `
 <div style="margin-top:10px">
@@ -434,7 +470,7 @@ document.getElementById("result").innerHTML = `
 📏 Расстояние: <b>${Math.round(dist)} км</b><br>
 ⭐ Очки: <b>${score}</b>
 
-${accuracyBar(score)}
+${accuracyBar(dist)}
 
 Раунд: ${currentQuestion+1}/5
 </div>
