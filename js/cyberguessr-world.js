@@ -234,7 +234,17 @@ q.lng
 const score = calculateScore(dist)
 
 totalScore += score
+if(currentQuestion === 4){
 
+document.getElementById("guess-btn").style.display="none"
+
+const nextBtn = document.getElementById("next-round")
+
+nextBtn.innerText = "Узнать результаты"
+
+nextBtn.onclick = showFinalResults
+
+}
 correctMarker = new maplibregl.Marker({color:"#ff4444"})
 .setLngLat([q.lng,q.lat])
 .addTo(map)
