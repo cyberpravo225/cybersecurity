@@ -1,6 +1,9 @@
 let currentQuestion = 0
 let totalScore = 0
+let roundFinished = false
+
 let playerMarker = null
+let correctMarker = null
 let playerCoords = null
 
 const map = new maplibregl.Map({
@@ -49,6 +52,7 @@ place:"США"
 
 ]
 
+// перемешиваем
 questions.sort(()=>Math.random()-0.5)
 
 function loadQuestion(){
@@ -60,13 +64,19 @@ document.getElementById("result").innerHTML = ""
 
 playerCoords = null
 
-if(playerMarker){
-playerMarker.remove()
+if(playerMarker) playerMarker.remove()
+if(correctMarker) correctMarker.remove()
+
+if(map.getLayer("line")){
+map.removeLayer("line")
+map.removeSource("line")
 }
 
 }
 
 map.on("click",(e)=>{
+
+if(roundFinished) return
 
 playerCoords = e.lngLat
 
@@ -74,7 +84,7 @@ if(playerMarker){
 playerMarker.remove()
 }
 
-playerMarker = new maplibregl.Marker()
+playerMarker = new maplibregl.Marker({color:"#ffd54f"})
 .setLngLat([playerCoords.lng,playerCoords.lat])
 .addTo(map)
 
@@ -109,9 +119,56 @@ return 500
 
 }
 
+function drawLine(player,correct){
+
+const lineData = {
+type:"Feature",
+geometry:{
+type:"LineString",
+coordinates:[
+[player.lng,player.lat],
+[correct.lng,correct.lat]
+]
+}
+}
+
+map.addSource("line",{
+type:"geojson",
+data:lineData
+})
+
+map.addLayer({
+id:"line",
+type:"line",
+source:"line",
+paint:{
+"line-color":"#ffd54f",
+"line-width":4,
+"line-opacity":0.9
+}
+})
+
+}
+
+function zoomToPoints(player,correct){
+
+const bounds = new maplibregl.LngLatBounds()
+
+bounds.extend([player.lng,player.lat])
+bounds.extend([correct.lng,correct.lat])
+
+map.fitBounds(bounds,{
+padding:100,
+duration:1500
+})
+
+}
+
 document.getElementById("guess-btn").onclick = ()=>{
 
-if(!playerCoords) return
+if(!playerCoords || roundFinished) return
+
+roundFinished = true
 
 const q = questions[currentQuestion]
 
@@ -126,11 +183,21 @@ const score = calculateScore(dist)
 
 totalScore += score
 
-document.getElementById("result").innerHTML =
-`
-Расстояние: <b>${Math.round(dist)} км</b><br>
-Очки: <b>${score}</b><br>
+correctMarker = new maplibregl.Marker({color:"#ff4444"})
+.setLngLat([q.lng,q.lat])
+.addTo(map)
+
+drawLine(playerCoords,{lat:q.lat,lng:q.lng})
+
+zoomToPoints(playerCoords,{lat:q.lat,lng:q.lng})
+
+document.getElementById("result").innerHTML = `
+<div style="background:var(--card-bg);padding:15px;border-radius:10px;">
+📍 Правильный ответ: <b>${q.place}</b><br>
+📏 Расстояние: <b>${Math.round(dist)} км</b><br>
+⭐ Очки: <b>${score}</b><br>
 Раунд: ${currentQuestion+1}/5
+</div>
 `
 
 }
@@ -141,14 +208,18 @@ currentQuestion++
 
 if(currentQuestion >= 5){
 
-document.getElementById("result").innerHTML =
-`
-<h2>Игра окончена</h2>
-Общий результат: <b>${totalScore}</b>
+document.getElementById("result").innerHTML = `
+<div style="text-align:center;padding:20px;">
+<h2>🏆 Игра окончена</h2>
+<p>Ваш результат:</p>
+<h1>${totalScore}</h1>
+</div>
 `
 
 return
 }
+
+roundFinished = false
 
 loadQuestion()
 
