@@ -1698,63 +1698,128 @@ transform:translateX(-50%);
 }
 .difficulty-grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:20px;
-margin-top:30px;
+grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+gap:24px;
+margin-top:35px;
 }
 .difficulty-card{
+
+position:relative;
 
 display:flex;
 flex-direction:column;
 align-items:center;
 text-align:center;
 
-padding:26px;
+padding:32px 22px;
 
-border-radius:16px;
+border-radius:18px;
 
 background:var(--card-bg);
 
 text-decoration:none;
 color:inherit;
 
-box-shadow:0 10px 30px rgba(0,0,0,0.12);
+box-shadow:0 10px 30px rgba(0,0,0,0.15);
 
-transition:transform .25s, box-shadow .25s;
+overflow:hidden;
+
+transition:all .3s ease;
 
 }
 
 .difficulty-card:hover{
 
-transform:translateY(-6px);
+transform:translateY(-8px) scale(1.03);
 
-box-shadow:0 18px 45px rgba(0,0,0,0.18);
+box-shadow:0 25px 60px rgba(0,0,0,0.25);
 
 }
 .difficulty-icon{
 
-font-size:40px;
+font-size:52px;
 
-margin-bottom:10px;
+margin-bottom:12px;
+
+transition:transform .3s;
 
 }
+
+.difficulty-card:hover .difficulty-icon{
+
+transform:scale(1.2) rotate(5deg);
+
+} 
 .difficulty-info{
 
-margin-top:8px;
+margin-top:10px;
+
+font-size:13px;
+
+opacity:.65;
+
+}
+.difficulty-card h3{
+
+font-size:22px;
+margin-bottom:6px;
+
+}
+
+.difficulty-card p{
 
 font-size:14px;
-
-opacity:.7;
+opacity:.8;
 
 }
-.easy{
-border-top:4px solid #4caf50;
-}
+.easy::before{
 
-.medium{
-border-top:4px solid #ffc107;
-}
+content:"";
 
-.hard{
-border-top:4px solid #ff5722;
+position:absolute;
+
+top:0;
+left:0;
+right:0;
+height:6px;
+
+background:linear-gradient(90deg,#2ecc71,#4caf50);
+
+}
+.medium::before{
+
+content:"";
+
+position:absolute;
+
+top:0;
+left:0;
+right:0;
+height:6px;
+
+background:linear-gradient(90deg,#ffd54f,#ff9800);
+
+}
+.hard::before{
+
+content:"";
+
+position:absolute;
+
+top:0;
+left:0;
+right:0;
+height:6px;
+
+background:linear-gradient(90deg,#ff5722,#ff1744);
+
+}
+.hard:hover{
+
+box-shadow:
+
+0 20px 50px rgba(255,80,0,0.4),
+
+0 0 25px rgba(255,120,0,0.6);
+
 }
