@@ -133,7 +133,7 @@ return R * c
 
 function calculateScore(d){
 
-const maxDistance = 4000
+const maxDistance = 6000
 
 let score = Math.round(5000 * (1 - d/maxDistance))
 
@@ -217,8 +217,8 @@ duration:1500
 
 function accuracyBar(distance){
 
-const maxDistance = 4000
-const perfectDistance = 1
+const maxDistance = 6000
+const perfectDistance = 20
 
 let percent
 
