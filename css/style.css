@@ -1814,42 +1814,22 @@ height:6px;
 background:linear-gradient(90deg,#ff5722,#ff1744);
 
 }
-.easy:hover{
-
+.difficulty-card.easy:hover{
 box-shadow:
 0 20px 50px rgba(46,204,113,0.35),
 0 0 25px rgba(76,175,80,0.6);
-
 }
-.medium:hover{
 
+.difficulty-card.medium:hover{
 box-shadow:
 0 20px 50px rgba(255,193,7,0.35),
 0 0 25px rgba(255,152,0,0.6);
-
 }
-.hard::before{
 
-content:"";
-
-position:absolute;
-
-top:0;
-left:0;
-right:0;
-height:6px;
-
-background:linear-gradient(90deg,#ff5722,#ff1744);
-
-}
-.hard:hover{
-
+.difficulty-card.hard:hover{
 box-shadow:
-
 0 20px 50px rgba(255,80,0,0.4),
-
 0 0 25px rgba(255,120,0,0.6);
-
 }
 body{
 animation:pageFade .5s ease;
