@@ -254,7 +254,7 @@ duration:1500
 function accuracyBar(distance){
 
 const maxDistance = 4000
-const perfectDistance = 20
+const perfectDistance = 1
 
 let percent
 
