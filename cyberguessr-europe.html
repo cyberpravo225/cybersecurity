@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ru">
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>CyberGuessr — Весь мир</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet">
+
+</head>
+
+<body class="page">
+
+<div class="site">
+
+<header class="topbar glass">
+
+<a class="back-btn" href="cyberguessr.html">
+← Назад
+</a>
+
+<nav class="nav">
+<button id="theme-toggle" class="btn icon-btn"></button>
+</nav>
+
+</header>
+
+<main class="main">
+
+<section class="section container">
+
+<h1 class="section-title">🌍 CyberGuessr — Европа</h1>
+
+<div class="cyberguessr-ui">
+
+<div id="fact-box">
+<p id="fact-text"></p>
+</div>
+
+<div id="map"></div>
+
+<div class="game-controls">
+
+<button id="guess-btn" class="btn primary">
+Проверить
+</button>
+
+<button id="next-round" class="btn">
+Следующий раунд
+</button>
+
+</div>
+
+<div id="result"></div>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+<script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+
+<script src="js/main.js"></script>
+<script src="js/cyberguessr-world.js"></script>
+
+</body>
+</html>
