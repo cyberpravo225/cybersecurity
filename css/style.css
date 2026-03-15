@@ -1865,17 +1865,7 @@ opacity:1;
 transform:translateY(0);
 }
 }
-.btn{
-transition:transform .15s, box-shadow .15s;
-}
 
-.btn:hover{
-transform:translateY(-2px);
-}
-
-.btn:active{
-transform:translateY(1px) scale(.97);
-}
 /* начальное состояние */
 .reveal{
 
