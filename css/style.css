@@ -1867,3 +1867,7 @@ opacity:1;
 transform:translateY(0);
 
 }
+.level-btn:hover{
+box-shadow:none;
+transform:translateY(-1px);
+}
