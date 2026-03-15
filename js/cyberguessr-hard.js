@@ -272,7 +272,7 @@ q.lng
 const score = calculateScore(dist)
 
 totalScore += score
-if(currentQuestion === 4){
+if(currentQuestion === 9){
 
 document.getElementById("guess-btn").style.display="none"
 
@@ -299,7 +299,7 @@ document.getElementById("result").innerHTML = `
 
 ${accuracyBar(dist)}
 
-Раунд: ${currentQuestion+1}/5
+Раунд: ${currentQuestion+1}/10
 </div>
 `
 
@@ -309,7 +309,7 @@ document.getElementById("next-round").onclick = ()=>{
 
 currentQuestion++
 
-if(currentQuestion >= 5){
+if(currentQuestion >= 10){
 
 document.getElementById("guess-btn").style.display="none"
 document.getElementById("next-round").style.display="none"
