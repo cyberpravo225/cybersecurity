@@ -2001,15 +2001,62 @@ border-color:#3b82f6;
 :root[data-theme="dark"] [data-page="seniors"] .senior-card{
 border-color:#facc15;
 }
-.senior-cards{
+/* =========================
+   Fix cards for students page
+========================= */
+
+[data-page="students-1-4"] .senior-cards{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
 gap:20px;
 margin-top:20px;
 }
 
-.senior-card{
+[data-page="students-1-4"] .senior-card{
+
+background:var(--card-bg);
+border-radius:16px;
+padding:22px;
+
 display:flex;
 flex-direction:column;
 gap:10px;
+
+text-decoration:none;
+color:inherit;
+
+border:2px solid transparent;
+
+box-shadow:0 8px 24px rgba(0,0,0,0.08);
+
+transition:
+transform .25s ease,
+box-shadow .25s ease,
+border-color .25s ease;
+
+}
+
+[data-page="students-1-4"] .senior-card:hover{
+
+transform:scale(1.04);
+
+box-shadow:0 14px 34px rgba(0,0,0,0.12);
+
+}
+
+[data-page="students-1-4"] .senior-card,
+[data-page="students-1-4"] .senior-card *{
+
+text-decoration:none !important;
+
+}
+
+/* цвет рамки темы */
+
+:root[data-theme="light"] [data-page="students-1-4"] .senior-card{
+border-color:#3b82f6;
+}
+
+:root[data-theme="dark"] [data-page="students-1-4"] .senior-card{
+border-color:#facc15;
 }
