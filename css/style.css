@@ -1920,7 +1920,7 @@ transform:translateY(0);
 }
 }
 /* =========================
-   Seniors cards
+   Seniors cards (improved)
 ========================= */
 
 .senior-cards{
@@ -1936,20 +1936,34 @@ border-radius:16px;
 padding:22px;
 text-decoration:none;
 color:inherit;
-box-shadow:0 10px 30px rgba(0,0,0,0.12);
-transition:.25s;
+
 display:flex;
 flex-direction:column;
 gap:10px;
+
+/* аккуратная рамка */
+border:2px solid transparent;
+
+box-shadow:0 8px 24px rgba(0,0,0,0.08);
+
+transition:
+transform .18s ease,
+box-shadow .18s ease,
+border-color .18s ease;
 }
 
 .senior-card:hover{
-transform:translateY(-6px);
-box-shadow:0 18px 40px rgba(0,0,0,0.18);
+
+transform:translateY(-3px);
+
+box-shadow:0 12px 28px rgba(0,0,0,0.12);
+
 }
 
+/* иконка */
+
 .senior-card-icon{
-font-size:34px;
+font-size:32px;
 }
 
 .senior-card h3{
@@ -1961,14 +1975,24 @@ margin:0;
 font-size:14px;
 opacity:.8;
 margin:0;
+line-height:1.5;
+}
+/* =========================
+   Theme border colors
+========================= */
+
+/* светлая тема */
+
+:root[data-theme="light"] .senior-card{
+
+border-color:#3b82f6;
+
 }
 
-/* цветные варианты */
+/* темная тема */
 
-.senior-card.presentation{
-border-left:4px solid #4f8cff;
-}
+:root[data-theme="dark"] .senior-card{
 
-.senior-card.game{
-border-left:4px solid #22c55e;
+border-color:#facc15;
+
 }
