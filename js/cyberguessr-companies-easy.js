@@ -313,7 +313,7 @@ loadQuestion()
 loadQuestion()
 function showFinalResults(){
 
-const maxScore = 10000
+const maxScore = 25000
 const percent = Math.round(totalScore/maxScore*100)
 
 let message = "Неплохо"
