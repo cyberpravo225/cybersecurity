@@ -1947,16 +1947,16 @@ border:2px solid transparent;
 box-shadow:0 8px 24px rgba(0,0,0,0.08);
 
 transition:
-transform .18s ease,
-box-shadow .18s ease,
-border-color .18s ease;
+transform .35s ease,
+box-shadow .35s ease,
+border-color .35s ease;
 }
 
 .senior-card:hover{
 
-transform:translateY(-3px);
+transform:translateY(-2px);
 
-box-shadow:0 12px 28px rgba(0,0,0,0.12);
+box-shadow:0 10px 26px rgba(0,0,0,0.12);
 
 }
 
@@ -1976,6 +1976,25 @@ font-size:14px;
 opacity:.8;
 margin:0;
 line-height:1.5;
+}
+/* =========================
+   Theme border colors
+========================= */
+
+/* светлая тема */
+
+:root[data-theme="light"] .senior-card{
+
+border-color:#3b82f6;
+
+}
+
+/* темная тема */
+
+:root[data-theme="dark"] .senior-card{
+
+border-color:#facc15;
+
 }
 /* =========================
    Theme border colors
