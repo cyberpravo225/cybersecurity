@@ -1952,11 +1952,19 @@ box-shadow .35s ease,
 border-color .35s ease;
 }
 
-.senior-card:hover{
+[data-page="seniors"] .senior-card{
 
-transform:translateY(-2px);
+transition:
+box-shadow .35s ease,
+border-color .35s ease;
 
-box-shadow:0 10px 26px rgba(0,0,0,0.12);
+}
+
+[data-page="seniors"] .senior-card:hover{
+
+transform:none;
+
+box-shadow:0 10px 22px rgba(0,0,0,0.10);
 
 }
 
@@ -2013,5 +2021,21 @@ border-color:#3b82f6;
 :root[data-theme="dark"] .senior-card{
 
 border-color:#facc15;
+
+}
+/* seniors cards fix */
+
+[data-page="seniors"] .senior-card,
+[data-page="seniors"] .senior-card:hover,
+[data-page="seniors"] .senior-card:focus,
+[data-page="seniors"] .senior-card:active{
+
+text-decoration:none !important;
+
+}
+
+[data-page="seniors"] .senior-card *{
+
+text-decoration:none !important;
 
 }
