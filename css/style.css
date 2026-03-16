@@ -1991,3 +1991,13 @@ border-color:#3b82f6;
 :root[data-theme="dark"] .senior-card{
 border-color:#facc15;
 }
+.senior-card h3{
+margin:0;
+font-size:18px;
+}
+
+.senior-card p{
+margin:0;
+opacity:.8;
+line-height:1.5;
+}
