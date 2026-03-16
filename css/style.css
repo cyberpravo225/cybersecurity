@@ -1920,122 +1920,85 @@ transform:translateY(0);
 }
 }
 /* =========================
-   Seniors cards (improved)
+   Seniors cards (clean)
 ========================= */
 
-.senior-cards{
+[data-page="seniors"] .senior-cards{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
 gap:20px;
 margin-top:20px;
 }
 
-.senior-card{
+[data-page="seniors"] .senior-card{
 background:var(--card-bg);
 border-radius:16px;
 padding:22px;
-text-decoration:none;
 color:inherit;
+text-decoration:none;
 
 display:flex;
 flex-direction:column;
 gap:10px;
 
-/* аккуратная рамка */
 border:2px solid transparent;
 
-box-shadow:0 8px 24px rgba(0,0,0,0.08);
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
 
+/* плавная анимация */
 transition:
-transform .35s ease,
-box-shadow .35s ease,
-border-color .35s ease;
+transform .25s ease,
+box-shadow .25s ease,
+border-color .25s ease;
 }
 
-[data-page="seniors"] .senior-card{
-
-transition:
-box-shadow .35s ease,
-border-color .35s ease;
-
-}
+/* hover эффект */
 
 [data-page="seniors"] .senior-card:hover{
 
-transform:none;
+transform:translateY(-2px);
 
-box-shadow:0 10px 22px rgba(0,0,0,0.10);
+box-shadow:0 10px 26px rgba(0,0,0,0.12);
 
+}
+
+/* убрать подчеркивание у текста */
+
+[data-page="seniors"] .senior-card,
+[data-page="seniors"] .senior-card *{
+text-decoration:none !important;
 }
 
 /* иконка */
 
-.senior-card-icon{
+[data-page="seniors"] .senior-card-icon{
 font-size:32px;
 }
 
-.senior-card h3{
+[data-page="seniors"] .senior-card h3{
 font-size:18px;
 margin:0;
 }
 
-.senior-card p{
+[data-page="seniors"] .senior-card p{
 font-size:14px;
 opacity:.8;
 margin:0;
 line-height:1.5;
 }
+
 /* =========================
    Theme border colors
 ========================= */
 
 /* светлая тема */
 
-:root[data-theme="light"] .senior-card{
-
+:root[data-theme="light"] [data-page="seniors"] .senior-card{
 border-color:#3b82f6;
-
 }
 
 /* темная тема */
 
-:root[data-theme="dark"] .senior-card{
-
+:root[data-theme="dark"] [data-page="seniors"] .senior-card{
 border-color:#facc15;
-
-}
-/* =========================
-   Theme border colors
-========================= */
-
-/* светлая тема */
-
-:root[data-theme="light"] .senior-card{
-
-border-color:#3b82f6;
-
-}
-
-/* темная тема */
-
-:root[data-theme="dark"] .senior-card{
-
-border-color:#facc15;
-
-}
-/* seniors cards fix */
-
-[data-page="seniors"] .senior-card,
-[data-page="seniors"] .senior-card:hover,
-[data-page="seniors"] .senior-card:focus,
-[data-page="seniors"] .senior-card:active{
-
-text-decoration:none !important;
-
-}
-
-[data-page="seniors"] .senior-card *{
-
-text-decoration:none !important;
-
 }
