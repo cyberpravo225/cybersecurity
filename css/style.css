@@ -2008,20 +2008,12 @@ line-height:1.5;
 }
 /* HERO */
 
-.hero {
-  position: relative;
-  padding: 120px 20px 80px;
-  text-align: center;
-  overflow: hidden;
-}
-
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 20% 20%, rgba(0,150,255,0.15), transparent 40%),
-              radial-gradient(circle at 80% 30%, rgba(255,200,0,0.15), transparent 40%);
-  pointer-events: none;
+.hero{
+position:relative;
+padding:100px 20px 60px;
+text-align:center;
+overflow:hidden;
+background:none;
 }
 
 .hero .title {
@@ -2163,5 +2155,20 @@ body.light .game-feature {
 grid-template-columns:repeat(4,1fr);
 gap:32px;
 }
+
+}
+/* MAIN PAGE BACKGROUND */
+
+body[data-page="home"]{
+
+background:linear-gradient(
+90deg,
+#2f7df6 0%,
+#2f7df6 50%,
+#ffd54a 50%,
+#ffd54a 100%
+);
+
+min-height:100vh;
 
 }
