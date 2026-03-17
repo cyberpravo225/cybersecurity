@@ -302,11 +302,6 @@ border-radius:16px;
 }
 /* subtle glow in dark theme for active states */
 :root[data-theme="dark"] .card { box-shadow: 0 8px 24px rgba(0,0,0,0.6), 0 0 18px rgba(var(--shadow-color),0.06) }
-.site-logo {
-  width: 40px;
-  height: auto;
-}
-
 
 /* Подменю школьники */
 .submenu {
@@ -449,31 +444,25 @@ border-radius:16px;
   text-decoration:underline;
 }
 /* =================================
-   Tip of the day
+   Tip of the day + tips history
 ================================= */
 
 .tip-of-day{
   margin-top:40px;
   width:100%;
 }
+
 .tip-card{
-
-display:grid;
-grid-template-columns:320px 1fr;
-
-gap:28px;
-align-items:center;
-
-width:100%;
-
-padding:26px;
-
-border-radius:18px;
-
-background:var(--card-bg);
-
-box-sizing:border-box;
-
+  display:grid;
+  grid-template-columns:320px 1fr;
+  gap:28px;
+  align-items:center;
+  width:100%;
+  padding:26px;
+  border-radius:18px;
+  background:var(--card-bg);
+  box-sizing:border-box;
+  transition:transform .25s ease, box-shadow .25s ease;
 }
 
 .tip-card:hover{
@@ -481,17 +470,15 @@ box-sizing:border-box;
   box-shadow:0 18px 40px rgba(0,0,0,0.25);
 }
 
-.tip-image img{
+.tip-image{
   width:100%;
   height:240px;
   object-fit:cover;
   border-radius:14px;
 }
 
-.tip-content h2{
-  margin:6px 0 10px 0;
-}
-
+.tip-content h2{ margin:6px 0 10px 0; }
+.tip-content h3{ margin-bottom:10px; }
 .tip-content p{
   color:var(--muted);
   margin-bottom:16px;
@@ -502,94 +489,29 @@ box-sizing:border-box;
   font-weight:700;
   letter-spacing:1px;
   text-transform:uppercase;
-
   color:var(--accent);
 }
 
-/* адаптив */
-
-@media (max-width: 800px){}
-
-  .tip-image img{
-    height:200px;
-  }
-
-}
-/* страница советов */
-
-.tips-grid{
-margin-top:30px;
-}
-
-.tip-history{
-transition:transform .2s ease;
-}
-
-.tip-history:hover{
-transform:translateY(-5px);
-}
-/* карточка совета */
-
-.tip-card{
-
-display:grid;
-grid-template-columns:320px 1fr;
-
-gap:28px;
-align-items:center;
-
-width:100%;
-
-padding:26px;
-
-border-radius:18px;
-
-background:var(--card-bg);
-
-transition:transform .25s ease, box-shadow .25s ease;
-
-}
-
-.tip-card:hover{
-
-transform:scale(1.03);
-
-box-shadow:0 18px 40px rgba(0,0,0,0.22);
-
-}
-
-.tip-image{
-width:100%;
-height:100%;
-object-fit:cover;
-border-radius:12px;
-}
-
-.tip-content h3{
-margin-bottom:10px;
-}
+.tips-grid{ margin-top:30px; }
+.tip-history{ transition:transform .2s ease; }
+.tip-history:hover{ transform:translateY(-5px); }
 
 /* =========================
    Адаптив
 ========================= */
 
 @media (max-width:700px){
+  .tip-card{
+    grid-template-columns:1fr;
+    align-items:flex-start;
+  }
 
-.tip-card{
-flex-direction:column;
-align-items:flex-start;
-}
+  .tip-image{ height:180px; }
 
-.tip-image{
-width:100%;
-height:180px;
-}
-
-.method-card{
-flex-direction:column;
-align-items:flex-start;
-}
-
+  .method-card{
+    flex-direction:column;
+    align-items:flex-start;
+  }
 }
 
 
@@ -853,19 +775,6 @@ cursor:pointer;
 transition:0.3s;
 }
 
-.easy{
-background:#6fdc8c;
-}
-
-.medium{
-background:#ffd166;
-}
-
-.hard{
-background:#ff6b6b;
-color:white;
-}
-
 .difficulty-btn:hover{
 transform:scale(1.05);
 }
@@ -929,51 +838,31 @@ flex-wrap:wrap;
 
 .level-btn{
 border:none;
-padding:10px 18px;
-border-radius:10px;
-cursor:pointer;
-font-size:15px;
-font-weight:600;
-transition:0.2s;
-}
-
-.level-btn:hover{
-transform:scale(1.08);
-}
-
-.easy{
-background:#6fdc8c;
-}
-
-.medium{
-background:#ffd166;
-}
-
-.hard{
-background:#ff6b6b;
-color:white;
-}
-.level-btn{
-border:none;
 padding:8px 16px;
 border-radius:10px;
 cursor:pointer;
 font-size:14px;
+font-weight:600;
 transition:0.2s;
-
 text-decoration:none;
 color:inherit;
 display:inline-block;
 }
 
-.level-btn:visited{
-color:inherit;
-}
+.level-btn:visited{ color:inherit; }
 
 .level-btn:hover{
 transform:scale(1.08);
 text-decoration:none;
 }
+
+.easy{ background:#6fdc8c; }
+.medium{ background:#ffd166; }
+.hard{
+background:#ff6b6b;
+color:white;
+}
+
 
 /* адаптив */
 
