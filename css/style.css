@@ -480,11 +480,7 @@ box-sizing:border-box;
 
 /* адаптив */
 
-@media (max-width: 800px){
-
-  .tip-card{
-    grid-template-columns:1fr;
-  }
+@media (max-width: 800px){}
 
   .tip-image img{
     height:200px;
