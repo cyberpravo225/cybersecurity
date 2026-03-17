@@ -2069,19 +2069,78 @@ body.light .card:hover {
 }
 /* CYBERGUESSR CARD */
 
-.game-feature {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: clamp(220px, 28vw, 260px);
-  text-align: center;
+.game-feature{
+
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+
+padding:clamp(28px,3vw,42px);
+margin-top:40px;
+
+border-radius:20px;
+
+background:linear-gradient(135deg,#0ea5e9,#0284c7);
+
+color:white;
+
+text-align:center;
+
+min-height:260px;
+
+box-shadow:0 14px 34px rgba(0,0,0,0.18);
+
+transition:transform .25s ease, box-shadow .25s ease;
+
 }
 
-.game-feature .btn {
-  margin-top: auto;
-  align-self: center;
+
+/* hover эффект */
+
+.game-feature:hover{
+
+transform:scale(1.03);
+
+box-shadow:0 18px 40px rgba(0,0,0,0.22);
+
 }
 
+
+/* заголовок */
+
+.game-feature h3{
+
+font-size:clamp(26px,2.6vw,34px);
+margin-bottom:14px;
+font-weight:700;
+
+}
+
+
+/* текст */
+
+.game-feature p{
+
+font-size:clamp(16px,1.2vw,18px);
+max-width:520px;
+margin:0 auto 20px;
+line-height:1.6;
+
+}
+
+
+/* кнопка внутри карточки */
+
+.game-feature .btn{
+
+margin-top:auto;
+align-self:center;
+
+padding:12px 26px;
+
+font-size:16px;
+
+}
 body.light .game-feature {
   background: linear-gradient(135deg,#2f7df6,#6aa4ff);
 }
