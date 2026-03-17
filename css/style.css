@@ -494,6 +494,11 @@ border-radius:16px;
 }
 
 .tips-grid{ margin-top:30px; }
+.tips-history{
+display:grid;
+gap:32px;
+margin-top:32px;
+}
 .tip-history{ transition:transform .2s ease; }
 .tip-history:hover{ transform:translateY(-5px); }
 
@@ -2727,6 +2732,78 @@ body[data-page="home"] .hero{
   background:#1f2758;
   border:1px solid rgba(255,255,255,0.08);
   color:#e5e7eb;
+}
+
+/* ===== Dark theme fixes: companies/tests/dictionary ===== */
+:root[data-theme="dark"] .difficulty-card{
+  background:linear-gradient(180deg, #1d2552 0%, #171d43 100%);
+  border:1px solid rgba(255,255,255,0.1);
+  color:#eef2ff;
+}
+
+:root[data-theme="dark"] .difficulty-card p,
+:root[data-theme="dark"] .difficulty-card .difficulty-info{
+  color:#c7d2fe;
+  opacity:1;
+}
+
+:root[data-theme="dark"] .difficulty-card.easy{
+  border-color:rgba(111,220,140,0.45);
+}
+
+:root[data-theme="dark"] .difficulty-card.medium{
+  border-color:rgba(255,209,102,0.5);
+}
+
+:root[data-theme="dark"] .difficulty-card.hard{
+  border-color:rgba(255,107,107,0.52);
+}
+
+:root[data-theme="dark"] .test-level{
+  color:#c7d2fe;
+  border:1px solid rgba(255,255,255,0.1);
+}
+
+:root[data-theme="dark"] #quiz-container,
+:root[data-theme="dark"] .result-card,
+:root[data-theme="dark"] .test-card-horizontal{
+  background:#1d2552;
+  border:1px solid rgba(255,255,255,0.1);
+}
+
+:root[data-theme="dark"] .progress-bar{
+  background:rgba(255,255,255,0.14);
+}
+
+:root[data-theme="dark"] .level-btn{
+  color:#111827;
+}
+
+:root[data-theme="dark"] .level-btn.hard{
+  color:#fff;
+}
+
+:root[data-theme="dark"] .answer-card{
+  border-color:rgba(255,255,255,0.15);
+}
+
+:root[data-theme="dark"] .dictionary-block{
+  background:#1d2552;
+  border:1px solid rgba(255,255,255,0.1);
+}
+
+:root[data-theme="dark"] .dictionary-header{
+  color:#fde68a;
+}
+
+:root[data-theme="dark"] .dictionary-content p{
+  color:#e5e7eb;
+}
+
+:root[data-theme="dark"] #dictionarySearch{
+  background:#111939;
+  border-color:rgba(255,255,255,0.15);
+  color:#f3f4f6;
 }
 
 :root[data-theme="light"] .final-bar{
