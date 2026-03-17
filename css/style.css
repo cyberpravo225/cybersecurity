@@ -2297,7 +2297,28 @@ height:200px;
 
 /* ===== Mobile polish for small iPhone screens ===== */
 @media (max-width: 480px){
-  .nav{ position:relative; }
+  .nav{ position:relative; flex-shrink:0; }
+
+  .topbar{
+    padding:8px 10px;
+  }
+
+  .brand{
+    min-width:0;
+    flex:1;
+  }
+
+  .brand .logo{
+    min-width:0;
+  }
+
+  .brand .brand-text{
+    font-size:12px;
+    max-width:150px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
 
   .nav-list{
     top:calc(68px + env(safe-area-inset-top, 0px));
