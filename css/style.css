@@ -2157,16 +2157,16 @@ gap:32px;
 }
 
 }
-/* MAIN PAGE BACKGROUND */
+/* BACKGROUND FOR HOME PAGE */
 
 body[data-page="home"]{
 
 background:linear-gradient(
 90deg,
-#2f7df6 0%,
-#2f7df6 50%,
-#ffd54a 50%,
-#ffd54a 100%
+#0f2a44 0%,
+#1e4f7a 35%,
+#7a6a1e 65%,
+#4a3f0f 100%
 );
 
 min-height:100vh;
