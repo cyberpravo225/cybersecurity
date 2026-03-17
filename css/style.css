@@ -2715,3 +2715,32 @@ body[data-page="home"] .hero{
   background:#0d9488;
   border-color:#0d9488;
 }
+
+/* ===== Fix mixed gray/yellow cards on content pages ===== */
+:root[data-theme="light"] :is(#fact-box,#fact-card,.final-card,.mode-card,.learn-type){
+  background:linear-gradient(180deg, #fffaf3 0%, #f4eadf 100%);
+  border:1px solid rgba(180,120,60,0.2);
+  color:#2d2a26;
+}
+
+:root[data-theme="dark"] :is(#fact-box,#fact-card,.final-card,.mode-card,.learn-type){
+  background:#1f2758;
+  border:1px solid rgba(255,255,255,0.08);
+  color:#e5e7eb;
+}
+
+:root[data-theme="light"] .final-bar{
+  background:#dccab6;
+}
+
+:root[data-theme="light"] .final-bar div{
+  background:linear-gradient(90deg,#f97316,#f59e0b);
+}
+
+:root[data-theme="dark"] .final-bar{
+  background:#2a315f;
+}
+
+:root[data-theme="dark"] .final-bar div{
+  background:linear-gradient(90deg,#14b8a6,#8b5cf6);
+}
