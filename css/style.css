@@ -2744,3 +2744,30 @@ body[data-page="home"] .hero{
 :root[data-theme="dark"] .final-bar div{
   background:linear-gradient(90deg,#14b8a6,#8b5cf6);
 }
+
+/* ===== Ensure strong dark theme on students/teachers/seniors pages ===== */
+:root[data-theme="light"] :is([data-page^="students"],[data-page="teachers"],[data-page="seniors"]) .resource-block{
+  background:linear-gradient(180deg, #fffaf3 0%, #f4eadf 100%);
+  border:1px solid rgba(180,120,60,0.2);
+  box-shadow:0 10px 24px rgba(73,58,44,0.11);
+  padding:18px;
+}
+
+:root[data-theme="dark"] :is([data-page^="students"],[data-page="teachers"],[data-page="seniors"]) .resource-block{
+  background:#1f2758;
+  border:1px solid rgba(255,255,255,0.08);
+  box-shadow:0 12px 30px rgba(0,0,0,0.35);
+  padding:18px;
+}
+
+:root[data-theme="dark"] :is([data-page^="students"],[data-page="teachers"],[data-page="seniors"]) :is(.senior-rule,.senior-action,.senior-card){
+  background:#1f2758;
+  border:1px solid rgba(255,255,255,0.08);
+  color:#e5e7eb;
+}
+
+:root[data-theme="light"] :is([data-page^="students"],[data-page="teachers"],[data-page="seniors"]) :is(.senior-rule,.senior-action,.senior-card){
+  background:linear-gradient(180deg, #fffaf3 0%, #f4eadf 100%);
+  border:1px solid rgba(180,120,60,0.2);
+  color:#2d2a26;
+}
