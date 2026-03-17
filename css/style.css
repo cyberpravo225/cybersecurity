@@ -89,12 +89,7 @@ body{
 .brand .logo {color:var(--fg); text-decoration:none; display:flex; gap:10px; align-items:center}
 
 /* Nav */
-.nav{
-display:flex;
-align-items:center;
-gap:12px;
-flex-shrink:0;
-}
+.nav {display:flex; align-items:center; gap:8px}
 
 .nav-list .nav-link,
 .nav-list button.nav-link {
@@ -232,6 +227,15 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
 
 /* Responsive adjustments */
 @media (max-width: 900px){
+ .topbar{
+width:100%;
+box-sizing:border-box;
+padding:0 16px;
+}
+  .hero .title{font-size:22px}
+  .container{padding:20px}
+}
+
 /* Burger menu (works on PC and mobile) */
 .hamburger{
   display:inline-block;
@@ -239,7 +243,7 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
   border:none;
   cursor:pointer;
 }
-@media (max-width:900px){
+
 .nav-list{
   list-style:none;
   display:flex;
@@ -257,7 +261,7 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
   pointer-events:none;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
-}
+
 .nav-list.open{
   opacity:1;
   transform: translateY(0);
@@ -267,7 +271,7 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
 :root[data-theme="dark"] .card { box-shadow: 0 8px 24px rgba(0,0,0,0.6), 0 0 18px rgba(var(--shadow-color),0.06) }
 .site-logo {
   width: 40px;
-  width: auto;
+  height: auto;
 }
 
 
@@ -414,10 +418,15 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
 /* =================================
    Tip of the day
 ================================= */
+
 .tip-of-day{
   margin-top:40px;
   width:100%;
+  max-width:1400px;
+  margin-left:auto;
+  margin-right:auto;
 }
+
 .tip-card{
 
 display:grid;
@@ -436,6 +445,7 @@ background:var(--card-bg);
 
 box-sizing:border-box;
 
+}
 }
 
 .tip-card:hover{
@@ -470,9 +480,9 @@ box-sizing:border-box;
 
 /* адаптив */
 
-@media (max-width: 800px){
+@media (max-width: 800px){}
 
-  .tip-image{
+  .tip-image img{
     height:200px;
   }
 
@@ -2171,7 +2181,7 @@ body.light .game-feature {
   opacity: 0.9;
 }
 :root{
-  --container-max: min(96vw,1600px);
+  --container-max: min(96vw, 1600px);
 }
 @media (min-width:1100px){
 
@@ -2366,15 +2376,4 @@ grid-template-columns:1fr;
 height:200px;
 }
 
-}
-html, body{
-overflow-x:hidden;
-width:100%;
-}
-/* fix iPhone horizontal scroll */
-body{
-overflow-x:hidden;
-}
-.topbar{
-max-width:calc(100% - 24px);
 }
