@@ -424,21 +424,22 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
 }
 
 .tip-card{
-   background:var(--card-bg);
-backdrop-filter:blur(8px);
-border:1px solid rgba(255,255,255,0.08);
-  display:grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap:28px;
-  align-items:center;
 
-  background:var(--card-bg);
-  padding:26px;
-  border-radius:18px;
+display:grid;
+grid-template-columns:1fr 1.2fr;
+gap:28px;
+align-items:center;
 
-  box-shadow:0 12px 32px rgba(0,0,0,0.15);
+padding:26px;
+border-radius:18px;
 
-  transition:transform .25s ease, box-shadow .25s ease;
+background:var(--card-bg);
+
+transition:
+transform .25s ease,
+box-shadow .25s ease,
+background .25s ease;
+
 }
 
 .tip-card:hover{
@@ -515,7 +516,11 @@ transition:transform .25s ease;
 }
 
 .tip-card:hover{
-transform:translateY(-4px);
+
+transform:scale(1.03);
+
+box-shadow:0 18px 40px rgba(0,0,0,0.22);
+
 }
 
 .tip-image{
@@ -2252,5 +2257,28 @@ box-shadow:0 12px 34px rgba(0,0,0,0.45);
 .tests-banner{
 width:95vw;
 }
+
+}
+/* =========================
+   TIP CARD DARK GLASS
+========================= */
+
+:root[data-theme="dark"] .tip-card{
+
+background:rgba(30, 41, 59, 0.65);
+
+backdrop-filter:blur(10px);
+-webkit-backdrop-filter:blur(10px);
+
+border:1px solid rgba(255,255,255,0.08);
+
+box-shadow:0 12px 34px rgba(0,0,0,0.45);
+
+}
+:root[data-theme="dark"] .tip-card:hover{
+
+box-shadow:
+0 18px 40px rgba(0,0,0,0.6),
+0 0 25px rgba(255,207,52,0.15);
 
 }
