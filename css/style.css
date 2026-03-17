@@ -2157,4 +2157,39 @@ gap:32px;
 }
 
 }
+/* =========================
+   HOME PAGE BACKGROUND
+========================= */
 
+/* СВЕТЛАЯ ТЕМА — пастельный градиент */
+
+:root[data-theme="light"] body[data-page="home"]{
+
+background:linear-gradient(
+135deg,
+#f6f9ff 0%,
+#e8f1ff 30%,
+#fdf2f8 60%,
+#fff7ed 100%
+);
+
+min-height:100vh;
+
+}
+
+
+/* ТЁМНАЯ ТЕМА — космический градиент */
+
+:root[data-theme="dark"] body[data-page="home"]{
+
+background:linear-gradient(
+135deg,
+#0f172a 0%,
+#1e293b 30%,
+#312e81 65%,
+#1e1b4b 100%
+);
+
+min-height:100vh;
+
+}
