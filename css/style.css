@@ -165,6 +165,7 @@ width:100%;
 .card{display:block; padding:18px; border-radius:14px; background:var(--card-bg); color:var(--fg); text-decoration:none; box-shadow:0 8px 24px rgba(2,6,23,0.12); transition: transform var(--anim), box-shadow var(--anim), background var(--anim)}
 .card:hover{transform:translateY(-6px) scale(1.01); box-shadow:0 14px 32px rgba(2,6,23,0.18)}
 .card-icon{font-size:28px}
+.card-photo{width:84px;height:84px;object-fit:contain;display:block;margin:0 0 10px auto;filter:drop-shadow(0 6px 12px rgba(2,6,23,0.2));}
 
 /* Small sections */
 .small-section{margin-top:22px}
