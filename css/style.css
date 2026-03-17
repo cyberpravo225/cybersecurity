@@ -2620,3 +2620,29 @@ body[data-page="home"] .card-grid .card .school-ages{
   background:#ea580c;
   border-color:#ea580c;
 }
+
+/* ===== Requested tweaks: no blue bg, unified cards, black CyberGuessr text ===== */
+:root[data-theme="light"] body[data-page="home"]{
+  background:
+    radial-gradient(1100px 520px at 8% -2%, rgba(180,120,60,0.14), transparent 56%),
+    radial-gradient(900px 420px at 100% 10%, rgba(249,115,22,0.16), transparent 58%),
+    linear-gradient(180deg, #f5efe6 0%, #ece2d5 100%);
+}
+
+:root[data-theme="light"] body[data-page="home"] .tip-card,
+:root[data-theme="light"] body[data-page="home"] .tests-banner{
+  background:linear-gradient(180deg, #fffaf3 0%, #f4eadf 100%);
+  border:1px solid rgba(180,120,60,0.2);
+  box-shadow:0 10px 24px rgba(73,58,44,0.11);
+}
+
+:root[data-theme="light"] body[data-page="home"] .tip-card:hover,
+:root[data-theme="light"] body[data-page="home"] .tests-banner:hover{
+  border-color:rgba(249,115,22,0.42);
+  box-shadow:0 16px 34px rgba(249,115,22,0.17);
+}
+
+:root[data-theme="light"] body[data-page="home"] .game-feature h3,
+:root[data-theme="light"] body[data-page="home"] .game-feature p{
+  color:#111827;
+}
