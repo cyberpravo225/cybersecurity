@@ -2653,3 +2653,65 @@ body[data-page="home"] .hero{
   border:none !important;
   box-shadow:none !important;
 }
+
+/* ===== Apply Digital Night / Soft Tech themes across all pages ===== */
+:root[data-theme="light"] body{
+  background:
+    radial-gradient(1200px 520px at 8% -2%, rgba(180,120,60,0.12), transparent 56%),
+    radial-gradient(900px 420px at 100% 10%, rgba(249,115,22,0.12), transparent 58%),
+    linear-gradient(180deg, #f5efe6 0%, #ece2d5 100%);
+  color:#2d2a26;
+}
+
+:root[data-theme="dark"] body{
+  background:
+    radial-gradient(900px 420px at 15% -8%, rgba(96,103,255,0.22), transparent 60%),
+    linear-gradient(180deg, #0f1433 0%, #111827 100%);
+  color:#e5e7eb;
+}
+
+:root[data-theme="light"] .topbar{
+  background:rgba(255,248,238,0.86);
+  border:1px solid rgba(73,58,44,0.12);
+}
+
+:root[data-theme="dark"] .topbar{
+  background:rgba(27,34,78,0.78);
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+:root[data-theme="light"] :is(.card,.resource-block,.tip-card,.tests-banner,.test-card,.test-card-horizontal,.learn-card,.method-card,.term-card,.difficulty-box,.answer-card,.game-feature){
+  background:linear-gradient(180deg, #fffaf3 0%, #f4eadf 100%);
+  border:1px solid rgba(180,120,60,0.2);
+  box-shadow:0 10px 24px rgba(73,58,44,0.11);
+  color:#2d2a26;
+}
+
+:root[data-theme="dark"] :is(.card,.resource-block,.tip-card,.tests-banner,.test-card,.test-card-horizontal,.learn-card,.method-card,.term-card,.difficulty-box,.answer-card,.game-feature){
+  background:#1f2758;
+  border:1px solid rgba(255,255,255,0.08);
+  box-shadow:0 12px 30px rgba(0,0,0,0.35);
+  color:#e5e7eb;
+}
+
+:root[data-theme="light"] .btn.primary{
+  background:#f97316;
+  border-color:#f97316;
+  color:#fff;
+}
+
+:root[data-theme="light"] .btn.primary:hover{
+  background:#ea580c;
+  border-color:#ea580c;
+}
+
+:root[data-theme="dark"] .btn.primary{
+  background:#14b8a6;
+  border-color:#14b8a6;
+  color:#0f172a;
+}
+
+:root[data-theme="dark"] .btn.primary:hover{
+  background:#0d9488;
+  border-color:#0d9488;
+}
