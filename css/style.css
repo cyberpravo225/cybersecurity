@@ -2646,3 +2646,10 @@ body[data-page="home"] .card-grid .card .school-ages{
 :root[data-theme="light"] body[data-page="home"] .game-feature p{
   color:#111827;
 }
+
+/* ===== Remove background rectangle behind hero ===== */
+body[data-page="home"] .hero{
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
+}
