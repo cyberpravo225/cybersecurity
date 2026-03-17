@@ -422,11 +422,7 @@ padding:0 16px;
 .tip-of-day{
   margin-top:40px;
   width:100%;
-  max-width:1400px;
-  margin-left:auto;
-  margin-right:auto;
 }
-
 .tip-card{
 
 display:grid;
@@ -445,7 +441,6 @@ background:var(--card-bg);
 
 box-sizing:border-box;
 
-}
 }
 
 .tip-card:hover{
