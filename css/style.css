@@ -239,7 +239,7 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
   border:none;
   cursor:pointer;
 }
-
+@media (max-width:900px){
 .nav-list{
   list-style:none;
   display:flex;
@@ -257,7 +257,7 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
   pointer-events:none;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
-
+}
 .nav-list.open{
   opacity:1;
   transform: translateY(0);
@@ -267,7 +267,7 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
 :root[data-theme="dark"] .card { box-shadow: 0 8px 24px rgba(0,0,0,0.6), 0 0 18px rgba(var(--shadow-color),0.06) }
 .site-logo {
   width: 40px;
-  height: auto;
+  width: auto;
 }
 
 
@@ -470,7 +470,7 @@ box-sizing:border-box;
 
 /* адаптив */
 
-@media (max-width: 800px){}
+@media (max-width: 800px){
 
   .tip-image{
     height:200px;
@@ -2171,7 +2171,7 @@ body.light .game-feature {
   opacity: 0.9;
 }
 :root{
-  --container-max: min(96vw,1600px;)
+  --container-max: min(96vw,1600px);
 }
 @media (min-width:1100px){
 
