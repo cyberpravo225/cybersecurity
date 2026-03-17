@@ -2569,3 +2569,54 @@ body[data-page="home"] .card-grid .card .school-ages{
     max-height:128px;
   }
 }
+
+/* ===== Beige refresh for light theme ===== */
+:root[data-theme="light"]{
+  --bg:#f3ede4;
+  --fg:#2d2a26;
+  --muted:#6f665d;
+  --text:#2d2a26;
+  --text-muted:#7b7267;
+  --card-bg:linear-gradient(180deg, #fffaf3 0%, #f6eee3 100%);
+  --glass:rgba(255,248,238,0.72);
+}
+
+:root[data-theme="light"] body[data-page="home"]{
+  background:
+    radial-gradient(1100px 520px at 8% -2%, rgba(14,165,233,0.12), transparent 56%),
+    radial-gradient(900px 420px at 100% 10%, rgba(249,115,22,0.14), transparent 58%),
+    linear-gradient(180deg, #f5efe6 0%, #ece2d5 100%);
+}
+
+:root[data-theme="light"] body[data-page="home"] .topbar{
+  background:rgba(255,248,238,0.86);
+  border:1px solid rgba(73,58,44,0.12);
+}
+
+:root[data-theme="light"] body[data-page="home"] .hero{
+  background:linear-gradient(180deg, rgba(255,250,243,0.96), rgba(245,234,221,0.92));
+  border:1px solid rgba(73,58,44,0.1);
+  box-shadow:0 14px 34px rgba(73,58,44,0.12);
+}
+
+:root[data-theme="light"] body[data-page="home"] .card{
+  background:linear-gradient(180deg, #fffaf3 0%, #f4eadf 100%);
+  border:1px solid rgba(14,165,233,0.18);
+  box-shadow:0 10px 24px rgba(73,58,44,0.11);
+}
+
+:root[data-theme="light"] body[data-page="home"] .card:hover{
+  border-color:rgba(249,115,22,0.42);
+  box-shadow:0 16px 34px rgba(249,115,22,0.17);
+}
+
+:root[data-theme="light"] body[data-page="home"] .btn.primary{
+  background:#f97316;
+  border-color:#f97316;
+  color:#fff;
+}
+
+:root[data-theme="light"] body[data-page="home"] .btn.primary:hover{
+  background:#ea580c;
+  border-color:#ea580c;
+}
