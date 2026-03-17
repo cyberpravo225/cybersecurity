@@ -417,9 +417,16 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
 
 .tip-of-day{
   margin-top:40px;
+  width:94vw;
+  max-width:1400px;
+  margin-left:auto;
+  margin-right:auto;
 }
 
 .tip-card{
+   background:var(--card-bg);
+backdrop-filter:blur(8px);
+border:1px solid rgba(255,255,255,0.08);
   display:grid;
   grid-template-columns: 1fr 1.2fr;
   gap:28px;
@@ -704,12 +711,23 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 gap:20px;
+
+width:94vw;
+max-width:1400px;
+
+margin-left:auto;
+margin-right:auto;
+
 background:var(--card-bg);
+backdrop-filter:blur(8px);
+
 padding:30px;
 border-radius:20px;
+
+border:1px solid rgba(255,255,255,0.08);
+
 box-shadow:0 10px 30px rgba(0,0,0,0.08);
 transition:0.3s;
-margin-top:20px;
 }
 
 .tests-banner:hover{
@@ -2151,7 +2169,7 @@ body.light .game-feature {
   opacity: 0.9;
 }
 :root{
-  --container-max: min(92vw, 1400px);
+  --container-max: min(96vw, 1600px);
 }
 @media (min-width:1100px){
 
@@ -2226,5 +2244,13 @@ border:1px solid rgba(255,255,255,0.08);
 background:rgba(30, 41, 59, 0.8);
 
 box-shadow:0 12px 34px rgba(0,0,0,0.45);
+
+}
+@media (max-width:700px){
+
+.tip-of-day,
+.tests-banner{
+width:95vw;
+}
 
 }
