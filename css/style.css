@@ -229,11 +229,11 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
 /* Responsive adjustments */
 @media (max-width: 900px){
  .topbar{
-width:100%;
+width:auto;
 box-sizing:border-box;
 padding:10px 16px;
-margin:12px 0;
-border-radius:0 16px 16px 0;
+margin:12px max(8px, env(safe-area-inset-right, 0px)) 12px max(8px, env(safe-area-inset-left, 0px));
+border-radius:16px;
 }
   .hero .title{font-size:22px}
   .container{padding:20px}
