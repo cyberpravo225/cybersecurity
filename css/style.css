@@ -76,8 +76,9 @@ body{
   align-items:center;
   padding:10px 14px;
   border-radius:16px;
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
-  background:var(--glass);
+  background:color-mix(in srgb, var(--bg) 65%, transparent);
   box-shadow: var(--shadow-1);
   transition: transform var(--anim), box-shadow var(--anim);
   z-index:30;
@@ -230,7 +231,9 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
  .topbar{
 width:100%;
 box-sizing:border-box;
-padding:0 16px;
+padding:10px 16px;
+margin:12px 0;
+border-radius:0 16px 16px 0;
 }
   .hero .title{font-size:22px}
   .container{padding:20px}
@@ -262,9 +265,39 @@ padding:0 16px;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
+@media (max-width: 768px){
+  .brand .brand-text{
+    font-size:14px;
+    line-height:1.2;
+  }
+
+  .site-logo{
+    height:34px;
+  }
+
+  .nav-list{
+    position:fixed;
+    top:calc(68px + env(safe-area-inset-top, 0px));
+    left:max(0px, env(safe-area-inset-left, 0px));
+    width:min(86vw, 320px);
+    max-height:calc(100dvh - 88px);
+    overflow-y:auto;
+    border-radius:0 14px 14px 0;
+    transform:translateX(-115%);
+    opacity:0;
+    pointer-events:none;
+    transition:transform 0.28s ease, opacity 0.2s ease;
+  }
+
+  .nav-list.open{
+    transform:translateX(0);
+    opacity:1;
+    pointer-events:auto;
+  }
+}
+
 .nav-list.open{
   opacity:1;
-  transform: translateY(0);
   pointer-events:auto;
 }
 /* subtle glow in dark theme for active states */

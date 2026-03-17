@@ -172,6 +172,7 @@ card.addEventListener('click', (e) => {
 
     navList.classList.remove('open');
     menuToggle.setAttribute('aria-expanded','false');
+    menuToggle.classList.remove('is-open');
   });
 });
 })();
