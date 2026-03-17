@@ -2157,18 +2157,4 @@ gap:32px;
 }
 
 }
-/* BACKGROUND FOR HOME PAGE */
 
-body[data-page="home"]{
-
-background:linear-gradient(
-90deg,
-#0f2a44 0%,
-#1e4f7a 35%,
-#7a6a1e 65%,
-#4a3f0f 100%
-);
-
-min-height:100vh;
-
-}
