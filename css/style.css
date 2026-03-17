@@ -232,26 +232,6 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
 
 /* Responsive adjustments */
 @media (max-width: 900px){
-.topbar{
-
-width:100%;
-max-width:100%;
-
-margin:16px auto;
-
-padding:12px 18px;
-
-border-radius:18px;
-
-background:rgba(255,255,255,0.08);
-
-backdrop-filter:blur(12px);
--webkit-backdrop-filter:blur(12px);
-
-box-sizing:border-box;
-
-}
-
 /* Burger menu (works on PC and mobile) */
 .hamburger{
   display:inline-block;
@@ -492,7 +472,7 @@ box-sizing:border-box;
 
 @media (max-width: 800px){}
 
-  .tip-image img{
+  .tip-image{
     height:200px;
   }
 
@@ -2191,7 +2171,7 @@ body.light .game-feature {
   opacity: 0.9;
 }
 :root{
-  --container-max: 1400px;
+  --container-max: min(96vw,1600px;)
 }
 @media (min-width:1100px){
 
@@ -2390,4 +2370,11 @@ height:200px;
 html, body{
 overflow-x:hidden;
 width:100%;
+}
+/* fix iPhone horizontal scroll */
+body{
+overflow-x:hidden;
+}
+.topbar{
+max-width:calc(100% - 24px);
 }
