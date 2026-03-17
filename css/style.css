@@ -155,11 +155,11 @@ body{
 .hero .lead{margin:0 0 20px; color:var(--muted)}
 
 /* Cards grid */
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
-  gap: clamp(16px, 2vw, 32px);
-  margin-top: clamp(24px, 3vw, 48px);
+.card-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:20px;
+width:100%;
 }
 .card{display:block; padding:18px; border-radius:14px; background:var(--card-bg); color:var(--fg); text-decoration:none; box-shadow:0 8px 24px rgba(2,6,23,0.12); transition: transform var(--anim), box-shadow var(--anim), background var(--anim)}
 .card:hover{transform:translateY(-6px) scale(1.01); box-shadow:0 14px 32px rgba(2,6,23,0.18)}
@@ -227,7 +227,11 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
 
 /* Responsive adjustments */
 @media (max-width: 900px){
-  .topbar{padding:10px}
+ .topbar{
+width:100%;
+box-sizing:border-box;
+padding:0 16px;
+}
   .hero .title{font-size:22px}
   .container{padding:20px}
 }
@@ -417,7 +421,7 @@ a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-
 
 .tip-of-day{
   margin-top:40px;
-  width:94vw;
+  width:100%;
   max-width:1400px;
   margin-left:auto;
   margin-right:auto;
@@ -2255,7 +2259,7 @@ box-shadow:0 12px 34px rgba(0,0,0,0.45);
 
 .tip-of-day,
 .tests-banner{
-width:95vw;
+width:100%;
 }
 
 }
@@ -2324,4 +2328,25 @@ transition:transform .3s ease;
 
 transform:scale(1.2) rotate(8deg);
 
+}
+.main-container{
+max-width:1200px;
+margin:0 auto;
+padding:0 20px;
+}
+.hero .title{
+word-break:break-word;
+text-align:center;
+}
+.hero{
+padding-left:16px;
+padding-right:16px;
+}
+.tip-card,
+.tests-banner{
+width:100%;
+margin:0 auto;
+}
+html,body{
+overflow-x:hidden;
 }
