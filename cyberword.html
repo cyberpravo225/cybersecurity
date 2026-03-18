@@ -273,7 +273,7 @@
     <header class="topbar">
       <div class="brand">
         <h1>🧩 CyberWord</h1>
-        <p>Выбирай слово, которое ближе всего по смыслу к загаданному. Близость считается по косинусному сходству векторов из <code>vectors.json</code>.</p>
+        <p>Выбирай слово, которое ближе всего по смыслу к загаданному. Близость считается по косинусному сходству векторов из <code>vectors.json</code> — подойдут и ключи вида <code>компьютер_128</code>.</p>
       </div>
       <div class="top-actions">
         <a class="nav-btn" href="index.html">Назад</a>
@@ -335,7 +335,7 @@
           <li>За правильный ответ начисляется 1 очко.</li>
           <li>Всего 5 раундов, после них показывается итоговый результат.</li>
         </ol>
-        <p class="small-note" style="margin-top:16px">Подсказка: близкие слова относятся к одной теме — например, пароль ↔ аккаунт, вирус ↔ антивирус, фишинг ↔ мошенник.</p>
+        <p class="small-note" style="margin-top:16px">Подсказка: если в файле ключи выглядят как <code>слово_123</code>, игра автоматически покажет игроку только слово без числового хвоста.</p>
       </aside>
     </section>
   </div>
@@ -368,7 +368,29 @@
     const resultText = document.getElementById('resultText');
 
     function formatWord(word){
-      return word.replaceAll('_', ' ');
+      return word
+        .replace(/_\d+$/, '')
+        .replaceAll('_', ' ')
+        .trim();
+    }
+
+    function validateVectors(data){
+      const entries = Object.entries(data).filter(([, vector]) => Array.isArray(vector) && vector.length > 0);
+      if (entries.length < 8) {
+        throw new Error('В vectors.json слишком мало слов для игры.');
+      }
+
+      const dimension = entries[0][1].length;
+      const invalid = entries.find(([, vector]) => vector.length !== dimension || vector.some(value => typeof value !== 'number' || Number.isNaN(value)));
+
+      if (invalid) {
+        throw new Error('Векторы должны быть числовыми и одинаковой длины.');
+      }
+
+      return {
+        words: entries.map(([word]) => word),
+        dimension
+      };
     }
 
     function dot(a, b){
@@ -393,25 +415,50 @@
       return [...list].sort(() => Math.random() - 0.5);
     }
 
-    function getClosestWord(target){
+    function rankWordsBySimilarity(target){
       const targetVector = vectors[target];
-      const ranked = words
+      return words
         .filter(word => word !== target)
         .map(word => ({ word, similarity: cosineSimilarity(targetVector, vectors[word]) }))
         .sort((a, b) => b.similarity - a.similarity);
+    }
+
+    function getClosestWord(target, rankedWords){
+      const ranked = rankedWords || rankWordsBySimilarity(target);
       return ranked[0]?.word;
     }
 
-    function getDistractors(target, correctWord, amount = 3){
-      const targetVector = vectors[target];
-      const candidates = words
-        .filter(word => word !== target && word !== correctWord)
-        .map(word => ({ word, similarity: cosineSimilarity(targetVector, vectors[word]) }))
-        .sort((a, b) => a.similarity - b.similarity);
+    function uniqueDisplayWords(items){
+      const used = new Set();
+      return items.filter(item => {
+        const label = formatWord(item.word);
+        if (!label || used.has(label)) return false;
+        used.add(label);
+        return true;
+      });
+    }
 
-      const filtered = candidates.filter(item => item.similarity < 0.97);
-      const pool = shuffle(filtered.map(item => item.word));
-      return pool.slice(0, amount);
+    function getDistractors(target, correctWord, rankedWords, amount = 3){
+      const ranked = uniqueDisplayWords((rankedWords || rankWordsBySimilarity(target)).filter(item => item.word !== correctWord));
+      const distractors = [];
+      const zones = [
+        ranked.slice(5, 30),
+        ranked.slice(30, 120),
+        ranked.slice(120, 320),
+        ranked.slice(320)
+      ].filter(zone => zone.length);
+
+      for (const zone of zones) {
+        if (distractors.length >= amount) break;
+        distractors.push(randomItem(zone));
+      }
+
+      if (distractors.length < amount) {
+        const fallback = shuffle(ranked).filter(candidate => !distractors.some(item => item.word === candidate.word));
+        distractors.push(...fallback.slice(0, amount - distractors.length));
+      }
+
+      return distractors.slice(0, amount).map(item => item.word);
     }
 
     function updateStats(){
@@ -420,8 +467,8 @@
       streakValue.textContent = streak;
     }
 
-    function buildOptions(target, correctWord){
-      const distractors = getDistractors(target, correctWord, 3);
+    function buildOptions(target, correctWord, rankedWords){
+      const distractors = getDistractors(target, correctWord, rankedWords, 3);
       const options = shuffle([correctWord, ...distractors]);
       optionsBox.innerHTML = '';
 
@@ -491,10 +538,11 @@
       resultBox.classList.remove('show');
 
       currentTarget = pickTargetWord();
-      currentCorrect = getClosestWord(currentTarget);
+      const rankedWords = rankWordsBySimilarity(currentTarget);
+      currentCorrect = getClosestWord(currentTarget, rankedWords);
 
       targetWord.textContent = formatWord(currentTarget);
-      buildOptions(currentTarget, currentCorrect);
+      buildOptions(currentTarget, currentCorrect, rankedWords);
       updateStats();
     }
 
@@ -536,11 +584,8 @@
         }
 
         vectors = await response.json();
-        words = Object.keys(vectors).filter(word => Array.isArray(vectors[word]) && vectors[word].length > 0);
-
-        if (words.length < 8) {
-          throw new Error('В vectors.json слишком мало слов для игры.');
-        }
+        const validated = validateVectors(vectors);
+        words = validated.words;
 
         loadingBox.hidden = true;
         gameArea.hidden = false;
