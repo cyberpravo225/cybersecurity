@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CyberWord — средний уровень</title>
+  <style>
+    :root{--bg:#0f172a;--bg-2:#131d3f;--text:#eef6ff;--muted:#b5c2e0;--accent:#2dd4bf;--accent-2:#60a5fa;--danger:#fb7185;--good:#34d399;--card:rgba(23,37,84,.92);--border:rgba(148,163,184,.2);--shadow:0 20px 50px rgba(0,0,0,.35);--radius:22px}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text);background:radial-gradient(circle at top left, rgba(45,212,191,.18), transparent 30%),radial-gradient(circle at top right, rgba(96,165,250,.22), transparent 34%),linear-gradient(180deg,var(--bg),var(--bg-2));}
+    .page{max-width:1120px;margin:0 auto;padding:20px 16px 48px}
+    .topbar,.panel,.option-btn,.guess-row,.hint-card{backdrop-filter:blur(12px)}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 18px;border-radius:18px;background:rgba(15,23,42,.58);border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:24px}
+    .brand h1{margin:0;font-size:clamp(28px,4vw,42px)}
+    .brand p{margin:8px 0 0;color:var(--muted);max-width:700px;line-height:1.6}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:14px;text-decoration:none;font-weight:700;border:none;cursor:pointer;transition:transform .18s ease, box-shadow .18s ease, opacity .18s ease}
+    .btn.primary{color:#07283a;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 10px 24px rgba(45,212,191,.28)}
+    .btn.ghost{color:var(--text);background:rgba(255,255,255,.05);border:1px solid rgba(148,163,184,.28)}
+    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .btn:hover:not(:disabled),.option-btn:hover:not(:disabled){transform:translateY(-2px)}
+    .layout{display:grid;grid-template-columns:1.1fr .9fr;gap:24px}
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+    .stat{background:rgba(255,255,255,.05);border:1px solid rgba(148,163,184,.16);border-radius:18px;padding:16px;text-align:center}
+    .stat .label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}
+    .stat strong{font-size:26px}
+    .round-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(45,212,191,.14);border:1px solid rgba(45,212,191,.32);color:#c5fffb;font-weight:700;margin-bottom:14px}
+    .target-word{margin:0;font-size:clamp(34px,6vw,60px);line-height:1.05;text-align:center}
+    .target-note{text-align:center;color:var(--muted);margin:12px auto 0;max-width:620px;line-height:1.6}
+    .feedback{min-height:32px;text-align:center;font-size:18px;font-weight:600;color:#dbeafe;margin-top:18px}
+    .feedback.good{color:#9ff8d6} .feedback.bad{color:#ffb4c1}
+    .options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:22px}
+    .option-btn{position:relative;width:100%;min-height:108px;border-radius:20px;padding:18px;background:linear-gradient(180deg, rgba(30,47,111,.95), rgba(23,37,84,.96));border:1px solid rgba(148,163,184,.22);color:var(--text);font-size:clamp(18px,3vw,24px);font-weight:700;overflow:hidden;box-shadow:0 12px 26px rgba(0,0,0,.22)}
+    .option-btn.correct{border-color:rgba(52,211,153,.65);background:linear-gradient(180deg, rgba(5,150,105,.95), rgba(17,94,89,.96))}
+    .option-btn.wrong{border-color:rgba(251,113,133,.68);background:linear-gradient(180deg, rgba(190,24,93,.92), rgba(136,19,55,.95))}
+    .option-btn.dimmed{opacity:.62;filter:saturate(.8)}
+    .result{display:none;text-align:center;padding-top:10px} .result.show{display:block}
+    .result-score{font-size:clamp(34px,6vw,58px);font-weight:800;margin:10px 0;background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .actions-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:18px}
+    .rules{margin:0;padding-left:18px;color:var(--muted);line-height:1.7}
+    .small-note{color:var(--muted);line-height:1.7}
+    .loading,.error{text-align:center;padding:28px;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid rgba(148,163,184,.15)}
+    .error{color:#ffd2dc}
+    .guess-row{display:flex;gap:10px;align-items:stretch;margin-top:22px;padding:12px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(148,163,184,.16)}
+    .guess-input{flex:1;min-width:0;border:none;outline:none;border-radius:14px;padding:14px 16px;font-size:18px;background:rgba(15,23,42,.72);color:var(--text);border:1px solid rgba(148,163,184,.2)}
+    .guess-submit{min-width:58px;font-size:22px;padding:0 18px}
+    .guess-history,.hint-list{display:grid;gap:12px;margin-top:18px}
+    .hint-card,.guess-card{padding:14px 16px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(148,163,184,.16)}
+    .guess-card strong{display:block;margin-bottom:6px}
+    .rank-good{color:#9ff8d6} .rank-mid{color:#fde68a} .rank-bad{color:#ffb4c1}
+    @media (max-width: 900px){.layout{grid-template-columns:1fr}}
+    @media (max-width: 560px){.options{grid-template-columns:1fr 1fr}.option-btn{min-height:94px;padding:14px;border-radius:16px;font-size:18px}.guess-row{flex-direction:row}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <h1>🧩 CyberWord · Средний</h1>
+        <p>Выбирай слово, которое ближе всего по смыслу к загаданному.</p>
+      </div>
+      <div class="actions">
+        <a class="btn primary" href="cyberword.html">Назад к уровням</a>
+        <a class="btn primary" href="index.html">Главное меню</a>
+      </div>
+    </header>
+    <section class="layout">
+  <div class="panel">
+    <div class="loading" id="loadingBox">Загрузка базы слов…</div>
+    <div class="error" id="errorBox" hidden></div>
+    <div id="gameArea" hidden>
+      <div class="stats">
+        <div class="stat"><span class="label">Раунд</span><strong id="roundValue">1/5</strong></div>
+        <div class="stat"><span class="label">Очки</span><strong id="scoreValue">0</strong></div>
+        <div class="stat"><span class="label">Серия</span><strong id="streakValue">0</strong></div>
+      </div>
+      <div class="round-chip">Средний уровень · более технические слова</div>
+      <h2 class="target-word" id="targetWord">—</h2>
+      <p class="target-note">Выбери слово, которое ближе всего по смыслу к загаданному слову.</p>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="actions-row">
+        <button class="btn primary" id="nextBtn" hidden disabled>Следующий раунд</button>
+        <button class="btn ghost" id="restartBtn" hidden>Играть снова</button>
+      </div>
+      <div class="result" id="resultBox">
+        <p class="small-note">Игра завершена</p>
+        <div class="result-score" id="finalScore">0 / 5</div>
+        <p id="resultText"></p>
+      </div>
+    </div>
+  </div>
+  <aside class="panel">
+    <h2 style="margin-top:0">Как играть?</h2>
+    <ol class="rules">
+      <li>В начале раунда появляется случайное слово.</li>
+      <li>Ниже показаны карточки с вариантами ответа.</li>
+      <li>Нужно выбрать самое близкое по смыслу слово.</li>
+      <li>Всего 5 раундов и итоговый счёт в конце.</li>
+    </ol>
+  </aside>
+</section>
+  </div>
+  <script>
+
+const totalRounds = 5;
+const datasetUrl = "vectors-medium.json";
+let vectors = {};
+let words = [];
+let vectorNorms = {};
+let round = 0;
+let score = 0;
+let streak = 0;
+let usedTargets = new Set();
+let currentTarget = '';
+let currentCorrect = '';
+let locked = false;
+const loadingBox = document.getElementById('loadingBox');
+const errorBox = document.getElementById('errorBox');
+const gameArea = document.getElementById('gameArea');
+const targetWord = document.getElementById('targetWord');
+const optionsBox = document.getElementById('options');
+const feedback = document.getElementById('feedback');
+const nextBtn = document.getElementById('nextBtn');
+const restartBtn = document.getElementById('restartBtn');
+const roundValue = document.getElementById('roundValue');
+const scoreValue = document.getElementById('scoreValue');
+const streakValue = document.getElementById('streakValue');
+const resultBox = document.getElementById('resultBox');
+const finalScore = document.getElementById('finalScore');
+const resultText = document.getElementById('resultText');
+function formatWord(word) { return word.replace(/_\d+$/, '').replaceAll('_', ' ').trim(); }
+function parseVectorsPayload(rawText) { const text = rawText.replace(/^﻿/, '').trim(); const parsed = JSON.parse(text); if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('Ожидался JSON-объект.'); return parsed; }
+function validateVectors(data) { const entries = Object.entries(data).filter(([, vector]) => Array.isArray(vector) && vector.length > 0); if (entries.length < 8) throw new Error('В базе слишком мало слов для игры.'); const dimension = entries[0][1].length; const invalid = entries.find(([, vector]) => vector.length !== dimension || vector.some(value => typeof value !== 'number' || Number.isNaN(value))); if (invalid) throw new Error('Векторы должны быть числовыми и одинаковой длины.'); return entries.map(([word]) => word); }
+function dot(a, b) { return a.reduce((sum, value, index) => sum + value * b[index], 0); }
+function magnitude(vector) { return Math.sqrt(vector.reduce((sum, value) => sum + value * value, 0)); }
+function cosineSimilarityByKey(wordA, wordB) { const denominator = vectorNorms[wordA] * vectorNorms[wordB]; if (!denominator) return -1; return dot(vectors[wordA], vectors[wordB]) / denominator; }
+function randomItem(list) { return list[Math.floor(Math.random() * list.length)]; }
+function shuffle(list) { return [...list].sort(() => Math.random() - 0.5); }
+function rankWordsBySimilarity(target) { return words.filter(word => word !== target).map(word => ({ word, similarity: cosineSimilarityByKey(target, word) })).sort((a, b) => b.similarity - a.similarity); }
+function uniqueDisplayWords(items) { const used = new Set(); return items.filter(item => { const label = formatWord(item.word); if (!label || used.has(label)) return false; used.add(label); return true; }); }
+function getClosestWord(target, rankedWords) { return (rankedWords || rankWordsBySimilarity(target))[0]?.word; }
+function getDistractors(target, correctWord, rankedWords, amount = 3) { const ranked = uniqueDisplayWords((rankedWords || rankWordsBySimilarity(target)).filter(item => item.word !== correctWord)); const distractors = []; const zones = [ranked.slice(4, 18), ranked.slice(18, 45), ranked.slice(45)].filter(zone => zone.length); for (const zone of zones) { if (distractors.length >= amount) break; distractors.push(randomItem(zone)); } if (distractors.length < amount) { const fallback = shuffle(ranked).filter(candidate => !distractors.some(item => item.word === candidate.word)); distractors.push(...fallback.slice(0, amount - distractors.length)); } return distractors.slice(0, amount).map(item => item.word); }
+function updateStats() { roundValue.textContent = `${Math.min(round + 1, totalRounds)}/${totalRounds}`; scoreValue.textContent = score; streakValue.textContent = streak; }
+function buildOptions(correctWord, rankedWords) { const distractors = getDistractors(currentTarget, correctWord, rankedWords, 3); const options = shuffle([correctWord, ...distractors]); optionsBox.innerHTML = ''; options.forEach(option => { const button = document.createElement('button'); button.className = 'option-btn'; button.type = 'button'; button.textContent = formatWord(option); button.dataset.word = option; button.addEventListener('click', () => handleAnswer(button, option)); optionsBox.appendChild(button); }); }
+function handleAnswer(button, selectedWord) { if (locked) return; locked = true; const buttons = [...document.querySelectorAll('.option-btn')]; const correctButton = buttons.find(btn => btn.dataset.word === currentCorrect); if (selectedWord === currentCorrect) { score += 1; streak += 1; button.classList.add('correct'); feedback.textContent = `Верно! Ближе всего слово «${formatWord(selectedWord)}».`; feedback.className = 'feedback good'; } else { streak = 0; button.classList.add('wrong'); if (correctButton) correctButton.classList.add('correct'); feedback.textContent = `Неверно. Правильный ответ — «${formatWord(currentCorrect)}».`; feedback.className = 'feedback bad'; } buttons.forEach(btn => { if (btn !== button && btn !== correctButton) btn.classList.add('dimmed'); btn.disabled = true; }); scoreValue.textContent = score; streakValue.textContent = streak; if (round >= totalRounds - 1) { nextBtn.hidden = true; nextBtn.disabled = true; restartBtn.hidden = false; setTimeout(showResults, 600); } else { nextBtn.hidden = false; nextBtn.disabled = false; } }
+function pickTargetWord() { const available = words.filter(word => !usedTargets.has(word)); const source = available.length ? available : words; const target = randomItem(source); usedTargets.add(target); return target; }
+function startRound() { locked = false; feedback.textContent = ''; feedback.className = 'feedback'; nextBtn.hidden = true; nextBtn.disabled = true; resultBox.classList.remove('show'); currentTarget = pickTargetWord(); const rankedWords = rankWordsBySimilarity(currentTarget); currentCorrect = getClosestWord(currentTarget, rankedWords); targetWord.textContent = formatWord(currentTarget); buildOptions(currentCorrect, rankedWords); updateStats(); }
+function showResults() { nextBtn.hidden = true; nextBtn.disabled = true; resultBox.classList.add('show'); finalScore.textContent = `${score} / ${totalRounds}`; if (score === totalRounds) resultText.textContent = 'Идеально!'; else if (score >= 3) resultText.textContent = 'Очень хороший результат!'; else resultText.textContent = 'Попробуй ещё раз и набери больше очков.'; }
+function restartGame() { round = 0; score = 0; streak = 0; usedTargets = new Set(); restartBtn.hidden = true; nextBtn.hidden = true; nextBtn.disabled = true; updateStats(); startRound(); }
+nextBtn.addEventListener('click', () => { if (round >= totalRounds - 1) return; round += 1; startRound(); });
+restartBtn.addEventListener('click', restartGame);
+(async function initGame() { try { const response = await fetch(datasetUrl); if (!response.ok) throw new Error('Не удалось загрузить базу слов.'); vectors = parseVectorsPayload(await response.text()); words = validateVectors(vectors); vectorNorms = Object.fromEntries(words.map(word => [word, magnitude(vectors[word])])); loadingBox.hidden = true; gameArea.hidden = false; updateStats(); startRound(); } catch (error) { loadingBox.hidden = true; errorBox.hidden = false; errorBox.textContent = `Ошибка: ${error.message}`; } })();
+
+  </script>
+</body>
+</html>
