@@ -36,12 +36,12 @@
   --muted: #a1a1aa;
   --text: #f5f5f5;
   --text-muted: #a1a1aa;
-  --accent: #ffcf34;         /* жёлтый акцент */
-  --accent-2: #ffd86b;
-  --accent-cta: #ffcf34;
+  --accent: #2dd4bf;         /* бирюзовый акцент */
+  --accent-2: #60a5fa;
+  --accent-cta: #2dd4bf;
   --glass: rgba(255,255,255,0.05);
   --card-bg: #2a2a2a;        /* более светлый серый для карточек */
-  --shadow-color: 255,199,52;
+  --shadow-color: 45,212,191;
 }
 
 /* Basic reset */
@@ -413,6 +413,17 @@ border-radius:16px;
 .back-btn:hover{
   transform:translateX(-3px);
   opacity:0.85;
+}
+
+:root[data-theme="dark"] .topbar :is(.back-btn,.header-main-menu){
+  color:#2dd4bf;
+}
+
+:root[data-theme="dark"] .test-level{
+  color:#dffefe;
+  background:linear-gradient(135deg, rgba(45,212,191,0.22), rgba(96,165,250,0.2));
+  border:1px solid rgba(96,165,250,0.45);
+  box-shadow:0 10px 24px rgba(45,212,191,0.16);
 }
 
 
@@ -1035,6 +1046,7 @@ font-size:17px;
 font-weight:600;
 color:var(--accent);
 border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+box-shadow:0 6px 18px color-mix(in srgb, var(--accent) 16%, transparent);
 margin-top:5px;
 }
 #quiz-container{
