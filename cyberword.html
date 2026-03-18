@@ -6,6 +6,7 @@
   <title>CyberWord — выбор уровня</title>
   <style>
     :root{
+      color-scheme: dark;
       --bg:#0f172a;
       --bg-2:#131d3f;
       --text:#eef6ff;
@@ -17,6 +18,11 @@
       --shadow:0 20px 50px rgba(0,0,0,.35);
       --radius:24px;
     }
+
+    html[data-theme="light"]{--bg:#f3ede4;--bg-2:#ece2d5;--text:#2d2a26;--muted:#6f665d;--accent:#f97316;--accent-2:#f59e0b;--card:rgba(255,250,243,.96);--border:rgba(125,92,57,.18);--shadow:0 20px 40px rgba(73,58,44,.15);color-scheme:light}
+    html[data-theme="light"] body{background:radial-gradient(circle at top left, rgba(249,115,22,.12), transparent 28%),radial-gradient(circle at top right, rgba(245,158,11,.15), transparent 34%),linear-gradient(180deg,var(--bg),var(--bg-2))}
+    html[data-theme="light"] .btn.primary{color:#fff;box-shadow:0 10px 24px rgba(249,115,22,.22)}
+    html[data-theme="light"] .btn.ghost{background:rgba(255,255,255,.72);color:#2d2a26}
     *{box-sizing:border-box}
     body{
       margin:0;
@@ -72,6 +78,7 @@
         <p>Выбери уровень игры. На лёгком и среднем уровне нужно выбрать самое близкое слово из карточек. На сложном уровне надо самому ввести слово и искать его близость к загаданному слову с помощью подсказок.</p>
       </div>
       <div class="actions">
+        <button class="btn ghost" id="theme-toggle" type="button">Сменить тему</button>
         <a class="btn primary" href="index.html">Назад</a>
         <a class="btn primary" href="index.html">Главное меню</a>
       </div>
@@ -117,5 +124,26 @@
       </a>
     </section>
   </div>
+  <script>
+(function initTheme(){
+  const root = document.documentElement;
+  const key = 'cyber_theme';
+  const saved = localStorage.getItem(key);
+  const preferredDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initial = saved || (preferredDark ? 'dark' : 'light');
+  root.setAttribute('data-theme', initial);
+  const toggle = document.getElementById('theme-toggle');
+  if (toggle) {
+    toggle.textContent = initial === 'dark' ? 'Светлая тема' : 'Тёмная тема';
+    toggle.addEventListener('click', () => {
+      const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      localStorage.setItem(key, next);
+      toggle.textContent = next === 'dark' ? 'Светлая тема' : 'Тёмная тема';
+    });
+  }
+})();
+  </script>
 </body>
 </html>
