@@ -404,14 +404,10 @@ border-radius:16px;
   transition:transform 0.18s ease, opacity 0.18s ease;
 }
 
-/* светлая тема */
-.back-btn{
-  color:#1a1a1a;
-}
-
-/* тёмная тема */
-:root[data-theme="dark"] .back-btn{
-  color:#ffd54a;
+/* единый цвет для кнопок в шапке: как у кнопки темы */
+.topbar .back-btn,
+.topbar .header-main-menu{
+  color:var(--accent);
 }
 
 .back-btn:hover{
@@ -1037,7 +1033,8 @@ padding:8px 18px;
 border-radius:20px;
 font-size:17px;
 font-weight:600;
-color:var(--text-muted);
+color:var(--accent);
+border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);
 margin-top:5px;
 }
 #quiz-container{
@@ -2797,11 +2794,6 @@ body[data-page="home"] .hero{
 
 :root[data-theme="dark"] .difficulty-card.hard{
   border-color:rgba(255,107,107,0.52);
-}
-
-:root[data-theme="dark"] .test-level{
-  color:#c7d2fe;
-  border:1px solid rgba(255,255,255,0.1);
 }
 
 :root[data-theme="dark"] #quiz-container,
