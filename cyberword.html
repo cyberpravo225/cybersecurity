@@ -124,5 +124,26 @@
       </a>
     </section>
   </div>
+  <script>
+(function initTheme(){
+  const root = document.documentElement;
+  const key = 'cyber_theme';
+  const saved = localStorage.getItem(key);
+  const preferredDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initial = saved || (preferredDark ? 'dark' : 'light');
+  root.setAttribute('data-theme', initial);
+  const toggle = document.getElementById('theme-toggle');
+  if (toggle) {
+    toggle.textContent = initial === 'dark' ? 'Светлая тема' : 'Тёмная тема';
+    toggle.addEventListener('click', () => {
+      const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      localStorage.setItem(key, next);
+      toggle.textContent = next === 'dark' ? 'Светлая тема' : 'Тёмная тема';
+    });
+  }
+})();
+  </script>
 </body>
 </html>
