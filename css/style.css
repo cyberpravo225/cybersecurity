@@ -36,12 +36,12 @@
   --muted: #a1a1aa;
   --text: #f5f5f5;
   --text-muted: #a1a1aa;
-  --accent: #ffcf34;         /* жёлтый акцент */
-  --accent-2: #ffd86b;
-  --accent-cta: #ffcf34;
+  --accent: #2dd4bf;         /* бирюзовый акцент */
+  --accent-2: #60a5fa;
+  --accent-cta: #2dd4bf;
   --glass: rgba(255,255,255,0.05);
   --card-bg: #2a2a2a;        /* более светлый серый для карточек */
-  --shadow-color: 255,199,52;
+  --shadow-color: 45,212,191;
 }
 
 /* Basic reset */
@@ -404,19 +404,26 @@ border-radius:16px;
   transition:transform 0.18s ease, opacity 0.18s ease;
 }
 
-/* светлая тема */
-.back-btn{
-  color:#1a1a1a;
-}
-
-/* тёмная тема */
-:root[data-theme="dark"] .back-btn{
-  color:#ffd54a;
+/* единый цвет для кнопок в шапке: как у кнопки темы */
+.topbar .back-btn,
+.topbar .header-main-menu{
+  color:var(--accent);
 }
 
 .back-btn:hover{
   transform:translateX(-3px);
   opacity:0.85;
+}
+
+:root[data-theme="dark"] .topbar :is(.back-btn,.header-main-menu){
+  color:#2dd4bf;
+}
+
+:root[data-theme="dark"] .test-level{
+  color:#dffefe;
+  background:linear-gradient(135deg, rgba(45,212,191,0.22), rgba(96,165,250,0.2));
+  border:1px solid rgba(96,165,250,0.45);
+  box-shadow:0 10px 24px rgba(45,212,191,0.16);
 }
 
 
@@ -494,6 +501,11 @@ border-radius:16px;
 }
 
 .tips-grid{ margin-top:30px; }
+.tips-history{
+display:grid;
+gap:32px;
+margin-top:32px;
+}
 .tip-history{ transition:transform .2s ease; }
 .tip-history:hover{ transform:translateY(-5px); }
 
@@ -753,6 +765,7 @@ padding:30px;
 border-radius:20px;
 text-align:center;
 box-shadow:0 20px 50px rgba(0,0,0,0.2);
+border:1px solid rgba(0,0,0,0.08);
 }
 
 .difficulty-box h2{
@@ -786,6 +799,45 @@ border:none;
 font-size:14px;
 cursor:pointer;
 color:var(--text-muted);
+}
+
+
+:root[data-theme="light"] .difficulty-modal{
+background:rgba(20,20,20,0.45);
+}
+
+:root[data-theme="dark"] .difficulty-modal{
+background:rgba(3,6,20,0.72);
+}
+
+:root[data-theme="dark"] .difficulty-box{
+background:#1d2552;
+border:1px solid rgba(255,255,255,0.12);
+color:#e5e7eb;
+}
+
+:root[data-theme="dark"] .difficulty-btn{
+background:#2b366f;
+border:1px solid rgba(255,255,255,0.12);
+color:#e5e7eb;
+}
+
+:root[data-theme="dark"] .difficulty-btn.easy{
+background:#1f6f46;
+border-color:#6fdc8c;
+color:#ecfdf3;
+}
+
+:root[data-theme="dark"] .difficulty-btn.medium{
+background:#8a6a15;
+border-color:#ffd166;
+color:#fff9db;
+}
+
+:root[data-theme="dark"] .difficulty-btn.hard{
+background:#8a2f2f;
+border-color:#ff6b6b;
+color:#fff;
 }
 /* список тестов */
 
@@ -992,7 +1044,9 @@ padding:8px 18px;
 border-radius:20px;
 font-size:17px;
 font-weight:600;
-color:var(--text-muted);
+color:var(--accent);
+border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+box-shadow:0 6px 18px color-mix(in srgb, var(--accent) 16%, transparent);
 margin-top:5px;
 }
 #quiz-container{
@@ -2727,6 +2781,73 @@ body[data-page="home"] .hero{
   background:#1f2758;
   border:1px solid rgba(255,255,255,0.08);
   color:#e5e7eb;
+}
+
+/* ===== Dark theme fixes: companies/tests/dictionary ===== */
+:root[data-theme="dark"] .difficulty-card{
+  background:linear-gradient(180deg, #1d2552 0%, #171d43 100%);
+  border:1px solid rgba(255,255,255,0.1);
+  color:#eef2ff;
+}
+
+:root[data-theme="dark"] .difficulty-card p,
+:root[data-theme="dark"] .difficulty-card .difficulty-info{
+  color:#c7d2fe;
+  opacity:1;
+}
+
+:root[data-theme="dark"] .difficulty-card.easy{
+  border-color:rgba(111,220,140,0.45);
+}
+
+:root[data-theme="dark"] .difficulty-card.medium{
+  border-color:rgba(255,209,102,0.5);
+}
+
+:root[data-theme="dark"] .difficulty-card.hard{
+  border-color:rgba(255,107,107,0.52);
+}
+
+:root[data-theme="dark"] #quiz-container,
+:root[data-theme="dark"] .result-card,
+:root[data-theme="dark"] .test-card-horizontal{
+  background:#1d2552;
+  border:1px solid rgba(255,255,255,0.1);
+}
+
+:root[data-theme="dark"] .progress-bar{
+  background:rgba(255,255,255,0.14);
+}
+
+:root[data-theme="dark"] .level-btn{
+  color:#111827;
+}
+
+:root[data-theme="dark"] .level-btn.hard{
+  color:#fff;
+}
+
+:root[data-theme="dark"] .answer-card{
+  border-color:rgba(255,255,255,0.15);
+}
+
+:root[data-theme="dark"] .dictionary-block{
+  background:#1d2552;
+  border:1px solid rgba(255,255,255,0.1);
+}
+
+:root[data-theme="dark"] .dictionary-header{
+  color:#fde68a;
+}
+
+:root[data-theme="dark"] .dictionary-content p{
+  color:#e5e7eb;
+}
+
+:root[data-theme="dark"] #dictionarySearch{
+  background:#111939;
+  border-color:rgba(255,255,255,0.15);
+  color:#f3f4f6;
 }
 
 :root[data-theme="light"] .final-bar{

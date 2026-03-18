@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CyberWord — игра со словами</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --bg-2:#131d3f;
+      --card:#172554;
+      --card-2:#1e2f6f;
+      --text:#eef6ff;
+      --muted:#b5c2e0;
+      --accent:#2dd4bf;
+      --accent-2:#60a5fa;
+      --danger:#fb7185;
+      --good:#34d399;
+      --shadow:0 20px 50px rgba(0,0,0,.35);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      color:var(--text);
+      min-height:100vh;
+      background:
+        radial-gradient(circle at top left, rgba(45,212,191,.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(96,165,250,.22), transparent 32%),
+        linear-gradient(180deg, var(--bg), var(--bg-2));
+    }
+    .page{
+      max-width:1100px;
+      margin:0 auto;
+      padding:20px 16px 48px;
+    }
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:14px 18px;
+      border-radius:18px;
+      background:rgba(15,23,42,.6);
+      border:1px solid rgba(148,163,184,.2);
+      backdrop-filter:blur(12px);
+      box-shadow:var(--shadow);
+      margin-bottom:24px;
+      flex-wrap:wrap;
+    }
+    .brand h1{
+      margin:0;
+      font-size:clamp(28px,4vw,42px);
+      line-height:1;
+    }
+    .brand p{
+      margin:8px 0 0;
+      color:var(--muted);
+      max-width:560px;
+    }
+    .top-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .nav-btn,.primary-btn,.option-btn,.ghost-btn{
+      border:none;
+      text-decoration:none;
+      cursor:pointer;
+      transition:transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+    }
+    .nav-btn,.primary-btn,.ghost-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:12px 16px;
+      border-radius:14px;
+      font-weight:700;
+      font-size:15px;
+    }
+    .nav-btn,.primary-btn{
+      color:#07283a;
+      background:linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow:0 10px 24px rgba(45,212,191,.28);
+    }
+    .ghost-btn{
+      color:var(--text);
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(148,163,184,.28);
+    }
+    .nav-btn:hover,.primary-btn:hover,.ghost-btn:hover,.option-btn:hover{
+      transform:translateY(-2px);
+    }
+    .hero{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:24px;
+      margin-bottom:24px;
+    }
+    .panel{
+      background:linear-gradient(180deg, rgba(23,37,84,.95), rgba(15,23,42,.92));
+      border:1px solid rgba(148,163,184,.18);
+      border-radius:var(--radius);
+      padding:24px;
+      box-shadow:var(--shadow);
+    }
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin-top:18px;
+    }
+    .stat{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(148,163,184,.16);
+      border-radius:18px;
+      padding:16px;
+      text-align:center;
+    }
+    .stat .label{
+      display:block;
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:6px;
+    }
+    .stat strong{
+      font-size:26px;
+    }
+    .rules{
+      margin:0;
+      padding-left:18px;
+      color:var(--muted);
+      line-height:1.65;
+    }
+    .game-board{
+      display:grid;
+      gap:22px;
+    }
+    .target-wrap{
+      text-align:center;
+    }
+    .round-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(45,212,191,.14);
+      border:1px solid rgba(45,212,191,.32);
+      color:#bbfffa;
+      font-weight:700;
+      margin-bottom:14px;
+    }
+    .target-word{
+      margin:0;
+      font-size:clamp(34px,6vw,62px);
+      line-height:1;
+      letter-spacing:.03em;
+    }
+    .target-hint{
+      color:var(--muted);
+      margin:12px auto 0;
+      max-width:620px;
+    }
+    .options{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:16px;
+    }
+    .option-btn{
+      position:relative;
+      width:100%;
+      min-height:110px;
+      border-radius:20px;
+      padding:18px;
+      background:linear-gradient(180deg, rgba(30,47,111,.95), rgba(23,37,84,.96));
+      border:1px solid rgba(148,163,184,.22);
+      color:var(--text);
+      font-size:clamp(18px,3vw,24px);
+      font-weight:700;
+      overflow:hidden;
+      box-shadow:0 12px 26px rgba(0,0,0,.22);
+    }
+    .option-btn::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(135deg, rgba(45,212,191,.12), rgba(96,165,250,.08));
+      opacity:0;
+      transition:opacity .18s ease;
+    }
+    .option-btn:hover::after{opacity:1}
+    .option-btn.selected{transform:scale(.98)}
+    .option-btn.correct{
+      border-color:rgba(52,211,153,.65);
+      background:linear-gradient(180deg, rgba(5,150,105,.95), rgba(17,94,89,.96));
+      animation:pop .35s ease;
+    }
+    .option-btn.wrong{
+      border-color:rgba(251,113,133,.68);
+      background:linear-gradient(180deg, rgba(190,24,93,.92), rgba(136,19,55,.95));
+      animation:shake .35s ease;
+    }
+    .option-btn.dimmed{
+      opacity:.62;
+      filter:saturate(.8);
+    }
+    .feedback{
+      min-height:30px;
+      text-align:center;
+      font-size:18px;
+      font-weight:600;
+      color:#dbeafe;
+    }
+    .feedback.good{color:#9ff8d6}
+    .feedback.bad{color:#ffb4c1}
+    .actions{
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .result{
+      display:none;
+      text-align:center;
+      padding-top:8px;
+    }
+    .result.show{display:block}
+    .result-score{
+      font-size:clamp(34px,6vw,58px);
+      font-weight:800;
+      margin:10px 0;
+      background:linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .small-note{color:var(--muted)}
+    .loading,.error{
+      text-align:center;
+      padding:28px;
+      border-radius:20px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(148,163,184,.15);
+    }
+    .error{color:#ffd2dc}
+    @keyframes shake{
+      0%,100%{transform:translateX(0)}
+      25%{transform:translateX(-6px)}
+      75%{transform:translateX(6px)}
+    }
+    @keyframes pop{
+      0%{transform:scale(.95)}
+      100%{transform:scale(1)}
+    }
+    @media (max-width: 860px){
+      .hero{grid-template-columns:1fr}
+    }
+    @media (max-width: 560px){
+      .page{padding-inline:12px}
+      .panel{padding:18px}
+      .stats{grid-template-columns:1fr 1fr 1fr; gap:10px}
+      .options{grid-template-columns:1fr 1fr}
+      .option-btn{min-height:96px; padding:14px; border-radius:16px; font-size:18px}
+      .topbar{padding:12px 14px}
+      .nav-btn,.primary-btn,.ghost-btn{flex:1 1 auto}
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <h1>🧩 CyberWord</h1>
+        <p>Выбирай слово, которое ближе всего по смыслу к загаданному. Близость считается по косинусному сходству векторов из <code>vectors.json</code> — подойдут и ключи вида <code>компьютер_128</code>.</p>
+      </div>
+      <div class="top-actions">
+        <a class="nav-btn" href="index.html">Назад</a>
+        <a class="nav-btn" href="index.html">Главное меню</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="panel">
+        <div class="loading" id="loadingBox">Загрузка словаря векторов…</div>
+        <div class="error" id="errorBox" hidden></div>
+
+        <div id="gameArea" hidden>
+          <div class="stats">
+            <div class="stat">
+              <span class="label">Раунд</span>
+              <strong id="roundValue">1/5</strong>
+            </div>
+            <div class="stat">
+              <span class="label">Очки</span>
+              <strong id="scoreValue">0</strong>
+            </div>
+            <div class="stat">
+              <span class="label">Серия</span>
+              <strong id="streakValue">0</strong>
+            </div>
+          </div>
+
+          <div class="game-board">
+            <div class="target-wrap">
+              <div class="round-chip">Контекстный поиск</div>
+              <h2 class="target-word" id="targetWord">—</h2>
+              <p class="target-hint">Нажми на слово, которое контекстно ближе всего к загаданному.</p>
+            </div>
+
+            <div class="options" id="options"></div>
+            <div class="feedback" id="feedback"></div>
+
+            <div class="actions">
+              <button class="primary-btn" id="nextBtn" hidden>Следующий раунд</button>
+              <button class="ghost-btn" id="restartBtn" hidden>Играть заново</button>
+            </div>
+          </div>
+
+          <div class="result" id="resultBox">
+            <p class="small-note">Игра завершена</p>
+            <div class="result-score" id="finalScore">0 / 5</div>
+            <p id="resultText">Хорошее начало!</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <h2 style="margin-top:0">Как играть?</h2>
+        <ol class="rules">
+          <li>В начале раунда появляется случайное слово.</li>
+          <li>Ниже показываются варианты ответа.</li>
+          <li>Только одно слово максимально близко к загаданному по вектору.</li>
+          <li>За правильный ответ начисляется 1 очко.</li>
+          <li>Всего 5 раундов, после них показывается итоговый результат.</li>
+        </ol>
+        <p class="small-note" style="margin-top:16px">Подсказка: если в файле ключи выглядят как <code>слово_123</code>, игра автоматически покажет игроку только слово без числового хвоста.</p>
+      </aside>
+    </section>
+  </div>
+
+  <script>
+    const totalRounds = 5;
+    let vectors = {};
+    let words = [];
+    let vectorNorms = {};
+    let round = 0;
+    let score = 0;
+    let streak = 0;
+    let usedTargets = new Set();
+    let currentTarget = '';
+    let currentCorrect = '';
+    let locked = false;
+
+    const loadingBox = document.getElementById('loadingBox');
+    const errorBox = document.getElementById('errorBox');
+    const gameArea = document.getElementById('gameArea');
+    const targetWord = document.getElementById('targetWord');
+    const optionsBox = document.getElementById('options');
+    const feedback = document.getElementById('feedback');
+    const nextBtn = document.getElementById('nextBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const roundValue = document.getElementById('roundValue');
+    const scoreValue = document.getElementById('scoreValue');
+    const streakValue = document.getElementById('streakValue');
+    const resultBox = document.getElementById('resultBox');
+    const finalScore = document.getElementById('finalScore');
+    const resultText = document.getElementById('resultText');
+
+    function formatWord(word){
+      return word
+        .replace(/_\d+$/, '')
+        .replaceAll('_', ' ')
+        .trim();
+    }
+
+    function parseVectorsPayload(rawText){
+      const normalizedText = rawText.replace(/^﻿/, '').trim();
+      let parsed;
+
+      try {
+        parsed = JSON.parse(normalizedText);
+      } catch (error) {
+        throw new Error('Файл vectors.json должен быть валидным JSON.');
+      }
+
+      if (Array.isArray(parsed)) {
+        const mapped = {};
+        parsed.forEach((item, index) => {
+          if (item && typeof item === 'object') {
+            const key = item.word || item.token || item.key || item.name;
+            const vector = item.vector || item.values || item.embedding;
+            if (typeof key === 'string' && Array.isArray(vector)) {
+              mapped[key] = vector;
+            }
+          }
+        });
+        parsed = mapped;
+      }
+
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        throw new Error('Ожидался объект формата {"слово": [0.1, ...]} или массив объектов с полями word/vector.');
+      }
+
+      return parsed;
+    }
+
+    function validateVectors(data){
+      const entries = Object.entries(data).filter(([, vector]) => Array.isArray(vector) && vector.length > 0);
+      if (entries.length < 8) {
+        throw new Error('В vectors.json слишком мало слов для игры.');
+      }
+
+      const dimension = entries[0][1].length;
+      const invalid = entries.find(([, vector]) => (
+        vector.length !== dimension || vector.some(value => typeof value !== 'number' || Number.isNaN(value))
+      ));
+
+      if (invalid) {
+        throw new Error('Векторы должны быть числовыми и одинаковой длины.');
+      }
+
+      const uniqueLabels = new Set(entries.map(([word]) => formatWord(word)).filter(Boolean));
+      if (uniqueLabels.size < 4) {
+        throw new Error('Для игры нужно минимум 4 разных слова после очистки названий.');
+      }
+
+      return {
+        words: entries.map(([word]) => word),
+        dimension
+      };
+    }
+
+    function dot(a, b){
+      return a.reduce((sum, value, index) => sum + value * b[index], 0);
+    }
+
+    function magnitude(vector){
+      return Math.sqrt(vector.reduce((sum, value) => sum + value * value, 0));
+    }
+
+    function cosineSimilarityByKey(wordA, wordB){
+      const a = vectors[wordA];
+      const b = vectors[wordB];
+      const denominator = (vectorNorms[wordA] || magnitude(a)) * (vectorNorms[wordB] || magnitude(b));
+      if (!denominator) return -1;
+      return dot(a, b) / denominator;
+    }
+
+    function randomItem(list){
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    function shuffle(list){
+      return [...list].sort(() => Math.random() - 0.5);
+    }
+
+    function rankWordsBySimilarity(target){
+      return words
+        .filter(word => word !== target)
+        .map(word => ({ word, similarity: cosineSimilarityByKey(target, word) }))
+        .sort((a, b) => b.similarity - a.similarity);
+    }
+
+    function getClosestWord(target, rankedWords){
+      const ranked = rankedWords || rankWordsBySimilarity(target);
+      return ranked[0]?.word;
+    }
+
+    function uniqueDisplayWords(items){
+      const used = new Set();
+      return items.filter(item => {
+        const label = formatWord(item.word);
+        if (!label || used.has(label)) return false;
+        used.add(label);
+        return true;
+      });
+    }
+
+    function getDistractors(target, correctWord, rankedWords, amount = 3){
+      const ranked = uniqueDisplayWords((rankedWords || rankWordsBySimilarity(target)).filter(item => item.word !== correctWord));
+      const distractors = [];
+      const zones = [
+        ranked.slice(5, 30),
+        ranked.slice(30, 120),
+        ranked.slice(120, 320),
+        ranked.slice(320)
+      ].filter(zone => zone.length);
+
+      for (const zone of zones) {
+        if (distractors.length >= amount) break;
+        distractors.push(randomItem(zone));
+      }
+
+      if (distractors.length < amount) {
+        const fallback = shuffle(ranked).filter(candidate => !distractors.some(item => item.word === candidate.word));
+        distractors.push(...fallback.slice(0, amount - distractors.length));
+      }
+
+      return distractors.slice(0, amount).map(item => item.word);
+    }
+
+    function updateStats(){
+      roundValue.textContent = `${Math.min(round + 1, totalRounds)}/${totalRounds}`;
+      scoreValue.textContent = score;
+      streakValue.textContent = streak;
+    }
+
+    function buildOptions(target, correctWord, rankedWords){
+      const distractors = getDistractors(target, correctWord, rankedWords, 3);
+      const uniqueOptions = [];
+      const seenLabels = new Set();
+
+      [correctWord, ...distractors].forEach(option => {
+        const label = formatWord(option);
+        if (!label || seenLabels.has(label)) return;
+        seenLabels.add(label);
+        uniqueOptions.push(option);
+      });
+
+      const fallbackWords = uniqueDisplayWords(rankedWords).map(item => item.word);
+      for (const option of fallbackWords) {
+        if (uniqueOptions.length >= 4) break;
+        const label = formatWord(option);
+        if (!label || seenLabels.has(label)) continue;
+        seenLabels.add(label);
+        uniqueOptions.push(option);
+      }
+
+      const options = shuffle(uniqueOptions.slice(0, 6));
+      optionsBox.innerHTML = '';
+
+      options.forEach(option => {
+        const button = document.createElement('button');
+        button.className = 'option-btn';
+        button.type = 'button';
+        button.textContent = formatWord(option);
+        button.dataset.word = option;
+        button.addEventListener('click', () => handleAnswer(button, option));
+        optionsBox.appendChild(button);
+      });
+    }
+
+    function handleAnswer(button, selectedWord){
+      if (locked) return;
+      locked = true;
+      button.classList.add('selected');
+
+      const buttons = [...document.querySelectorAll('.option-btn')];
+      const correctButton = buttons.find(btn => btn.dataset.word === currentCorrect);
+
+      if (selectedWord === currentCorrect){
+        score += 1;
+        streak += 1;
+        button.classList.add('correct');
+        feedback.textContent = `Верно! Слово «${formatWord(selectedWord)}» ближе всего к «${formatWord(currentTarget)}».`;
+        feedback.className = 'feedback good';
+      } else {
+        streak = 0;
+        button.classList.add('wrong');
+        if (correctButton) correctButton.classList.add('correct');
+        feedback.textContent = `Почти! Ближе всего было слово «${formatWord(currentCorrect)}».`;
+        feedback.className = 'feedback bad';
+      }
+
+      buttons.forEach(btn => {
+        if (btn !== button && btn !== correctButton) btn.classList.add('dimmed');
+        btn.disabled = true;
+      });
+
+      scoreValue.textContent = score;
+      streakValue.textContent = streak;
+
+      if (round >= totalRounds - 1){
+        nextBtn.hidden = true;
+        restartBtn.hidden = false;
+        setTimeout(showResults, 700);
+      } else {
+        nextBtn.hidden = false;
+      }
+    }
+
+    function pickTargetWord(){
+      const available = words.filter(word => !usedTargets.has(word));
+      const source = available.length ? available : words;
+      const target = randomItem(source);
+      usedTargets.add(target);
+      return target;
+    }
+
+    function startRound(){
+      locked = false;
+      feedback.textContent = '';
+      feedback.className = 'feedback';
+      nextBtn.hidden = true;
+      resultBox.classList.remove('show');
+
+      currentTarget = pickTargetWord();
+      const rankedWords = rankWordsBySimilarity(currentTarget);
+      currentCorrect = getClosestWord(currentTarget, rankedWords);
+
+      targetWord.textContent = formatWord(currentTarget);
+      buildOptions(currentTarget, currentCorrect, rankedWords);
+      updateStats();
+    }
+
+    function showResults(){
+      resultBox.classList.add('show');
+      finalScore.textContent = `${score} / ${totalRounds}`;
+
+      if (score === totalRounds) {
+        resultText.textContent = 'Идеально! Ты отлично чувствуешь смысловую близость слов.';
+      } else if (score >= 3) {
+        resultText.textContent = 'Отличный результат! Ты хорошо улавливаешь контекст.';
+      } else {
+        resultText.textContent = 'Неплохо! Попробуй ещё раз и набери больше очков.';
+      }
+    }
+
+    function restartGame(){
+      round = 0;
+      score = 0;
+      streak = 0;
+      usedTargets = new Set();
+      restartBtn.hidden = true;
+      updateStats();
+      startRound();
+    }
+
+    nextBtn.addEventListener('click', () => {
+      round += 1;
+      startRound();
+    });
+
+    restartBtn.addEventListener('click', restartGame);
+
+    async function initGame(){
+      try {
+        const response = await fetch('vectors.json');
+        if (!response.ok) {
+          throw new Error('Не удалось загрузить vectors.json');
+        }
+
+        const rawText = await response.text();
+        vectors = parseVectorsPayload(rawText);
+        const validated = validateVectors(vectors);
+        words = validated.words;
+        vectorNorms = Object.fromEntries(words.map(word => [word, magnitude(vectors[word])]));
+
+        loadingBox.hidden = true;
+        gameArea.hidden = false;
+        updateStats();
+        startRound();
+      } catch (error) {
+        loadingBox.hidden = true;
+        errorBox.hidden = false;
+        errorBox.textContent = `Ошибка: ${error.message}. Проверь, что файл vectors.json лежит рядом с этой страницей.`;
+      }
+    }
+
+    initGame();
+  </script>
+</body>
+</html>

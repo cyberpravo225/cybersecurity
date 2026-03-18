@@ -43,6 +43,25 @@
 })();
 
 /* =========================
+   Normalize arrow icons in navigation labels
+   ========================= */
+(function(){
+  document.querySelectorAll('.back-btn').forEach(link => {
+    link.textContent = link.textContent.replace(/^\s*[←↩]+\s*/, '').trim();
+  });
+
+  document.querySelectorAll('a, button').forEach(el => {
+    const text = el.textContent || '';
+    if (/главное\s+меню/i.test(text)) {
+      el.textContent = text.replace(/^\s*[←↩🏠]+\s*/, '').trim();
+      if (el.closest('.topbar')) {
+        el.classList.add('header-main-menu');
+      }
+    }
+  });
+})();
+
+/* =========================
    Mobile menu and submenus
    ========================= */
 (function(){
