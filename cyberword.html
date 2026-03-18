@@ -344,6 +344,7 @@
     const totalRounds = 5;
     let vectors = {};
     let words = [];
+    let vectorNorms = {};
     let round = 0;
     let score = 0;
     let streak = 0;
@@ -374,6 +375,37 @@
         .trim();
     }
 
+    function parseVectorsPayload(rawText){
+      const normalizedText = rawText.replace(/^﻿/, '').trim();
+      let parsed;
+
+      try {
+        parsed = JSON.parse(normalizedText);
+      } catch (error) {
+        throw new Error('Файл vectors.json должен быть валидным JSON.');
+      }
+
+      if (Array.isArray(parsed)) {
+        const mapped = {};
+        parsed.forEach((item, index) => {
+          if (item && typeof item === 'object') {
+            const key = item.word || item.token || item.key || item.name;
+            const vector = item.vector || item.values || item.embedding;
+            if (typeof key === 'string' && Array.isArray(vector)) {
+              mapped[key] = vector;
+            }
+          }
+        });
+        parsed = mapped;
+      }
+
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        throw new Error('Ожидался объект формата {"слово": [0.1, ...]} или массив объектов с полями word/vector.');
+      }
+
+      return parsed;
+    }
+
     function validateVectors(data){
       const entries = Object.entries(data).filter(([, vector]) => Array.isArray(vector) && vector.length > 0);
       if (entries.length < 8) {
@@ -381,10 +413,17 @@
       }
 
       const dimension = entries[0][1].length;
-      const invalid = entries.find(([, vector]) => vector.length !== dimension || vector.some(value => typeof value !== 'number' || Number.isNaN(value)));
+      const invalid = entries.find(([, vector]) => (
+        vector.length !== dimension || vector.some(value => typeof value !== 'number' || Number.isNaN(value))
+      ));
 
       if (invalid) {
         throw new Error('Векторы должны быть числовыми и одинаковой длины.');
+      }
+
+      const uniqueLabels = new Set(entries.map(([word]) => formatWord(word)).filter(Boolean));
+      if (uniqueLabels.size < 4) {
+        throw new Error('Для игры нужно минимум 4 разных слова после очистки названий.');
       }
 
       return {
@@ -401,8 +440,10 @@
       return Math.sqrt(vector.reduce((sum, value) => sum + value * value, 0));
     }
 
-    function cosineSimilarity(a, b){
-      const denominator = magnitude(a) * magnitude(b);
+    function cosineSimilarityByKey(wordA, wordB){
+      const a = vectors[wordA];
+      const b = vectors[wordB];
+      const denominator = (vectorNorms[wordA] || magnitude(a)) * (vectorNorms[wordB] || magnitude(b));
       if (!denominator) return -1;
       return dot(a, b) / denominator;
     }
@@ -416,10 +457,9 @@
     }
 
     function rankWordsBySimilarity(target){
-      const targetVector = vectors[target];
       return words
         .filter(word => word !== target)
-        .map(word => ({ word, similarity: cosineSimilarity(targetVector, vectors[word]) }))
+        .map(word => ({ word, similarity: cosineSimilarityByKey(target, word) }))
         .sort((a, b) => b.similarity - a.similarity);
     }
 
@@ -469,7 +509,26 @@
 
     function buildOptions(target, correctWord, rankedWords){
       const distractors = getDistractors(target, correctWord, rankedWords, 3);
-      const options = shuffle([correctWord, ...distractors]);
+      const uniqueOptions = [];
+      const seenLabels = new Set();
+
+      [correctWord, ...distractors].forEach(option => {
+        const label = formatWord(option);
+        if (!label || seenLabels.has(label)) return;
+        seenLabels.add(label);
+        uniqueOptions.push(option);
+      });
+
+      const fallbackWords = uniqueDisplayWords(rankedWords).map(item => item.word);
+      for (const option of fallbackWords) {
+        if (uniqueOptions.length >= 4) break;
+        const label = formatWord(option);
+        if (!label || seenLabels.has(label)) continue;
+        seenLabels.add(label);
+        uniqueOptions.push(option);
+      }
+
+      const options = shuffle(uniqueOptions.slice(0, 6));
       optionsBox.innerHTML = '';
 
       options.forEach(option => {
@@ -583,9 +642,11 @@
           throw new Error('Не удалось загрузить vectors.json');
         }
 
-        vectors = await response.json();
+        const rawText = await response.text();
+        vectors = parseVectorsPayload(rawText);
         const validated = validateVectors(vectors);
         words = validated.words;
+        vectorNorms = Object.fromEntries(words.map(word => [word, magnitude(vectors[word])]));
 
         loadingBox.hidden = true;
         gameArea.hidden = false;
