@@ -3494,3 +3494,135 @@ body[data-page="home"] .hero{
     gap:8px;
   }
 }
+
+/* Cyberly precise alignment fixes */
+.game-feature-copy p{
+  margin-top:10px;
+}
+
+.cyberly-mode-card{
+  align-items:center;
+  text-align:center;
+}
+
+.cyberly-mode-card .cyberly-badge{
+  justify-content:center;
+  text-align:center;
+}
+
+.cyberly-mode-card h3{
+  width:100%;
+  margin:0;
+  text-align:center;
+  font-size:clamp(30px, 4vw, 40px);
+  line-height:1.05;
+}
+
+.cyberly-mode-card p{
+  text-align:center;
+}
+
+.cyberly-mode-card ul{
+  width:100%;
+  max-width:260px;
+  margin:0 auto;
+  text-align:left;
+}
+
+#hint-button{
+  min-height:56px;
+  padding:14px 20px;
+  font-size:18px;
+  font-weight:800;
+  border-radius:16px;
+}
+
+.cyberly-board-wrap,
+.cyberly-sidebar,
+.cyberly-board-wrap *,
+.cyberly-sidebar *{
+  -webkit-tap-highlight-color:transparent;
+}
+
+.cyberly-board-wrap,
+.cyberly-sidebar,
+.cyberly-key,
+#hint-button,
+#backspace-button,
+#submit-button{
+  touch-action:manipulation;
+}
+
+.cyberly-board-wrap:hover,
+.cyberly-board-wrap:active,
+.cyberly-board-wrap:focus-within,
+.cyberly-sidebar:hover,
+.cyberly-sidebar:active,
+.cyberly-sidebar:focus-within{
+  transform:none !important;
+  box-shadow:0 8px 24px rgba(2,6,23,0.12) !important;
+  background:var(--card-bg) !important;
+  filter:none !important;
+}
+
+@media (max-width: 900px){
+  .game-feature h3,
+  .game-feature-copy h3,
+  .game-feature p,
+  .game-feature-copy p{
+    text-align:center;
+  }
+
+  .game-feature-copy{
+    align-items:center;
+  }
+
+  .game-feature-actions,
+  .game-feature-btn{
+    align-self:center;
+    justify-content:center;
+  }
+}
+
+@media (max-width: 640px){
+  .game-feature{
+    justify-content:flex-start;
+  }
+
+  .game-feature-copy p{
+    margin-top:6px;
+  }
+
+  .game-feature h3,
+  .game-feature-copy h3{
+    width:100%;
+    text-align:center;
+    white-space:nowrap;
+  }
+
+  .game-feature p,
+  .game-feature-copy p{
+    text-align:center;
+  }
+
+  .game-feature-actions{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+
+  .game-feature-btn{
+    width:100%;
+    max-width:220px;
+    margin:0 auto;
+  }
+
+  .cyberly-mode-card h3{
+    font-size:clamp(26px, 7vw, 34px);
+  }
+
+  #hint-button{
+    min-height:52px;
+    font-size:17px;
+  }
+}
