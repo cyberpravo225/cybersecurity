@@ -3561,7 +3561,7 @@ body[data-page="home"] .hero{
 .cyberly-sidebar:focus-within{
   transform:none !important;
   box-shadow:0 8px 24px rgba(2,6,23,0.12) !important;
-  background:var(--card-bg) !important;
+  background:color-mix(in srgb, var(--bg) 94%, transparent) !important;
   filter:none !important;
 }
 
@@ -3633,7 +3633,7 @@ body[data-page="home"] .hero{
 .card.cyberly-board-wrap:active,
 .card.cyberly-board-wrap:focus,
 .card.cyberly-board-wrap:focus-within{
-  background:var(--card-bg) !important;
+  background:color-mix(in srgb, var(--bg) 94%, transparent) !important;
   color:var(--fg) !important;
   transform:none !important;
   box-shadow:0 8px 24px rgba(2,6,23,0.12) !important;
