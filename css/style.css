@@ -3344,3 +3344,153 @@ body[data-page="home"] .hero{
     flex:1.15;
   }
 }
+
+/* Cyberly final mobile polish */
+.game-feature-copy,
+.game-feature-actions{
+  width:100%;
+}
+
+.cyberly-sidebar-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.cyberly-board-wrap,
+.cyberly-sidebar{
+  transition:none;
+}
+
+.cyberly-board-wrap:hover,
+.cyberly-board-wrap:active,
+.cyberly-board-wrap:focus-within,
+.cyberly-sidebar:hover,
+.cyberly-sidebar:active,
+.cyberly-sidebar:focus-within{
+  transform:none;
+  box-shadow:0 8px 24px rgba(2,6,23,0.12);
+  background:var(--card-bg);
+}
+
+.cyberly-board{
+  width:100%;
+  justify-items:center;
+}
+
+.cyberly-row{
+  width:min(100%, calc(var(--columns) * 72px + (var(--columns) - 1) * 10px));
+}
+
+.cyberly-tile{
+  width:100%;
+  padding:0;
+  line-height:1;
+  text-align:center;
+  justify-self:stretch;
+  align-self:stretch;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.cyberly-keyboard-row{
+  width:100%;
+}
+
+.cyberly-key{
+  flex:1 1 0;
+  display:grid;
+  place-items:center;
+  text-align:center;
+}
+
+@media (max-width: 900px){
+  .game-feature{
+    padding:18px;
+    gap:14px;
+  }
+
+  .game-feature-actions{
+    justify-content:flex-start;
+  }
+}
+
+@media (max-width: 640px){
+  .game-feature{
+    padding:16px;
+    border-radius:16px;
+  }
+
+  .game-feature-copy{
+    gap:10px;
+  }
+
+  .game-feature-btn{
+    width:100%;
+    justify-content:center;
+  }
+
+  .cyberly-actions{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    width:100%;
+  }
+
+  .cyberly-actions .btn,
+  .cyberly-sidebar-actions .btn{
+    width:100%;
+  }
+
+  .cyberly-board-wrap,
+  .cyberly-sidebar{
+    padding:14px;
+  }
+
+  .cyberly-row{
+    width:100%;
+  }
+}
+
+@media (max-width: 420px){
+  .cyberly-shell .container{
+    padding-left:8px;
+    padding-right:8px;
+  }
+
+  .cyberly-board-wrap,
+  .cyberly-sidebar{
+    padding:12px;
+    border-radius:14px;
+  }
+
+  .cyberly-game-layout,
+  .cyberly-board-wrap,
+  .cyberly-sidebar,
+  .cyberly-board,
+  .cyberly-keyboard{
+    gap:12px;
+  }
+
+  .cyberly-row{
+    gap:4px;
+  }
+
+  .cyberly-tile{
+    font-size:clamp(15px, 5.5vw, 20px);
+    border-width:1.5px;
+  }
+
+  .cyberly-keyboard-row{
+    gap:2px;
+  }
+
+  .cyberly-key{
+    min-height:42px;
+    padding:0 2px;
+    font-size:12px;
+    border-radius:8px;
+  }
+
+  .cyberly-actions{
+    gap:8px;
+  }
+}
