@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Cyberly — игра</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page">
+  <div class="site cyberly-shell">
+    <header class="topbar glass" role="banner">
+      <div class="brand">
+        <a href="cyberly.html" class="logo" aria-label="К выбору режима">
+          <img src="assets/assets/logo.png" alt="Логотип" class="site-logo">
+          <span class="brand-text">Cyberly</span>
+        </a>
+      </div>
+      <nav class="nav" aria-label="Cyberly controls">
+        <button id="theme-toggle" class="btn icon-btn" aria-label="Переключить тему" title="Тема">
+          <svg class="icon-theme" width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path class="icon-moon" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>
+            <g class="icon-sun">
+              <circle cx="12" cy="12" r="4"/>
+              <line x1="12" y1="1" x2="12" y2="4"/>
+              <line x1="12" y1="20" x2="12" y2="23"/>
+              <line x1="4.2" y1="4.2" x2="6.3" y2="6.3"/>
+              <line x1="17.7" y1="17.7" x2="19.8" y2="19.8"/>
+              <line x1="1" y1="12" x2="4" y2="12"/>
+              <line x1="20" y1="12" x2="23" y2="12"/>
+              <line x1="4.2" y1="19.8" x2="6.3" y2="17.7"/>
+              <line x1="17.7" y1="6.3" x2="19.8" y2="4.2"/>
+            </g>
+          </svg>
+        </button>
+        <a class="btn" href="cyberly.html">Режимы</a>
+        <button class="btn primary" id="restart-button" type="button">Играть снова</button>
+      </nav>
+    </header>
+
+    <main class="main">
+      <section class="section">
+        <div class="container">
+          <div class="cyberly-game-layout">
+            <aside class="card cyberly-sidebar">
+              <span class="cyberly-badge" id="game-mode-label">Режим</span>
+              <h1>Cyberly</h1>
+              <p id="game-description">Угадай слово за 6 попыток.</p>
+              <div class="cyberly-stats">
+                <div><strong id="difficulty-label">—</strong><span>Сложность</span></div>
+                <div><strong id="word-length-label">—</strong><span>Длина слова</span></div>
+                <div><strong>6</strong><span>Попыток</span></div>
+              </div>
+              <div class="cyberly-message" id="game-message" aria-live="polite">Введите слово с клавиатуры или нажимайте экранные клавиши.</div>
+              <div class="cyberly-result" id="game-result" hidden></div>
+            </aside>
+
+            <section class="card cyberly-board-wrap">
+              <div class="cyberly-board" id="board" aria-label="Игровое поле"></div>
+              <div class="cyberly-actions">
+                <button class="btn" id="backspace-button" type="button">⌫ Стереть</button>
+                <button class="btn primary" id="submit-button" type="button">Проверить</button>
+              </div>
+              <div class="cyberly-keyboard" id="keyboard" aria-label="Экранная клавиатура"></div>
+            </section>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script type="module" src="js/cyberly-game.js"></script>
+</body>
+</html>

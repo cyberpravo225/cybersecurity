@@ -2892,3 +2892,311 @@ body[data-page="home"] .hero{
   border:1px solid rgba(180,120,60,0.2);
   color:#2d2a26;
 }
+
+/* =================================
+   Cyberly + game feature cards
+================================= */
+.game-feature{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  justify-content:space-between;
+  min-height:220px;
+}
+
+.game-feature h3{
+  margin:0;
+  text-align:center;
+}
+
+.game-feature p{
+  margin:0;
+}
+
+.game-feature-split{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:20px;
+}
+
+.game-feature-copy{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  align-items:stretch;
+}
+
+.game-feature-copy h3{
+  text-align:center;
+}
+
+.game-feature-copy p{
+  text-align:left;
+}
+
+.game-feature-btn{
+  align-self:flex-end;
+  min-width:132px;
+  justify-content:center;
+  padding:12px 20px;
+  border-radius:999px;
+  font-weight:800;
+  letter-spacing:.02em;
+  box-shadow:0 12px 24px rgba(0,0,0,.16);
+}
+
+.cyberly-shell .main{
+  padding-top:12px;
+}
+
+.cyberly-hero,
+.cyberly-daily,
+.cyberly-board-wrap,
+.cyberly-sidebar,
+.cyberly-mode-card{
+  background:var(--card-bg);
+}
+
+.cyberly-hero,
+.cyberly-daily{
+  display:flex;
+  justify-content:space-between;
+  gap:24px;
+  align-items:center;
+  margin-bottom:24px;
+}
+
+.cyberly-hero h1,
+.cyberly-daily h2,
+.cyberly-sidebar h1{
+  margin:0 0 10px;
+}
+
+.cyberly-hero p,
+.cyberly-daily p,
+.cyberly-sidebar p{
+  margin:0;
+  color:var(--muted);
+}
+
+.cyberly-badge{
+  display:inline-flex;
+  padding:7px 12px;
+  border-radius:999px;
+  background:color-mix(in srgb, var(--accent) 14%, transparent);
+  color:var(--accent);
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+
+.cyberly-hero-actions,
+.cyberly-daily-meta{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.cyberly-daily-meta div,
+.cyberly-stats div{
+  min-width:110px;
+  padding:12px 14px;
+  border-radius:14px;
+  background:rgba(127,127,127,.08);
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.cyberly-daily-meta strong,
+.cyberly-stats strong{
+  font-size:18px;
+}
+
+.cyberly-daily-meta span,
+.cyberly-stats span{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.cyberly-mode-grid{
+  align-items:stretch;
+}
+
+.cyberly-mode-card{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.cyberly-mode-card ul{
+  margin:0;
+  padding-left:18px;
+  color:var(--muted);
+}
+
+.cyberly-game-layout{
+  display:grid;
+  grid-template-columns:320px minmax(0,1fr);
+  gap:24px;
+}
+
+.cyberly-sidebar{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.cyberly-message,
+.cyberly-result{
+  padding:14px 16px;
+  border-radius:14px;
+  background:rgba(127,127,127,.08);
+}
+
+.cyberly-result{
+  border:1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  font-weight:700;
+}
+
+.cyberly-board-wrap{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.cyberly-board{
+  --columns:5;
+  display:grid;
+  gap:10px;
+}
+
+.cyberly-row{
+  display:grid;
+  grid-template-columns:repeat(var(--columns), minmax(44px, 72px));
+  gap:10px;
+  justify-content:center;
+}
+
+.cyberly-tile{
+  aspect-ratio:1 / 1;
+  border-radius:16px;
+  border:2px solid rgba(127,127,127,.25);
+  display:grid;
+  place-items:center;
+  font-size:clamp(22px, 4vw, 32px);
+  font-weight:800;
+  text-transform:uppercase;
+  background:rgba(127,127,127,.06);
+  transition:transform .16s ease, border-color .16s ease, background .16s ease;
+  transform-style:preserve-3d;
+}
+
+.cyberly-tile.filled{
+  border-color:color-mix(in srgb, var(--accent) 34%, transparent);
+}
+
+.cyberly-tile[data-state="correct"]{background:#3aa655;color:#fff;border-color:#3aa655}
+.cyberly-tile[data-state="present"]{background:#d9a21b;color:#fff;border-color:#d9a21b}
+.cyberly-tile[data-state="absent"]{background:#4b5563;color:#fff;border-color:#4b5563}
+
+.cyberly-tile.flip{
+  animation:cyberly-flip .6s ease forwards;
+}
+
+@keyframes cyberly-flip{
+  0%{transform:rotateX(0)}
+  50%{transform:rotateX(90deg)}
+  100%{transform:rotateX(0)}
+}
+
+.cyberly-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.cyberly-keyboard{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.cyberly-keyboard-row{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:nowrap;
+}
+
+.cyberly-key{
+  min-width:40px;
+  min-height:52px;
+  padding:0 10px;
+  border-radius:12px;
+  border:none;
+  background:rgba(127,127,127,.14);
+  color:var(--fg);
+  font-weight:800;
+  cursor:pointer;
+}
+
+.cyberly-key.wide{
+  min-width:88px;
+}
+
+.cyberly-key[data-state="correct"]{background:#3aa655;color:#fff}
+.cyberly-key[data-state="present"]{background:#d9a21b;color:#fff}
+.cyberly-key[data-state="absent"]{background:#4b5563;color:#fff}
+
+@media (max-width: 900px){
+  .game-feature-split,
+  .cyberly-hero,
+  .cyberly-daily,
+  .cyberly-game-layout{
+    grid-template-columns:1fr;
+    display:grid;
+  }
+
+  .game-feature-btn{
+    align-self:flex-start;
+  }
+
+  .cyberly-row{
+    grid-template-columns:repeat(var(--columns), minmax(38px, 1fr));
+  }
+}
+
+@media (max-width: 640px){
+  .cyberly-keyboard-row{
+    gap:6px;
+  }
+
+  .cyberly-key{
+    min-width:0;
+    flex:1;
+    min-height:48px;
+    padding:0 4px;
+    font-size:12px;
+  }
+
+  .cyberly-key.wide{
+    flex:1.35;
+  }
+
+  .cyberly-actions{
+    justify-content:stretch;
+  }
+
+  .cyberly-actions .btn,
+  .cyberly-hero-actions .btn,
+  .cyberly-daily-meta .btn{
+    width:100%;
+    justify-content:center;
+  }
+}
