@@ -233,6 +233,10 @@ function createKey(key, label, wide = false) {
 }
 
 function revealHint() {
+  hintButton?.classList.remove('hint-pop');
+  void hintButton?.offsetWidth;
+  hintButton?.classList.add('hint-pop');
+
   if (state.solved) {
     setMessage('Раунд уже завершён. Начните новую игру, чтобы снова использовать подсказку.');
     return;
