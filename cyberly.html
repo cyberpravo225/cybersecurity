@@ -103,6 +103,17 @@
                 <li>Для продвинутых игроков</li>
               </ul>
             </a>
+
+            <a class="card cyberly-mode-card" href="cyberly-play.html?mode=random&difficulty=hardcore">
+              <span class="cyberly-badge">hardcore</span>
+              <h3>Hardcore</h3>
+              <p>Максимально жёсткий режим: длинные слова и только две подсказки — зелёный и чёрный.</p>
+              <ul>
+                <li>Без жёлтых подсказок</li>
+                <li>Только точные совпадения</li>
+                <li>Для опытных игроков</li>
+              </ul>
+            </a>
           </div>
         </div>
       </section>
@@ -113,8 +124,8 @@
   <script type="module">
     import { easyWords, mediumWords, hardWords } from './js/cyberly.js';
 
-    const pools = { easy: easyWords, medium: mediumWords, hard: hardWords };
-    const labels = { easy: 'Лёгкий', medium: 'Средний', hard: 'Сложный' };
+    const pools = { easy: easyWords, medium: mediumWords, hard: hardWords, hardcore: hardWords };
+    const labels = { easy: 'Лёгкий', medium: 'Средний', hard: 'Сложный', hardcore: 'Hardcore' };
     const dailyDescription = document.getElementById('daily-word-description');
     const dailyDate = document.getElementById('daily-word-date');
     const dailyDifficulty = document.getElementById('daily-word-difficulty');
