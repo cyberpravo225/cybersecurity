@@ -3,8 +3,8 @@ import { easyWords, mediumWords, hardWords } from './cyberly.js';
 const ATTEMPTS = 6;
 const KEY_ROWS = ['ЙЦУКЕНГШЩЗХЪ', 'ФЫВАПРОЛДЖЭ', 'ЯЧСМИТЬБЮ'];
 const COLOR_PRIORITY = { absent: 1, present: 2, correct: 3 };
-const pools = { easy: easyWords, medium: mediumWords, hard: hardWords };
-const labels = { easy: 'Лёгкий', medium: 'Средний', hard: 'Сложный' };
+const pools = { easy: easyWords, medium: mediumWords, hard: hardWords, hardcore: hardWords };
+const labels = { easy: 'Лёгкий', medium: 'Средний', hard: 'Сложный', hardcore: 'Hardcore' };
 
 const params = new URLSearchParams(window.location.search);
 const selectedDifficulty = pools[params.get('difficulty')] ? params.get('difficulty') : 'medium';
@@ -42,7 +42,9 @@ function init() {
   gameModeLabel.textContent = mode === 'daily' ? 'Слово дня' : 'Свободная игра';
   gameDescription.textContent = mode === 'daily'
     ? 'Сегодня для тебя подготовлено одно общее слово дня. Попробуй угадать его за 6 попыток.'
-    : 'Случайное слово из словаря выбранной сложности. Можно играть снова сколько угодно.';
+    : selectedDifficulty === 'hardcore'
+      ? 'Hardcore-режим: только зелёные и чёрные подсказки, без жёлтых совпадений.'
+      : 'Случайное слово из словаря выбранной сложности. Можно играть снова сколько угодно.';
 
   renderBoard();
   renderKeyboard();
@@ -118,7 +120,7 @@ function submitGuess() {
     return setMessage(`Слово должно содержать ${wordLength} букв.`);
   }
 
-  const evaluation = evaluateGuess(guess, answer);
+  const evaluation = evaluateGuess(guess, answer, selectedDifficulty === 'hardcore');
   revealRow(state.row, evaluation);
   updateKeyboardStates(guess, evaluation);
 
@@ -145,19 +147,24 @@ function submitGuess() {
   focusBoard();
 }
 
-function evaluateGuess(guess, target) {
+function evaluateGuess(guess, target, hardcoreMode = false) {
   const result = Array(wordLength).fill('absent');
+
+  [...guess].forEach((letter, index) => {
+    if (target[index] === letter) {
+      result[index] = 'correct';
+    }
+  });
+
+  if (hardcoreMode) {
+    return result;
+  }
+
   const letterCounts = new Map();
 
   [...target].forEach((letter, index) => {
     if (guess[index] !== letter) {
       letterCounts.set(letter, (letterCounts.get(letter) || 0) + 1);
-    }
-  });
-
-  [...guess].forEach((letter, index) => {
-    if (target[index] === letter) {
-      result[index] = 'correct';
     }
   });
 
@@ -203,11 +210,7 @@ function updateBoardRow(row) {
 function revealRow(row, evaluation) {
   const tiles = board.querySelectorAll(`.cyberly-tile[data-row="${row}"]`);
   tiles.forEach((tile, index) => {
-    tile.style.animationDelay = `${index * 120}ms`;
-    tile.classList.add('flip');
-    window.setTimeout(() => {
-      tile.dataset.state = evaluation[index];
-    }, 220 + index * 120);
+    tile.dataset.state = evaluation[index];
   });
 }
 
