@@ -3200,3 +3200,147 @@ body[data-page="home"] .hero{
     justify-content:center;
   }
 }
+
+/* Cyberly feedback fixes */
+.game-feature{
+  min-height:240px;
+}
+
+.game-feature-actions{
+  margin-top:auto;
+  display:flex;
+  align-items:flex-end;
+  justify-content:flex-end;
+}
+
+.game-feature.game-feature-split{
+  grid-template-rows:1fr;
+}
+
+.cyberly-mode-grid{
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+}
+
+.cyberly-board-wrap,
+.cyberly-sidebar,
+.cyberly-game-layout,
+.cyberly-board,
+.cyberly-row,
+.cyberly-keyboard,
+.cyberly-keyboard-row{
+  max-width:100%;
+}
+
+.cyberly-board-wrap,
+.cyberly-sidebar{
+  overflow:hidden;
+}
+
+.cyberly-stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(110px,1fr));
+  gap:12px;
+}
+
+.cyberly-tile{
+  transition:none;
+}
+
+.cyberly-tile.flip{
+  animation:none;
+}
+
+@media (hover:hover){
+  .cyberly-tile:hover,
+  .cyberly-tile:active,
+  .cyberly-board-wrap:hover,
+  .cyberly-board-wrap:active{
+    transform:none;
+    box-shadow:none;
+    filter:none;
+  }
+}
+
+@media (max-width: 900px){
+  .game-feature,
+  .game-feature.game-feature-split{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    min-height:auto;
+  }
+
+  .game-feature h3,
+  .game-feature-copy h3,
+  .game-feature p,
+  .game-feature-copy p{
+    text-align:left;
+  }
+
+  .game-feature-actions,
+  .game-feature-btn{
+    align-self:flex-start;
+    justify-content:flex-start;
+  }
+
+  .cyberly-game-layout{
+    grid-template-columns:minmax(0,1fr);
+  }
+
+  .cyberly-sidebar,
+  .cyberly-board-wrap{
+    min-width:0;
+  }
+}
+
+@media (max-width: 640px){
+  .game-feature-actions{
+    width:100%;
+  }
+
+  .game-feature-btn{
+    min-width:0;
+    width:auto;
+  }
+
+  .cyberly-shell .container{
+    padding-left:12px;
+    padding-right:12px;
+  }
+
+  .cyberly-sidebar,
+  .cyberly-board-wrap{
+    padding:16px;
+  }
+
+  .cyberly-hero,
+  .cyberly-daily,
+  .cyberly-game-layout{
+    gap:16px;
+  }
+
+  .cyberly-row{
+    gap:6px;
+    grid-template-columns:repeat(var(--columns), minmax(0, 1fr));
+  }
+
+  .cyberly-tile{
+    min-width:0;
+    font-size:clamp(16px, 5vw, 24px);
+    border-radius:12px;
+  }
+
+  .cyberly-keyboard-row{
+    gap:4px;
+  }
+
+  .cyberly-key{
+    min-height:44px;
+    font-size:11px;
+    border-radius:10px;
+  }
+
+  .cyberly-key.wide{
+    flex:1.15;
+  }
+}
