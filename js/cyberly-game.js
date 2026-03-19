@@ -18,7 +18,8 @@ const state = {
   col: 0,
   guesses: Array.from({ length: ATTEMPTS }, () => Array(wordLength).fill('')),
   solved: false,
-  keyboardStates: new Map()
+  keyboardStates: new Map(),
+  hintedIndexes: new Set()
 };
 
 const board = document.getElementById('board');
@@ -28,6 +29,7 @@ const result = document.getElementById('game-result');
 const restartButton = document.getElementById('restart-button');
 const backspaceButton = document.getElementById('backspace-button');
 const submitButton = document.getElementById('submit-button');
+const hintButton = document.getElementById('hint-button');
 const difficultyLabel = document.getElementById('difficulty-label');
 const wordLengthLabel = document.getElementById('word-length-label');
 const gameModeLabel = document.getElementById('game-mode-label');
@@ -58,7 +60,7 @@ function attachEvents() {
   restartButton.addEventListener('click', restartGame);
   backspaceButton.addEventListener('click', deleteLetter);
   submitButton.addEventListener('click', submitGuess);
-  board.addEventListener('click', focusBoard);
+  hintButton?.addEventListener('click', revealHint);
 }
 
 function handlePhysicalKeyboard(event) {
@@ -87,10 +89,7 @@ function handlePhysicalKeyboard(event) {
 function handleKeyboardClick(event) {
   const button = event.target.closest('button[data-key]');
   if (!button) return;
-  const key = button.dataset.key;
-  if (key === 'ENTER') return submitGuess();
-  if (key === 'BACKSPACE') return deleteLetter();
-  addLetter(key);
+  addLetter(button.dataset.key);
 }
 
 function addLetter(letter) {
@@ -219,17 +218,7 @@ function renderKeyboard() {
   KEY_ROWS.forEach(row => {
     const rowEl = document.createElement('div');
     rowEl.className = 'cyberly-keyboard-row';
-
-    if (row === KEY_ROWS[2]) {
-      rowEl.appendChild(createKey('ENTER', 'Enter', true));
-    }
-
     [...row].forEach(letter => rowEl.appendChild(createKey(letter, letter)));
-
-    if (row === KEY_ROWS[2]) {
-      rowEl.appendChild(createKey('BACKSPACE', '⌫', true));
-    }
-
     keyboard.appendChild(rowEl);
   });
 }
@@ -241,6 +230,37 @@ function createKey(key, label, wide = false) {
   button.dataset.key = key;
   button.textContent = label;
   return button;
+}
+
+function revealHint() {
+  if (state.solved) {
+    setMessage('Раунд уже завершён. Начните новую игру, чтобы снова использовать подсказку.');
+    return;
+  }
+
+  const availableIndexes = [...answer].map((_, index) => index).filter(index => !isIndexRevealed(index));
+
+  if (!availableIndexes.length) {
+    setMessage('Все позиции уже открыты в ваших попытках. Подсказка больше не нужна.');
+    return;
+  }
+
+  const index = availableIndexes[Math.floor(Math.random() * availableIndexes.length)];
+  state.hintedIndexes.add(index);
+  setMessage(`Подсказка: буква «${answer[index].toUpperCase()}» находится на позиции ${index + 1}.`);
+}
+
+function isIndexRevealed(index) {
+  if (state.hintedIndexes.has(index)) return true;
+
+  for (let row = 0; row < state.row; row += 1) {
+    const guess = state.guesses[row].join('').toLowerCase();
+    if (guess[index] === answer[index]) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 function updateKeyboardStates(guess, evaluation) {
