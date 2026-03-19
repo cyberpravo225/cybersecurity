@@ -3647,22 +3647,11 @@ body[data-page="home"] .hero{
 .card.cyberly-board-wrap:active,
 .card.cyberly-board-wrap:focus,
 .card.cyberly-board-wrap:focus-within{
-  background:color-mix(in srgb, var(--accent-2) 22%, var(--bg)) !important;
+  background:var(--card-bg) !important;
+  border:1px solid rgba(255,255,255,0.06);
 }
 
-/* Cyberly blue panels + hint animation */
-.cyberly-sidebar,
-.card.cyberly-board-wrap,
-.card.cyberly-board-wrap:hover,
-.card.cyberly-board-wrap:active,
-.card.cyberly-board-wrap:focus,
-.card.cyberly-board-wrap:focus-within{
-  background:linear-gradient(135deg,
-    color-mix(in srgb, var(--accent-2) 30%, var(--bg)),
-    color-mix(in srgb, var(--accent) 18%, var(--bg))
-  ) !important;
-  border:1px solid color-mix(in srgb, var(--accent-2) 24%, transparent);
-}
+/* Cyberly hint animation */
 
 #hint-button.hint-pop{
   animation:cyberly-hint-pop .45s ease;
