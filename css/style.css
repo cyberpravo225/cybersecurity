@@ -4669,15 +4669,34 @@ body[data-page="home"] .theme-backdrop{
   isolation: isolate;
 }
 
+body[data-page="home"] .theme-backdrop::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background-position:center;
+  background-repeat:no-repeat;
+  background-size:cover;
+  opacity:.95;
+}
+
+:root[data-theme="dark"] body[data-page="home"] .theme-backdrop::before{
+  background-image:url("../assets/star-network-dark.svg");
+}
+
+:root[data-theme="light"] body[data-page="home"] .theme-backdrop::before,
+:root:not([data-theme]) body[data-page="home"] .theme-backdrop::before{
+  background-image:url("../assets/star-network-light.svg");
+}
+
 body[data-page="home"] .theme-grid{
-  display:block;
-  opacity:.18;
-  mask-image: radial-gradient(circle at center, rgba(0,0,0,.94), transparent 88%);
+  display:none;
 }
 
 body[data-page="home"] .theme-orb{
-  opacity:.9;
-  filter: blur(96px);
+  opacity:.45;
+  filter: blur(120px);
 }
 
 body[data-page="home"] .theme-orb-one{
@@ -4693,7 +4712,7 @@ body[data-page="home"] .theme-orb-two{
 }
 
 body[data-page="home"] .theme-network{
-  opacity: 1;
+  opacity: .28;
   z-index: 1;
   mix-blend-mode: screen;
 }
@@ -4713,12 +4732,6 @@ body[data-page="home"] .theme-network{
   opacity:.85;
 }
 
-:root[data-theme="dark"] body[data-page="home"] .theme-grid{
-  background:
-    linear-gradient(rgba(148,163,184,.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(96,165,250,.035) 1px, transparent 1px);
-  background-size: 82px 82px;
-}
 
 :root[data-theme="dark"] body[data-page="home"] .theme-orb-one{
   background: radial-gradient(circle, rgba(37,99,235,.18), rgba(14,165,233,.08) 42%, transparent 74%);
@@ -4755,13 +4768,6 @@ body[data-page="home"] .theme-network{
   filter: blur(8px);
 }
 
-:root[data-theme="light"] body[data-page="home"] .theme-grid,
-:root:not([data-theme]) body[data-page="home"] .theme-grid{
-  background:
-    linear-gradient(rgba(255,255,255,.32) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(186,230,253,.22) 1px, transparent 1px);
-  background-size: 86px 86px;
-}
 
 :root[data-theme="light"] body[data-page="home"] .theme-orb-one,
 :root:not([data-theme]) body[data-page="home"] .theme-orb-one{
