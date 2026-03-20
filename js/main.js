@@ -564,12 +564,12 @@ observer.observe(el)
           hazeBottom: '#dfebfb',
           depthGlow: 'rgba(191,219,254,0.3)',
           lowerGlow: 'rgba(255,255,255,0.35)',
-          star: 'rgba(191,219,254,0.72)',
+          star: 'rgba(59,130,246,0.9)',
           starBright: 'rgba(255,255,255,1)',
-          node: 'rgba(224,242,254,0.96)',
+          node: 'rgba(186,230,253,1)',
           nodeBright: 'rgba(255,255,255,1)',
-          line: 'rgba(148,163,184,0.12)',
-          lineBright: 'rgba(125,211,252,0.2)'
+          line: 'rgba(59,130,246,0.2)',
+          lineBright: 'rgba(56,189,248,0.3)'
         };
   };
 
@@ -683,11 +683,12 @@ observer.observe(el)
       const x = star.x + driftX - pointer.x * star.parallax * 2.2;
       const y = star.y + driftY + scrollOffset * star.parallax * 60;
       const twinkle = star.alpha + Math.sin(time * star.drift + star.phase + star.x * 0.01 + star.y * 0.008) * 0.08;
-      const alpha = Math.max(0.16, Math.min(1, twinkle));
+      const alphaFloor = isDarkTheme() ? 0.16 : 0.24;
+      const alpha = Math.max(alphaFloor, Math.min(1, twinkle));
       ctx.beginPath();
       ctx.fillStyle = rgbaWithAlpha(star.z > 0.72 ? colors.starBright : colors.star, alpha);
-      ctx.shadowBlur = star.z > 0.8 ? 12 : (star.z > 0.55 ? 4 : 0);
-      ctx.shadowColor = star.z > 0.8 ? colors.starBright : 'transparent';
+      ctx.shadowBlur = star.z > 0.8 ? (isDarkTheme() ? 12 : 10) : (star.z > 0.55 ? (isDarkTheme() ? 4 : 3) : 0);
+      ctx.shadowColor = star.z > 0.8 ? colors.starBright : (isDarkTheme() ? 'transparent' : rgbaWithAlpha(colors.star, 0.25));
       ctx.arc(x, y, star.size, 0, Math.PI * 2);
       ctx.fill();
     }
