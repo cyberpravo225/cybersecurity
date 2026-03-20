@@ -11,7 +11,6 @@
   let height = 0;
   let frame = 0;
   let stars = [];
-  let bigStars = [];
   let nodes = [];
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
 
@@ -31,9 +30,8 @@
   }
 
   function createScene(){
-    const starCount = isMobile() ? 240 : 520;
-    const bigStarCount = isMobile() ? 18 : 34;
-    const nodeCount = isMobile() ? 28 : 54;
+    const starCount = isMobile() ? 320 : 680;
+    const nodeCount = isMobile() ? 44 : 88;
 
     stars = Array.from({ length: starCount }, () => {
       const z = Math.random();
@@ -46,26 +44,9 @@
         ellipse: 0.7 + Math.random() * 0.6,
         drift: (Math.PI * 2) / cycle,
         phase: Math.random() * Math.PI * 2,
-        size: 0.5 + z * 1.7,
+        size: 0.9 + z * 2.6,
         alpha: 0.25 + Math.random() * 0.55,
         parallax: 0.12 + z * 0.88
-      };
-    });
-
-    bigStars = Array.from({ length: bigStarCount }, () => {
-      const z = 0.65 + Math.random() * 0.35;
-      const cycle = 8 + Math.random() * 6;
-      return {
-        x: Math.random() * width,
-        y: Math.random() * height,
-        z,
-        orbit: 12 + Math.random() * 12,
-        ellipse: 0.65 + Math.random() * 0.7,
-        drift: (Math.PI * 2) / cycle,
-        phase: Math.random() * Math.PI * 2,
-        size: 1.8 + Math.random() * 2.6,
-        alpha: 0.45 + Math.random() * 0.4,
-        parallax: 0.4 + Math.random() * 0.6
       };
     });
 
@@ -109,20 +90,6 @@
       ctx.arc(x, y, star.size, 0, Math.PI * 2);
       ctx.fill();
     }
-
-    for (const star of bigStars){
-      const orbit = star.orbit * (0.95 + star.z * 0.15);
-      const x = star.x + Math.sin(time * star.drift + star.phase) * orbit - pointer.x * star.parallax * 3;
-      const y = star.y + Math.cos(time * star.drift + star.phase * 0.85) * orbit * star.ellipse - pointer.y * star.parallax * 2.1;
-      const twinkle = star.alpha + Math.sin(time * star.drift * 1.2 + star.phase) * 0.13;
-      const alpha = Math.max(0.3, Math.min(1, twinkle));
-      ctx.beginPath();
-      ctx.fillStyle = starColor(alpha, true);
-      ctx.shadowBlur = 16 + star.z * 12;
-      ctx.shadowColor = starColor(alpha, true);
-      ctx.arc(x, y, star.size, 0, Math.PI * 2);
-      ctx.fill();
-    }
   }
 
   function moveNodes(time){
@@ -145,7 +112,7 @@
   }
 
   function drawNetwork(time){
-    const maxDist = isMobile() ? 150 : 210;
+    const maxDist = isMobile() ? 180 : 260;
 
     for (let i = 0; i < nodes.length; i++){
       const a = nodes[i];
