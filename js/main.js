@@ -49,10 +49,13 @@
   const root = document.documentElement;
   const hasTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
   const isPhoneLike = hasTouch && window.innerWidth <= 900;
+  const ua = navigator.userAgent || '';
   const cpu = navigator.hardwareConcurrency || 8;
-  const memory = navigator.deviceMemory || 8;
+  const memory = navigator.deviceMemory || null;
   const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isLowEndPhone = isPhoneLike && (cpu <= 4 || memory <= 4 || prefersReducedMotion);
+  const screenShortSide = Math.min(window.screen.width || window.innerWidth, window.screen.height || window.innerHeight);
+  const isOldSmallIphone = /iPhone/i.test(ua) && screenShortSide <= 375;
+  const isLowEndPhone = isPhoneLike && (cpu <= 4 || (memory !== null && memory <= 4) || prefersReducedMotion || isOldSmallIphone);
 
   if (isLowEndPhone) {
     root.classList.add('low-end-device');
@@ -122,6 +125,11 @@ document.addEventListener('click', (e) => {
    Reveal on scroll (IntersectionObserver)
    ========================= */
 (function(){
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
+    return;
+  }
+
   const lowEndPhone = document.documentElement.classList.contains('low-end-device');
   if (lowEndPhone) {
     document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
@@ -132,12 +140,13 @@ document.addEventListener('click', (e) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('in-view');
+        observer.unobserve(entry.target);
       } else {
         // optional: keep visible after first reveal
         // entry.target.classList.remove('in-view');
       }
     });
-  }, { threshold: 0.12 });
+  }, { threshold: 0.02, rootMargin: '0px 0px -8% 0px' });
 
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 })();
