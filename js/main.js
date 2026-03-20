@@ -539,7 +539,7 @@ observer.observe(el)
       glowSecondary: dark ? 'rgba(14,165,233,0.12)' : 'rgba(186,230,253,0.75)',
       star: dark ? 'rgba(186,230,253,0.92)' : 'rgba(255,255,255,0.98)',
       node: dark ? 'rgba(125,211,252,0.96)' : 'rgba(255,255,255,1)',
-      line: dark ? 'rgba(96,165,250,0.16)' : 'rgba(226,232,240,0.16)'
+      line: dark ? 'rgba(96,165,250,0.2)' : 'rgba(226,232,240,0.16)'
     };
   };
 
@@ -566,13 +566,14 @@ observer.observe(el)
       vy: (Math.random() - 0.5) * 0.06,
       size: Math.random() * 1.9 + 1,
       depth: Math.random(),
+      hotspot: Math.random() > 0.86,
       pulse: Math.random() * Math.PI * 2
     }));
 
     stars = Array.from({ length: starCount }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      size: Math.random() * 1.7 + 0.15,
+      size: Math.random() * 1.15 + 0.12,
       alpha: Math.random() * 0.65 + 0.12,
       drift: Math.random() * 0.18 + 0.02,
       depth: Math.random()
@@ -608,10 +609,10 @@ observer.observe(el)
   function drawStars(colors, tick){
     for (const star of stars){
       const twinkle = star.alpha + Math.sin(tick * star.drift + star.x * 0.01) * 0.12;
-      const size = star.size * (0.55 + star.depth);
+      const size = star.size * (0.52 + star.depth * 0.8);
       ctx.beginPath();
       ctx.fillStyle = rgbaWithAlpha(colors.star, Math.max(0.12, Math.min(1, twinkle)));
-      ctx.shadowBlur = size > 1.15 ? 10 + star.depth * 8 : 0;
+      ctx.shadowBlur = size > 0.95 ? 6 + star.depth * 7 : 0;
       ctx.shadowColor = colors.star;
       ctx.arc(star.x, star.y, size, 0, Math.PI * 2);
       ctx.fill();
@@ -639,12 +640,15 @@ observer.observe(el)
     ctx.lineCap = 'round';
     for (let i = 0; i < nodes.length; i++){
       const a = nodes[i];
+      const nodeAlpha = a.hotspot ? 0.9 : 0.42 + a.depth * 0.38;
+      const nodeScale = a.hotspot ? 1.4 : (0.72 + a.depth * 0.52);
+      const shadow = a.hotspot ? 18 + a.depth * 16 : 7 + a.depth * 10;
 
       ctx.beginPath();
-      ctx.fillStyle = rgbaWithAlpha(colors.node, 0.45 + a.depth * 0.45);
-      ctx.shadowBlur = 8 + a.depth * 12;
+      ctx.fillStyle = rgbaWithAlpha(colors.node, nodeAlpha);
+      ctx.shadowBlur = shadow;
       ctx.shadowColor = colors.node;
-      ctx.arc(a.x, a.y, (a.size + Math.sin(a.pulse) * 0.35) * (0.75 + a.depth * 0.55), 0, Math.PI * 2);
+      ctx.arc(a.x, a.y, (a.size + Math.sin(a.pulse) * 0.28) * nodeScale, 0, Math.PI * 2);
       ctx.fill();
 
       for (let j = i + 1; j < nodes.length; j++){
@@ -656,10 +660,10 @@ observer.observe(el)
 
         if (distance < range){
           const depth = (a.depth + b.depth) * 0.5;
-          const alpha = (1 - distance / range) * (mobile() ? 0.18 : 0.26) * (0.5 + depth * 0.9);
+          const alpha = (1 - distance / range) * (mobile() ? 0.14 : 0.2) * (0.45 + depth * 0.8);
           ctx.beginPath();
           ctx.strokeStyle = rgbaWithAlpha(colors.line, alpha);
-          ctx.lineWidth = distance < 90 ? (0.9 + depth * 0.45) : (0.35 + depth * 0.4);
+          ctx.lineWidth = distance < 90 ? (0.7 + depth * 0.28) : (0.24 + depth * 0.22);
           ctx.shadowBlur = 0;
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(b.x, b.y);
