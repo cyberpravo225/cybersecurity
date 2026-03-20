@@ -1,47 +1,46 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1600" preserveAspectRatio="xMidYMid slice">
 <defs>
 <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-<stop offset="0%" stop-color="#6e9ad7"/>
-<stop offset="20%" stop-color="#9cc4f0"/>
-<stop offset="44%" stop-color="#f8fafc"/>
-<stop offset="62%" stop-color="#e0f2fe"/>
-<stop offset="100%" stop-color="#6e9ad7"/>
+<stop offset="0%" stop-color="#8db9ee"/>
+<stop offset="26%" stop-color="#d5ebff"/>
+<stop offset="54%" stop-color="#ffffff"/>
+<stop offset="100%" stop-color="#9fc8f2"/>
 </linearGradient>
 <radialGradient id="centerGlow" cx="50%" cy="39%" r="46%">
-      <stop offset="0%" stop-color="rgba(255,255,255,0.92)"/>
-      <stop offset="38%" stop-color="rgba(224,242,254,0.78)"/>
+      <stop offset="0%" stop-color="rgba(255,255,255,0.78)"/>
+      <stop offset="38%" stop-color="rgba(224,242,254,0.42)"/>
       <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
     </radialGradient>
     <radialGradient id="edgeGlowLeft" cx="10%" cy="52%" r="34%">
-      <stop offset="0%" stop-color="rgba(110,154,215,0.34)"/>
+      <stop offset="0%" stop-color="rgba(125,211,252,0.18)"/>
       <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
     </radialGradient>
     <radialGradient id="edgeGlowRight" cx="90%" cy="60%" r="34%">
-      <stop offset="0%" stop-color="rgba(110,154,215,0.32)"/>
+      <stop offset="0%" stop-color="rgba(125,211,252,0.16)"/>
       <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
     </radialGradient>
     <radialGradient id="upperSoft" cx="48%" cy="18%" r="24%">
-      <stop offset="0%" stop-color="rgba(224,242,254,0.28)"/>
+      <stop offset="0%" stop-color="rgba(255,255,255,0.16)"/>
       <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
     </radialGradient>
     <radialGradient id="lowerGlow" cx="50%" cy="90%" r="22%">
-      <stop offset="0%" stop-color="rgba(186,230,253,0.24)"/>
+      <stop offset="0%" stop-color="rgba(224,242,254,0.14)"/>
       <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
     </radialGradient>
     <radialGradient id="leftMist" cx="24%" cy="74%" r="22%">
-      <stop offset="0%" stop-color="rgba(125,211,252,0.12)"/>
+      <stop offset="0%" stop-color="rgba(125,211,252,0.07)"/>
       <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
     </radialGradient>
     <radialGradient id="rightMist" cx="76%" cy="30%" r="20%">
-      <stop offset="0%" stop-color="rgba(125,211,252,0.1)"/>
+      <stop offset="0%" stop-color="rgba(125,211,252,0.06)"/>
       <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
     </radialGradient>
     <filter id="softGlow" x="-100%" y="-100%" width="300%" height="300%">
-      <feGaussianBlur stdDeviation="1.6" result="blur"/>
+      <feGaussianBlur stdDeviation="0.8" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
     <filter id="nodeGlow" x="-100%" y="-100%" width="300%" height="300%">
-      <feGaussianBlur stdDeviation="1.2" result="blur"/>
+      <feGaussianBlur stdDeviation="0.55" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
 </defs>
