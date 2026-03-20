@@ -43,6 +43,23 @@
 })();
 
 /* =========================
+   Performance profile (for weak phones)
+   ========================= */
+(function(){
+  const root = document.documentElement;
+  const hasTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  const isPhoneLike = hasTouch && window.innerWidth <= 900;
+  const cpu = navigator.hardwareConcurrency || 8;
+  const memory = navigator.deviceMemory || 8;
+  const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isLowEndPhone = isPhoneLike && (cpu <= 4 || memory <= 4 || prefersReducedMotion);
+
+  if (isLowEndPhone) {
+    root.classList.add('low-end-device');
+  }
+})();
+
+/* =========================
    Normalize arrow icons in navigation labels
    ========================= */
 (function(){
@@ -105,6 +122,12 @@ document.addEventListener('click', (e) => {
    Reveal on scroll (IntersectionObserver)
    ========================= */
 (function(){
+  const lowEndPhone = document.documentElement.classList.contains('low-end-device');
+  if (lowEndPhone) {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
+    return;
+  }
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -144,6 +167,7 @@ document.addEventListener('click', (e) => {
 (function(){
   const parallaxEls = document.querySelectorAll('[data-parallax]');
   if (!parallaxEls.length) return;
+  if (document.documentElement.classList.contains('low-end-device')) return;
   window.addEventListener('scroll', () => {
     const y = window.scrollY;
     parallaxEls.forEach(el => {
