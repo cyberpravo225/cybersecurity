@@ -4827,9 +4827,9 @@ body[data-page="home"] .theme-orb-two{
 }
 
 body[data-page="home"] .theme-network{
-  opacity: .28;
+  opacity: .62;
   z-index: 1;
-  mix-blend-mode: screen;
+  mix-blend-mode: normal;
 }
 
 :root[data-theme="dark"] body[data-page="home"]{
