@@ -607,7 +607,7 @@ observer.observe(el)
 
   function createScene(){
     const nodeCount = isMobile() ? 48 : 96;
-    const starCount = isMobile() ? 420 : 1100;
+    const starCount = isMobile() ? 210 : 1100;
     const random = seededRandom(Array.from(sceneSignature).reduce((acc, char, index) => acc + char.charCodeAt(0) * (index + 17), 97));
 
     nodes = Array.from({ length: nodeCount }, () => {
