@@ -524,6 +524,8 @@ observer.observe(el)
 (function(){
   const canvas = document.getElementById('theme-network');
   if (!canvas) return;
+  if (canvas.dataset.networkInit === '1') return;
+  canvas.dataset.networkInit = '1';
 
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
