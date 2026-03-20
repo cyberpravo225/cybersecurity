@@ -7,6 +7,15 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="page">
+
+<div class="theme-backdrop" aria-hidden="true">
+  <div class="theme-orb theme-orb-one"></div>
+  <div class="theme-orb theme-orb-two"></div>
+  <div class="theme-grid"></div>
+  <canvas class="theme-network" id="theme-network"></canvas>
+</div>
+
+
   <div class="site cyberly-shell">
     <header class="topbar glass" role="banner">
       <div class="brand">
@@ -182,5 +191,6 @@
     dailyDifficulty.textContent = labels[difficulty];
     dailyLink.href = `cyberly-play.html?mode=daily&difficulty=${difficulty}`;
   </script>
+<script src="js/theme-network.js"></script>
 </body>
 </html>
