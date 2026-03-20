@@ -4867,33 +4867,37 @@ body[data-page="home"] .theme-network{
 :root[data-theme="light"] body[data-page="home"],
 :root:not([data-theme]) body[data-page="home"]{
   background:
-    radial-gradient(circle at 18% 18%, #BAE6FD, transparent 38%),
-    radial-gradient(circle at 82% 26%, #E0F2FE, transparent 46%),
+    radial-gradient(circle at 0% 0%, rgba(56,189,248,.52), transparent 34%),
+    radial-gradient(circle at 100% 0%, rgba(59,130,246,.42), transparent 34%),
+    radial-gradient(circle at 100% 100%, rgba(14,165,233,.34), transparent 36%),
+    radial-gradient(circle at 0% 100%, rgba(2,132,199,.3), transparent 36%),
     radial-gradient(circle at 50% 42%, #FFFFFF, transparent 34%),
-    linear-gradient(135deg, #F4FAFF, #FFFFFF 52%, #E0F2FE);
+    linear-gradient(135deg, #ECF7FF, #FFFFFF 52%, #DCEFFE);
 }
 
 :root[data-theme="light"] body[data-page="home"]::after,
 :root:not([data-theme]) body[data-page="home"]::after{
   background:
-    radial-gradient(circle at 48% 24%, rgba(255,255,255,.74), transparent 24%),
-    radial-gradient(circle at 16% 30%, rgba(186,230,253,.18), transparent 18%),
-    radial-gradient(circle at 84% 70%, rgba(125,211,252,.12), transparent 20%);
-  opacity: .82;
+    radial-gradient(circle at 48% 24%, rgba(255,255,255,.8), transparent 24%),
+    radial-gradient(circle at 5% 10%, rgba(56,189,248,.18), transparent 20%),
+    radial-gradient(circle at 95% 10%, rgba(59,130,246,.16), transparent 20%),
+    radial-gradient(circle at 95% 90%, rgba(14,165,233,.14), transparent 22%),
+    radial-gradient(circle at 5% 90%, rgba(2,132,199,.14), transparent 22%);
+  opacity: .88;
   filter: blur(.5px);
 }
 
 
 :root[data-theme="light"] body[data-page="home"] .theme-orb-one,
 :root:not([data-theme]) body[data-page="home"] .theme-orb-one{
-  opacity:.08;
+  opacity:.14;
   filter: blur(1px);
-  background: radial-gradient(circle, rgba(224,242,254,.34), rgba(186,230,253,.12) 42%, transparent 76%);
+  background: radial-gradient(circle, rgba(56,189,248,.28), rgba(186,230,253,.16) 42%, transparent 76%);
 }
 
 :root[data-theme="light"] body[data-page="home"] .theme-orb-two,
 :root:not([data-theme]) body[data-page="home"] .theme-orb-two{
-  opacity:.06;
+  opacity:.12;
   filter: blur(1px);
-  background: radial-gradient(circle, rgba(186,230,253,.24), rgba(125,211,252,.08) 44%, transparent 74%);
+  background: radial-gradient(circle, rgba(59,130,246,.2), rgba(125,211,252,.12) 44%, transparent 74%);
 }
