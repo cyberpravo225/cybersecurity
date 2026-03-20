@@ -122,10 +122,48 @@
 
   <script src="js/main.js"></script>
   <script type="module">
-    import { easyWords, mediumWords, hardWords } from './js/cyberly.js';
+    import * as CyberlyWords from './js/cyberly.js';
 
-    const pools = { easy: easyWords, medium: mediumWords, hard: hardWords, hardcore: hardWords };
-    const labels = { easy: 'Лёгкий', medium: 'Средний', hard: 'Сложный', hardcore: 'Hardcore' };
+    const catalog = resolveWordCatalog(CyberlyWords);
+    const pools = catalog.pools;
+    const labels = catalog.labels;
+
+    function resolveWordCatalog(wordsModule) {
+      const configs = [
+        { key: 'easy', label: '3–4 буквы', sources: ['easyWords', 'shortWords', 'words34'] },
+        { key: 'medium', label: '5–6 букв', sources: ['mediumWords', 'midWords', 'words56'] },
+        { key: 'hard', label: '7+ букв', sources: ['hardWords', 'longWords', 'words7plus'] },
+        { key: 'hardcore', label: 'Hardcore', sources: ['hardcoreWords', 'hardWords', 'longWords', 'words7plus'] }
+      ];
+
+      const pools = Object.fromEntries(
+        configs
+          .map(({ key, sources }) => [key, getFirstArray(wordsModule, sources)])
+          .filter(([, words]) => Array.isArray(words) && words.length)
+      );
+
+      if (!pools.hardcore && pools.hard) {
+        pools.hardcore = pools.hard;
+      }
+
+      const labels = Object.fromEntries(
+        configs
+          .filter(({ key }) => pools[key])
+          .map(({ key, label }) => [key, label])
+      );
+
+      return { pools, labels };
+    }
+
+    function getFirstArray(wordsModule, keys) {
+      for (const key of keys) {
+        if (Array.isArray(wordsModule[key]) && wordsModule[key].length) {
+          return wordsModule[key];
+        }
+      }
+      return null;
+    }
+
     const dailyDescription = document.getElementById('daily-word-description');
     const dailyDate = document.getElementById('daily-word-date');
     const dailyDifficulty = document.getElementById('daily-word-difficulty');
