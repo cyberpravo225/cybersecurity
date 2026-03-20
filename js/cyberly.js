@@ -1,7 +1,7 @@
 // cybersec-wordle-words.js
 
 // 🟢 Лёгкий уровень (3–4 буквы)
-export const easyWordsShort = [
+export const easyWords = [
   "бот",
   "код",
   "лог",
