@@ -1,6 +1,6 @@
 // cybersec-wordle-words.js
 
-// 🟢 Лёгкий уровень (3–5 букв)
+// 🟢 Лёгкий уровень (3–4 буквы)
 export const easyWords = [
   "бот",
   "код",
@@ -22,7 +22,7 @@ export const easyWords = [
   "канал"
 ];
 
-// 🟡 Средний уровень (6–7 букв)
+// 🟡 Средний уровень (5–6 букв)
 export const mediumWords = [
   "троян",
   "прокси",
@@ -47,7 +47,7 @@ export const mediumWords = [
   "туннель"
 ];
 
-// 🔴 Сложный уровень (8+ букв)
+// 🔴 Сложный уровень (7+ букв)
 export const hardWords = [
   "эксплойт",
   "малварь",
