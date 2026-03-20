@@ -14,6 +14,15 @@
   let giantStars = [];
   let nodes = [];
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+  const hasTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  const cpu = navigator.hardwareConcurrency || 8;
+  const memory = navigator.deviceMemory || 8;
+  const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isLowEndPhone = hasTouch && window.innerWidth <= 900 && (cpu <= 4 || memory <= 4 || prefersReducedMotion);
+  const lowPowerMode = isLowEndPhone;
+  const targetFps = lowPowerMode ? 30 : 60;
+  const frameInterval = 1000 / targetFps;
+  let lastFrameTs = 0;
 
   const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
   const isMobile = () => window.innerWidth < 720;
@@ -31,9 +40,9 @@
   }
 
   function createScene(){
-    const starCount = isMobile() ? 320 : 680;
-    const giantStarCount = 5;
-    const nodeCount = isMobile() ? 44 : 88;
+    const starCount = lowPowerMode ? 110 : (isMobile() ? 320 : 680);
+    const giantStarCount = lowPowerMode ? 2 : 5;
+    const nodeCount = lowPowerMode ? 18 : (isMobile() ? 44 : 88);
 
     stars = Array.from({ length: starCount }, () => {
       const z = Math.random();
@@ -108,7 +117,7 @@
       const alpha = Math.max(0.15, Math.min(1, twinkle));
       ctx.beginPath();
       ctx.fillStyle = starColor(alpha, star.z > 0.74);
-      ctx.shadowBlur = star.isXL ? (24 + star.z * 12) : (star.isLarge ? (18 + star.z * 10) : (star.z > 0.8 ? 10 : 0));
+      ctx.shadowBlur = lowPowerMode ? 0 : (star.isXL ? (24 + star.z * 12) : (star.isLarge ? (18 + star.z * 10) : (star.z > 0.8 ? 10 : 0)));
       ctx.shadowColor = starColor(alpha, true);
       ctx.arc(x, y, star.size, 0, Math.PI * 2);
       ctx.fill();
@@ -122,7 +131,7 @@
       const alpha = Math.max(0.16, Math.min(0.52, twinkle));
       ctx.beginPath();
       ctx.fillStyle = starColor(alpha, true);
-      ctx.shadowBlur = 34 + star.z * 24;
+      ctx.shadowBlur = lowPowerMode ? 0 : (34 + star.z * 24);
       ctx.shadowColor = starColor(Math.min(alpha + 0.08, 0.62), true);
       ctx.arc(x, y, star.size, 0, Math.PI * 2);
       ctx.fill();
@@ -149,7 +158,7 @@
   }
 
   function drawNetwork(time){
-    const maxDist = isMobile() ? 180 : 260;
+    const maxDist = lowPowerMode ? 120 : (isMobile() ? 180 : 260);
 
     for (let i = 0; i < nodes.length; i++){
       const a = nodes[i];
@@ -165,21 +174,23 @@
         const flicker = Math.sin(time * (5 + depth * 2.3) + i * 0.6 + j * 0.9) > 0.95 ? 1.35 : 1;
         const alpha = (1 - dist / maxDist) * (isDark() ? 0.32 : 0.2) * shimmer * flicker;
 
-        const dashA = 2 + depth * 3;
-        const dashB = 8 + depth * 10;
         ctx.beginPath();
         ctx.moveTo(a.drawX, a.drawY);
         ctx.lineTo(b.drawX, b.drawY);
-        ctx.setLineDash([dashA, dashB]);
-        ctx.lineDashOffset = -((time * (22 + depth * 24)) % (dashA + dashB));
+        if (!lowPowerMode){
+          const dashA = 2 + depth * 3;
+          const dashB = 8 + depth * 10;
+          ctx.setLineDash([dashA, dashB]);
+          ctx.lineDashOffset = -((time * (22 + depth * 24)) % (dashA + dashB));
+        }
         ctx.lineWidth = 0.6 + depth * 0.9;
         ctx.strokeStyle = lineColor(alpha);
-        ctx.shadowBlur = 8 + depth * 8;
+        ctx.shadowBlur = lowPowerMode ? 0 : (8 + depth * 8);
         ctx.shadowColor = lineColor(alpha * 0.85);
         ctx.stroke();
         ctx.setLineDash([]);
 
-        if ((1 - dist / maxDist) * depth > 0.26){
+        if (!lowPowerMode && (1 - dist / maxDist) * depth > 0.26){
           const signal = (time * (0.2 + depth * 0.22) + i * 0.13 + j * 0.17) % 1;
           const sx = a.drawX + (b.drawX - a.drawX) * signal;
           const sy = a.drawY + (b.drawY - a.drawY) * signal;
@@ -201,14 +212,19 @@
       const alpha = 0.5 + node.z * 0.4;
       ctx.beginPath();
       ctx.fillStyle = starColor(alpha, node.z > 0.7);
-      ctx.shadowBlur = 10 + node.z * 10;
+      ctx.shadowBlur = lowPowerMode ? 0 : (10 + node.z * 10);
       ctx.shadowColor = lineColor(alpha);
       ctx.arc(node.drawX, node.drawY, radius, 0, Math.PI * 2);
       ctx.fill();
     }
   }
 
-  function render(){
+  function render(now = 0){
+    if (now - lastFrameTs < frameInterval){
+      frame = requestAnimationFrame(render);
+      return;
+    }
+    lastFrameTs = now;
     const time = performance.now() * 0.001;
     ctx.clearRect(0, 0, width, height);
     drawStars(time);

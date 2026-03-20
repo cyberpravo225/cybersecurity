@@ -243,6 +243,13 @@ width:100%;
 .reveal{opacity:0; transform:translateY(10px) scale(0.995); transition: opacity var(--anim) ease, transform var(--anim) ease}
 .reveal.in-view{opacity:1; transform:translateY(0) scale(1)}
 
+/* Low-end phones: remove expensive reveal transforms for smoother scroll */
+.low-end-device .reveal{
+  opacity:1;
+  transform:none;
+  transition:none;
+}
+
 /* delays */
 .delay{transition-delay:60ms}
 .delay-2{transition-delay:110ms}
