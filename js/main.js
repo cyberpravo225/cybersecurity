@@ -527,20 +527,42 @@ observer.observe(el)
 
   let width = 0;
   let height = 0;
+  let animationFrame = 0;
   let nodes = [];
   let stars = [];
-  const mobile = () => window.innerWidth < 720;
 
-  const themeColors = () => {
-    const dark = document.documentElement.getAttribute('data-theme') === 'dark';
-    return {
-      haze: dark ? ['#020617', '#0a1733', '#081224'] : ['#f8fbff', '#e0f2fe', '#dbeafe'],
-      glow: dark ? 'rgba(30,58,138,0.28)' : 'rgba(255,255,255,0.98)',
-      glowSecondary: dark ? 'rgba(14,165,233,0.12)' : 'rgba(186,230,253,0.75)',
-      star: dark ? 'rgba(186,230,253,0.92)' : 'rgba(255,255,255,0.98)',
-      node: dark ? 'rgba(125,211,252,0.96)' : 'rgba(255,255,255,1)',
-      line: dark ? 'rgba(96,165,250,0.2)' : 'rgba(226,232,240,0.16)'
-    };
+  const isDarkTheme = () => document.documentElement.getAttribute('data-theme') === 'dark';
+  const isMobile = () => window.innerWidth < 720;
+
+  const palette = () => {
+    const dark = isDarkTheme();
+    return dark
+      ? {
+          hazeTop: '#02040a',
+          hazeMid: '#07111f',
+          hazeBottom: '#030712',
+          depthGlow: 'rgba(37,99,235,0.16)',
+          lowerGlow: 'rgba(34,211,238,0.10)',
+          star: 'rgba(186,230,253,0.78)',
+          starBright: 'rgba(255,255,255,0.98)',
+          node: 'rgba(125,211,252,0.95)',
+          nodeBright: 'rgba(224,242,254,1)',
+          line: 'rgba(96,165,250,0.2)',
+          lineBright: 'rgba(125,211,252,0.28)'
+        }
+      : {
+          hazeTop: '#f8fbff',
+          hazeMid: '#edf5ff',
+          hazeBottom: '#dfebfb',
+          depthGlow: 'rgba(191,219,254,0.3)',
+          lowerGlow: 'rgba(255,255,255,0.35)',
+          star: 'rgba(191,219,254,0.44)',
+          starBright: 'rgba(255,255,255,0.98)',
+          node: 'rgba(224,242,254,0.88)',
+          nodeBright: 'rgba(255,255,255,1)',
+          line: 'rgba(148,163,184,0.1)',
+          lineBright: 'rgba(125,211,252,0.16)'
+        };
   };
 
   function resize(){
@@ -556,28 +578,34 @@ observer.observe(el)
   }
 
   function createScene(){
-    const nodeCount = mobile() ? 40 : 78;
-    const starCount = mobile() ? 260 : 620;
+    const nodeCount = isMobile() ? 34 : 64;
+    const starCount = isMobile() ? 180 : 360;
 
-    nodes = Array.from({ length: nodeCount }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.06,
-      vy: (Math.random() - 0.5) * 0.06,
-      size: Math.random() * 1.9 + 1,
-      depth: Math.random(),
-      hotspot: Math.random() > 0.86,
-      pulse: Math.random() * Math.PI * 2
-    }));
+    nodes = Array.from({ length: nodeCount }, () => {
+      const depth = Math.random();
+      return {
+        x: Math.random() * width,
+        y: Math.random() * height,
+        z: depth,
+        size: 0.7 + depth * 2.4,
+        vx: (Math.random() - 0.5) * (0.08 + depth * 0.14),
+        vy: (Math.random() - 0.5) * (0.06 + depth * 0.12),
+        pulse: Math.random() * Math.PI * 2,
+        hotspot: Math.random() > 0.88
+      };
+    });
 
-    stars = Array.from({ length: starCount }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      size: Math.random() * 1.15 + 0.12,
-      alpha: Math.random() * 0.65 + 0.12,
-      drift: Math.random() * 0.18 + 0.02,
-      depth: Math.random()
-    }));
+    stars = Array.from({ length: starCount }, () => {
+      const depth = Math.random();
+      return {
+        x: Math.random() * width,
+        y: Math.random() * height,
+        z: depth,
+        size: 0.3 + depth * 1.2,
+        alpha: 0.16 + Math.random() * 0.45,
+        drift: 0.25 + Math.random() * 0.7
+      };
+    });
   }
 
   function rgbaWithAlpha(color, alpha){
@@ -585,97 +613,124 @@ observer.observe(el)
   }
 
   function drawBackdrop(colors){
-    const base = ctx.createLinearGradient(0, 0, 0, height);
-    base.addColorStop(0, colors.haze[0]);
-    base.addColorStop(0.52, colors.haze[1]);
-    base.addColorStop(1, colors.haze[0]);
-    ctx.fillStyle = base;
+    const gradient = ctx.createLinearGradient(0, 0, 0, height);
+    gradient.addColorStop(0, colors.hazeTop);
+    gradient.addColorStop(0.5, colors.hazeMid);
+    gradient.addColorStop(1, colors.hazeBottom);
+    ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
 
-    const center = ctx.createRadialGradient(width * 0.5, height * 0.42, 0, width * 0.5, height * 0.42, Math.max(width, height) * 0.48);
-    center.addColorStop(0, colors.glow);
-    center.addColorStop(0.38, rgbaWithAlpha(colors.glow, mobile() ? 0.15 : 0.2));
-    center.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = center;
+    const depth = ctx.createRadialGradient(width * 0.5, height * 0.46, 0, width * 0.5, height * 0.46, Math.max(width, height) * 0.4);
+    depth.addColorStop(0, colors.depthGlow);
+    depth.addColorStop(0.55, rgbaWithAlpha(colors.depthGlow, isDarkTheme() ? 0.05 : 0.08));
+    depth.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = depth;
     ctx.fillRect(0, 0, width, height);
 
-    const lowerGlow = ctx.createRadialGradient(width * 0.5, height * 0.88, 0, width * 0.5, height * 0.88, Math.max(width, height) * 0.22);
-    lowerGlow.addColorStop(0, colors.glowSecondary);
-    lowerGlow.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = lowerGlow;
+    const lower = ctx.createRadialGradient(width * 0.5, height * 0.88, 0, width * 0.5, height * 0.88, Math.max(width, height) * 0.18);
+    lower.addColorStop(0, colors.lowerGlow);
+    lower.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = lower;
     ctx.fillRect(0, 0, width, height);
   }
 
-  function drawStars(colors, tick){
+  function drawStars(colors, time){
     for (const star of stars){
-      const twinkle = star.alpha + Math.sin(tick * star.drift + star.x * 0.01) * 0.12;
-      const size = star.size * (0.52 + star.depth * 0.8);
+      const twinkle = star.alpha + Math.sin(time * star.drift + star.x * 0.01 + star.y * 0.008) * 0.08;
+      const alpha = Math.max(0.08, Math.min(1, twinkle));
       ctx.beginPath();
-      ctx.fillStyle = rgbaWithAlpha(colors.star, Math.max(0.12, Math.min(1, twinkle)));
-      ctx.shadowBlur = size > 0.95 ? 6 + star.depth * 7 : 0;
-      ctx.shadowColor = colors.star;
-      ctx.arc(star.x, star.y, size, 0, Math.PI * 2);
+      ctx.fillStyle = rgbaWithAlpha(star.z > 0.72 ? colors.starBright : colors.star, alpha);
+      ctx.shadowBlur = star.z > 0.8 ? 8 : 0;
+      ctx.shadowColor = star.z > 0.8 ? colors.starBright : 'transparent';
+      ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
       ctx.fill();
     }
   }
 
-  function draw(){
-    const colors = themeColors();
-    const tick = performance.now() * 0.001;
-    ctx.clearRect(0, 0, width, height);
-    drawBackdrop(colors);
-    drawStars(colors, tick);
-
+  function updateNodes(time){
     for (const node of nodes){
-      node.x += node.vx;
-      node.y += node.vy;
-      node.pulse += 0.02;
+      const parallaxShift = Math.sin(time * (0.18 + node.z * 0.22) + node.pulse) * (0.08 + node.z * 0.22);
+      node.x += node.vx + parallaxShift * 0.02;
+      node.y += node.vy + Math.cos(time * 0.16 + node.pulse) * 0.015;
+      node.pulse += 0.012 + node.z * 0.01;
 
-      if (node.x < -30) node.x = width + 30;
-      if (node.x > width + 30) node.x = -30;
-      if (node.y < -30) node.y = height + 30;
-      if (node.y > height + 30) node.y = -30;
+      if (node.x < -60) node.x = width + 60;
+      if (node.x > width + 60) node.x = -60;
+      if (node.y < -60) node.y = height + 60;
+      if (node.y > height + 60) node.y = -60;
     }
+  }
 
-    ctx.lineCap = 'round';
+  function drawConnections(colors){
+    const range = isMobile() ? 120 : 170;
     for (let i = 0; i < nodes.length; i++){
       const a = nodes[i];
-      const nodeAlpha = a.hotspot ? 0.9 : 0.42 + a.depth * 0.38;
-      const nodeScale = a.hotspot ? 1.4 : (0.72 + a.depth * 0.52);
-      const shadow = a.hotspot ? 18 + a.depth * 16 : 7 + a.depth * 10;
-
-      ctx.beginPath();
-      ctx.fillStyle = rgbaWithAlpha(colors.node, nodeAlpha);
-      ctx.shadowBlur = shadow;
-      ctx.shadowColor = colors.node;
-      ctx.arc(a.x, a.y, (a.size + Math.sin(a.pulse) * 0.28) * nodeScale, 0, Math.PI * 2);
-      ctx.fill();
-
       for (let j = i + 1; j < nodes.length; j++){
         const b = nodes[j];
         const dx = a.x - b.x;
         const dy = a.y - b.y;
         const distance = Math.hypot(dx, dy);
-        const range = mobile() ? 150 : 210;
+        if (distance > range) continue;
 
-        if (distance < range){
-          const depth = (a.depth + b.depth) * 0.5;
-          const alpha = (1 - distance / range) * (mobile() ? 0.14 : 0.2) * (0.45 + depth * 0.8);
-          ctx.beginPath();
-          ctx.strokeStyle = rgbaWithAlpha(colors.line, alpha);
-          ctx.lineWidth = distance < 90 ? (0.7 + depth * 0.28) : (0.24 + depth * 0.22);
-          ctx.shadowBlur = 0;
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.stroke();
-        }
+        const depth = (a.z + b.z) * 0.5;
+        const alphaBase = isDarkTheme() ? 0.22 : 0.12;
+        const alpha = (1 - distance / range) * alphaBase * (0.7 + depth * 0.9);
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.lineWidth = 0.35 + depth * (isDarkTheme() ? 0.55 : 0.35);
+        ctx.strokeStyle = rgbaWithAlpha(depth > 0.62 ? colors.lineBright : colors.line, alpha);
+        ctx.shadowBlur = 0;
+        ctx.stroke();
       }
     }
+  }
 
-    requestAnimationFrame(draw);
+  function drawNodes(colors, time){
+    for (const node of nodes){
+      const pulse = (Math.sin(node.pulse + time * 0.65) + 1) * 0.5;
+      const radius = node.size * (0.8 + pulse * 0.28 + node.z * 0.18);
+      const alpha = 0.38 + node.z * 0.42 + (node.hotspot ? 0.12 : 0);
+      const fill = node.hotspot ? colors.nodeBright : (node.z > 0.62 ? colors.nodeBright : colors.node);
+      const glow = node.hotspot ? 18 + node.z * 16 : 5 + node.z * 9;
+
+      ctx.beginPath();
+      ctx.fillStyle = rgbaWithAlpha(fill, Math.min(alpha, 1));
+      ctx.shadowBlur = glow;
+      ctx.shadowColor = rgbaWithAlpha(fill, isDarkTheme() ? 0.9 : 0.75);
+      ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function render(){
+    const colors = palette();
+    const time = performance.now() * 0.001;
+    ctx.clearRect(0, 0, width, height);
+    drawBackdrop(colors);
+    drawStars(colors, time);
+    updateNodes(time);
+    drawConnections(colors);
+    drawNodes(colors, time);
+    animationFrame = requestAnimationFrame(render);
   }
 
   resize();
-  draw();
-  window.addEventListener('resize', resize, { passive: true });
+  render();
+
+  const refresh = () => {
+    cancelAnimationFrame(animationFrame);
+    resize();
+    render();
+  };
+
+  window.addEventListener('resize', refresh, { passive: true });
+
+  const observer = new MutationObserver((mutations) => {
+    if (mutations.some((mutation) => mutation.attributeName === 'data-theme')) {
+      refresh();
+    }
+  });
+
+  observer.observe(document.documentElement, { attributes: true });
 })();
