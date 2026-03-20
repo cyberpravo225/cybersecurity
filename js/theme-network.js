@@ -15,10 +15,14 @@
   let nodes = [];
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
   const hasTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  const ua = navigator.userAgent || '';
   const cpu = navigator.hardwareConcurrency || 8;
-  const memory = navigator.deviceMemory || 8;
+  const memory = navigator.deviceMemory || null;
   const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isLowEndPhone = hasTouch && window.innerWidth <= 900 && (cpu <= 4 || memory <= 4 || prefersReducedMotion);
+  const screenShortSide = Math.min(window.screen.width || window.innerWidth, window.screen.height || window.innerHeight);
+  const isOldSmallIphone = /iPhone/i.test(ua) && screenShortSide <= 375;
+  const isLowEndPhone = hasTouch && window.innerWidth <= 900 && (cpu <= 4 || (memory !== null && memory <= 4) || prefersReducedMotion || isOldSmallIphone);
+  const ultraLowMode = hasTouch && (cpu <= 2 || (memory !== null && memory <= 2) || (isOldSmallIphone && cpu <= 4));
   const lowPowerMode = isLowEndPhone;
   const targetFps = lowPowerMode ? 30 : 60;
   const frameInterval = 1000 / targetFps;
@@ -26,6 +30,11 @@
 
   const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
   const isMobile = () => window.innerWidth < 720;
+
+  if (ultraLowMode) {
+    canvas.style.display = 'none';
+    return;
+  }
 
   function resize(){
     const ratio = Math.min(window.devicePixelRatio || 1, 2);
