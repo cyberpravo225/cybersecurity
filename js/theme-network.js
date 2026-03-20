@@ -35,8 +35,9 @@
 
     stars = Array.from({ length: starCount }, () => {
       const z = Math.random();
-      const cycle = 6 + Math.random() * 6;
-      const isLarge = Math.random() > 0.78;
+      const isLarge = Math.random() > 0.72;
+      const isXL = isLarge && Math.random() > 0.6;
+      const cycle = isXL ? (12 + Math.random() * 8) : (6 + Math.random() * 6);
       return {
         x: Math.random() * width,
         y: Math.random() * height,
@@ -45,10 +46,11 @@
         ellipse: 0.7 + Math.random() * 0.6,
         drift: (Math.PI * 2) / cycle,
         phase: Math.random() * Math.PI * 2,
-        size: isLarge ? (2.2 + z * 3.8) : (0.9 + z * 2.4),
+        size: isXL ? (4.4 + z * 4.8) : (isLarge ? (2.2 + z * 3.8) : (0.9 + z * 2.4)),
         alpha: 0.25 + Math.random() * 0.55,
         parallax: 0.12 + z * 0.88,
-        isLarge
+        isLarge,
+        isXL
       };
     });
 
@@ -87,7 +89,7 @@
       const alpha = Math.max(0.15, Math.min(1, twinkle));
       ctx.beginPath();
       ctx.fillStyle = starColor(alpha, star.z > 0.74);
-      ctx.shadowBlur = star.isLarge ? (18 + star.z * 10) : (star.z > 0.8 ? 10 : 0);
+      ctx.shadowBlur = star.isXL ? (24 + star.z * 12) : (star.isLarge ? (18 + star.z * 10) : (star.z > 0.8 ? 10 : 0));
       ctx.shadowColor = starColor(alpha, true);
       ctx.arc(x, y, star.size, 0, Math.PI * 2);
       ctx.fill();
