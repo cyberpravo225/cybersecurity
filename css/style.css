@@ -1601,7 +1601,7 @@ transition:0.3s;
 }
 
 .mode-card:hover::after{
-opacity:1;
+opacity:0;
 }
 
 /* кнопки на карточках */
@@ -4119,8 +4119,8 @@ body::before{
 .tip-card:hover::before,
 .tests-banner:hover::before,
 .game-feature:hover::before{
-  opacity:1;
-  transform: translateX(185%) rotate(18deg);
+  opacity:0;
+  transform: translateX(-120%) rotate(18deg);
 }
 
 .card-photo{
@@ -4441,7 +4441,7 @@ body[data-page="home"] .card:hover::before,
 body[data-page="home"] .tip-card:hover::before,
 body[data-page="home"] .game-feature:hover::before{
   transform:none;
-  opacity:.72;
+  opacity:1;
 }
 
 body[data-page="home"] .school-card,
