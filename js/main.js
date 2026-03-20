@@ -544,12 +544,12 @@ observer.observe(el)
           hazeBottom: '#030712',
           depthGlow: 'rgba(37,99,235,0.16)',
           lowerGlow: 'rgba(34,211,238,0.10)',
-          star: 'rgba(186,230,253,0.78)',
-          starBright: 'rgba(255,255,255,0.98)',
-          node: 'rgba(125,211,252,0.95)',
-          nodeBright: 'rgba(224,242,254,1)',
-          line: 'rgba(96,165,250,0.2)',
-          lineBright: 'rgba(125,211,252,0.28)'
+          star: 'rgba(186,230,253,0.92)',
+          starBright: 'rgba(255,255,255,1)',
+          node: 'rgba(125,211,252,1)',
+          nodeBright: 'rgba(255,255,255,1)',
+          line: 'rgba(96,165,250,0.24)',
+          lineBright: 'rgba(125,211,252,0.36)'
         }
       : {
           hazeTop: '#f8fbff',
@@ -557,12 +557,12 @@ observer.observe(el)
           hazeBottom: '#dfebfb',
           depthGlow: 'rgba(191,219,254,0.3)',
           lowerGlow: 'rgba(255,255,255,0.35)',
-          star: 'rgba(191,219,254,0.44)',
-          starBright: 'rgba(255,255,255,0.98)',
-          node: 'rgba(224,242,254,0.88)',
+          star: 'rgba(191,219,254,0.72)',
+          starBright: 'rgba(255,255,255,1)',
+          node: 'rgba(224,242,254,0.96)',
           nodeBright: 'rgba(255,255,255,1)',
-          line: 'rgba(148,163,184,0.1)',
-          lineBright: 'rgba(125,211,252,0.16)'
+          line: 'rgba(148,163,184,0.12)',
+          lineBright: 'rgba(125,211,252,0.2)'
         };
   };
 
@@ -599,8 +599,8 @@ observer.observe(el)
   }
 
   function createScene(){
-    const nodeCount = isMobile() ? 34 : 64;
-    const starCount = isMobile() ? 180 : 360;
+    const nodeCount = isMobile() ? 48 : 96;
+    const starCount = isMobile() ? 420 : 1100;
     const random = seededRandom(Array.from(sceneSignature).reduce((acc, char, index) => acc + char.charCodeAt(0) * (index + 17), 97));
 
     nodes = Array.from({ length: nodeCount }, () => {
@@ -623,8 +623,8 @@ observer.observe(el)
         x: random() * width,
         y: random() * height,
         z: depth,
-        size: 0.3 + depth * 1.2,
-        alpha: 0.16 + random() * 0.45,
+        size: 0.35 + depth * 1.35,
+        alpha: 0.22 + random() * 0.52,
         drift: 0.25 + random() * 0.7
       };
     });
@@ -659,10 +659,10 @@ observer.observe(el)
   function drawStars(colors, time){
     for (const star of stars){
       const twinkle = star.alpha + Math.sin(time * star.drift + star.x * 0.01 + star.y * 0.008) * 0.08;
-      const alpha = Math.max(0.08, Math.min(1, twinkle));
+      const alpha = Math.max(0.16, Math.min(1, twinkle));
       ctx.beginPath();
       ctx.fillStyle = rgbaWithAlpha(star.z > 0.72 ? colors.starBright : colors.star, alpha);
-      ctx.shadowBlur = star.z > 0.8 ? 8 : 0;
+      ctx.shadowBlur = star.z > 0.8 ? 12 : (star.z > 0.55 ? 4 : 0);
       ctx.shadowColor = star.z > 0.8 ? colors.starBright : 'transparent';
       ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
       ctx.fill();
@@ -684,7 +684,7 @@ observer.observe(el)
   }
 
   function drawConnections(colors){
-    const range = isMobile() ? 120 : 170;
+    const range = isMobile() ? 150 : 220;
     for (let i = 0; i < nodes.length; i++){
       const a = nodes[i];
       for (let j = i + 1; j < nodes.length; j++){
@@ -695,12 +695,12 @@ observer.observe(el)
         if (distance > range) continue;
 
         const depth = (a.z + b.z) * 0.5;
-        const alphaBase = isDarkTheme() ? 0.22 : 0.12;
+        const alphaBase = isDarkTheme() ? 0.24 : 0.14;
         const alpha = (1 - distance / range) * alphaBase * (0.7 + depth * 0.9);
         ctx.beginPath();
         ctx.moveTo(a.x, a.y);
         ctx.lineTo(b.x, b.y);
-        ctx.lineWidth = 0.35 + depth * (isDarkTheme() ? 0.55 : 0.35);
+        ctx.lineWidth = 0.45 + depth * (isDarkTheme() ? 0.72 : 0.46);
         ctx.strokeStyle = rgbaWithAlpha(depth > 0.62 ? colors.lineBright : colors.line, alpha);
         ctx.shadowBlur = 0;
         ctx.stroke();
@@ -714,7 +714,7 @@ observer.observe(el)
       const radius = node.size * (0.8 + pulse * 0.28 + node.z * 0.18);
       const alpha = 0.38 + node.z * 0.42 + (node.hotspot ? 0.12 : 0);
       const fill = node.hotspot ? colors.nodeBright : (node.z > 0.62 ? colors.nodeBright : colors.node);
-      const glow = node.hotspot ? 18 + node.z * 16 : 5 + node.z * 9;
+      const glow = node.hotspot ? 28 + node.z * 18 : 8 + node.z * 12;
 
       ctx.beginPath();
       ctx.fillStyle = rgbaWithAlpha(fill, Math.min(alpha, 1));
