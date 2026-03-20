@@ -4793,7 +4793,7 @@ body[data-page="home"] .theme-backdrop::before{
   background-position:center;
   background-repeat:no-repeat;
   background-size:cover;
-  opacity:.95;
+  opacity:0;
 }
 
 :root[data-theme="dark"] body[data-page="home"] .theme-backdrop::before{
@@ -4830,54 +4830,6 @@ body[data-page="home"] .theme-network{
   opacity: .62;
   z-index: 1;
   mix-blend-mode: normal;
-}
-
-body[data-page="home"] .theme-big-stars{
-  position:absolute;
-  inset:0;
-  z-index:2;
-  pointer-events:none;
-}
-
-body[data-page="home"] .theme-big-stars .big-star{
-  position:absolute;
-  display:block;
-  width:18px;
-  height:18px;
-  border-radius:50%;
-  animation: bigStarFloat 8s ease-in-out infinite;
-}
-
-body[data-page="home"] .theme-big-stars .big-star::before,
-body[data-page="home"] .theme-big-stars .big-star::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:50%;
-}
-
-body[data-page="home"] .theme-big-stars .big-star::before{
-  border:1px solid rgba(255,255,255,.85);
-  box-shadow: 0 0 14px rgba(255,255,255,.45);
-}
-
-body[data-page="home"] .theme-big-stars .big-star::after{
-  inset:4px;
-  border:1px solid rgba(186,230,253,.95);
-  box-shadow: 0 0 10px rgba(125,211,252,.6);
-}
-
-body[data-page="home"] .theme-big-stars .star-a{ top: 14%; left: 18%; animation-duration: 7.5s; }
-body[data-page="home"] .theme-big-stars .star-b{ top: 28%; right: 20%; animation-duration: 9.8s; animation-delay: -1.7s; }
-body[data-page="home"] .theme-big-stars .star-c{ bottom: 26%; left: 22%; animation-duration: 11.6s; animation-delay: -3.3s; }
-body[data-page="home"] .theme-big-stars .star-d{ bottom: 16%; right: 16%; animation-duration: 8.9s; animation-delay: -2.2s; }
-
-@keyframes bigStarFloat{
-  0%   { transform: translate3d(0, 0, 0) scale(1); opacity:.75; }
-  25%  { transform: translate3d(8px, -6px, 0) scale(1.04); opacity:.95; }
-  50%  { transform: translate3d(14px, 4px, 0) scale(0.98); opacity:.85; }
-  75%  { transform: translate3d(6px, 10px, 0) scale(1.03); opacity:.92; }
-  100% { transform: translate3d(0, 0, 0) scale(1); opacity:.75; }
 }
 
 :root[data-theme="dark"] body[data-page="home"]{
