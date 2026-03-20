@@ -14,6 +14,8 @@
   let giantStars = [];
   let nodes = [];
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+  const isHomePage = document.body?.dataset?.page === 'home';
+  const homeStarBoost = isHomePage ? 1.28 : 1;
 
   const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
   const isMobile = () => window.innerWidth < 720;
@@ -105,10 +107,10 @@
       const x = star.x + Math.sin(time * star.drift + star.phase) * orbit - pointer.x * star.parallax * 2.5;
       const y = star.y + Math.cos(time * star.drift + star.phase * 0.9) * orbit * star.ellipse - pointer.y * star.parallax * 1.8;
       const twinkle = star.alpha + Math.sin(time * star.drift + star.phase) * 0.1;
-      const alpha = Math.max(0.15, Math.min(1, twinkle));
+      const alpha = Math.max(0.15, Math.min(1, twinkle * homeStarBoost));
       ctx.beginPath();
       ctx.fillStyle = starColor(alpha, star.z > 0.74);
-      ctx.shadowBlur = star.isXL ? (24 + star.z * 12) : (star.isLarge ? (18 + star.z * 10) : (star.z > 0.8 ? 10 : 0));
+      ctx.shadowBlur = (star.isXL ? (24 + star.z * 12) : (star.isLarge ? (18 + star.z * 10) : (star.z > 0.8 ? 10 : 0))) * (isHomePage ? 1.12 : 1);
       ctx.shadowColor = starColor(alpha, true);
       ctx.arc(x, y, star.size, 0, Math.PI * 2);
       ctx.fill();
@@ -119,10 +121,10 @@
       const x = star.x + Math.sin(time * star.drift + star.phase) * orbit - pointer.x * star.parallax * 3.5;
       const y = star.y + Math.cos(time * star.drift + star.phase * 0.95) * orbit * star.ellipse - pointer.y * star.parallax * 2.5;
       const twinkle = star.alpha + Math.sin(time * star.drift * 0.9 + star.phase) * 0.05;
-      const alpha = Math.max(0.16, Math.min(0.52, twinkle));
+      const alpha = Math.max(0.16, Math.min(0.64, twinkle * homeStarBoost));
       ctx.beginPath();
       ctx.fillStyle = starColor(alpha, true);
-      ctx.shadowBlur = 34 + star.z * 24;
+      ctx.shadowBlur = (34 + star.z * 24) * (isHomePage ? 1.16 : 1);
       ctx.shadowColor = starColor(Math.min(alpha + 0.08, 0.62), true);
       ctx.arc(x, y, star.size, 0, Math.PI * 2);
       ctx.fill();
