@@ -11,6 +11,7 @@
   let height = 0;
   let frame = 0;
   let stars = [];
+  let giantStars = [];
   let nodes = [];
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
 
@@ -31,6 +32,7 @@
 
   function createScene(){
     const starCount = isMobile() ? 320 : 680;
+    const giantStarCount = 5;
     const nodeCount = isMobile() ? 44 : 88;
 
     stars = Array.from({ length: starCount }, () => {
@@ -51,6 +53,23 @@
         parallax: 0.12 + z * 0.88,
         isLarge,
         isXL
+      };
+    });
+
+    giantStars = Array.from({ length: giantStarCount }, () => {
+      const z = 0.82 + Math.random() * 0.18;
+      const cycle = 16 + Math.random() * 8;
+      return {
+        x: Math.random() * width,
+        y: Math.random() * height,
+        z,
+        orbit: 14 + Math.random() * 14,
+        ellipse: 0.7 + Math.random() * 0.5,
+        drift: (Math.PI * 2) / cycle,
+        phase: Math.random() * Math.PI * 2,
+        size: 8 + Math.random() * 5,
+        alpha: 0.22 + Math.random() * 0.22,
+        parallax: 0.65 + Math.random() * 0.3
       };
     });
 
@@ -91,6 +110,20 @@
       ctx.fillStyle = starColor(alpha, star.z > 0.74);
       ctx.shadowBlur = star.isXL ? (24 + star.z * 12) : (star.isLarge ? (18 + star.z * 10) : (star.z > 0.8 ? 10 : 0));
       ctx.shadowColor = starColor(alpha, true);
+      ctx.arc(x, y, star.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    for (const star of giantStars){
+      const orbit = star.orbit * (0.85 + star.z * 0.22);
+      const x = star.x + Math.sin(time * star.drift + star.phase) * orbit - pointer.x * star.parallax * 3.5;
+      const y = star.y + Math.cos(time * star.drift + star.phase * 0.95) * orbit * star.ellipse - pointer.y * star.parallax * 2.5;
+      const twinkle = star.alpha + Math.sin(time * star.drift * 0.9 + star.phase) * 0.05;
+      const alpha = Math.max(0.16, Math.min(0.52, twinkle));
+      ctx.beginPath();
+      ctx.fillStyle = starColor(alpha, true);
+      ctx.shadowBlur = 34 + star.z * 24;
+      ctx.shadowColor = starColor(Math.min(alpha + 0.08, 0.62), true);
       ctx.arc(x, y, star.size, 0, Math.PI * 2);
       ctx.fill();
     }
