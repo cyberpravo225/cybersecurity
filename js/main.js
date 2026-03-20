@@ -534,11 +534,12 @@ observer.observe(el)
   const themeColors = () => {
     const dark = document.documentElement.getAttribute('data-theme') === 'dark';
     return {
-      haze: dark ? ['#020712', '#061a33', '#0a274f'] : ['#edf6ff', '#dbeafe', '#bfdbfe'],
-      glow: dark ? 'rgba(96,165,250,0.24)' : 'rgba(255,255,255,0.94)',
-      star: dark ? 'rgba(186,230,253,0.9)' : 'rgba(255,255,255,0.98)',
-      node: dark ? 'rgba(96,165,250,0.95)' : 'rgba(255,255,255,1)',
-      line: dark ? 'rgba(96,165,250,0.14)' : 'rgba(255,255,255,0.22)'
+      haze: dark ? ['#020617', '#0a1733', '#081224'] : ['#f8fbff', '#e0f2fe', '#dbeafe'],
+      glow: dark ? 'rgba(30,58,138,0.28)' : 'rgba(255,255,255,0.98)',
+      glowSecondary: dark ? 'rgba(14,165,233,0.12)' : 'rgba(186,230,253,0.75)',
+      star: dark ? 'rgba(186,230,253,0.92)' : 'rgba(255,255,255,0.98)',
+      node: dark ? 'rgba(125,211,252,0.96)' : 'rgba(255,255,255,1)',
+      line: dark ? 'rgba(96,165,250,0.16)' : 'rgba(226,232,240,0.16)'
     };
   };
 
@@ -555,24 +556,26 @@ observer.observe(el)
   }
 
   function createScene(){
-    const nodeCount = mobile() ? 34 : 70;
-    const starCount = mobile() ? 180 : 420;
+    const nodeCount = mobile() ? 40 : 78;
+    const starCount = mobile() ? 260 : 620;
 
     nodes = Array.from({ length: nodeCount }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.08,
-      vy: (Math.random() - 0.5) * 0.08,
-      size: Math.random() * 1.8 + 1.2,
+      vx: (Math.random() - 0.5) * 0.06,
+      vy: (Math.random() - 0.5) * 0.06,
+      size: Math.random() * 1.9 + 1,
+      depth: Math.random(),
       pulse: Math.random() * Math.PI * 2
     }));
 
     stars = Array.from({ length: starCount }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      size: Math.random() * 1.6 + 0.25,
-      alpha: Math.random() * 0.7 + 0.2,
-      drift: Math.random() * 0.15 + 0.02
+      size: Math.random() * 1.7 + 0.15,
+      alpha: Math.random() * 0.65 + 0.12,
+      drift: Math.random() * 0.18 + 0.02,
+      depth: Math.random()
     }));
   }
 
@@ -583,27 +586,34 @@ observer.observe(el)
   function drawBackdrop(colors){
     const base = ctx.createLinearGradient(0, 0, 0, height);
     base.addColorStop(0, colors.haze[0]);
-    base.addColorStop(0.45, colors.haze[1]);
+    base.addColorStop(0.52, colors.haze[1]);
     base.addColorStop(1, colors.haze[0]);
     ctx.fillStyle = base;
     ctx.fillRect(0, 0, width, height);
 
     const center = ctx.createRadialGradient(width * 0.5, height * 0.42, 0, width * 0.5, height * 0.42, Math.max(width, height) * 0.48);
     center.addColorStop(0, colors.glow);
-    center.addColorStop(0.42, rgbaWithAlpha(colors.glow, mobile() ? 0.16 : 0.2));
+    center.addColorStop(0.38, rgbaWithAlpha(colors.glow, mobile() ? 0.15 : 0.2));
     center.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = center;
+    ctx.fillRect(0, 0, width, height);
+
+    const lowerGlow = ctx.createRadialGradient(width * 0.5, height * 0.88, 0, width * 0.5, height * 0.88, Math.max(width, height) * 0.22);
+    lowerGlow.addColorStop(0, colors.glowSecondary);
+    lowerGlow.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = lowerGlow;
     ctx.fillRect(0, 0, width, height);
   }
 
   function drawStars(colors, tick){
     for (const star of stars){
       const twinkle = star.alpha + Math.sin(tick * star.drift + star.x * 0.01) * 0.12;
+      const size = star.size * (0.55 + star.depth);
       ctx.beginPath();
       ctx.fillStyle = rgbaWithAlpha(colors.star, Math.max(0.12, Math.min(1, twinkle)));
-      ctx.shadowBlur = star.size > 1.2 ? 10 : 0;
+      ctx.shadowBlur = size > 1.15 ? 10 + star.depth * 8 : 0;
       ctx.shadowColor = colors.star;
-      ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+      ctx.arc(star.x, star.y, size, 0, Math.PI * 2);
       ctx.fill();
     }
   }
@@ -631,10 +641,10 @@ observer.observe(el)
       const a = nodes[i];
 
       ctx.beginPath();
-      ctx.fillStyle = rgbaWithAlpha(colors.node, 0.88);
-      ctx.shadowBlur = 14;
+      ctx.fillStyle = rgbaWithAlpha(colors.node, 0.45 + a.depth * 0.45);
+      ctx.shadowBlur = 8 + a.depth * 12;
       ctx.shadowColor = colors.node;
-      ctx.arc(a.x, a.y, a.size + Math.sin(a.pulse) * 0.35, 0, Math.PI * 2);
+      ctx.arc(a.x, a.y, (a.size + Math.sin(a.pulse) * 0.35) * (0.75 + a.depth * 0.55), 0, Math.PI * 2);
       ctx.fill();
 
       for (let j = i + 1; j < nodes.length; j++){
@@ -642,12 +652,14 @@ observer.observe(el)
         const dx = a.x - b.x;
         const dy = a.y - b.y;
         const distance = Math.hypot(dx, dy);
+        const range = mobile() ? 150 : 210;
 
-        if (distance < (mobile() ? 150 : 210)){
-          const alpha = (1 - distance / (mobile() ? 150 : 210)) * (mobile() ? 0.22 : 0.34);
+        if (distance < range){
+          const depth = (a.depth + b.depth) * 0.5;
+          const alpha = (1 - distance / range) * (mobile() ? 0.18 : 0.26) * (0.5 + depth * 0.9);
           ctx.beginPath();
           ctx.strokeStyle = rgbaWithAlpha(colors.line, alpha);
-          ctx.lineWidth = distance < 90 ? 1.15 : 0.7;
+          ctx.lineWidth = distance < 90 ? (0.9 + depth * 0.45) : (0.35 + depth * 0.4);
           ctx.shadowBlur = 0;
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(b.x, b.y);
