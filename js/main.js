@@ -534,6 +534,8 @@ observer.observe(el)
   let nodes = [];
   let stars = [];
   let sceneSignature = '';
+  const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+  let scrollOffset = 0;
 
   const isDarkTheme = () => document.documentElement.getAttribute('data-theme') === 'dark';
   const isMobile = () => window.innerWidth < 720;
@@ -611,14 +613,21 @@ observer.observe(el)
       return {
         x: random() * width,
         y: random() * height,
+        baseX: 0,
+        baseY: 0,
         z: depth,
+        layer: 0.6 + depth * 1.6,
         size: 0.7 + depth * 2.4,
-        vx: (random() - 0.5) * (0.08 + depth * 0.14),
-        vy: (random() - 0.5) * (0.06 + depth * 0.12),
+        driftX: 10 + random() * 10,
+        driftY: 10 + random() * 10,
+        vx: (random() - 0.5) * (0.05 + depth * 0.08),
+        vy: (random() - 0.5) * (0.05 + depth * 0.08),
         pulse: random() * Math.PI * 2,
+        phaseX: random() * Math.PI * 2,
+        phaseY: random() * Math.PI * 2,
         hotspot: random() > 0.88
       };
-    });
+    }).map((node) => ({ ...node, baseX: node.x, baseY: node.y }));
 
     stars = Array.from({ length: starCount }, () => {
       const depth = random();
@@ -628,7 +637,10 @@ observer.observe(el)
         z: depth,
         size: 0.35 + depth * 1.35,
         alpha: 0.22 + random() * 0.52,
-        drift: 0.25 + random() * 0.7
+        drift: 0.25 + random() * 0.7,
+        phase: random() * Math.PI * 2,
+        floatX: 6 + random() * 12,
+        floatY: 6 + random() * 12
       };
     });
   }
@@ -661,32 +673,46 @@ observer.observe(el)
 
   function drawStars(colors, time){
     for (const star of stars){
-      const twinkle = star.alpha + Math.sin(time * star.drift + star.x * 0.01 + star.y * 0.008) * 0.08;
+      const driftX = Math.sin(time * star.drift + star.phase) * star.floatX * 0.45 * (0.4 + star.z * 0.8);
+      const driftY = Math.cos(time * (star.drift * 0.9) + star.phase * 0.7) * star.floatY * 0.45 * (0.4 + star.z * 0.8);
+      const x = star.x + driftX - pointer.x * star.z * 0.35;
+      const y = star.y + driftY + scrollOffset * star.z * 0.18;
+      const twinkle = star.alpha + Math.sin(time * star.drift + star.phase + star.x * 0.01 + star.y * 0.008) * 0.08;
       const alpha = Math.max(0.16, Math.min(1, twinkle));
       ctx.beginPath();
       ctx.fillStyle = rgbaWithAlpha(star.z > 0.72 ? colors.starBright : colors.star, alpha);
       ctx.shadowBlur = star.z > 0.8 ? 12 : (star.z > 0.55 ? 4 : 0);
       ctx.shadowColor = star.z > 0.8 ? colors.starBright : 'transparent';
-      ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+      ctx.arc(x, y, star.size, 0, Math.PI * 2);
       ctx.fill();
     }
   }
 
   function updateNodes(time){
+    pointer.x += (pointer.tx - pointer.x) * 0.035;
+    pointer.y += (pointer.ty - pointer.y) * 0.035;
+
     for (const node of nodes){
-      const parallaxShift = Math.sin(time * (0.18 + node.z * 0.22) + node.pulse) * (0.08 + node.z * 0.22);
-      node.x += node.vx + parallaxShift * 0.02;
-      node.y += node.vy + Math.cos(time * 0.16 + node.pulse) * 0.015;
+      node.baseX += node.vx;
+      node.baseY += node.vy;
       node.pulse += 0.012 + node.z * 0.01;
 
-      if (node.x < -60) node.x = width + 60;
-      if (node.x > width + 60) node.x = -60;
-      if (node.y < -60) node.y = height + 60;
-      if (node.y > height + 60) node.y = -60;
+      if (node.baseX < -80) node.baseX = width + 80;
+      if (node.baseX > width + 80) node.baseX = -80;
+      if (node.baseY < -80) node.baseY = height + 80;
+      if (node.baseY > height + 80) node.baseY = -80;
+
+      const floatX = Math.sin(time * (0.18 + node.z * 0.14) + node.phaseX) * node.driftX;
+      const floatY = Math.cos(time * (0.16 + node.z * 0.12) + node.phaseY) * node.driftY;
+      const parallaxX = -pointer.x * node.layer * 0.9;
+      const parallaxY = (-pointer.y * node.layer * 0.65) + scrollOffset * node.layer * 0.35;
+
+      node.x = node.baseX + floatX + parallaxX;
+      node.y = node.baseY + floatY + parallaxY;
     }
   }
 
-  function drawConnections(colors){
+  function drawConnections(colors, time){
     const range = isMobile() ? 150 : 220;
     for (let i = 0; i < nodes.length; i++){
       const a = nodes[i];
@@ -699,14 +725,30 @@ observer.observe(el)
 
         const depth = (a.z + b.z) * 0.5;
         const alphaBase = isDarkTheme() ? 0.24 : 0.14;
-        const alpha = (1 - distance / range) * alphaBase * (0.7 + depth * 0.9);
+        const shimmer = 0.72 + (Math.sin(time * (1.2 + depth) + i * 0.7 + j * 0.33) + 1) * 0.22;
+        const alpha = (1 - distance / range) * alphaBase * (0.7 + depth * 0.9) * shimmer;
         ctx.beginPath();
         ctx.moveTo(a.x, a.y);
         ctx.lineTo(b.x, b.y);
         ctx.lineWidth = 0.45 + depth * (isDarkTheme() ? 0.72 : 0.46);
         ctx.strokeStyle = rgbaWithAlpha(depth > 0.62 ? colors.lineBright : colors.line, alpha);
-        ctx.shadowBlur = 0;
+        ctx.shadowBlur = shimmer > 1 ? 8 + depth * 8 : 0;
+        ctx.shadowColor = rgbaWithAlpha(colors.lineBright, alpha * 0.9);
         ctx.stroke();
+
+        const signalStrength = (1 - distance / range) * depth;
+        if (signalStrength > 0.28) {
+          const signal = (time * (0.1 + depth * 0.12) + i * 0.17 + j * 0.11) % 1;
+          const glowX = a.x + (b.x - a.x) * signal;
+          const glowY = a.y + (b.y - a.y) * signal;
+          const glowAlpha = Math.min(0.9, 0.24 + signalStrength * 0.9);
+          ctx.beginPath();
+          ctx.fillStyle = rgbaWithAlpha(colors.nodeBright, glowAlpha);
+          ctx.shadowBlur = 12 + depth * 20;
+          ctx.shadowColor = rgbaWithAlpha(colors.lineBright, glowAlpha);
+          ctx.arc(glowX, glowY, 0.8 + depth * 1.6, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
     }
   }
@@ -735,7 +777,7 @@ observer.observe(el)
     drawBackdrop(colors);
     drawStars(colors, time);
     updateNodes(time);
-    drawConnections(colors);
+    drawConnections(colors, time);
     drawNodes(colors, time);
     animationFrame = requestAnimationFrame(render);
   }
@@ -750,6 +792,20 @@ observer.observe(el)
   };
 
   window.addEventListener('resize', () => refresh(), { passive: true });
+
+  window.addEventListener('pointermove', (event) => {
+    pointer.tx = (event.clientX / Math.max(width, 1) - 0.5) * 2;
+    pointer.ty = (event.clientY / Math.max(height, 1) - 0.5) * 2;
+  }, { passive: true });
+
+  window.addEventListener('pointerleave', () => {
+    pointer.tx = 0;
+    pointer.ty = 0;
+  }, { passive: true });
+
+  window.addEventListener('scroll', () => {
+    scrollOffset = Math.max(-0.35, Math.min(0.35, window.scrollY / Math.max(height * 1.8, 1)));
+  }, { passive: true });
 
   const observer = new MutationObserver((mutations) => {
     if (mutations.some((mutation) => mutation.attributeName === 'data-theme')) {
