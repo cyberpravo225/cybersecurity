@@ -530,6 +530,7 @@ observer.observe(el)
   let animationFrame = 0;
   let nodes = [];
   let stars = [];
+  let sceneSignature = '';
 
   const isDarkTheme = () => document.documentElement.getAttribute('data-theme') === 'dark';
   const isMobile = () => window.innerWidth < 720;
@@ -565,7 +566,22 @@ observer.observe(el)
         };
   };
 
-  function resize(){
+  function seededRandom(seed){
+    let value = seed % 2147483647;
+    if (value <= 0) value += 2147483646;
+    return () => {
+      value = value * 16807 % 2147483647;
+      return (value - 1) / 2147483646;
+    };
+  }
+
+  function getSceneSignature(){
+    const widthBucket = Math.max(1, Math.round(window.innerWidth / 120));
+    const heightBucket = Math.max(1, Math.round(window.innerHeight / 120));
+    return `${isMobile() ? 'mobile' : 'desktop'}:${widthBucket}:${heightBucket}`;
+  }
+
+  function resize(forceRebuild = false){
     const ratio = Math.min(window.devicePixelRatio || 1, 2);
     width = window.innerWidth;
     height = window.innerHeight;
@@ -574,36 +590,42 @@ observer.observe(el)
     canvas.style.width = width + 'px';
     canvas.style.height = height + 'px';
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-    createScene();
+
+    const nextSignature = getSceneSignature();
+    if (forceRebuild || sceneSignature !== nextSignature || !nodes.length || !stars.length) {
+      sceneSignature = nextSignature;
+      createScene();
+    }
   }
 
   function createScene(){
     const nodeCount = isMobile() ? 34 : 64;
     const starCount = isMobile() ? 180 : 360;
+    const random = seededRandom(Array.from(sceneSignature).reduce((acc, char, index) => acc + char.charCodeAt(0) * (index + 17), 97));
 
     nodes = Array.from({ length: nodeCount }, () => {
-      const depth = Math.random();
+      const depth = random();
       return {
-        x: Math.random() * width,
-        y: Math.random() * height,
+        x: random() * width,
+        y: random() * height,
         z: depth,
         size: 0.7 + depth * 2.4,
-        vx: (Math.random() - 0.5) * (0.08 + depth * 0.14),
-        vy: (Math.random() - 0.5) * (0.06 + depth * 0.12),
-        pulse: Math.random() * Math.PI * 2,
-        hotspot: Math.random() > 0.88
+        vx: (random() - 0.5) * (0.08 + depth * 0.14),
+        vy: (random() - 0.5) * (0.06 + depth * 0.12),
+        pulse: random() * Math.PI * 2,
+        hotspot: random() > 0.88
       };
     });
 
     stars = Array.from({ length: starCount }, () => {
-      const depth = Math.random();
+      const depth = random();
       return {
-        x: Math.random() * width,
-        y: Math.random() * height,
+        x: random() * width,
+        y: random() * height,
         z: depth,
         size: 0.3 + depth * 1.2,
-        alpha: 0.16 + Math.random() * 0.45,
-        drift: 0.25 + Math.random() * 0.7
+        alpha: 0.16 + random() * 0.45,
+        drift: 0.25 + random() * 0.7
       };
     });
   }
@@ -715,20 +737,20 @@ observer.observe(el)
     animationFrame = requestAnimationFrame(render);
   }
 
-  resize();
+  resize(true);
   render();
 
-  const refresh = () => {
+  const refresh = (forceRebuild = false) => {
     cancelAnimationFrame(animationFrame);
-    resize();
+    resize(forceRebuild);
     render();
   };
 
-  window.addEventListener('resize', refresh, { passive: true });
+  window.addEventListener('resize', () => refresh(), { passive: true });
 
   const observer = new MutationObserver((mutations) => {
     if (mutations.some((mutation) => mutation.attributeName === 'data-theme')) {
-      refresh();
+      refresh(false);
     }
   });
 
