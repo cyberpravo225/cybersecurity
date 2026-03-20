@@ -75,6 +75,7 @@
 
     navList.classList.toggle('open');
     menuToggle.classList.toggle('is-open');
+    document.body.classList.toggle('menu-open', !open);
   });
 }
    // закрытие меню при клике вне него
@@ -85,6 +86,7 @@ document.addEventListener('click', (e) => {
     navList.classList.remove('open');
     menuToggle.setAttribute('aria-expanded','false');
     menuToggle.classList.remove('is-open');
+    document.body.classList.remove('menu-open');
   }
 });
 
@@ -164,6 +166,7 @@ document.addEventListener('click', (e) => {
   menuToggle.setAttribute('aria-expanded','false');
   navList.classList.remove('open');
   menuToggle.classList.remove('is-open');
+  document.body.classList.remove('menu-open');
 }
     }
   });
