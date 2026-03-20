@@ -631,16 +631,17 @@ observer.observe(el)
 
     stars = Array.from({ length: starCount }, () => {
       const depth = random();
+      const cycleSeconds = 6 + random() * 6;
       return {
         x: random() * width,
         y: random() * height,
         z: depth,
         size: 0.35 + depth * 1.35,
         alpha: 0.22 + random() * 0.52,
-        drift: 0.25 + random() * 0.7,
+        drift: (Math.PI * 2) / cycleSeconds,
         phase: random() * Math.PI * 2,
-        floatX: 6 + random() * 12,
-        floatY: 6 + random() * 12
+        orbit: 10 + random() * 10,
+        ellipse: 0.7 + random() * 0.6
       };
     });
   }
@@ -673,8 +674,9 @@ observer.observe(el)
 
   function drawStars(colors, time){
     for (const star of stars){
-      const driftX = Math.sin(time * star.drift + star.phase) * star.floatX * 0.45 * (0.4 + star.z * 0.8);
-      const driftY = Math.cos(time * (star.drift * 0.9) + star.phase * 0.7) * star.floatY * 0.45 * (0.4 + star.z * 0.8);
+      const orbit = star.orbit * (0.9 + star.z * 0.2);
+      const driftX = Math.sin(time * star.drift + star.phase) * orbit;
+      const driftY = Math.cos(time * star.drift + star.phase * 0.9) * orbit * star.ellipse;
       const x = star.x + driftX - pointer.x * star.z * 0.35;
       const y = star.y + driftY + scrollOffset * star.z * 0.18;
       const twinkle = star.alpha + Math.sin(time * star.drift + star.phase + star.x * 0.01 + star.y * 0.008) * 0.08;
