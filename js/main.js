@@ -641,7 +641,8 @@ observer.observe(el)
         drift: (Math.PI * 2) / cycleSeconds,
         phase: random() * Math.PI * 2,
         orbit: 10 + random() * 10,
-        ellipse: 0.7 + random() * 0.6
+        ellipse: 0.7 + random() * 0.6,
+        parallax: 0.15 + depth * 0.85
       };
     });
   }
@@ -677,8 +678,8 @@ observer.observe(el)
       const orbit = star.orbit * (0.9 + star.z * 0.2);
       const driftX = Math.sin(time * star.drift + star.phase) * orbit;
       const driftY = Math.cos(time * star.drift + star.phase * 0.9) * orbit * star.ellipse;
-      const x = star.x + driftX - pointer.x * star.z * 0.35;
-      const y = star.y + driftY + scrollOffset * star.z * 0.18;
+      const x = star.x + driftX - pointer.x * star.parallax * 2.2;
+      const y = star.y + driftY + scrollOffset * star.parallax * 60;
       const twinkle = star.alpha + Math.sin(time * star.drift + star.phase + star.x * 0.01 + star.y * 0.008) * 0.08;
       const alpha = Math.max(0.16, Math.min(1, twinkle));
       ctx.beginPath();
@@ -728,19 +729,26 @@ observer.observe(el)
         const depth = (a.z + b.z) * 0.5;
         const alphaBase = isDarkTheme() ? 0.24 : 0.14;
         const shimmer = 0.72 + (Math.sin(time * (1.2 + depth) + i * 0.7 + j * 0.33) + 1) * 0.22;
-        const alpha = (1 - distance / range) * alphaBase * (0.7 + depth * 0.9) * shimmer;
+        const flicker = Math.sin(time * (5.2 + depth * 2.4) + i * 0.9 + j * 0.7) > 0.96 ? 1.45 : 1;
+        const alpha = (1 - distance / range) * alphaBase * (0.7 + depth * 0.9) * shimmer * flicker;
+        const dashA = 2 + depth * 4;
+        const dashB = 8 + depth * 12;
+        const dashSpan = dashA + dashB;
         ctx.beginPath();
         ctx.moveTo(a.x, a.y);
         ctx.lineTo(b.x, b.y);
+        ctx.setLineDash([dashA, dashB]);
+        ctx.lineDashOffset = -((time * (18 + depth * 22)) % dashSpan);
         ctx.lineWidth = 0.45 + depth * (isDarkTheme() ? 0.72 : 0.46);
         ctx.strokeStyle = rgbaWithAlpha(depth > 0.62 ? colors.lineBright : colors.line, alpha);
         ctx.shadowBlur = shimmer > 1 ? 8 + depth * 8 : 0;
         ctx.shadowColor = rgbaWithAlpha(colors.lineBright, alpha * 0.9);
         ctx.stroke();
+        ctx.setLineDash([]);
 
         const signalStrength = (1 - distance / range) * depth;
         if (signalStrength > 0.28) {
-          const signal = (time * (0.1 + depth * 0.12) + i * 0.17 + j * 0.11) % 1;
+          const signal = (time * (0.18 + depth * 0.2) + i * 0.17 + j * 0.11) % 1;
           const glowX = a.x + (b.x - a.x) * signal;
           const glowY = a.y + (b.y - a.y) * signal;
           const glowAlpha = Math.min(0.9, 0.24 + signalStrength * 0.9);
