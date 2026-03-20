@@ -43,7 +43,7 @@
   --accent-cta: #2dd4bf;
   --glass: rgba(255,255,255,0.05);
   --card-bg: #2a2a2a;        /* более светлый серый для карточек */
-  --panel-bg: color-mix(in srgb, var(--bg) 65%, transparent);
+  --panel-bg: var(--glass);
   --panel-border: rgba(255,255,255,0.08);
   --shadow-color: 45,212,191;
 }
