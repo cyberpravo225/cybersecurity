@@ -1,17 +1,19 @@
-import { easyWords, mediumWords, hardWords } from './cyberly.js';
+import * as CyberlyWords from './cyberly.js';
 
 const ATTEMPTS = 6;
 const MAX_HINTS = 2;
 const KEY_ROWS = ['ЙЦУКЕНГШЩЗХЪ', 'ФЫВАПРОЛДЖЭ', 'ЯЧСМИТЬБЮ'];
 const COLOR_PRIORITY = { absent: 1, present: 2, correct: 3 };
-const pools = { easy: easyWords, medium: mediumWords, hard: hardWords, hardcore: hardWords };
-const labels = { easy: 'Лёгкий', medium: 'Средний', hard: 'Сложный', hardcore: 'Hardcore' };
+
+const wordCatalog = resolveWordCatalog(CyberlyWords);
+const pools = wordCatalog.pools;
+const labels = wordCatalog.labels;
 
 const params = new URLSearchParams(window.location.search);
-const selectedDifficulty = pools[params.get('difficulty')] ? params.get('difficulty') : 'medium';
+const selectedDifficulty = pools[params.get('difficulty')] ? params.get('difficulty') : wordCatalog.defaultDifficulty;
 const mode = params.get('mode') === 'daily' ? params.get('mode') : 'random';
 const pool = pools[selectedDifficulty].map(word => word.toLowerCase());
-const answer = mode === 'daily' ? getDailyWord(pool, selectedDifficulty) : getRandomWord(pool);
+const answer = mode === 'daily' ? getDailyWord(pool, selectedDifficulty) : getSeededWord(pool);
 const wordLength = answer.length;
 
 const state = {
@@ -39,6 +41,10 @@ const wordLengthLabel = document.getElementById('word-length-label');
 const gameModeLabel = document.getElementById('game-mode-label');
 const gameDescription = document.getElementById('game-description');
 
+if (!pool.length || !answer) {
+  throw new Error(`Cyberly word pool is empty for difficulty "${selectedDifficulty}".`);
+}
+
 init();
 
 function init() {
@@ -50,7 +56,7 @@ function init() {
     ? 'Сегодня для тебя подготовлено одно общее слово дня. Попробуй угадать его за 6 попыток.'
     : selectedDifficulty === 'hardcore'
       ? 'Hardcore-режим: только зелёные и чёрные подсказки, без жёлтых совпадений.'
-      : 'Случайное слово из словаря выбранной сложности. Можно играть снова сколько угодно.';
+      : `Случайное слово из словаря «${labels[selectedDifficulty]}». Можно играть снова сколько угодно.`;
 
   renderBoard();
   renderKeyboard();
@@ -171,10 +177,10 @@ async function submitGuess() {
   state.row += 1;
   state.col = 0;
 
-  if (state.row === ATTEMPTS) {
+  if (getConsumedAttempts() >= ATTEMPTS) {
     state.solved = true;
     revealLoss(answer);
-    setMessage('Раунд завершён. Можно сыграть ещё раз.');
+    setMessage('Раунд завершён. Попытки закончились.');
     state.isAnimating = false;
     updateHintButton();
     return;
@@ -182,7 +188,7 @@ async function submitGuess() {
 
   state.isAnimating = false;
   updateActiveRow();
-  setMessage(`Попытка ${state.row + 1} из ${ATTEMPTS}.`);
+  setMessage(`Попытка ${getConsumedAttempts() + 1} из ${ATTEMPTS}.`);
   focusBoard();
 }
 
@@ -245,7 +251,7 @@ function updateBoardRow(row, options = {}) {
     tile.textContent = rowLetters[index];
     tile.classList.toggle('filled', hasLetter);
     tile.classList.toggle('active', row === state.row && index === state.col && !state.solved && !state.isAnimating);
-    tile.classList.toggle('hinted', state.hintedIndexes.has(index));
+    tile.classList.toggle('hinted', isHintedCell(row, index));
 
     if (options.animateIndex === index && hasLetter) {
       tile.classList.remove('tile-pop');
@@ -311,8 +317,8 @@ function revealHint() {
     return;
   }
 
-  if (state.row >= ATTEMPTS - 1 && state.col === 0) {
-    setMessage('Подсказка недоступна: больше нет попыток для штрафа.');
+  if (getConsumedAttempts() >= ATTEMPTS - 1) {
+    setMessage('Подсказка недоступна: не осталось попыток для штрафа.');
     return;
   }
 
@@ -326,9 +332,7 @@ function revealHint() {
   const index = availableIndexes[Math.floor(Math.random() * availableIndexes.length)];
   state.hintedIndexes.add(index);
   state.hintUses += 1;
-  state.row = Math.min(state.row + 1, ATTEMPTS - 1);
-  state.guesses[state.row] = Array(wordLength).fill('');
-  state.hintedRows.set(state.row, index);
+  lockHintedCell(state.row, index);
   state.guesses[state.row][index] = answer[index].toUpperCase();
   state.col = findNextEditableCol(state.row, 0);
   if (state.col === -1) state.col = wordLength;
@@ -336,7 +340,7 @@ function revealHint() {
   pulseHintedTile(state.row, index);
   updateActiveRow();
   updateHintButton();
-  setMessage(`Подсказка ${state.hintUses}/${MAX_HINTS}: буква «${answer[index].toUpperCase()}» открыта на позиции ${index + 1}. Потрачена 1 попытка.`);
+  setMessage(`Подсказка ${state.hintUses}/${MAX_HINTS}: буква «${answer[index].toUpperCase()}» открыта на позиции ${index + 1}. Списана 1 попытка без пропуска строки.`);
 }
 
 function pulseHintedTile(row, index) {
@@ -377,23 +381,37 @@ function updateKeyboardStates(guess, evaluation) {
   });
 }
 
-
 function findNextEditableCol(row, startIndex) {
-  const lockedIndex = state.hintedRows.get(row);
+  const lockedIndexes = state.hintedRows.get(row) || new Set();
   for (let index = startIndex; index < wordLength; index += 1) {
-    if (index === lockedIndex) continue;
+    if (lockedIndexes.has(index)) continue;
     if (!state.guesses[row][index]) return index;
   }
   return -1;
 }
 
 function findPreviousEditableFilledCol(row, startIndex) {
-  const lockedIndex = state.hintedRows.get(row);
+  const lockedIndexes = state.hintedRows.get(row) || new Set();
   for (let index = startIndex; index >= 0; index -= 1) {
-    if (index === lockedIndex) continue;
+    if (lockedIndexes.has(index)) continue;
     if (state.guesses[row][index]) return index;
   }
   return -1;
+}
+
+function lockHintedCell(row, index) {
+  if (!state.hintedRows.has(row)) {
+    state.hintedRows.set(row, new Set());
+  }
+  state.hintedRows.get(row).add(index);
+}
+
+function isHintedCell(row, index) {
+  return state.hintedRows.get(row)?.has(index) || false;
+}
+
+function getConsumedAttempts() {
+  return state.row + state.hintUses;
 }
 
 function shakeRow(row) {
@@ -449,7 +467,7 @@ function normalizeLetter(value) {
   return /^[А-Я]$/.test(normalized) ? normalized : '';
 }
 
-function getRandomWord(words) {
+function getSeededWord(words) {
   const seed = Number(params.get('seed')) || Date.now();
   return words[seed % words.length];
 }
@@ -458,6 +476,48 @@ function getDailyWord(words, difficulty) {
   const base = new Date();
   const daySeed = Math.floor(Date.UTC(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate()) / 86400000);
   return words[(daySeed + difficulty.length) % words.length];
+}
+
+function resolveWordCatalog(wordsModule) {
+  const poolsConfig = [
+    { key: 'easy', label: '3–4 буквы', sources: ['easyWords', 'shortWords', 'words34'] },
+    { key: 'medium', label: '5–6 букв', sources: ['mediumWords', 'midWords', 'words56'] },
+    { key: 'hard', label: '7+ букв', sources: ['hardWords', 'longWords', 'words7plus'] },
+    { key: 'hardcore', label: 'Hardcore', sources: ['hardcoreWords', 'hardWords', 'longWords', 'words7plus'] }
+  ];
+
+  const pools = Object.fromEntries(
+    poolsConfig
+      .map(({ key, sources }) => [key, getFirstArray(wordsModule, sources)])
+      .filter(([, value]) => Array.isArray(value) && value.length)
+  );
+
+  if (!pools.hardcore && pools.hard) {
+    pools.hardcore = pools.hard;
+  }
+
+  const labels = Object.fromEntries(
+    poolsConfig
+      .filter(({ key }) => pools[key])
+      .map(({ key, label }) => [key, label])
+  );
+
+  const defaultDifficulty = pools.medium ? 'medium' : Object.keys(pools)[0];
+
+  if (!defaultDifficulty) {
+    throw new Error('Cyberly word lists are missing or empty.');
+  }
+
+  return { pools, labels, defaultDifficulty };
+}
+
+function getFirstArray(wordsModule, keys) {
+  for (const key of keys) {
+    if (Array.isArray(wordsModule[key]) && wordsModule[key].length) {
+      return wordsModule[key];
+    }
+  }
+  return null;
 }
 
 function setMessage(text) {
