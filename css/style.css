@@ -363,6 +363,20 @@ border-radius:16px;
   transition: transform 0.25s ease, opacity 0.2s ease;
 }
 
+.icon-sun,
+.icon-sun circle,
+.icon-sun line{
+  stroke:#facc15;
+}
+
+.icon-sun circle{
+  fill:#facc15;
+}
+
+.icon-sun line{
+  fill:none;
+}
+
 /* по умолчанию (светлая тема) — показываем ЛУНУ */
 .icon-sun { display: none; }
 .icon-moon { display: block; }
@@ -412,6 +426,16 @@ border-radius:16px;
 .topbar .back-btn,
 .topbar .header-main-menu{
   color:var(--accent);
+}
+
+.topbar .back-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:44px;
+  padding:12px 16px;
+  margin:-12px 0;
+  border-radius:12px;
 }
 
 .back-btn:hover{
@@ -3764,4 +3788,34 @@ body[data-page="home"] .hero{
 @keyframes cyberly-loss-reveal{
   0%{opacity:0; transform:scale(.92)}
   100%{opacity:1; transform:scale(1)}
+}
+
+
+@media (max-width: 768px){
+  body[data-page="home"] .game-feature.game-feature-split,
+  body[data-page="home"] .game-feature .game-feature-copy,
+  body[data-page="home"] .game-feature .game-feature-actions{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    width:100%;
+  }
+
+  body[data-page="home"] .game-feature h3,
+  body[data-page="home"] .game-feature-copy h3,
+  body[data-page="home"] .game-feature p,
+  body[data-page="home"] .game-feature-copy p{
+    text-align:center;
+  }
+
+  body[data-page="home"] .game-feature.game-feature-split{
+    gap:16px;
+  }
+
+  body[data-page="home"] .game-feature-btn{
+    align-self:center;
+    justify-content:center;
+  }
 }
