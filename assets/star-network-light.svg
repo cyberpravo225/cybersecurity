@@ -1,57 +1,58 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1600" preserveAspectRatio="xMidYMid slice">
 <defs>
-<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-<stop offset="0%" stop-color="#8db9ee"/>
-<stop offset="26%" stop-color="#d5ebff"/>
-<stop offset="54%" stop-color="#ffffff"/>
-<stop offset="100%" stop-color="#9fc8f2"/>
-</linearGradient>
-<radialGradient id="centerGlow" cx="50%" cy="39%" r="46%">
-      <stop offset="0%" stop-color="rgba(255,255,255,0.78)"/>
-      <stop offset="38%" stop-color="rgba(224,242,254,0.42)"/>
-      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-    </radialGradient>
-    <radialGradient id="edgeGlowLeft" cx="10%" cy="52%" r="34%">
-      <stop offset="0%" stop-color="rgba(125,211,252,0.18)"/>
-      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-    </radialGradient>
-    <radialGradient id="edgeGlowRight" cx="90%" cy="60%" r="34%">
-      <stop offset="0%" stop-color="rgba(125,211,252,0.16)"/>
-      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-    </radialGradient>
-    <radialGradient id="upperSoft" cx="48%" cy="18%" r="24%">
-      <stop offset="0%" stop-color="rgba(255,255,255,0.16)"/>
-      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-    </radialGradient>
-    <radialGradient id="lowerGlow" cx="50%" cy="90%" r="22%">
-      <stop offset="0%" stop-color="rgba(224,242,254,0.14)"/>
-      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-    </radialGradient>
-    <radialGradient id="leftMist" cx="24%" cy="74%" r="22%">
-      <stop offset="0%" stop-color="rgba(125,211,252,0.07)"/>
-      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-    </radialGradient>
-    <radialGradient id="rightMist" cx="76%" cy="30%" r="20%">
-      <stop offset="0%" stop-color="rgba(125,211,252,0.06)"/>
-      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-    </radialGradient>
-    <filter id="softGlow" x="-100%" y="-100%" width="300%" height="300%">
-      <feGaussianBlur stdDeviation="0.8" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-    <filter id="nodeGlow" x="-100%" y="-100%" width="300%" height="300%">
-      <feGaussianBlur stdDeviation="0.55" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
+<radialGradient id="bgCore" cx="51%" cy="48%" r="78%">
+  <stop offset="0%" stop-color="#ffffff"/>
+  <stop offset="34%" stop-color="#ffffff"/>
+  <stop offset="62%" stop-color="#eef8ff"/>
+  <stop offset="100%" stop-color="#b9dcff"/>
+</radialGradient>
+<radialGradient id="edgeWashTopLeft" cx="8%" cy="14%" r="58%">
+  <stop offset="0%" stop-color="#8fc8ff" stop-opacity="0.58"/>
+  <stop offset="42%" stop-color="#bfe2ff" stop-opacity="0.22"/>
+  <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="edgeWashTopRight" cx="91%" cy="22%" r="54%">
+  <stop offset="0%" stop-color="#9ad0ff" stop-opacity="0.46"/>
+  <stop offset="36%" stop-color="#cde9ff" stop-opacity="0.18"/>
+  <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="edgeWashBottomLeft" cx="16%" cy="88%" r="56%">
+  <stop offset="0%" stop-color="#84c2ff" stop-opacity="0.42"/>
+  <stop offset="40%" stop-color="#b9ddff" stop-opacity="0.15"/>
+  <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="edgeWashBottomRight" cx="87%" cy="84%" r="60%">
+  <stop offset="0%" stop-color="#7ebfff" stop-opacity="0.5"/>
+  <stop offset="38%" stop-color="#c4e4ff" stop-opacity="0.17"/>
+  <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="sideStreamLeft" cx="0%" cy="48%" r="62%">
+  <stop offset="0%" stop-color="#9bd3ff" stop-opacity="0.34"/>
+  <stop offset="28%" stop-color="#cbe8ff" stop-opacity="0.14"/>
+  <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="sideStreamRight" cx="100%" cy="54%" r="64%">
+  <stop offset="0%" stop-color="#8bc9ff" stop-opacity="0.3"/>
+  <stop offset="32%" stop-color="#c4e5ff" stop-opacity="0.13"/>
+  <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+</radialGradient>
+<filter id="softGlow" x="-100%" y="-100%" width="300%" height="300%">
+  <feGaussianBlur stdDeviation="0.8" result="blur"/>
+  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
+<filter id="nodeGlow" x="-100%" y="-100%" width="300%" height="300%">
+  <feGaussianBlur stdDeviation="0.55" result="blur"/>
+  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
 </defs>
-<rect width="100%" height="100%" fill="url(#bg)"/>
-<rect width="100%" height="100%" fill="url(#centerGlow)"/>
-<rect width="100%" height="100%" fill="url(#upperSoft)"/>
-<rect width="100%" height="100%" fill="url(#edgeGlowLeft)"/>
-<rect width="100%" height="100%" fill="url(#edgeGlowRight)"/>
-<rect width="100%" height="100%" fill="url(#leftMist)"/>
-<rect width="100%" height="100%" fill="url(#rightMist)"/>
-<rect width="100%" height="100%" fill="url(#lowerGlow)"/>
+<rect width="100%" height="100%" fill="url(#bgCore)"/>
+<rect width="100%" height="100%" fill="url(#edgeWashTopLeft)"/>
+<rect width="100%" height="100%" fill="url(#edgeWashTopRight)"/>
+<rect width="100%" height="100%" fill="url(#edgeWashBottomLeft)"/>
+<rect width="100%" height="100%" fill="url(#edgeWashBottomRight)"/>
+<rect width="100%" height="100%" fill="url(#sideStreamLeft)"/>
+<rect width="100%" height="100%" fill="url(#sideStreamRight)"/>
+
 <circle cx="562" cy="731" r="0.94" fill="#BAE6FD" opacity="0.57" />
 <circle cx="34" cy="1308" r="0.90" fill="#BAE6FD" opacity="0.55" />
 <circle cx="245" cy="798" r="1.58" fill="#E0F2FE" opacity="0.90" />
