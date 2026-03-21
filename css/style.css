@@ -5271,6 +5271,30 @@ body .theme-network{
 }
 
 /* =========================================================
+   Force non-home pages to use the exact same light backdrop as index
+   ========================================================= */
+:root[data-theme="light"] body:not([data-page="home"]),
+:root:not([data-theme]) body:not([data-page="home"]){
+  background:
+    radial-gradient(circle at 50% 32%, rgba(255,255,255,.92), transparent 26%),
+    radial-gradient(circle at 12% 14%, rgba(191,219,254,.95), transparent 32%),
+    radial-gradient(circle at 88% 18%, rgba(224,242,254,.95), transparent 34%),
+    linear-gradient(180deg, #d8ecff 0%, #edf7ff 46%, #d7ebfd 100%) !important;
+}
+
+:root[data-theme="light"] body:not([data-page="home"])::after,
+:root:not([data-theme]) body:not([data-page="home"])::after{
+  background:
+    radial-gradient(circle at 48% 24%, rgba(255,255,255,.8), transparent 24%),
+    radial-gradient(circle at 5% 10%, rgba(56,189,248,.18), transparent 20%),
+    radial-gradient(circle at 95% 10%, rgba(59,130,246,.16), transparent 20%),
+    radial-gradient(circle at 95% 90%, rgba(14,165,233,.14), transparent 22%),
+    radial-gradient(circle at 5% 90%, rgba(2,132,199,.14), transparent 22%) !important;
+  opacity: .88 !important;
+  filter: blur(0) !important;
+}
+
+/* =========================================================
    Unified card style on non-home pages (match homepage mood)
    ========================================================= */
 body:not([data-page="home"]) :is(
