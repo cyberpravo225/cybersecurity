@@ -336,6 +336,25 @@ document.addEventListener('click', (e) => {
 
   observer.observe(document.body, { childList: true, subtree: true });
 })();
+
+/* =========================
+   Fix malformed CyberGuessr mode cards markup at runtime
+   ========================= */
+(function(){
+  const isCyberGuessrHub = /cyberguessr\.html$/i.test(window.location.pathname);
+  if (!isCyberGuessrHub) return;
+
+  const gameModes = document.querySelector('.game-modes');
+  if (!gameModes) return;
+
+  let nestedCards = gameModes.querySelectorAll('a.mode-card a.mode-card');
+  while (nestedCards.length) {
+    nestedCards.forEach((nestedCard) => {
+      gameModes.appendChild(nestedCard);
+    });
+    nestedCards = gameModes.querySelectorAll('a.mode-card a.mode-card');
+  }
+})();
 /* =========================
    School card age chooser
    ========================= */
