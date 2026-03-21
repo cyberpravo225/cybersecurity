@@ -89,13 +89,13 @@
   perfBtn.innerHTML = `
     <svg class="icon-performance" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path class="icon-bolt" d="M13.5 2L6 13h5l-1 9 8-12h-5.2L13.5 2z"/>
-      <g class="icon-battery" transform="translate(2 4)">
-        <rect class="battery-shell" x="1.2" y="4.2" width="15.2" height="11.6" rx="2.8"/>
-        <rect class="battery-tip" x="16.8" y="8" width="2" height="4" rx="1"/>
-        <rect class="battery-core" x="3.2" y="6.3" width="10.4" height="7.4" rx="1.6"/>
-        <rect class="battery-cell battery-cell-1" x="4.1" y="7.2" width="2.4" height="5.6" rx="1"/>
-        <rect class="battery-cell battery-cell-2" x="7.4" y="7.2" width="2.4" height="5.6" rx="1"/>
-        <rect class="battery-cell battery-cell-3" x="10.7" y="7.2" width="2.1" height="5.6" rx="1"/>
+      <g class="icon-battery" transform="translate(1 3)">
+        <rect class="battery-shell" x="1" y="3.6" width="16.4" height="12.8" rx="3"/>
+        <rect class="battery-tip" x="17.7" y="8.2" width="2" height="3.6" rx="1"/>
+        <rect class="battery-core" x="3" y="5.8" width="11.2" height="8.4" rx="1.8"/>
+        <rect class="battery-cell battery-cell-1" x="3.8" y="6.9" width="2.6" height="6.2" rx="1"/>
+        <rect class="battery-cell battery-cell-2" x="7.1" y="6.9" width="2.6" height="6.2" rx="1"/>
+        <rect class="battery-cell battery-cell-3" x="10.4" y="6.9" width="2.6" height="6.2" rx="1"/>
       </g>
     </svg>`;
 
