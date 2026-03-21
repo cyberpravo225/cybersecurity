@@ -4476,6 +4476,14 @@ body::before{
   transform:translateY(0);
 }
 
+@media (min-width: 1025px){
+  .reveal{
+    transform: translateY(30px);
+    transition: opacity .85s ease, transform .85s cubic-bezier(.22,1,.36,1);
+    will-change: opacity, transform;
+  }
+}
+
 @keyframes orbFloat{
   from{ transform: translate3d(0, 0, 0) scale(1); }
   to{ transform: translate3d(2%, -4%, 0) scale(1.08); }
