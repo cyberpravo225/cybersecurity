@@ -3,23 +3,16 @@
   if (!canvas) return;
   if (canvas.dataset.networkInit === '1') return;
   const root = document.documentElement;
-  const ua = navigator.userAgent || '';
-  const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const touchPhone = window.matchMedia && window.matchMedia('(max-width: 900px) and (pointer: coarse)').matches;
-  const oldIphone = /iPhone/i.test(ua) && Math.min(window.screen.width || 0, window.screen.height || 0) <= 390;
-  const bgAnimationDisabled = root.classList.contains('bg-anim-off');
-  if (prefersReducedMotion || bgAnimationDisabled || touchPhone || oldIphone || root.classList.contains('low-end-device')) {
-    canvas.style.display = 'none';
-    return;
-  }
   canvas.dataset.networkInit = '1';
 
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
+  const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   let width = 0;
   let height = 0;
   let frame = 0;
+  let running = false;
   let stars = [];
   let giantStars = [];
   let nodes = [];
@@ -221,6 +214,7 @@
   }
 
   function render(){
+    if (!running) return;
     const time = performance.now() * 0.001;
     ctx.clearRect(0, 0, width, height);
     drawStars(time);
@@ -229,10 +223,24 @@
     frame = requestAnimationFrame(render);
   }
 
-  resize();
-  render();
+  function setRunning(nextRunning){
+    running = Boolean(nextRunning);
+    canvas.style.display = running ? '' : 'none';
+    if (!running) {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      ctx.clearRect(0, 0, width, height);
+      return;
+    }
+    resize();
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(render);
+  }
+
+  setRunning(!prefersReducedMotion && !root.classList.contains('bg-anim-off'));
 
   window.addEventListener('resize', () => {
+    if (!running) return;
     cancelAnimationFrame(frame);
     resize();
     render();
@@ -247,4 +255,12 @@
     pointer.tx = 0;
     pointer.ty = 0;
   }, { passive: true });
+
+  window.addEventListener('cyber:bg-animation-change', (event) => {
+    if (prefersReducedMotion) {
+      setRunning(false);
+      return;
+    }
+    setRunning(Boolean(event.detail?.enabled));
+  });
 })();
