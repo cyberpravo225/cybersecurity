@@ -70,6 +70,17 @@ body{
   padding:clamp(24px,4vw,48px) clamp(16px,4vw,32px);
 }
 
+/* Home page uses wider layout to better fill desktop screens */
+body[data-page="home"] .container{
+  max-width:min(80vw, 1540px);
+}
+
+body[data-page="home"] .topbar{
+  width:min(80vw, 1540px);
+  margin-inline:auto;
+  margin-top:12px;
+}
+
 /* Topbar */
 .topbar{
   position:sticky;
@@ -204,6 +215,24 @@ body{
 .hero .title{font-size:28px; margin:0 0 8px}
 .hero .lead{margin:0 0 20px; color:var(--muted)}
 
+.threat-strip{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:0 0 20px;
+}
+
+.threat-pill{
+  display:inline-flex;
+  align-items:center;
+  padding:8px 14px;
+  border-radius:999px;
+  font-weight:600;
+  font-size:14px;
+  background:color-mix(in srgb, var(--accent) 16%, transparent);
+  border:1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
 /* Cards grid */
 .card-grid{
 display:grid;
@@ -292,6 +321,11 @@ padding:10px 16px;
 margin:12px max(8px, env(safe-area-inset-right, 0px)) 12px max(8px, env(safe-area-inset-left, 0px));
 border-radius:16px;
 }
+  body[data-page="home"] .container,
+  body[data-page="home"] .topbar{
+    width:auto;
+    max-width:none;
+  }
   .hero .title{font-size:22px}
   .container{padding:20px}
 }
