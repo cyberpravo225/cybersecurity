@@ -1,17 +1,13 @@
 <!doctype html>
 <html lang="ru">
 <head>
-
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>CyberGuessr</title>
-
-<link rel="stylesheet" href="css/style.css">
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CyberGuessr — выбор режима</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body class="page">
+<body class="page" data-page="cyberguessr">
 
 <div class="theme-backdrop" aria-hidden="true">
   <div class="theme-orb theme-orb-one"></div>
@@ -20,134 +16,130 @@
   <canvas class="theme-network" id="theme-network"></canvas>
 </div>
 
-
-
 <div class="site">
 
-<header class="topbar glass">
+<header class="topbar glass" role="banner">
 
-<a class="back-btn" href="index.html">
-← Назад
-</a>
+  <div class="brand">
+    <a href="index.html" class="logo" aria-label="Главная">
+      <img src="assets/assets/logo.png" alt="Логотип" class="site-logo">
+      <span class="brand-text">PRO.Кибербезопасность</span>
+    </a>
+  </div>
 
-<h2 class="logo">🌍 CyberGuessr</h2>
+  <nav class="nav" role="navigation" aria-label="Основное меню">
 
-<nav class="nav">
-<button id="theme-toggle" class="btn icon-btn" aria-label="Тема"></button>
-</nav>
+    <button id="theme-toggle" class="btn icon-btn" aria-label="Переключить тему" title="Тема">
+      <svg class="icon-theme" width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <path class="icon-moon" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>
+        <g class="icon-sun">
+          <circle cx="12" cy="12" r="4"/>
+          <line x1="12" y1="1" x2="12" y2="4"/>
+          <line x1="12" y1="20" x2="12" y2="23"/>
+          <line x1="4.2" y1="4.2" x2="6.3" y2="6.3"/>
+          <line x1="17.7" y1="17.7" x2="19.8" y2="19.8"/>
+          <line x1="1" y1="12" x2="4" y2="12"/>
+          <line x1="20" y1="12" x2="23" y2="12"/>
+          <line x1="4.2" y1="19.8" x2="6.3" y2="17.7"/>
+          <line x1="17.7" y1="6.3" x2="19.8" y2="4.2"/>
+        </g>
+      </svg>
+    </button>
 
+    <button id="menu-toggle" class="btn icon-btn hamburger" aria-label="Открыть меню" aria-expanded="false">
+      <span class="hamburger-fallback" aria-hidden="true">☰</span>
+      <span class="hamburger-box"><span class="hamburger-inner"></span></span>
+    </button>
+
+    <ul class="nav-list" id="nav-list">
+      <li><a href="index.html" class="nav-link">Главная</a></li>
+
+      <li class="has-sub">
+        <button class="nav-link sub-toggle" aria-expanded="false">Школьники ▾</button>
+        <ul class="sub-menu">
+          <li><a href="students-1-4.html">1–4 классы</a></li>
+          <li><a href="students-5-8.html">5–8 классы</a></li>
+          <li><a href="students-9-11.html">9–11 классы</a></li>
+        </ul>
+      </li>
+
+      <li class="has-sub games-sub">
+        <button class="nav-link sub-toggle" aria-expanded="false">Игры ▾</button>
+        <ul class="sub-menu games-menu">
+          <li><a href="cyberguessr.html">CyberGuessr</a></li>
+          <li><a href="cyberly.html">Cyberly</a></li>
+          <li><a href="cyberpro-easy.html">CyberPro</a></li>
+          <li><a href="cyberword-easy.html">CyberWord</a></li>
+        </ul>
+      </li>
+
+      <li><a href="teachers.html" class="nav-link">Учителя / методисты</a></li>
+      <li><a href="seniors.html" class="nav-link">Старшее поколение</a></li>
+      <li><a href="methodical.html" class="nav-link">Методическая копилка</a></li>
+    </ul>
+
+  </nav>
 </header>
 
 <main class="main">
+  <section class="section container">
 
-<section class="section container">
+    <h1 class="section-title reveal">🌍 CyberGuessr</h1>
+    <p class="section-subtitle reveal delay">
+      Выбери режим и угадывай место киберинцидента на карте
+    </p>
 
-<h1 class="section-title">Выбери режим</h1>
+    <div class="game-modes reveal delay-2">
+      <a href="cyberguessr-world.html" class="mode-card world">
+        <div class="mode-icon">🌎</div>
+        <h3>Весь мир</h3>
+        <p>Кибератаки и события со всего мира.</p>
+        <div class="mode-info">5 раундов</div>
+      </a>
 
-<p class="section-subtitle">
-Угадывай место киберинцидента на карте и получай очки за точность
-</p>
+      <a href="cyberguessr-europe.html" class="mode-card europe">
+        <div class="mode-icon">🇪🇺</div>
+        <h3>Европа</h3>
+        <p>Угадывай киберинциденты только по европейским странам.</p>
+        <div class="mode-info">5 раундов</div>
+      </a>
 
-<div class="game-modes">
+      <a href="cyberguessr-hard.html" class="mode-card hard">
+        <div class="mode-icon">🔥</div>
+        <h3>Сложный режим</h3>
+        <p>Редкие и более сложные события по кибербезопасности.</p>
+        <div class="mode-info">10 раундов</div>
+      </a>
 
-<a href="cyberguessr-world.html" class="mode-card world">
+      <a href="cyberguessr-companies.html" class="mode-card companies">
+        <div class="mode-icon">🏢</div>
+        <h3>Компании</h3>
+        <p>Крупные атаки на международные компании.</p>
+        <div class="mode-info">5 раундов</div>
+      </a>
 
-<div class="mode-icon">🌎</div>
+      <a href="cyberguessr-breaches.html" class="mode-card breaches">
+        <div class="mode-icon">💾</div>
+        <h3>Утечки данных</h3>
+        <p>Самые известные инциденты с утечками.</p>
+        <div class="mode-info">5 раундов</div>
+      </a>
 
-<h3>Весь мир</h3>
+      <a href="cyberguessr-malware.html" class="mode-card malware">
+        <div class="mode-icon">🦠</div>
+        <h3>Вирусы</h3>
+        <p>Известные вредоносные программы и их последствия.</p>
+        <div class="mode-info">5 раундов</div>
+      </a>
+    </div>
 
-<p>Кибератаки и события со всего мира</p>
-
-<div class="mode-info">
-5 раундов
-</div>
-
-</a>
-
-
-<a href="cyberguessr-europe.html" class="mode-card europe">
-
-<div class="mode-icon">🇪🇺</div>
-
-<h3>Европа</h3>
-
-<p>Угадывай события только в Европе</p>
-
-<div class="mode-info">
-5 раундов
-</div>
-
-</a>
-
-
-<a href="cyberguessr-hard.html" class="mode-card hard">
-
-<div class="mode-icon">🔥</div>
-
-<h3>Сложный режим</h3>
-
-<p>Более редкие и сложные киберинциденты</p>
-
-<div class="mode-info">
-10 раундов
-</div>
-
-  <a href="cyberguessr-companies.html" class="mode-card companies">
-
-<div class="mode-icon">🏢</div>
-
-<h3>Компании</h3>
-
-<p>Кибератаки на крупные компании</p>
-
-<div class="mode-info">
-5 раундов
-</div>
-
-</a>
-
-
-<a href="cyberguessr-breaches.html" class="mode-card breaches">
-
-<div class="mode-icon">💾</div>
-
-<h3>Утечки данных</h3>
-
-<p>Крупнейшие утечки данных</p>
-
-<div class="mode-info">
-5 раундов
-</div>
-
-</a>
-
-
-<a href="cyberguessr-malware.html" class="mode-card malware">
-
-<div class="mode-icon">🦠</div>
-
-<h3>Вирусы</h3>
-
-<p>Известные вредоносные программы</p>
-
-<div class="mode-info">
-5 раундов
-</div>
-
-</a>
-
-</a>
-
-</div>
-
-</section>
-
+  </section>
 </main>
 
 </div>
 
 <script src="js/main.js"></script>
-
 <script src="js/theme-network.js"></script>
+
 </body>
 </html>
