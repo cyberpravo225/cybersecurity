@@ -2872,7 +2872,7 @@ body[data-page="home"] .site{
   background:#ffffff;
 }
 
-:root[data-theme="dark"] body[data-page="home"] .topbar{
+:root[data-theme="dark"] body:is([data-page="home"],[data-page="cyberguessr"]) .topbar{
   background:rgba(27,34,78,0.78);
 }
 
@@ -4877,7 +4877,7 @@ body[data-page="home"] .game-feature{
     0 0 18px rgba(56,189,248,.18);
 }
 
-:root[data-theme="dark"] body[data-page="home"] .topbar::after{
+:root[data-theme="dark"] body:is([data-page="home"],[data-page="cyberguessr"]) .topbar::after{
   height: 2px;
   background: linear-gradient(90deg, transparent, rgba(96,165,250,.85), transparent);
 }
@@ -4945,8 +4945,8 @@ body[data-page="home"] .game-feature{
     linear-gradient(180deg, #d8ecff 0%, #edf7ff 46%, #d7ebfd 100%);
 }
 
-:root[data-theme="light"] body[data-page="home"] .topbar,
-:root:not([data-theme]) body[data-page="home"] .topbar{
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .topbar,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .topbar{
   background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.62));
   border: 1px solid rgba(186,230,253,.9);
   box-shadow:
