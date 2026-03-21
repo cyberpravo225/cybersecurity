@@ -191,13 +191,20 @@ document.addEventListener('click', (e) => {
    ========================= */
 (function(){
   if (!('IntersectionObserver' in window)) {
-    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
+    document.querySelectorAll('.reveal').forEach(el => {
+      el.classList.add('in-view');
+      el.classList.add('visible');
+    });
     return;
   }
 
   const lowEndPhone = document.documentElement.classList.contains('low-end-device');
-  if (lowEndPhone) {
-    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
+  const isDesktop = window.matchMedia && window.matchMedia('(min-width: 1025px)').matches;
+  if (lowEndPhone || !isDesktop) {
+    document.querySelectorAll('.reveal').forEach(el => {
+      el.classList.add('in-view');
+      el.classList.add('visible');
+    });
     return;
   }
 
@@ -205,6 +212,7 @@ document.addEventListener('click', (e) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('in-view');
+        entry.target.classList.add('visible');
         observer.unobserve(entry.target);
       } else {
         // optional: keep visible after first reveal
@@ -632,26 +640,6 @@ searchInput.dispatchEvent(new Event("input"))
 })
 
 }
-const observer = new IntersectionObserver((entries)=>{
-
-entries.forEach(entry=>{
-
-if(entry.isIntersecting){
-
-entry.target.classList.add("visible")
-
-}
-
-})
-
-},{
-threshold:0.15
-})
-
-document.querySelectorAll(".reveal").forEach(el=>{
-observer.observe(el)
-})
-
 /* =========================
    Premium theme network background
    ========================= */
