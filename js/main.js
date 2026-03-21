@@ -652,19 +652,27 @@ searchInput.dispatchEvent(new Event("input"))
 
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
+  const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   let width = 0;
   let height = 0;
   let animationFrame = 0;
+  let lastFrameTime = 0;
   let nodes = [];
   let stars = [];
   let sceneSignature = '';
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
   let scrollOffset = 0;
-  let backgroundAnimationEnabled = !document.documentElement.classList.contains('bg-anim-off');
+  let backgroundAnimationEnabled = !reducedMotion && !document.documentElement.classList.contains('bg-anim-off');
 
   const isDarkTheme = () => document.documentElement.getAttribute('data-theme') === 'dark';
   const isMobile = () => window.innerWidth < 720;
+  const isLowPowerDevice = () => {
+    const cpu = navigator.hardwareConcurrency || 0;
+    const memory = navigator.deviceMemory || 0;
+    return cpu > 0 && cpu <= 4 || memory > 0 && memory <= 4;
+  };
+  const prefersPerformanceMode = () => isMobile() || isLowPowerDevice() || (width * height > 2000000);
 
   const palette = () => {
     const dark = isDarkTheme();
@@ -713,7 +721,7 @@ searchInput.dispatchEvent(new Event("input"))
   }
 
   function resize(forceRebuild = false){
-    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    const ratio = Math.min(window.devicePixelRatio || 1, prefersPerformanceMode() ? 1.25 : 1.6);
     width = window.innerWidth;
     height = window.innerHeight;
     canvas.width = Math.floor(width * ratio);
@@ -730,8 +738,9 @@ searchInput.dispatchEvent(new Event("input"))
   }
 
   function createScene(){
-    const nodeCount = isMobile() ? 48 : 96;
-    const starCount = isMobile() ? 210 : 1100;
+    const perfMode = prefersPerformanceMode();
+    const nodeCount = perfMode ? (isMobile() ? 28 : 54) : (isMobile() ? 40 : 72);
+    const starCount = perfMode ? (isMobile() ? 90 : 240) : (isMobile() ? 150 : 520);
     const random = seededRandom(Array.from(sceneSignature).reduce((acc, char, index) => acc + char.charCodeAt(0) * (index + 17), 97));
 
     nodes = Array.from({ length: nodeCount }, () => {
@@ -800,6 +809,9 @@ searchInput.dispatchEvent(new Event("input"))
   }
 
   function drawStars(colors, time){
+    const darkTheme = isDarkTheme();
+    const lightTheme = !darkTheme;
+    const perfMode = prefersPerformanceMode();
     for (const star of stars){
       const orbit = star.orbit * (0.9 + star.z * 0.2);
       const driftX = Math.sin(time * star.drift + star.phase) * orbit;
@@ -807,15 +819,16 @@ searchInput.dispatchEvent(new Event("input"))
       const x = star.x + driftX - pointer.x * star.parallax * 2.2;
       const y = star.y + driftY + scrollOffset * star.parallax * 60;
       const twinkle = star.alpha + Math.sin(time * star.drift + star.phase + star.x * 0.01 + star.y * 0.008) * 0.08;
-      const alphaFloor = isDarkTheme() ? 0.16 : 0.5;
+      const alphaFloor = darkTheme ? 0.16 : 0.5;
       const alpha = Math.max(alphaFloor, Math.min(1, twinkle));
-      const starSize = isDarkTheme() ? star.size : star.size * 1.18;
-      const lightTheme = !isDarkTheme();
+      const starSize = darkTheme ? star.size : star.size * 1.18;
       ctx.beginPath();
       ctx.fillStyle = lightTheme
         ? rgbaWithAlpha(colors.starBright, alpha)
         : rgbaWithAlpha(star.z > 0.72 ? colors.starBright : colors.star, alpha);
-      ctx.shadowBlur = star.z > 0.8 ? (isDarkTheme() ? 12 : 16) : (star.z > 0.55 ? (isDarkTheme() ? 4 : 7) : (isDarkTheme() ? 0 : 3));
+      ctx.shadowBlur = perfMode
+        ? (star.z > 0.76 ? 4 : 0)
+        : (star.z > 0.8 ? (darkTheme ? 12 : 16) : (star.z > 0.55 ? (darkTheme ? 4 : 7) : (darkTheme ? 0 : 3)));
       ctx.shadowColor = lightTheme
         ? 'rgba(255,255,255,0.65)'
         : (star.z > 0.8 ? colors.starBright : 'transparent');
@@ -849,38 +862,49 @@ searchInput.dispatchEvent(new Event("input"))
   }
 
   function drawConnections(colors, time){
-    const range = isMobile() ? 150 : 220;
+    const perfMode = prefersPerformanceMode();
+    const range = perfMode ? (isMobile() ? 110 : 150) : (isMobile() ? 140 : 205);
+    const maxLinksPerNode = perfMode ? 3 : 6;
+    const rangeSq = range * range;
+    const darkTheme = isDarkTheme();
     for (let i = 0; i < nodes.length; i++){
       const a = nodes[i];
+      let links = 0;
       for (let j = i + 1; j < nodes.length; j++){
         const b = nodes[j];
         const dx = a.x - b.x;
         const dy = a.y - b.y;
-        const distance = Math.hypot(dx, dy);
-        if (distance > range) continue;
+        const distanceSq = dx * dx + dy * dy;
+        if (distanceSq > rangeSq) continue;
+        const distance = Math.sqrt(distanceSq);
 
         const depth = (a.z + b.z) * 0.5;
-        const alphaBase = isDarkTheme() ? 0.24 : 0.14;
+        const alphaBase = darkTheme ? 0.24 : 0.14;
         const shimmer = 0.72 + (Math.sin(time * (1.2 + depth) + i * 0.7 + j * 0.33) + 1) * 0.22;
         const flicker = Math.sin(time * (5.2 + depth * 2.4) + i * 0.9 + j * 0.7) > 0.96 ? 1.45 : 1;
         const alpha = (1 - distance / range) * alphaBase * (0.7 + depth * 0.9) * shimmer * flicker;
-        const dashA = 2 + depth * 4;
-        const dashB = 8 + depth * 12;
-        const dashSpan = dashA + dashB;
         ctx.beginPath();
         ctx.moveTo(a.x, a.y);
         ctx.lineTo(b.x, b.y);
-        ctx.setLineDash([dashA, dashB]);
-        ctx.lineDashOffset = -((time * (18 + depth * 22)) % dashSpan);
-        ctx.lineWidth = 0.45 + depth * (isDarkTheme() ? 0.72 : 0.46);
+        if (!perfMode) {
+          const dashA = 2 + depth * 4;
+          const dashB = 8 + depth * 12;
+          const dashSpan = dashA + dashB;
+          ctx.setLineDash([dashA, dashB]);
+          ctx.lineDashOffset = -((time * (18 + depth * 22)) % dashSpan);
+        }
+        ctx.lineWidth = 0.45 + depth * (darkTheme ? 0.72 : 0.46);
         ctx.strokeStyle = rgbaWithAlpha(depth > 0.62 ? colors.lineBright : colors.line, alpha);
-        ctx.shadowBlur = shimmer > 1 ? 8 + depth * 8 : 0;
+        ctx.shadowBlur = perfMode ? 0 : (shimmer > 1 ? 8 + depth * 8 : 0);
         ctx.shadowColor = rgbaWithAlpha(colors.lineBright, alpha * 0.9);
         ctx.stroke();
-        ctx.setLineDash([]);
+        if (!perfMode) {
+          ctx.setLineDash([]);
+        }
+        links++;
 
         const signalStrength = (1 - distance / range) * depth;
-        if (signalStrength > 0.28) {
+        if (!perfMode && signalStrength > 0.28) {
           const signal = (time * (0.18 + depth * 0.2) + i * 0.17 + j * 0.11) % 1;
           const glowX = a.x + (b.x - a.x) * signal;
           const glowY = a.y + (b.y - a.y) * signal;
@@ -892,11 +916,14 @@ searchInput.dispatchEvent(new Event("input"))
           ctx.arc(glowX, glowY, 0.8 + depth * 1.6, 0, Math.PI * 2);
           ctx.fill();
         }
+        if (links >= maxLinksPerNode) break;
       }
     }
   }
 
   function drawNodes(colors, time){
+    const darkTheme = isDarkTheme();
+    const perfMode = prefersPerformanceMode();
     for (const node of nodes){
       const pulse = (Math.sin(node.pulse + time * 0.65) + 1) * 0.5;
       const radius = node.size * (0.8 + pulse * 0.28 + node.z * 0.18);
@@ -906,21 +933,27 @@ searchInput.dispatchEvent(new Event("input"))
 
       ctx.beginPath();
       ctx.fillStyle = rgbaWithAlpha(fill, Math.min(alpha, 1));
-      ctx.shadowBlur = glow;
-      ctx.shadowColor = rgbaWithAlpha(fill, isDarkTheme() ? 0.9 : 0.75);
+      ctx.shadowBlur = perfMode ? Math.min(8, glow * 0.4) : glow;
+      ctx.shadowColor = rgbaWithAlpha(fill, darkTheme ? 0.9 : 0.75);
       ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
       ctx.fill();
     }
   }
 
-  function render(){
+  function render(now = performance.now()){
     if (!backgroundAnimationEnabled) {
       animationFrame = 0;
       return;
     }
+    const targetFrameMs = prefersPerformanceMode() ? 33 : 16;
+    if (lastFrameTime && (now - lastFrameTime) < targetFrameMs) {
+      animationFrame = requestAnimationFrame(render);
+      return;
+    }
+    lastFrameTime = now;
 
     const colors = palette();
-    const time = performance.now() * 0.001;
+    const time = now * 0.001;
     ctx.clearRect(0, 0, width, height);
     drawBackdrop(colors);
     drawStars(colors, time);
@@ -938,6 +971,7 @@ searchInput.dispatchEvent(new Event("input"))
   const refresh = (forceRebuild = false) => {
     cancelAnimationFrame(animationFrame);
     animationFrame = 0;
+    lastFrameTime = 0;
     resize(forceRebuild);
     if (backgroundAnimationEnabled) {
       render();
@@ -971,7 +1005,24 @@ searchInput.dispatchEvent(new Event("input"))
   observer.observe(document.documentElement, { attributes: true });
 
   window.addEventListener('cyber:bg-animation-change', (event) => {
+    if (reducedMotion) {
+      backgroundAnimationEnabled = false;
+      refresh(false);
+      return;
+    }
     backgroundAnimationEnabled = Boolean(event.detail?.enabled);
     refresh(true);
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = 0;
+      return;
+    }
+    if (backgroundAnimationEnabled && !animationFrame) {
+      lastFrameTime = 0;
+      animationFrame = requestAnimationFrame(render);
+    }
   });
 })();
