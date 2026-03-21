@@ -4644,29 +4644,29 @@ body[data-page="home"] .container{
   max-width: 1120px;
 }
 
-body[data-page="home"] .topbar{
+body:is([data-page="home"],[data-page="cyberguessr"]) .topbar{
   max-width: 1120px;
   margin: 16px auto 0;
   padding: 12px 16px;
   border-radius: 18px;
 }
 
-body[data-page="home"] .brand .logo{
+body:is([data-page="home"],[data-page="cyberguessr"]) .brand .logo{
   gap:12px;
 }
 
-body[data-page="home"] .site-logo{
+body:is([data-page="home"],[data-page="cyberguessr"]) .site-logo{
   height: 34px;
   margin-right: 0;
   filter: drop-shadow(0 0 10px rgba(125,211,252,.35));
 }
 
-body[data-page="home"] .brand-text{
+body:is([data-page="home"],[data-page="cyberguessr"]) .brand-text{
   font-size: 1.05rem;
   font-weight: 600;
 }
 
-body[data-page="home"] .nav-list{
+body:is([data-page="home"],[data-page="cyberguessr"]) .nav-list{
   top: 68px;
 }
 
