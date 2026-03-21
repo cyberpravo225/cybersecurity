@@ -42,6 +42,68 @@
     });
 })();
 
+
+/* =========================
+   Background animation performance toggle
+   ========================= */
+(function(){
+  const root = document.documentElement;
+  const STORAGE_KEY = 'cyber_bg_animation';
+  const prefersPhoneDefaults = () => {
+    const narrow = window.matchMedia && window.matchMedia('(max-width: 900px)').matches;
+    const coarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    return narrow || (coarsePointer && window.innerWidth <= 1024);
+  };
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  let enabled = saved ? saved === 'on' : !prefersPhoneDefaults();
+
+  const applyMode = (nextEnabled) => {
+    enabled = Boolean(nextEnabled);
+    root.classList.toggle('bg-anim-off', !enabled);
+    root.classList.toggle('bg-anim-on', enabled);
+    localStorage.setItem(STORAGE_KEY, enabled ? 'on' : 'off');
+    window.dispatchEvent(new CustomEvent('cyber:bg-animation-change', { detail: { enabled } }));
+
+    const btn = document.getElementById('performance-toggle');
+    if (!btn) return;
+
+    btn.setAttribute('aria-pressed', String(enabled));
+    btn.dataset.mode = enabled ? 'performance' : 'saving';
+    btn.title = enabled ? 'Режим производительности (анимация включена)' : 'Режим энергосбережения (анимация выключена)';
+    btn.setAttribute('aria-label', enabled
+      ? 'Режим производительности: анимация фона включена'
+      : 'Режим энергосбережения: анимация фона выключена');
+  };
+
+  applyMode(enabled);
+
+  const themeToggle = document.getElementById('theme-toggle');
+  const menuToggle = document.getElementById('menu-toggle');
+  if (!themeToggle || !menuToggle || !themeToggle.parentElement) return;
+
+  const perfBtn = document.createElement('button');
+  perfBtn.id = 'performance-toggle';
+  perfBtn.className = 'btn icon-btn perf-toggle';
+  perfBtn.type = 'button';
+  perfBtn.innerHTML = `
+    <svg class="icon-performance" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path class="icon-bolt" d="M13.5 2L6 13h5l-1 9 8-12h-5.2L13.5 2z"/>
+      <g class="icon-battery" transform="translate(2 4)">
+        <rect x="1" y="4" width="16" height="12" rx="3"/>
+        <rect x="17" y="8" width="2.8" height="4" rx="1"/>
+        <rect x="3.5" y="6.5" width="8.5" height="7" rx="1.5" class="battery-fill"/>
+      </g>
+    </svg>`;
+
+  themeToggle.insertAdjacentElement('afterend', perfBtn);
+  applyMode(enabled);
+
+  perfBtn.addEventListener('click', () => {
+    applyMode(!enabled);
+  });
+})();
+
 /* =========================
    Performance profile (for weak phones)
    ========================= */
@@ -607,6 +669,7 @@ observer.observe(el)
   let sceneSignature = '';
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
   let scrollOffset = 0;
+  let backgroundAnimationEnabled = !document.documentElement.classList.contains('bg-anim-off');
 
   const isDarkTheme = () => document.documentElement.getAttribute('data-theme') === 'dark';
   const isMobile = () => window.innerWidth < 720;
@@ -859,6 +922,11 @@ observer.observe(el)
   }
 
   function render(){
+    if (!backgroundAnimationEnabled) {
+      animationFrame = 0;
+      return;
+    }
+
     const colors = palette();
     const time = performance.now() * 0.001;
     ctx.clearRect(0, 0, width, height);
@@ -871,12 +939,19 @@ observer.observe(el)
   }
 
   resize(true);
-  render();
+  if (backgroundAnimationEnabled) {
+    render();
+  }
 
   const refresh = (forceRebuild = false) => {
     cancelAnimationFrame(animationFrame);
+    animationFrame = 0;
     resize(forceRebuild);
-    render();
+    if (backgroundAnimationEnabled) {
+      render();
+    } else {
+      ctx.clearRect(0, 0, width, height);
+    }
   };
 
   window.addEventListener('resize', () => refresh(), { passive: true });
@@ -902,4 +977,9 @@ observer.observe(el)
   });
 
   observer.observe(document.documentElement, { attributes: true });
+
+  window.addEventListener('cyber:bg-animation-change', (event) => {
+    backgroundAnimationEnabled = Boolean(event.detail?.enabled);
+    refresh(true);
+  });
 })();
