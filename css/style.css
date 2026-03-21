@@ -5085,7 +5085,7 @@ body[data-page="home"] .game-feature{
 }
 
 /* Home page stability/performance fixes for weak mobile Safari */
-body[data-page="home"] .topbar{
+body:is([data-page="home"],[data-page="cyberguessr"]) .topbar{
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
   backface-visibility: hidden;
