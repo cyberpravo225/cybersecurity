@@ -5268,6 +5268,80 @@ body:is([data-page="home"],[data-page="cyberguessr"]) .theme-network{
 }
 
 /* =========================================================
+   Align light backdrop on all pages with index.html
+   ========================================================= */
+:root[data-theme="light"] body,
+:root:not([data-theme]) body{
+  background:
+    radial-gradient(circle at 0% 0%, rgba(56,189,248,.52), transparent 34%),
+    radial-gradient(circle at 100% 0%, rgba(59,130,246,.42), transparent 34%),
+    radial-gradient(circle at 100% 100%, rgba(14,165,233,.34), transparent 36%),
+    radial-gradient(circle at 0% 100%, rgba(2,132,199,.3), transparent 36%),
+    radial-gradient(circle at 50% 42%, #FFFFFF, transparent 34%),
+    linear-gradient(135deg, #ECF7FF, #FFFFFF 52%, #DCEFFE);
+}
+
+:root[data-theme="light"] body::before,
+:root:not([data-theme]) body::before{
+  opacity: 0;
+}
+
+:root[data-theme="light"] body::after,
+:root:not([data-theme]) body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 48% 24%, rgba(255,255,255,.8), transparent 24%),
+    radial-gradient(circle at 5% 10%, rgba(56,189,248,.18), transparent 20%),
+    radial-gradient(circle at 95% 10%, rgba(59,130,246,.16), transparent 20%),
+    radial-gradient(circle at 95% 90%, rgba(14,165,233,.14), transparent 22%),
+    radial-gradient(circle at 5% 90%, rgba(2,132,199,.14), transparent 22%);
+  opacity: .88;
+  filter: blur(.5px);
+}
+
+:root[data-theme="light"] body .theme-grid,
+:root:not([data-theme]) body .theme-grid{
+  display:none;
+}
+
+:root[data-theme="light"] body .theme-orb,
+:root:not([data-theme]) body .theme-orb{
+  opacity:.45;
+  filter: blur(120px);
+}
+
+:root[data-theme="light"] body .theme-orb-one,
+:root:not([data-theme]) body .theme-orb-one{
+  inset: 12% auto auto 12%;
+  width: min(34vw, 32rem);
+  height: min(34vw, 32rem);
+  opacity:.14;
+  filter: blur(1px);
+  background: radial-gradient(circle, rgba(56,189,248,.28), rgba(186,230,253,.16) 42%, transparent 76%);
+}
+
+:root[data-theme="light"] body .theme-orb-two,
+:root:not([data-theme]) body .theme-orb-two{
+  inset: auto 8% 10% auto;
+  width: min(30vw, 28rem);
+  height: min(30vw, 28rem);
+  opacity:.12;
+  filter: blur(1px);
+  background: radial-gradient(circle, rgba(59,130,246,.2), rgba(125,211,252,.12) 44%, transparent 74%);
+}
+
+:root[data-theme="light"] body .theme-network,
+:root:not([data-theme]) body .theme-network{
+  opacity: .74;
+  z-index: 1;
+  mix-blend-mode: normal;
+}
+
+/* =========================================================
    Unified card style on non-home pages (match homepage mood)
    ========================================================= */
 body:not([data-page="home"]) :is(
