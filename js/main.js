@@ -277,6 +277,65 @@ document.addEventListener('click', (e) => {
     }
   });
 })();
+
+/* =========================
+   Unify card styles across pages
+   ========================= */
+(function(){
+  const EXCLUDED_CARD_CLASSES = new Set([
+    'card-grid',
+    'card-photo',
+    'card-icon',
+    'answer-card',
+    'result-card'
+  ]);
+
+  const isCardLike = (el) => {
+    if (!(el instanceof HTMLElement)) return false;
+    const classNames = Array.from(el.classList);
+    if (!classNames.length) return false;
+    if (classNames.some(className => EXCLUDED_CARD_CLASSES.has(className))) return false;
+    return classNames.some(className => className === 'card' || className.endsWith('-card'));
+  };
+
+  const applyIndexCardLook = (root) => {
+    const scope = root instanceof HTMLElement || root instanceof Document ? root : document;
+    const candidates = [];
+
+    if (scope instanceof HTMLElement && isCardLike(scope)) {
+      candidates.push(scope);
+    }
+
+    scope.querySelectorAll?.('[class*="card"]').forEach((el) => {
+      if (isCardLike(el)) {
+        candidates.push(el);
+      }
+    });
+
+    candidates.forEach((card) => {
+      card.classList.add('index-like-card');
+
+      const firstImage = card.querySelector('img');
+      if (firstImage && !firstImage.classList.contains('card-photo')) {
+        firstImage.classList.add('index-like-card-photo');
+      }
+    });
+  };
+
+  applyIndexCardLook(document);
+
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (node instanceof HTMLElement) {
+          applyIndexCardLook(node);
+        }
+      });
+    });
+  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
+})();
 /* =========================
    School card age chooser
    ========================= */

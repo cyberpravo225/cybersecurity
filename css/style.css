@@ -247,8 +247,36 @@ width:100%;
 .card:hover{transform:translateY(-6px) scale(1.01); box-shadow:0 14px 32px rgba(2,6,23,0.18)}
 .card-icon{font-size:28px}
 .card-photo{width:84px;height:84px;object-fit:contain;display:block;margin:0 0 10px auto;filter:drop-shadow(0 6px 12px rgba(2,6,23,0.2));}
+.index-like-card{
+  display:block;
+  padding:18px;
+  border-radius:14px;
+  background:var(--card-bg);
+  color:var(--fg);
+  text-decoration:none;
+  box-shadow:0 8px 24px rgba(2,6,23,0.12);
+  border:1px solid color-mix(in srgb, var(--accent) 10%, transparent);
+  transition: transform var(--anim), box-shadow var(--anim), background var(--anim), border-color var(--anim);
+}
+.index-like-card:hover{
+  transform:translateY(-6px) scale(1.01);
+  box-shadow:0 14px 32px rgba(2,6,23,0.18);
+  border-color:color-mix(in srgb, var(--accent) 24%, transparent);
+}
+.index-like-card-photo{
+  width:84px;
+  height:84px;
+  object-fit:contain;
+  display:block;
+  margin:0 0 10px auto;
+  filter:drop-shadow(0 6px 12px rgba(2,6,23,0.2));
+}
 
 body[data-page="home"] .card{
+  background: color-mix(in srgb, var(--card-bg) 86%, transparent);
+}
+
+body[data-page="home"] .index-like-card{
   background: color-mix(in srgb, var(--card-bg) 86%, transparent);
 }
 
