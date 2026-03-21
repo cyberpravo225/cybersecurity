@@ -3938,6 +3938,53 @@ body[data-page="home"] .hero{
   text-align:left;
 }
 
+/* =========================
+   Card normalization for Cyberly and CyberGuessr
+   ========================= */
+.mode-card{
+  padding:18px;
+  border-radius:14px;
+  background:var(--card-bg);
+  box-shadow:0 8px 24px rgba(2,6,23,0.12);
+  border:1px solid color-mix(in srgb, var(--accent) 10%, transparent);
+  transition:transform var(--anim), box-shadow var(--anim), border-color var(--anim), background var(--anim);
+}
+
+.mode-card:hover{
+  transform:translateY(-6px) scale(1.01);
+  box-shadow:0 14px 32px rgba(2,6,23,0.18);
+  border-color:color-mix(in srgb, var(--accent) 24%, transparent);
+}
+
+.cyberly-mode-card{
+  align-items:flex-start;
+  text-align:left;
+  gap:10px;
+}
+
+.cyberly-mode-card .cyberly-badge{
+  justify-content:flex-start;
+  text-align:left;
+}
+
+.cyberly-mode-card h3{
+  width:auto;
+  margin:0;
+  text-align:left;
+  font-size:22px;
+  line-height:1.2;
+}
+
+.cyberly-mode-card p{
+  text-align:left;
+}
+
+.cyberly-mode-card ul{
+  max-width:none;
+  margin:0;
+  text-align:left;
+}
+
 #hint-button{
   min-height:56px;
   padding:14px 20px;
