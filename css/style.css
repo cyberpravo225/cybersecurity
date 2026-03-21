@@ -324,14 +324,45 @@ filter:brightness(1.1);
 .icon-performance{
   width:22px;
   height:22px;
-  stroke:currentColor;
-  fill:currentColor;
+  overflow:visible;
 }
 
 .icon-performance .icon-bolt,
 .icon-performance .icon-battery,
-.icon-performance .battery-fill{
-  transition:opacity var(--anim), transform var(--anim), filter var(--anim), fill var(--anim), color var(--anim);
+.icon-performance .battery-shell,
+.icon-performance .battery-tip,
+.icon-performance .battery-core,
+.icon-performance .battery-cell{
+  transition:opacity var(--anim), transform var(--anim), filter var(--anim), fill var(--anim), stroke var(--anim), color var(--anim);
+}
+
+.icon-performance .icon-bolt{
+  fill:currentColor;
+  transform-origin:center;
+}
+
+.icon-performance .icon-battery{
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.3;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.icon-performance .battery-shell,
+.icon-performance .battery-tip{
+  fill:color-mix(in srgb, currentColor 22%, transparent);
+  stroke:currentColor;
+}
+
+.icon-performance .battery-core{
+  stroke:none;
+  fill:color-mix(in srgb, currentColor 28%, transparent);
+}
+
+.icon-performance .battery-cell{
+  stroke:none;
+  fill:currentColor;
 }
 
 .perf-toggle[data-mode="performance"]{
@@ -363,7 +394,27 @@ filter:brightness(1.1);
 
 .perf-toggle[data-mode="saving"] .icon-battery{
   opacity:1;
-  filter:drop-shadow(0 0 8px rgba(96,165,250,.95));
+  transform:translateY(-.2px) scale(1.02);
+  filter:drop-shadow(0 0 10px rgba(96,165,250,.95));
+}
+
+.perf-toggle[data-mode="saving"] .battery-shell,
+.perf-toggle[data-mode="saving"] .battery-tip{
+  fill:rgba(147,197,253,.18);
+  stroke:#93c5fd;
+}
+
+.perf-toggle[data-mode="saving"] .battery-core{
+  fill:rgba(125,211,252,.15);
+}
+
+.perf-toggle[data-mode="saving"] .battery-cell{
+  fill:#7dd3fc;
+  filter:drop-shadow(0 0 5px rgba(125,211,252,.95));
+}
+
+.perf-toggle[data-mode="saving"] .battery-cell-3{
+  opacity:.45;
 }
 
 :root.bg-anim-off .theme-network{
