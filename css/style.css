@@ -5130,16 +5130,11 @@ body[data-page="home"] .card-grid > a.card p{
    Seamless backdrop refinement based on reference background
    ========================================================= */
 
-body::before{
+body:is([data-page="home"],[data-page="cyberguessr"])::before{
   opacity: 0;
 }
 
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:-1;
-  pointer-events:none;
+body:is([data-page="home"],[data-page="cyberguessr"])::after{
   background:
     radial-gradient(circle at 50% 18%, rgba(255,255,255,.06), transparent 24%),
     radial-gradient(circle at 50% 48%, rgba(96,165,250,.18), transparent 30%),
@@ -5148,13 +5143,13 @@ body::after{
   filter: blur(2px);
 }
 
-body .theme-backdrop{
+body:is([data-page="home"],[data-page="cyberguessr"]) .theme-backdrop{
   inset: 0;
   z-index: 0;
   isolation: isolate;
 }
 
-body .theme-backdrop::before{
+body:is([data-page="home"],[data-page="cyberguessr"]) .theme-backdrop::before{
   content:"";
   position:absolute;
   inset:0;
@@ -5166,49 +5161,49 @@ body .theme-backdrop::before{
   opacity:0;
 }
 
-:root[data-theme="dark"] body .theme-backdrop::before{
+:root[data-theme="dark"] body[data-page="home"] .theme-backdrop::before{
   background-image:url("../assets/star-network-dark.svg");
 }
 
-:root[data-theme="light"] body .theme-backdrop::before,
-:root:not([data-theme]) body .theme-backdrop::before{
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .theme-backdrop::before,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .theme-backdrop::before{
   background-image:url("../assets/star-network-light.svg");
 }
 
-body .theme-grid{
+body:is([data-page="home"],[data-page="cyberguessr"]) .theme-grid{
   display:none;
 }
 
-body .theme-orb{
+body:is([data-page="home"],[data-page="cyberguessr"]) .theme-orb{
   opacity:.45;
   filter: blur(120px);
 }
 
-body .theme-orb-one{
+body:is([data-page="home"],[data-page="cyberguessr"]) .theme-orb-one{
   inset: 12% auto auto 12%;
   width: min(34vw, 32rem);
   height: min(34vw, 32rem);
 }
 
-body .theme-orb-two{
+body:is([data-page="home"],[data-page="cyberguessr"]) .theme-orb-two{
   inset: auto 8% 10% auto;
   width: min(30vw, 28rem);
   height: min(30vw, 28rem);
 }
 
-body .theme-network{
+body:is([data-page="home"],[data-page="cyberguessr"]) .theme-network{
   opacity: .74;
   z-index: 1;
   mix-blend-mode: normal;
 }
 
-:root[data-theme="dark"] body{
+:root[data-theme="dark"] body[data-page="home"]{
   background:
     radial-gradient(circle at 50% 46%, rgba(21,94,117,.11), transparent 28%),
     linear-gradient(180deg, #02040a 0%, #06101d 42%, #030712 100%);
 }
 
-:root[data-theme="dark"] body::after{
+:root[data-theme="dark"] body[data-page="home"]::after{
   background:
     radial-gradient(circle at 50% 42%, rgba(59,130,246,.14), transparent 24%),
     radial-gradient(circle at 50% 82%, rgba(34,211,238,.1), transparent 16%),
@@ -5218,11 +5213,11 @@ body .theme-network{
 }
 
 
-:root[data-theme="dark"] body .theme-orb-one{
+:root[data-theme="dark"] body[data-page="home"] .theme-orb-one{
   background: radial-gradient(circle, rgba(37,99,235,.18), rgba(14,165,233,.08) 42%, transparent 74%);
 }
 
-:root[data-theme="dark"] body .theme-orb-two{
+:root[data-theme="dark"] body[data-page="home"] .theme-orb-two{
   background: radial-gradient(circle, rgba(56,189,248,.15), rgba(14,165,233,.06) 40%, transparent 72%);
 }
 
@@ -5234,17 +5229,19 @@ body .theme-network{
   -webkit-backdrop-filter: blur(14px);
 }
 
-:root[data-theme="light"] body,
-:root:not([data-theme]) body{
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]),
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]){
   background:
-    radial-gradient(circle at 50% 32%, rgba(255,255,255,.92), transparent 26%),
-    radial-gradient(circle at 12% 14%, rgba(191,219,254,.95), transparent 32%),
-    radial-gradient(circle at 88% 18%, rgba(224,242,254,.95), transparent 34%),
-    linear-gradient(180deg, #d8ecff 0%, #edf7ff 46%, #d7ebfd 100%);
+    radial-gradient(circle at 0% 0%, rgba(56,189,248,.52), transparent 34%),
+    radial-gradient(circle at 100% 0%, rgba(59,130,246,.42), transparent 34%),
+    radial-gradient(circle at 100% 100%, rgba(14,165,233,.34), transparent 36%),
+    radial-gradient(circle at 0% 100%, rgba(2,132,199,.3), transparent 36%),
+    radial-gradient(circle at 50% 42%, #FFFFFF, transparent 34%),
+    linear-gradient(135deg, #ECF7FF, #FFFFFF 52%, #DCEFFE);
 }
 
-:root[data-theme="light"] body::after,
-:root:not([data-theme]) body::after{
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"])::after,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"])::after{
   background:
     radial-gradient(circle at 48% 24%, rgba(255,255,255,.8), transparent 24%),
     radial-gradient(circle at 5% 10%, rgba(56,189,248,.18), transparent 20%),
@@ -5252,12 +5249,76 @@ body .theme-network{
     radial-gradient(circle at 95% 90%, rgba(14,165,233,.14), transparent 22%),
     radial-gradient(circle at 5% 90%, rgba(2,132,199,.14), transparent 22%);
   opacity: .88;
-  filter: blur(0);
+  filter: blur(.5px);
 }
 
 
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .theme-orb-one,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .theme-orb-one{
+  opacity:.14;
+  filter: blur(1px);
+  background: radial-gradient(circle, rgba(56,189,248,.28), rgba(186,230,253,.16) 42%, transparent 76%);
+}
+
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .theme-orb-two,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .theme-orb-two{
+  opacity:.12;
+  filter: blur(1px);
+  background: radial-gradient(circle, rgba(59,130,246,.2), rgba(125,211,252,.12) 44%, transparent 74%);
+}
+
+/* =========================================================
+   Align light backdrop on all pages with index.html
+   ========================================================= */
+:root[data-theme="light"] body,
+:root:not([data-theme]) body{
+  background:
+    radial-gradient(circle at 0% 0%, rgba(56,189,248,.52), transparent 34%),
+    radial-gradient(circle at 100% 0%, rgba(59,130,246,.42), transparent 34%),
+    radial-gradient(circle at 100% 100%, rgba(14,165,233,.34), transparent 36%),
+    radial-gradient(circle at 0% 100%, rgba(2,132,199,.3), transparent 36%),
+    radial-gradient(circle at 50% 42%, #FFFFFF, transparent 34%),
+    linear-gradient(135deg, #ECF7FF, #FFFFFF 52%, #DCEFFE);
+}
+
+:root[data-theme="light"] body::before,
+:root:not([data-theme]) body::before{
+  opacity: 0;
+}
+
+:root[data-theme="light"] body::after,
+:root:not([data-theme]) body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 48% 24%, rgba(255,255,255,.8), transparent 24%),
+    radial-gradient(circle at 5% 10%, rgba(56,189,248,.18), transparent 20%),
+    radial-gradient(circle at 95% 10%, rgba(59,130,246,.16), transparent 20%),
+    radial-gradient(circle at 95% 90%, rgba(14,165,233,.14), transparent 22%),
+    radial-gradient(circle at 5% 90%, rgba(2,132,199,.14), transparent 22%);
+  opacity: .88;
+  filter: blur(.5px);
+}
+
+:root[data-theme="light"] body .theme-grid,
+:root:not([data-theme]) body .theme-grid{
+  display:none;
+}
+
+:root[data-theme="light"] body .theme-orb,
+:root:not([data-theme]) body .theme-orb{
+  opacity:.45;
+  filter: blur(120px);
+}
+
 :root[data-theme="light"] body .theme-orb-one,
 :root:not([data-theme]) body .theme-orb-one{
+  inset: 12% auto auto 12%;
+  width: min(34vw, 32rem);
+  height: min(34vw, 32rem);
   opacity:.14;
   filter: blur(1px);
   background: radial-gradient(circle, rgba(56,189,248,.28), rgba(186,230,253,.16) 42%, transparent 76%);
@@ -5265,9 +5326,19 @@ body .theme-network{
 
 :root[data-theme="light"] body .theme-orb-two,
 :root:not([data-theme]) body .theme-orb-two{
+  inset: auto 8% 10% auto;
+  width: min(30vw, 28rem);
+  height: min(30vw, 28rem);
   opacity:.12;
   filter: blur(1px);
   background: radial-gradient(circle, rgba(59,130,246,.2), rgba(125,211,252,.12) 44%, transparent 74%);
+}
+
+:root[data-theme="light"] body .theme-network,
+:root:not([data-theme]) body .theme-network{
+  opacity: .74;
+  z-index: 1;
+  mix-blend-mode: normal;
 }
 
 /* =========================================================
