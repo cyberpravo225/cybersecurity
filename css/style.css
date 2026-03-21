@@ -5363,8 +5363,9 @@ body:not([data-page="home"]) :is(
   transform:none !important;
 }
 
-/* CyberGuessr mode cards: same visual style as index cards + 3x2 layout */
+/* CyberGuessr cards copied from index card pattern (one-to-one visual) */
 body[data-page="cyberguessr"] .card-grid{
+  width:100%;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 22px;
 }
@@ -5372,45 +5373,10 @@ body[data-page="cyberguessr"] .card-grid{
 body[data-page="cyberguessr"] .card-grid > a.card{
   min-height: 220px;
   padding: 26px 28px;
-  display: grid;
+  display:grid;
   grid-template-columns: 1.15fr .85fr;
-  align-items: center;
+  align-items:center;
   gap: 18px;
-  isolation: isolate;
-}
-
-body[data-page="cyberguessr"] .card::before{
-  inset: 0;
-  height: auto;
-  transform: none;
-  opacity: 1;
-  background:
-    radial-gradient(circle at top center, rgba(255,255,255,.28), transparent 42%),
-    linear-gradient(180deg, rgba(255,255,255,.16), transparent 24%);
-  transition: opacity .28s ease !important;
-}
-
-body[data-page="cyberguessr"] .card::after{
-  content: "";
-  position: absolute;
-  left: 22px;
-  right: 22px;
-  bottom: -1px;
-  height: 3px;
-  border-radius: 999px;
-}
-
-body[data-page="cyberguessr"] .card:hover{
-  transform: translateY(-10px) scale(1.01);
-  box-shadow:
-    0 24px 42px rgba(15,23,42,.18),
-    0 10px 22px rgba(59,130,246,.12),
-    0 0 0 1px rgba(255,255,255,.22) inset !important;
-}
-
-body[data-page="cyberguessr"] .card:hover::before{
-  transform: none !important;
-  opacity: .72 !important;
 }
 
 body[data-page="cyberguessr"] .card-grid > a.card h3{
