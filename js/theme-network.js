@@ -8,10 +8,16 @@
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
   const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isLowPowerDevice = () => {
+    const cpu = navigator.hardwareConcurrency || 0;
+    const memory = navigator.deviceMemory || 0;
+    return cpu > 0 && cpu <= 4 || memory > 0 && memory <= 4;
+  };
 
   let width = 0;
   let height = 0;
   let frame = 0;
+  let lastFrameTime = 0;
   let running = false;
   let stars = [];
   let giantStars = [];
@@ -22,9 +28,10 @@
 
   const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
   const isMobile = () => window.innerWidth < 720;
+  const prefersPerformanceMode = () => isMobile() || isLowPowerDevice() || (width * height > 2000000);
 
   function resize(){
-    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    const ratio = Math.min(window.devicePixelRatio || 1, prefersPerformanceMode() ? 1.2 : 1.5);
     width = window.innerWidth;
     height = window.innerHeight;
     canvas.width = Math.floor(width * ratio);
@@ -36,9 +43,10 @@
   }
 
   function createScene(){
-    const starCount = isMobile() ? 320 : 680;
-    const giantStarCount = 5;
-    const nodeCount = isMobile() ? 44 : 88;
+    const perfMode = prefersPerformanceMode();
+    const starCount = perfMode ? (isMobile() ? 120 : 260) : (isMobile() ? 220 : 520);
+    const giantStarCount = perfMode ? 2 : 4;
+    const nodeCount = perfMode ? (isMobile() ? 20 : 38) : (isMobile() ? 32 : 62);
 
     stars = Array.from({ length: starCount }, () => {
       const z = Math.random();
@@ -105,6 +113,7 @@
   }
 
   function drawStars(time){
+    const perfMode = prefersPerformanceMode();
     for (const star of stars){
       const orbit = star.orbit * (0.9 + star.z * 0.2);
       const x = star.x + Math.sin(time * star.drift + star.phase) * orbit - pointer.x * star.parallax * 2.5;
@@ -113,7 +122,9 @@
       const alpha = Math.max(0.15, Math.min(1, twinkle * homeStarBoost));
       ctx.beginPath();
       ctx.fillStyle = starColor(alpha, star.z > 0.74);
-      ctx.shadowBlur = (star.isXL ? (24 + star.z * 12) : (star.isLarge ? (18 + star.z * 10) : (star.z > 0.8 ? 10 : 0))) * (isHomePage ? 1.12 : 1);
+      ctx.shadowBlur = perfMode
+        ? (star.z > 0.84 ? 3 : 0)
+        : (star.isXL ? (24 + star.z * 12) : (star.isLarge ? (18 + star.z * 10) : (star.z > 0.8 ? 10 : 0))) * (isHomePage ? 1.12 : 1);
       ctx.shadowColor = starColor(alpha, true);
       ctx.arc(x, y, star.size, 0, Math.PI * 2);
       ctx.fill();
@@ -127,7 +138,7 @@
       const alpha = Math.max(0.16, Math.min(0.64, twinkle * homeStarBoost));
       ctx.beginPath();
       ctx.fillStyle = starColor(alpha, true);
-      ctx.shadowBlur = (34 + star.z * 24) * (isHomePage ? 1.16 : 1);
+      ctx.shadowBlur = perfMode ? 8 : (34 + star.z * 24) * (isHomePage ? 1.16 : 1);
       ctx.shadowColor = starColor(Math.min(alpha + 0.08, 0.62), true);
       ctx.arc(x, y, star.size, 0, Math.PI * 2);
       ctx.fill();
@@ -154,37 +165,47 @@
   }
 
   function drawNetwork(time){
-    const maxDist = isMobile() ? 180 : 260;
+    const perfMode = prefersPerformanceMode();
+    const maxDist = perfMode ? (isMobile() ? 120 : 165) : (isMobile() ? 180 : 260);
+    const maxDistSq = maxDist * maxDist;
+    const maxLinksPerNode = perfMode ? 3 : 7;
 
     for (let i = 0; i < nodes.length; i++){
       const a = nodes[i];
+      let links = 0;
       for (let j = i + 1; j < nodes.length; j++){
         const b = nodes[j];
         const dx = a.drawX - b.drawX;
         const dy = a.drawY - b.drawY;
-        const dist = Math.hypot(dx, dy);
-        if (dist > maxDist) continue;
+        const distSq = dx * dx + dy * dy;
+        if (distSq > maxDistSq) continue;
+        const dist = Math.sqrt(distSq);
 
         const depth = (a.z + b.z) * 0.5;
         const shimmer = 0.7 + (Math.sin(time * (1.4 + depth) + i * 0.7 + j * 0.4) + 1) * 0.2;
         const flicker = Math.sin(time * (5 + depth * 2.3) + i * 0.6 + j * 0.9) > 0.95 ? 1.35 : 1;
         const alpha = (1 - dist / maxDist) * (isDark() ? 0.32 : 0.2) * shimmer * flicker;
 
-        const dashA = 2 + depth * 3;
-        const dashB = 8 + depth * 10;
         ctx.beginPath();
         ctx.moveTo(a.drawX, a.drawY);
         ctx.lineTo(b.drawX, b.drawY);
-        ctx.setLineDash([dashA, dashB]);
-        ctx.lineDashOffset = -((time * (22 + depth * 24)) % (dashA + dashB));
+        if (!perfMode) {
+          const dashA = 2 + depth * 3;
+          const dashB = 8 + depth * 10;
+          ctx.setLineDash([dashA, dashB]);
+          ctx.lineDashOffset = -((time * (22 + depth * 24)) % (dashA + dashB));
+        }
         ctx.lineWidth = 0.6 + depth * 0.9;
         ctx.strokeStyle = lineColor(alpha);
-        ctx.shadowBlur = 8 + depth * 8;
+        ctx.shadowBlur = perfMode ? 0 : 8 + depth * 8;
         ctx.shadowColor = lineColor(alpha * 0.85);
         ctx.stroke();
-        ctx.setLineDash([]);
+        if (!perfMode) {
+          ctx.setLineDash([]);
+        }
+        links++;
 
-        if ((1 - dist / maxDist) * depth > 0.26){
+        if (!perfMode && (1 - dist / maxDist) * depth > 0.26){
           const signal = (time * (0.2 + depth * 0.22) + i * 0.13 + j * 0.17) % 1;
           const sx = a.drawX + (b.drawX - a.drawX) * signal;
           const sy = a.drawY + (b.drawY - a.drawY) * signal;
@@ -197,25 +218,33 @@
           ctx.arc(sx, sy, 0.8 + depth * 1.5, 0, Math.PI * 2);
           ctx.fill();
         }
+        if (links >= maxLinksPerNode) break;
       }
     }
 
+    const nodeBlurFactor = perfMode ? 0.4 : 1;
     for (const node of nodes){
       const pulse = (Math.sin(node.pulse) + 1) * 0.5;
       const radius = 0.9 + node.z * 1.9 + pulse * 0.35;
       const alpha = 0.5 + node.z * 0.4;
       ctx.beginPath();
       ctx.fillStyle = starColor(alpha, node.z > 0.7);
-      ctx.shadowBlur = 10 + node.z * 10;
+      ctx.shadowBlur = (10 + node.z * 10) * nodeBlurFactor;
       ctx.shadowColor = lineColor(alpha);
       ctx.arc(node.drawX, node.drawY, radius, 0, Math.PI * 2);
       ctx.fill();
     }
   }
 
-  function render(){
+  function render(now = performance.now()){
     if (!running) return;
-    const time = performance.now() * 0.001;
+    const targetFrameMs = prefersPerformanceMode() ? 33 : 16;
+    if (lastFrameTime && (now - lastFrameTime) < targetFrameMs) {
+      frame = requestAnimationFrame(render);
+      return;
+    }
+    lastFrameTime = now;
+    const time = now * 0.001;
     ctx.clearRect(0, 0, width, height);
     drawStars(time);
     moveNodes(time);
@@ -229,11 +258,13 @@
     if (!running) {
       cancelAnimationFrame(frame);
       frame = 0;
+      lastFrameTime = 0;
       ctx.clearRect(0, 0, width, height);
       return;
     }
     resize();
     cancelAnimationFrame(frame);
+    lastFrameTime = 0;
     frame = requestAnimationFrame(render);
   }
 
@@ -243,6 +274,7 @@
     if (!running) return;
     cancelAnimationFrame(frame);
     resize();
+    lastFrameTime = 0;
     render();
   }, { passive: true });
 
@@ -262,5 +294,17 @@
       return;
     }
     setRunning(Boolean(event.detail?.enabled));
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      return;
+    }
+    if (running && !frame) {
+      lastFrameTime = 0;
+      frame = requestAnimationFrame(render);
+    }
   });
 })();
