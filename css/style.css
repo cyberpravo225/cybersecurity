@@ -5130,11 +5130,11 @@ body[data-page="home"] .card-grid > a.card p{
    Seamless backdrop refinement based on reference background
    ========================================================= */
 
-body[data-page="home"]::before{
+body:is([data-page="home"],[data-page="cyberguessr"])::before{
   opacity: 0;
 }
 
-body[data-page="home"]::after{
+body:is([data-page="home"],[data-page="cyberguessr"])::after{
   background:
     radial-gradient(circle at 50% 18%, rgba(255,255,255,.06), transparent 24%),
     radial-gradient(circle at 50% 48%, rgba(96,165,250,.18), transparent 30%),
@@ -5143,13 +5143,13 @@ body[data-page="home"]::after{
   filter: blur(2px);
 }
 
-body[data-page="home"] .theme-backdrop{
+body:is([data-page="home"],[data-page="cyberguessr"]) .theme-backdrop{
   inset: 0;
   z-index: 0;
   isolation: isolate;
 }
 
-body[data-page="home"] .theme-backdrop::before{
+body:is([data-page="home"],[data-page="cyberguessr"]) .theme-backdrop::before{
   content:"";
   position:absolute;
   inset:0;
@@ -5165,33 +5165,33 @@ body[data-page="home"] .theme-backdrop::before{
   background-image:url("../assets/star-network-dark.svg");
 }
 
-:root[data-theme="light"] body[data-page="home"] .theme-backdrop::before,
-:root:not([data-theme]) body[data-page="home"] .theme-backdrop::before{
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .theme-backdrop::before,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .theme-backdrop::before{
   background-image:url("../assets/star-network-light.svg");
 }
 
-body[data-page="home"] .theme-grid{
+body:is([data-page="home"],[data-page="cyberguessr"]) .theme-grid{
   display:none;
 }
 
-body[data-page="home"] .theme-orb{
+body:is([data-page="home"],[data-page="cyberguessr"]) .theme-orb{
   opacity:.45;
   filter: blur(120px);
 }
 
-body[data-page="home"] .theme-orb-one{
+body:is([data-page="home"],[data-page="cyberguessr"]) .theme-orb-one{
   inset: 12% auto auto 12%;
   width: min(34vw, 32rem);
   height: min(34vw, 32rem);
 }
 
-body[data-page="home"] .theme-orb-two{
+body:is([data-page="home"],[data-page="cyberguessr"]) .theme-orb-two{
   inset: auto 8% 10% auto;
   width: min(30vw, 28rem);
   height: min(30vw, 28rem);
 }
 
-body[data-page="home"] .theme-network{
+body:is([data-page="home"],[data-page="cyberguessr"]) .theme-network{
   opacity: .74;
   z-index: 1;
   mix-blend-mode: normal;
@@ -5229,8 +5229,8 @@ body[data-page="home"] .theme-network{
   -webkit-backdrop-filter: blur(14px);
 }
 
-:root[data-theme="light"] body[data-page="home"],
-:root:not([data-theme]) body[data-page="home"]{
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]),
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]){
   background:
     radial-gradient(circle at 0% 0%, rgba(56,189,248,.52), transparent 34%),
     radial-gradient(circle at 100% 0%, rgba(59,130,246,.42), transparent 34%),
@@ -5240,8 +5240,8 @@ body[data-page="home"] .theme-network{
     linear-gradient(135deg, #ECF7FF, #FFFFFF 52%, #DCEFFE);
 }
 
-:root[data-theme="light"] body[data-page="home"]::after,
-:root:not([data-theme]) body[data-page="home"]::after{
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"])::after,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"])::after{
   background:
     radial-gradient(circle at 48% 24%, rgba(255,255,255,.8), transparent 24%),
     radial-gradient(circle at 5% 10%, rgba(56,189,248,.18), transparent 20%),
@@ -5253,15 +5253,15 @@ body[data-page="home"] .theme-network{
 }
 
 
-:root[data-theme="light"] body[data-page="home"] .theme-orb-one,
-:root:not([data-theme]) body[data-page="home"] .theme-orb-one{
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .theme-orb-one,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .theme-orb-one{
   opacity:.14;
   filter: blur(1px);
   background: radial-gradient(circle, rgba(56,189,248,.28), rgba(186,230,253,.16) 42%, transparent 76%);
 }
 
-:root[data-theme="light"] body[data-page="home"] .theme-orb-two,
-:root:not([data-theme]) body[data-page="home"] .theme-orb-two{
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .theme-orb-two,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .theme-orb-two{
   opacity:.12;
   filter: blur(1px);
   background: radial-gradient(circle, rgba(59,130,246,.2), rgba(125,211,252,.12) 44%, transparent 74%);
