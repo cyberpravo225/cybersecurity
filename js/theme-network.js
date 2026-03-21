@@ -2,6 +2,16 @@
   const canvas = document.getElementById('theme-network');
   if (!canvas) return;
   if (canvas.dataset.networkInit === '1') return;
+  const root = document.documentElement;
+  const ua = navigator.userAgent || '';
+  const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const touchPhone = window.matchMedia && window.matchMedia('(max-width: 900px) and (pointer: coarse)').matches;
+  const oldIphone = /iPhone/i.test(ua) && Math.min(window.screen.width || 0, window.screen.height || 0) <= 390;
+  const bgAnimationDisabled = root.classList.contains('bg-anim-off');
+  if (prefersReducedMotion || bgAnimationDisabled || touchPhone || oldIphone || root.classList.contains('low-end-device')) {
+    canvas.style.display = 'none';
+    return;
+  }
   canvas.dataset.networkInit = '1';
 
   const ctx = canvas.getContext('2d');

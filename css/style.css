@@ -206,6 +206,7 @@ body[data-page="home"] .topbar{
 .hamburger.is-open .hamburger-inner{transform:translateY(-50%) rotate(45deg)}
 .hamburger.is-open .hamburger-inner::before{top:0; width:26px; transform:rotate(90deg)}
 .hamburger.is-open .hamburger-inner::after{top:0; width:26px; opacity:0}
+.hamburger-fallback{display:none; font-size:24px; line-height:1; font-weight:700; color:var(--fg)}
 
 /* Site main */
 .main {padding:30px 0}
@@ -540,6 +541,53 @@ border-radius:16px;
 
 body.menu-open{
   overflow:hidden;
+}
+
+@supports not (background: color-mix(in srgb, white 50%, black 50%)) {
+  .hamburger{
+    background:rgba(255,255,255,0.92);
+    border-color:rgba(0,0,0,0.14);
+    box-shadow:0 6px 18px rgba(15,23,42,.14);
+  }
+
+  :root[data-theme="dark"] .hamburger{
+    background:rgba(38,38,38,0.96);
+    border-color:rgba(255,255,255,0.18);
+  }
+
+  .hamburger .hamburger-inner,
+  .hamburger .hamburger-inner::before,
+  .hamburger .hamburger-inner::after{
+    background:var(--fg);
+    box-shadow:none;
+  }
+
+  .hamburger-fallback{
+    display:block;
+    position:absolute;
+  }
+
+  .hamburger .hamburger-box{
+    opacity:0;
+  }
+}
+
+@media (max-width: 900px) and (pointer: coarse){
+  .topbar,
+  .nav-list{
+    -webkit-backdrop-filter:none;
+    backdrop-filter:none;
+  }
+
+  .parallax{
+    background-attachment:scroll;
+  }
+
+  body[data-page="home"] .card,
+  body[data-page="home"] .tip-card{
+    box-shadow:0 4px 14px rgba(2,6,23,0.12);
+    transform:none;
+  }
 }
 /* subtle glow in dark theme for active states */
 :root[data-theme="dark"] .card { box-shadow: 0 8px 24px rgba(0,0,0,0.6), 0 0 18px rgba(var(--shadow-color),0.06) }
