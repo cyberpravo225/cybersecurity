@@ -4868,7 +4868,7 @@ body[data-page="home"] .game-feature{
     linear-gradient(180deg, #020712, #061224 44%, #020712 100%);
 }
 
-:root[data-theme="dark"] body[data-page="home"] .topbar{
+:root[data-theme="dark"] body:is([data-page="home"],[data-page="cyberguessr"]) .topbar{
   background: linear-gradient(180deg, rgba(10,18,38,.78), rgba(8,15,31,.62));
   border: 1px solid rgba(121,192,255,.26);
   box-shadow:
