@@ -4908,3 +4908,82 @@ body[data-page="home"] .theme-network{
   filter: blur(1px);
   background: radial-gradient(circle, rgba(59,130,246,.2), rgba(125,211,252,.12) 44%, transparent 74%);
 }
+
+/* =========================================================
+   Unified card style on non-home pages (match homepage mood)
+   ========================================================= */
+body:not([data-page="home"]) :is(
+  .card,
+  .resource-block,
+  .tip-card,
+  .tests-banner,
+  .term-card,
+  .method-card,
+  .learn-card,
+  .test-card,
+  .test-card-horizontal,
+  .mode-card,
+  .difficulty-card,
+  .game-card,
+  .senior-rule,
+  .senior-action,
+  .senior-card,
+  .cyberly-mode-card,
+  #fact-card,
+  .final-card,
+  .result-card
+){
+  border-radius:22px;
+  border:1px solid color-mix(in srgb, var(--accent) 16%, rgba(255,255,255,.18));
+  box-shadow:0 14px 34px rgba(15,23,42,.16);
+  transition:transform .24s ease, box-shadow .24s ease, border-color .24s ease;
+}
+
+body:not([data-page="home"]) :is(
+  .card,
+  .tip-card,
+  .tests-banner,
+  .term-card,
+  .method-card,
+  .learn-card,
+  .test-card,
+  .test-card-horizontal,
+  .mode-card,
+  .difficulty-card,
+  .game-card,
+  .senior-rule,
+  .senior-action,
+  .senior-card,
+  .cyberly-mode-card,
+  #fact-card,
+  .final-card,
+  .result-card
+):hover{
+  transform:translateY(-6px);
+  box-shadow:0 22px 44px rgba(15,23,42,.22);
+  border-color:color-mix(in srgb, var(--accent) 36%, rgba(255,255,255,.32));
+}
+
+:root[data-theme="dark"] body:not([data-page="home"]) :is(
+  .card,
+  .resource-block,
+  .tip-card,
+  .tests-banner,
+  .term-card,
+  .method-card,
+  .learn-card,
+  .test-card,
+  .test-card-horizontal,
+  .mode-card,
+  .difficulty-card,
+  .game-card,
+  .senior-rule,
+  .senior-action,
+  .senior-card,
+  .cyberly-mode-card,
+  #fact-card,
+  .final-card,
+  .result-card
+){
+  box-shadow:0 16px 36px rgba(0,0,0,.52), 0 0 0 1px rgba(45,212,191,.12);
+}
