@@ -656,6 +656,7 @@ observer.observe(el)
    Premium theme network background
    ========================= */
 (function(){
+  if (document.body?.dataset?.page === 'home') return;
   const canvas = document.getElementById('theme-network');
   if (!canvas) return;
   if (canvas.dataset.networkInit === '1') return;
