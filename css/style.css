@@ -303,6 +303,29 @@ filter:brightness(1.1);
 .icon-btn{background:transparent; border:none; cursor:pointer}
 .icon-theme{fill:var(--accent); transition: transform var(--anim)}
 
+#theme-toggle{
+  width:52px;
+  height:52px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  border-radius:16px;
+  border:1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+  background:linear-gradient(180deg, rgba(255,255,255,.2), rgba(255,255,255,.07));
+  box-shadow:0 10px 26px rgba(15,23,42,.14), inset 0 1px 0 rgba(255,255,255,.28);
+  transition:transform var(--anim), box-shadow var(--anim), border-color var(--anim), filter var(--anim);
+}
+
+#theme-toggle:hover{
+  transform:translateY(-2px);
+}
+
+#theme-toggle .icon-theme{
+  width:24px;
+  height:24px;
+}
+
 .perf-toggle{
   width:52px;
   height:52px;
@@ -322,8 +345,8 @@ filter:brightness(1.1);
 }
 
 .icon-performance{
-  width:22px;
-  height:22px;
+  width:24px;
+  height:24px;
   overflow:visible;
 }
 
