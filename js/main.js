@@ -90,9 +90,12 @@
     <svg class="icon-performance" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path class="icon-bolt" d="M13.5 2L6 13h5l-1 9 8-12h-5.2L13.5 2z"/>
       <g class="icon-battery" transform="translate(2 4)">
-        <rect x="1" y="4" width="16" height="12" rx="3"/>
-        <rect x="17" y="8" width="2.8" height="4" rx="1"/>
-        <rect x="3.5" y="6.5" width="8.5" height="7" rx="1.5" class="battery-fill"/>
+        <rect class="battery-shell" x="1.2" y="4.2" width="15.2" height="11.6" rx="2.8"/>
+        <rect class="battery-tip" x="16.8" y="8" width="2" height="4" rx="1"/>
+        <rect class="battery-core" x="3.2" y="6.3" width="10.4" height="7.4" rx="1.6"/>
+        <rect class="battery-cell battery-cell-1" x="4.1" y="7.2" width="2.4" height="5.6" rx="1"/>
+        <rect class="battery-cell battery-cell-2" x="7.4" y="7.2" width="2.4" height="5.6" rx="1"/>
+        <rect class="battery-cell battery-cell-3" x="10.7" y="7.2" width="2.1" height="5.6" rx="1"/>
       </g>
     </svg>`;
 
