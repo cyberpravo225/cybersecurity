@@ -2119,11 +2119,9 @@ animation:pageFade .5s ease;
 @keyframes pageFade{
 from{
 opacity:0;
-transform:translateY(10px);
 }
 to{
 opacity:1;
-transform:translateY(0);
 }
 }
 
@@ -4994,6 +4992,48 @@ body[data-page="home"] .game-feature{
 
   body[data-page="home"] .tip-title{
     font-size: 1.5rem;
+  }
+}
+
+/* Home page stability/performance fixes for weak mobile Safari */
+body[data-page="home"] .topbar{
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Remove delayed reveal on main page: cards must be visible immediately */
+body[data-page="home"] .reveal{
+  opacity:1 !important;
+  transform:none !important;
+  transition:none !important;
+}
+
+/* Prevent card content clipping/truncation */
+body[data-page="home"] .card-grid > .card,
+body[data-page="home"] .card-grid > a.card{
+  min-height:auto !important;
+  height:auto !important;
+  overflow:visible !important;
+}
+
+body[data-page="home"] .card-grid > .card p,
+body[data-page="home"] .card-grid > a.card p{
+  max-width:none !important;
+}
+
+@media (max-width: 900px){
+  body[data-page="home"] .school-card,
+  body[data-page="home"] .card-grid > a.card{
+    grid-template-columns: 1fr !important;
+    gap:12px !important;
+  }
+
+  body[data-page="home"] .card-photo{
+    width:110px !important;
+    height:110px !important;
+    margin:0 auto !important;
   }
 }
 
