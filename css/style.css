@@ -4987,3 +4987,20 @@ body:not([data-page="home"]) :is(
 ){
   box-shadow:0 16px 36px rgba(0,0,0,.52), 0 0 0 1px rgba(45,212,191,.12);
 }
+
+/* Disable glossy/shimmer hover animation on cards */
+.card::before,
+.tip-card::before,
+.tests-banner::before,
+.game-feature::before{
+  animation:none !important;
+  transition:none !important;
+}
+
+.card:hover::before,
+.tip-card:hover::before,
+.tests-banner:hover::before,
+.game-feature:hover::before{
+  opacity:0 !important;
+  transform:none !important;
+}
