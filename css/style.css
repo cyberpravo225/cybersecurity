@@ -70,15 +70,19 @@ body{
   padding:clamp(24px,4vw,48px) clamp(16px,4vw,32px);
 }
 
-/* Home page uses wider layout to better fill desktop screens */
+/* Home page: use ~80% of desktop width */
+body[data-page="home"] .site{
+  width:80vw;
+  margin:0 auto;
+}
+
 body[data-page="home"] .container{
-  max-width:min(80vw, 1540px);
+  max-width:none;
 }
 
 body[data-page="home"] .topbar{
-  width:min(80vw, 1540px);
-  margin-inline:auto;
-  margin-top:12px;
+  width:100%;
+  margin:12px 0 0;
 }
 
 /* Topbar */
@@ -215,24 +219,6 @@ body[data-page="home"] .topbar{
 .hero .title{font-size:28px; margin:0 0 8px}
 .hero .lead{margin:0 0 20px; color:var(--muted)}
 
-.threat-strip{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin:0 0 20px;
-}
-
-.threat-pill{
-  display:inline-flex;
-  align-items:center;
-  padding:8px 14px;
-  border-radius:999px;
-  font-weight:600;
-  font-size:14px;
-  background:color-mix(in srgb, var(--accent) 16%, transparent);
-  border:1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-}
-
 /* Cards grid */
 .card-grid{
 display:grid;
@@ -322,7 +308,8 @@ margin:12px max(8px, env(safe-area-inset-right, 0px)) 12px max(8px, env(safe-are
 border-radius:16px;
 }
   body[data-page="home"] .container,
-  body[data-page="home"] .topbar{
+  body[data-page="home"] .topbar,
+  body[data-page="home"] .site{
     width:auto;
     max-width:none;
   }
