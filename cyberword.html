@@ -35,11 +35,12 @@
       font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
       color:var(--text);
       background:
-        radial-gradient(circle at top left, rgba(45,212,191,.18), transparent 30%),
-        radial-gradient(circle at top right, rgba(96,165,250,.22), transparent 34%),
-        linear-gradient(180deg, var(--bg), var(--bg-2));
+        radial-gradient(circle at 50% 46%, rgba(21,94,117,.11), transparent 28%),
+        linear-gradient(180deg, #02040a 0%, #06101d 42%, #030712 100%);
     }
-    .page{max-width:1180px;margin:0 auto;padding:20px 16px 48px}
+    body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(circle at 50% 42%, rgba(59,130,246,.14), transparent 24%),radial-gradient(circle at 50% 82%, rgba(34,211,238,.1), transparent 16%),radial-gradient(circle at 14% 18%, rgba(96,165,250,.08), transparent 18%),radial-gradient(circle at 84% 78%, rgba(56,189,248,.06), transparent 18%);opacity:.85}
+    html[data-theme="light"] body::after{background:radial-gradient(circle at 48% 24%, rgba(255,255,255,.8), transparent 24%),radial-gradient(circle at 5% 10%, rgba(56,189,248,.18), transparent 20%),radial-gradient(circle at 95% 10%, rgba(59,130,246,.16), transparent 20%),radial-gradient(circle at 95% 90%, rgba(14,165,233,.14), transparent 22%),radial-gradient(circle at 5% 90%, rgba(2,132,199,.14), transparent 22%);opacity:.88}
+    .page{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:20px 16px 48px}
     .topbar,.panel,.level-card{backdrop-filter:blur(12px)}
     .topbar{
       display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
