@@ -740,13 +740,6 @@ body.menu-open{
   stroke:#818cf8;
   stroke-width:.55;
 }
-.icon-moon-star{
-  fill:#c7d2fe;
-}
-.icon-moon-star-small{
-  fill:#e0e7ff;
-  opacity:.9;
-}
 
 /* тёмная тема — показываем СОЛНЦЕ */
 :root[data-theme="dark"] .icon-sun { display: block; }
