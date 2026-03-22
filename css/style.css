@@ -4718,9 +4718,9 @@ body[data-page="home"] .card-grid > .card{
   isolation:isolate;
 }
 
-body[data-page="home"] .card::before,
-body[data-page="home"] .tip-card::before,
-body[data-page="home"] .game-feature::before{
+body:is([data-page="home"],[data-page="cyberguessr"]) .card::before,
+body:is([data-page="home"],[data-page="cyberguessr"]) .tip-card::before,
+body:is([data-page="home"],[data-page="cyberguessr"]) .game-feature::before{
   inset:0;
   height:auto;
   transform:none;
@@ -4731,9 +4731,9 @@ body[data-page="home"] .game-feature::before{
   transition:opacity .28s ease;
 }
 
-body[data-page="home"] .card::after,
-body[data-page="home"] .tip-card::after,
-body[data-page="home"] .game-feature::after{
+body:is([data-page="home"],[data-page="cyberguessr"]) .card::after,
+body:is([data-page="home"],[data-page="cyberguessr"]) .tip-card::after,
+body:is([data-page="home"],[data-page="cyberguessr"]) .game-feature::after{
   content:"";
   position:absolute;
   left:22px;
@@ -4743,9 +4743,9 @@ body[data-page="home"] .game-feature::after{
   border-radius:999px;
 }
 
-body[data-page="home"] .card:hover,
-body[data-page="home"] .tip-card:hover,
-body[data-page="home"] .game-feature:hover{
+body:is([data-page="home"],[data-page="cyberguessr"]) .card:hover,
+body:is([data-page="home"],[data-page="cyberguessr"]) .tip-card:hover,
+body:is([data-page="home"],[data-page="cyberguessr"]) .game-feature:hover{
   transform:translateY(-10px) scale(1.01);
   box-shadow:
     0 24px 42px rgba(15,23,42,.18),
@@ -4753,9 +4753,9 @@ body[data-page="home"] .game-feature:hover{
     0 0 0 1px rgba(255,255,255,.22) inset !important;
 }
 
-body[data-page="home"] .card:hover::before,
-body[data-page="home"] .tip-card:hover::before,
-body[data-page="home"] .game-feature:hover::before{
+body:is([data-page="home"],[data-page="cyberguessr"]) .card:hover::before,
+body:is([data-page="home"],[data-page="cyberguessr"]) .tip-card:hover::before,
+body:is([data-page="home"],[data-page="cyberguessr"]) .game-feature:hover::before{
   transform:none;
   opacity:.72;
 }
@@ -4882,9 +4882,9 @@ body[data-page="home"] .game-feature{
   background: linear-gradient(90deg, transparent, rgba(96,165,250,.85), transparent);
 }
 
-:root[data-theme="dark"] body[data-page="home"] .card,
-:root[data-theme="dark"] body[data-page="home"] .tip-card,
-:root[data-theme="dark"] body[data-page="home"] .game-feature{
+:root[data-theme="dark"] body:is([data-page="home"],[data-page="cyberguessr"]) .card,
+:root[data-theme="dark"] body:is([data-page="home"],[data-page="cyberguessr"]) .tip-card,
+:root[data-theme="dark"] body:is([data-page="home"],[data-page="cyberguessr"]) .game-feature{
   background:
     linear-gradient(180deg, rgba(13,24,50,.88), rgba(8,16,34,.88)) !important;
   border: 1px solid rgba(122,192,255,.18) !important;
@@ -4895,22 +4895,22 @@ body[data-page="home"] .game-feature{
     0 0 26px rgba(56,189,248,.18) !important;
 }
 
-:root[data-theme="dark"] body[data-page="home"] .card::after,
-:root[data-theme="dark"] body[data-page="home"] .tip-card::after,
-:root[data-theme="dark"] body[data-page="home"] .game-feature::after{
+:root[data-theme="dark"] body:is([data-page="home"],[data-page="cyberguessr"]) .card::after,
+:root[data-theme="dark"] body:is([data-page="home"],[data-page="cyberguessr"]) .tip-card::after,
+:root[data-theme="dark"] body:is([data-page="home"],[data-page="cyberguessr"]) .game-feature::after{
   background: linear-gradient(90deg, transparent, rgba(45,212,191,.95), rgba(96,165,250,.95), transparent);
   box-shadow: 0 0 24px rgba(34,211,238,.6), 0 220px 0 0 rgba(0,0,0,0);
 }
 
-:root[data-theme="dark"] body[data-page="home"] .card,
-:root[data-theme="dark"] body[data-page="home"] .tip-card,
-:root[data-theme="dark"] body[data-page="home"] .game-feature{
+:root[data-theme="dark"] body:is([data-page="home"],[data-page="cyberguessr"]) .card,
+:root[data-theme="dark"] body:is([data-page="home"],[data-page="cyberguessr"]) .tip-card,
+:root[data-theme="dark"] body:is([data-page="home"],[data-page="cyberguessr"]) .game-feature{
   --top-line: linear-gradient(90deg, transparent, rgba(45,212,191,.95), rgba(96,165,250,.95), transparent);
 }
 
-:root[data-theme="dark"] body[data-page="home"] .card::before,
-:root[data-theme="dark"] body[data-page="home"] .tip-card::before,
-:root[data-theme="dark"] body[data-page="home"] .game-feature::before{
+:root[data-theme="dark"] body:is([data-page="home"],[data-page="cyberguessr"]) .card::before,
+:root[data-theme="dark"] body:is([data-page="home"],[data-page="cyberguessr"]) .tip-card::before,
+:root[data-theme="dark"] body:is([data-page="home"],[data-page="cyberguessr"]) .game-feature::before{
   background:
     var(--top-line) center top / calc(100% - 44px) 3px no-repeat,
     radial-gradient(circle at top center, rgba(96,165,250,.18), transparent 42%),
@@ -4955,12 +4955,12 @@ body[data-page="home"] .game-feature{
     0 0 22px rgba(186,230,253,.6);
 }
 
-:root[data-theme="light"] body[data-page="home"] .card,
-:root[data-theme="light"] body[data-page="home"] .tip-card,
-:root[data-theme="light"] body[data-page="home"] .game-feature,
-:root:not([data-theme]) body[data-page="home"] .card,
-:root:not([data-theme]) body[data-page="home"] .tip-card,
-:root:not([data-theme]) body[data-page="home"] .game-feature{
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .card,
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .tip-card,
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .game-feature,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .card,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .tip-card,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .game-feature{
   background: linear-gradient(180deg, rgba(255,255,255,.84), rgba(241,249,255,.82)) !important;
   border: 1px solid rgba(191,219,254,.9) !important;
   box-shadow:
@@ -4969,31 +4969,31 @@ body[data-page="home"] .game-feature{
     0 0 22px rgba(191,219,254,.6) !important;
 }
 
-:root[data-theme="light"] body[data-page="home"] .card::after,
-:root[data-theme="light"] body[data-page="home"] .tip-card::after,
-:root[data-theme="light"] body[data-page="home"] .game-feature::after,
-:root:not([data-theme]) body[data-page="home"] .card::after,
-:root:not([data-theme]) body[data-page="home"] .tip-card::after,
-:root:not([data-theme]) body[data-page="home"] .game-feature::after{
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .card::after,
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .tip-card::after,
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .game-feature::after,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .card::after,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .tip-card::after,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .game-feature::after{
   background: linear-gradient(90deg, transparent, rgba(147,197,253,.95), rgba(103,232,249,.92), transparent);
   box-shadow: 0 0 20px rgba(125,211,252,.6);
 }
 
-:root[data-theme="light"] body[data-page="home"] .card,
-:root[data-theme="light"] body[data-page="home"] .tip-card,
-:root[data-theme="light"] body[data-page="home"] .game-feature,
-:root:not([data-theme]) body[data-page="home"] .card,
-:root:not([data-theme]) body[data-page="home"] .tip-card,
-:root:not([data-theme]) body[data-page="home"] .game-feature{
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .card,
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .tip-card,
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .game-feature,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .card,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .tip-card,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .game-feature{
   --top-line: linear-gradient(90deg, transparent, rgba(147,197,253,.95), rgba(103,232,249,.92), transparent);
 }
 
-:root[data-theme="light"] body[data-page="home"] .card::before,
-:root[data-theme="light"] body[data-page="home"] .tip-card::before,
-:root[data-theme="light"] body[data-page="home"] .game-feature::before,
-:root:not([data-theme]) body[data-page="home"] .card::before,
-:root:not([data-theme]) body[data-page="home"] .tip-card::before,
-:root:not([data-theme]) body[data-page="home"] .game-feature::before{
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .card::before,
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .tip-card::before,
+:root[data-theme="light"] body:is([data-page="home"],[data-page="cyberguessr"]) .game-feature::before,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .card::before,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .tip-card::before,
+:root:not([data-theme]) body:is([data-page="home"],[data-page="cyberguessr"]) .game-feature::before{
   background:
     var(--top-line) center top / calc(100% - 44px) 3px no-repeat,
     radial-gradient(circle at top center, rgba(255,255,255,.42), transparent 42%),
