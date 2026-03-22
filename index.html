@@ -186,11 +186,13 @@
       transition: transform 220ms ease, filter 220ms ease;
     }
 
-    body[data-page="home"] .topbar #theme-toggle:hover .icon-theme {
-      transform: translateY(-1px) scale(1.07);
+    body[data-page="home"] .topbar :is(#theme-toggle, #performance-toggle):hover :is(.icon-theme, .icon-performance),
+    body[data-page="home"] .topbar #menu-toggle:hover .hamburger-box {
+      transform: translateY(-1px) scale(1.05);
     }
 
-    body[data-page="home"] .topbar #theme-toggle:active .icon-theme {
+    body[data-page="home"] .topbar :is(#theme-toggle, #performance-toggle):active :is(.icon-theme, .icon-performance),
+    body[data-page="home"] .topbar #menu-toggle:active .hamburger-box {
       transform: scale(0.94);
     }
 
@@ -261,14 +263,6 @@
       transition: transform 220ms ease, filter 220ms ease;
     }
 
-    body[data-page="home"] .topbar #performance-toggle:hover .icon-performance {
-      transform: translateY(-1px) scale(1.06);
-    }
-
-    body[data-page="home"] .topbar #performance-toggle:active .icon-performance {
-      transform: scale(0.94);
-    }
-
     body[data-page="home"] .topbar #performance-toggle .icon-bolt,
     body[data-page="home"] .topbar #performance-toggle .icon-battery,
     body[data-page="home"] .topbar #performance-toggle .battery-shell,
@@ -289,14 +283,6 @@
     body[data-page="home"] .topbar #menu-toggle .hamburger-box {
       transition: transform 220ms ease, filter 220ms ease;
       filter: drop-shadow(0 0 8px rgba(88, 229, 255, 0.22));
-    }
-
-    body[data-page="home"] .topbar #menu-toggle:hover .hamburger-box {
-      transform: translateY(-1px) scale(1.05);
-    }
-
-    body[data-page="home"] .topbar #menu-toggle:active .hamburger-box {
-      transform: scale(0.94);
     }
 
     body[data-page="home"] .topbar #menu-toggle .hamburger-inner,
