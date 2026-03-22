@@ -78,9 +78,29 @@
     .rank-good{color:#9ff8d6} .rank-mid{color:#fde68a} .rank-bad{color:#ffb4c1}
     @media (max-width: 900px){.layout{grid-template-columns:1fr}}
     @media (max-width: 560px){.options{grid-template-columns:1fr 1fr}.option-btn{min-height:94px;padding:14px;border-radius:16px;font-size:18px}.guess-row{flex-direction:row}}
+  
+
+    /* Фон тёмной темы как на главной */
+    .theme-backdrop{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+    .theme-network,.theme-grid,.theme-orb{position:absolute;inset:0}
+    .theme-orb{filter:blur(40px);opacity:.34;mix-blend-mode:screen}
+    .theme-orb-one{background:radial-gradient(circle at 30% 35%, rgba(45,212,191,.36), transparent 58%)}
+    .theme-orb-two{background:radial-gradient(circle at 72% 30%, rgba(96,165,250,.34), transparent 60%)}
+    .theme-grid{background-image:linear-gradient(rgba(125,211,252,.08) 1px, transparent 1px),linear-gradient(90deg, rgba(125,211,252,.08) 1px, transparent 1px);background-size:48px 48px;opacity:.22}
+    .theme-network{width:100%;height:100%;opacity:.82}
+    html[data-theme="light"] .theme-backdrop{display:none}
+    .page{position:relative;z-index:1}
+
   </style>
 </head>
 <body>
+  <div class="theme-backdrop" aria-hidden="true">
+    <div class="theme-orb theme-orb-one"></div>
+    <div class="theme-orb theme-orb-two"></div>
+    <div class="theme-grid"></div>
+    <canvas class="theme-network" id="theme-network"></canvas>
+  </div>
+
   <div class="page">
     <header class="topbar">
       <div class="brand">
@@ -229,5 +249,6 @@ restartBtn.addEventListener('click', restartGame);
 (async function initGame() { try { const response = await fetch(datasetUrl); if (!response.ok) throw new Error('Не удалось загрузить базу слов.'); vectors = parseVectorsPayload(await response.text()); words = validateVectors(vectors); vectorNorms = Object.fromEntries(words.map(word => [word, magnitude(vectors[word])])); loadingBox.hidden = true; gameArea.hidden = false; updateStats(); startRound(); } catch (error) { loadingBox.hidden = true; errorBox.hidden = false; errorBox.textContent = `Ошибка: ${error.message}`; } })();
 
   </script>
+  <script src="js/theme-network.js"></script>
 </body>
 </html>
