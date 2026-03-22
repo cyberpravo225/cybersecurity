@@ -195,8 +195,9 @@ body[data-page="home"] .topbar{
 
 
 /* Burger menu for small screens */
-.hamburger{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;padding:0;border:1px solid color-mix(in srgb, var(--accent) 20%, transparent);border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.06));box-shadow:0 10px 26px rgba(15,23,42,.12), inset 0 1px 0 rgba(255,255,255,.32);transition:transform var(--anim), box-shadow var(--anim), border-color var(--anim), background var(--anim)}
-.hamburger:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(15,23,42,.18), 0 0 0 1px rgba(96,165,250,.14);}
+.hamburger{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;padding:0;border:1px solid color-mix(in srgb, var(--accent) 20%, transparent);border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.06));box-shadow:0 10px 26px rgba(15,23,42,.12), inset 0 1px 0 rgba(255,255,255,.32), 0 0 0 1px color-mix(in srgb, var(--fg) 8%, transparent);transition:transform var(--anim), box-shadow var(--anim), border-color var(--anim), background var(--anim)}
+.hamburger:hover{transform:translateY(-2px);border-color:color-mix(in srgb, var(--fg) 42%, transparent);box-shadow:0 14px 30px rgba(15,23,42,.18), 0 0 18px color-mix(in srgb, var(--fg) 28%, transparent);}
+.hamburger:focus-visible{border-color:color-mix(in srgb, var(--fg) 50%, transparent);box-shadow:0 14px 30px rgba(15,23,42,.2), 0 0 22px color-mix(in srgb, var(--fg) 34%, transparent);}
 .hamburger .hamburger-box{display:inline-block; width:26px; height:20px; position:relative}
 .hamburger .hamburger-inner, .hamburger .hamburger-inner::before, .hamburger .hamburger-inner::after{
   width:26px; height:2.5px; background:var(--fg); background:linear-gradient(90deg, var(--fg), color-mix(in srgb, var(--accent) 62%, var(--fg))); display:block; border-radius:999px; position:absolute; transition: transform var(--anim), opacity var(--anim), background var(--anim), width var(--anim), box-shadow var(--anim);
@@ -348,17 +349,25 @@ filter:brightness(1.1);
   border-radius:16px;
   border:1px solid color-mix(in srgb, var(--accent) 26%, transparent);
   background:linear-gradient(180deg, rgba(255,255,255,.2), rgba(255,255,255,.07));
-  box-shadow:0 10px 26px rgba(15,23,42,.14), inset 0 1px 0 rgba(255,255,255,.28);
+  box-shadow:0 10px 26px rgba(15,23,42,.14), inset 0 1px 0 rgba(255,255,255,.28), 0 0 0 1px color-mix(in srgb, var(--accent) 14%, transparent);
   transition:transform var(--anim), box-shadow var(--anim), border-color var(--anim), filter var(--anim);
 }
 
 #theme-toggle:hover{
   transform:translateY(-2px);
+  border-color:color-mix(in srgb, var(--accent) 42%, transparent);
+  box-shadow:0 0 18px color-mix(in srgb, var(--accent) 44%, transparent), 0 10px 26px rgba(15,23,42,.16), inset 0 1px 0 rgba(255,255,255,.3);
+}
+
+#theme-toggle:focus-visible{
+  border-color:color-mix(in srgb, var(--accent) 48%, transparent);
+  box-shadow:0 0 20px color-mix(in srgb, var(--accent) 54%, transparent), 0 12px 28px rgba(15,23,42,.2), inset 0 1px 0 rgba(255,255,255,.32);
 }
 
 #theme-toggle .icon-theme{
   width:24px;
   height:24px;
+  filter:drop-shadow(0 0 5px color-mix(in srgb, var(--accent) 35%, transparent));
 }
 
 .perf-toggle{
@@ -697,7 +706,17 @@ body.menu-open{
 
 /* по умолчанию (светлая тема) — показываем ЛУНУ */
 .icon-sun { display: none; }
-.icon-moon { display: block; }
+.icon-moon {
+  display: block;
+  fill:#6366f1;
+  stroke:#818cf8;
+  stroke-width:.55;
+  filter:drop-shadow(0 0 7px rgba(99,102,241,.45));
+}
+.icon-moon-star{
+  fill:#c7d2fe;
+  filter:drop-shadow(0 0 5px rgba(129,140,248,.8));
+}
 
 /* тёмная тема — показываем СОЛНЦЕ */
 :root[data-theme="dark"] .icon-sun { display: block; }
