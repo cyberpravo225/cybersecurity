@@ -409,7 +409,12 @@ filter:brightness(1.1);
 }
 
 .perf-toggle:hover{
-  transform:translateY(-2px);
+  transform:none;
+}
+
+.perf-toggle:focus,
+.perf-toggle:active{
+  transform:none;
 }
 
 .icon-performance{
