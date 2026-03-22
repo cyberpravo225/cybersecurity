@@ -525,6 +525,11 @@ filter:brightness(1.1);
 
 /* Focus and active effects for accessibility */
 a:focus, button:focus, .btn:focus { outline:2px solid rgba(0,0,0,0.08); outline-offset:2px; transform:translateY(-2px) }
+.hamburger:focus,
+#theme-toggle:focus,
+.perf-toggle:focus{
+  transform:none !important;
+}
 
 /* Page transition fade-out class added by JS */
 .page.fade-out {opacity:0; transition: opacity var(--anim) ease}
