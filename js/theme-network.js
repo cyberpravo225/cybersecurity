@@ -23,9 +23,7 @@
   let giantStars = [];
   let nodes = [];
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
-  const pageId = document.body?.dataset?.page;
-  const isIndexLikePage = pageId === 'home' || pageId === 'cyberguessr';
-  const homeStarBoost = isIndexLikePage ? 1.28 : 1;
+  const homeStarBoost = 1.28;
 
   const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
   const isMobile = () => window.innerWidth < 720;
@@ -125,7 +123,7 @@
       ctx.fillStyle = starColor(alpha, star.z > 0.74);
       ctx.shadowBlur = perfMode
         ? (star.z > 0.84 ? 3 : 0)
-        : (star.isXL ? (24 + star.z * 12) : (star.isLarge ? (18 + star.z * 10) : (star.z > 0.8 ? 10 : 0))) * (isIndexLikePage ? 1.12 : 1);
+        : (star.isXL ? (24 + star.z * 12) : (star.isLarge ? (18 + star.z * 10) : (star.z > 0.8 ? 10 : 0))) * 1.12;
       ctx.shadowColor = starColor(alpha, true);
       ctx.arc(x, y, star.size, 0, Math.PI * 2);
       ctx.fill();
@@ -139,7 +137,7 @@
       const alpha = Math.max(0.16, Math.min(0.64, twinkle * homeStarBoost));
       ctx.beginPath();
       ctx.fillStyle = starColor(alpha, true);
-      ctx.shadowBlur = perfMode ? 8 : (34 + star.z * 24) * (isIndexLikePage ? 1.16 : 1);
+      ctx.shadowBlur = perfMode ? 8 : (34 + star.z * 24) * 1.16;
       ctx.shadowColor = starColor(Math.min(alpha + 0.08, 0.62), true);
       ctx.arc(x, y, star.size, 0, Math.PI * 2);
       ctx.fill();

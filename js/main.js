@@ -722,8 +722,8 @@ searchInput.dispatchEvent(new Event("input"))
    Premium theme network background
    ========================= */
 (function(){
-  const pageId = document.body?.dataset?.page;
-  if (pageId === 'home' || pageId === 'cyberguessr') return;
+  const hasThemeNetwork = Boolean(document.getElementById('theme-network'));
+  if (hasThemeNetwork) return;
   const canvas = document.getElementById('theme-network');
   if (!canvas) return;
   if (canvas.dataset.networkInit === '1') return;
