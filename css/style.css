@@ -620,6 +620,12 @@ body.menu-open{
   overflow:hidden;
 }
 
+@keyframes themeOrbFloat{
+  0%{transform:translate3d(0,0,0) scale(1);}
+  50%{transform:translate3d(1.5%, -1.5%, 0) scale(1.04);}
+  100%{transform:translate3d(-1%, 2%, 0) scale(.98);}
+}
+
 @supports not (background: color-mix(in srgb, white 50%, black 50%)) {
   .hamburger{
     background:rgba(255,255,255,0.92);
@@ -5188,16 +5194,26 @@ body[data-page="home"] .card-grid > a.card p{
    ========================================================= */
 
 body::before{
-  opacity: 0;
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  pointer-events:none;
+  opacity:0;
 }
 
 body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
   background:
-    radial-gradient(circle at 50% 18%, rgba(255,255,255,.06), transparent 24%),
-    radial-gradient(circle at 50% 48%, rgba(96,165,250,.18), transparent 30%),
-    radial-gradient(circle at 50% 84%, rgba(56,189,248,.15), transparent 18%);
-  opacity: 1;
-  filter: blur(2px);
+    radial-gradient(circle at 72% 16%, rgba(56,189,248,.14), transparent 18%),
+    radial-gradient(circle at 18% 82%, rgba(59,130,246,.1), transparent 22%),
+    linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0));
+  opacity:1;
+  filter:blur(28px);
 }
 
 body .theme-backdrop{
@@ -5212,14 +5228,17 @@ body .theme-backdrop::before{
   inset:0;
   z-index:0;
   pointer-events:none;
-  background-position:center;
-  background-repeat:no-repeat;
-  background-size:cover;
-  opacity:0;
+  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0));
+  opacity:.28;
+  -webkit-backdrop-filter:blur(18px);
+  backdrop-filter:blur(18px);
 }
 
 :root[data-theme="dark"] body .theme-backdrop::before{
-  background-image:url("../assets/star-network-dark.svg");
+  background:linear-gradient(180deg, rgba(3,8,22,.22), rgba(3,8,22,.08) 32%, rgba(3,8,22,0) 100%);
+  opacity:.42;
+  -webkit-backdrop-filter:blur(2px);
+  backdrop-filter:blur(2px);
 }
 
 :root[data-theme="light"] body .theme-backdrop::before,
@@ -5232,50 +5251,80 @@ body .theme-grid{
 }
 
 body .theme-orb{
-  opacity:.45;
-  filter: blur(120px);
+  opacity:.5;
+  filter:blur(140px);
+  animation:themeOrbFloat 24s ease-in-out infinite alternate;
+  will-change:transform, opacity;
 }
 
 body .theme-orb-one{
-  inset: 12% auto auto 12%;
-  width: min(34vw, 32rem);
-  height: min(34vw, 32rem);
+  inset: 4% 0 auto auto;
+  width:min(40vw, 42rem);
+  height:min(40vw, 42rem);
 }
 
 body .theme-orb-two{
-  inset: auto 8% 10% auto;
-  width: min(30vw, 28rem);
-  height: min(30vw, 28rem);
+  inset:auto auto 2% 2%;
+  width:min(32vw, 30rem);
+  height:min(32vw, 30rem);
+  animation-duration:30s;
 }
 
 body .theme-network{
-  opacity: .74;
-  z-index: 1;
-  mix-blend-mode: normal;
+  opacity:.05;
+  z-index:1;
+  mix-blend-mode:screen;
+  filter:blur(.4px);
 }
 
 :root[data-theme="dark"] body{
   background:
-    radial-gradient(circle at 50% 46%, rgba(21,94,117,.11), transparent 28%),
-    linear-gradient(180deg, #02040a 0%, #06101d 42%, #030712 100%);
+    linear-gradient(180deg, rgba(2,8,20,.22), rgba(2,8,20,.1)),
+    url("../assets/star-network-dark.svg") center / cover fixed no-repeat,
+    #050a19;
+}
+
+:root[data-theme="dark"] body::before{
+  opacity:1;
+  background:
+    linear-gradient(180deg, rgba(2,6,23,.2) 0%, rgba(2,6,23,.08) 24%, rgba(2,6,23,.12) 100%),
+    radial-gradient(circle at 76% 24%, rgba(255,255,255,.08), transparent 12%),
+    radial-gradient(circle at 18% 72%, rgba(56,189,248,.08), transparent 18%);
 }
 
 :root[data-theme="dark"] body::after{
   background:
-    radial-gradient(circle at 50% 42%, rgba(59,130,246,.14), transparent 24%),
-    radial-gradient(circle at 50% 82%, rgba(34,211,238,.1), transparent 16%),
-    radial-gradient(circle at 14% 18%, rgba(96,165,250,.08), transparent 18%),
-    radial-gradient(circle at 84% 78%, rgba(56,189,248,.06), transparent 18%);
-  opacity:.85;
+    radial-gradient(circle at 77% 24%, rgba(125,211,252,.26), transparent 12%),
+    radial-gradient(circle at 19% 70%, rgba(96,165,250,.18), transparent 15%),
+    radial-gradient(ellipse at 50% 46%, rgba(96,165,250,.4), rgba(56,189,248,.18) 18%, rgba(14,165,233,.08) 34%, transparent 58%),
+    linear-gradient(180deg, rgba(5,10,25,.06), rgba(5,10,25,.18));
+  opacity:.94;
+  filter:blur(18px);
+}
+
+:root[data-theme="dark"] body .theme-orb-one,
+:root[data-theme="dark"] body .theme-orb-two,
+:root[data-theme="dark"] body .theme-network{
+  display:none;
 }
 
 
-:root[data-theme="dark"] body .theme-orb-one{
-  background: radial-gradient(circle, rgba(37,99,235,.18), rgba(14,165,233,.08) 42%, transparent 74%);
+:root[data-theme="dark"] body :is(.container, .hero, .resource-block, .card, .index-like-card, .tip-card, .topbar, .footer-section, .tests-banner, .term-card, .method-card, .game-feature){
+  position:relative;
+  z-index:2;
 }
 
-:root[data-theme="dark"] body .theme-orb-two{
-  background: radial-gradient(circle, rgba(56,189,248,.15), rgba(14,165,233,.06) 40%, transparent 72%);
+:root[data-theme="dark"] body :is(.hero, .resource-block, .card, .index-like-card, .tip-card, .footer-section, .tests-banner, .term-card, .method-card, .game-feature){
+  background:linear-gradient(180deg, rgba(6,12,28,.78), rgba(7,14,32,.58));
+  border:1px solid rgba(148,163,184,.12);
+  box-shadow:0 18px 50px rgba(2,6,23,.38), inset 0 1px 0 rgba(255,255,255,.04);
+  -webkit-backdrop-filter:blur(16px);
+  backdrop-filter:blur(16px);
+}
+
+:root[data-theme="dark"] body .topbar{
+  background:linear-gradient(180deg, rgba(7,13,30,.72), rgba(8,16,34,.52));
+  border:1px solid rgba(125,211,252,.12);
 }
 
 :root[data-theme="dark"] body[data-page="home"] .topbar,
