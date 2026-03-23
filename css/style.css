@@ -5235,10 +5235,10 @@ body .theme-backdrop::before{
 }
 
 :root[data-theme="dark"] body .theme-backdrop::before{
-  background:linear-gradient(180deg, rgba(3,8,22,.22), rgba(3,8,22,.08) 32%, rgba(3,8,22,0) 100%);
-  opacity:.42;
-  -webkit-backdrop-filter:blur(2px);
-  backdrop-filter:blur(2px);
+  background:linear-gradient(180deg, rgba(3,8,22,.12), rgba(3,8,22,.04) 32%, rgba(3,8,22,0) 100%);
+  opacity:.18;
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
 }
 
 :root[data-theme="light"] body .theme-backdrop::before,
@@ -5285,21 +5285,16 @@ body .theme-network{
 }
 
 :root[data-theme="dark"] body::before{
-  opacity:1;
+  opacity:.38;
   background:
-    linear-gradient(180deg, rgba(2,6,23,.2) 0%, rgba(2,6,23,.08) 24%, rgba(2,6,23,.12) 100%),
-    radial-gradient(circle at 76% 24%, rgba(255,255,255,.08), transparent 12%),
-    radial-gradient(circle at 18% 72%, rgba(56,189,248,.08), transparent 18%);
+    linear-gradient(180deg, rgba(2,6,23,.12) 0%, rgba(2,6,23,.04) 24%, rgba(2,6,23,.08) 100%);
 }
 
 :root[data-theme="dark"] body::after{
   background:
-    radial-gradient(circle at 77% 24%, rgba(125,211,252,.26), transparent 12%),
-    radial-gradient(circle at 19% 70%, rgba(96,165,250,.18), transparent 15%),
-    radial-gradient(ellipse at 50% 46%, rgba(96,165,250,.4), rgba(56,189,248,.18) 18%, rgba(14,165,233,.08) 34%, transparent 58%),
-    linear-gradient(180deg, rgba(5,10,25,.06), rgba(5,10,25,.18));
-  opacity:.94;
-  filter:blur(18px);
+    linear-gradient(180deg, rgba(5,10,25,.02), rgba(5,10,25,.12));
+  opacity:.42;
+  filter:blur(8px);
 }
 
 :root[data-theme="dark"] body .theme-orb-one,
