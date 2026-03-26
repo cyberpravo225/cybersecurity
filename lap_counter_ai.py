@@ -107,6 +107,8 @@ state = {
 
 crop_lock = threading.Lock()
 crop_cfg = {"left": 0, "right": 0, "top": 0, "bottom": 0}
+zoom_lock = threading.Lock()
+zoom_pct = 100
 
 
 def format_elapsed(seconds: float) -> str:
@@ -171,6 +173,22 @@ def _set_crop_cfg(left, right, top, bottom):
         crop_cfg.update(left=int(left), right=int(right), top=int(top), bottom=int(bottom))
 
 
+def _get_zoom_pct():
+    with zoom_lock:
+        return zoom_pct
+
+
+def _set_zoom_pct(value):
+    global zoom_pct
+    with zoom_lock:
+        zoom_pct = int(value)
+
+
+def _predict_snapshot():
+    with predict_lock:
+        return list(predicted_numbers)
+
+
 def _apply_user_crop(frame):
     cfg = _get_crop_cfg()
     h, w = frame.shape[:2]
@@ -186,8 +204,12 @@ def _apply_user_crop(frame):
     cropped = frame[y1:y2, x1:x2]
     if cropped.size == 0:
         return frame
-    if cropped.shape[:2] != (h, w):
-        return cv2.resize(cropped, (w, h), interpolation=cv2.INTER_LINEAR)
+    # Зум только ручной (ползунок), без авто-увеличения от самой обрезки.
+    zoom = max(25, _get_zoom_pct()) / 100.0
+    if abs(zoom - 1.0) > 1e-6:
+        zw = max(1, int(cropped.shape[1] * zoom))
+        zh = max(1, int(cropped.shape[0] * zoom))
+        cropped = cv2.resize(cropped, (zw, zh), interpolation=cv2.INTER_LINEAR)
     return cropped
 
 
@@ -437,7 +459,7 @@ def save_csv():
     if not path:
         return
     with open(path, "w", newline="", encoding="utf-8-sig") as f:
-        writer = csv.writer(f)
+        writer = csv.writer(f, delimiter=";")
         writer.writerow(header)
         writer.writerows(rows)
     messagebox.showinfo("Готово", f"Результаты сохранены:\n{path}")
@@ -825,10 +847,12 @@ video_label.pack(fill="both", expand=True)
 
 status_var = tk.StringVar(value=state["status"])
 pending_var = tk.StringVar(value="Ожидающих: 0")
+predict_var = tk.StringVar(value="Предикт: -")
 last_event_var = tk.StringVar(value="Последнее: -")
 for txt, var, color in [
     ("", status_var, "#e5e7eb"),
     ("", pending_var, "#facc15"),
+    ("", predict_var, "#f9a8d4"),
     ("", last_event_var, "#93c5fd"),
 ]:
     tk.Label(right, textvariable=var, bg="#111827", fg=color, wraplength=330, justify="left", font=("Arial", 11)).pack(anchor="w", padx=14, pady=(8, 2))
@@ -856,6 +880,7 @@ def open_crop_window():
         "right": tk.IntVar(value=cfg["right"]),
         "top": tk.IntVar(value=cfg["top"]),
         "bottom": tk.IntVar(value=cfg["bottom"]),
+        "zoom": tk.IntVar(value=_get_zoom_pct()),
     }
 
     def sync(*_):
@@ -879,14 +904,18 @@ def open_crop_window():
             vars_map["top"].get(),
             vars_map["bottom"].get(),
         )
+        _set_zoom_pct(vars_map["zoom"].get())
 
-    labels = [("left", "Слева, %"), ("right", "Справа, %"), ("top", "Сверху, %"), ("bottom", "Снизу, %")]
+    labels = [("left", "Слева, %"), ("right", "Справа, %"), ("top", "Сверху, %"), ("bottom", "Снизу, %"), ("zoom", "Зум, %")]
     for row, (key, label) in enumerate(labels):
         tk.Label(win, text=label, bg="#111827", fg="white", font=("Arial", 10, "bold")).grid(row=row, column=0, padx=12, pady=8, sticky="w")
+        frm, to = (0, 45)
+        if key == "zoom":
+            frm, to = (25, 250)
         tk.Scale(
             win,
-            from_=0,
-            to=45,
+            from_=frm,
+            to=to,
             orient="horizontal",
             variable=vars_map[key],
             command=sync,
@@ -898,13 +927,13 @@ def open_crop_window():
         ).grid(row=row, column=1, padx=10, pady=4, sticky="ew")
 
     btns = tk.Frame(win, bg="#111827")
-    btns.grid(row=4, column=0, columnspan=2, sticky="ew", padx=12, pady=12)
+    btns.grid(row=5, column=0, columnspan=2, sticky="ew", padx=12, pady=12)
     btns.columnconfigure(0, weight=1)
     btns.columnconfigure(1, weight=1)
 
     def reset_crop():
         for k in vars_map:
-            vars_map[k].set(0)
+            vars_map[k].set(100 if k == "zoom" else 0)
         sync()
 
     tk.Button(btns, text="Сброс", command=reset_crop, bg="#374151", fg="white", relief="flat").grid(row=0, column=0, sticky="ew", padx=(0, 6))
@@ -960,6 +989,8 @@ def update_gui():
     st = get_state()
     status_var.set(st["status"])
     pending_var.set(f"Ожидающих: {st['pending']}")
+    pred_list = _predict_snapshot()
+    predict_var.set(f"Предикт: {', '.join(pred_list) if pred_list else '-'}")
     elapsed_var.set(st["elapsed"])
     last_event_var.set(f"Последнее: {st['last_event']}")
 
