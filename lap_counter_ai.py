@@ -406,7 +406,10 @@ def _build_export_rows():
         return [], []
 
     def fmt_sec_csv(v):
-        return f"{v:.2f} сек".replace(".", ",")
+        v = float(v)
+        m = int(v // 60)
+        s = v % 60
+        return f"{m:02d}:{s:05.2f}"
 
     max_laps = max((len(runners[n]["lap_times"]) for n in registered_numbers), default=0)
     header = ["Номер", "Кол-во кругов", "Лучший круг", "Худший круг"]
