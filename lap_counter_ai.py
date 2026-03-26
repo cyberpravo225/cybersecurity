@@ -84,6 +84,8 @@ display_lock = threading.Lock()
 latest_display_frame = None
 pending_lock = threading.Lock()
 pending_events = deque()
+predict_lock = threading.Lock()
+predicted_numbers = deque(maxlen=60)
 
 # events: (wall_time, number, lap_label, lap_sec, total_sec)
 events = []
@@ -141,6 +143,22 @@ def pending_popleft():
 def pending_len():
     with pending_lock:
         return len(pending_events)
+
+
+def predict_append_many(numbers):
+    with predict_lock:
+        for n in numbers:
+            predicted_numbers.append(n)
+
+
+def predict_popleft():
+    with predict_lock:
+        return predicted_numbers.popleft() if predicted_numbers else None
+
+
+def predict_len():
+    with predict_lock:
+        return len(predicted_numbers)
 
 
 def _get_crop_cfg():
@@ -302,6 +320,65 @@ def add_event_to_runner(number, perf_time, wall_time_str):
     set_state(last_event=f"Сохранено: №{number}, круг {rec['lap']}")
 
 
+def _parse_numbers_from_entry(raw_value: str):
+    raw_value = (raw_value or "").strip()
+    if not raw_value:
+        return []
+    for sep in (";", "/", "|"):
+        raw_value = raw_value.replace(sep, ",")
+    parts = []
+    for chunk in raw_value.split(","):
+        parts.extend(chunk.split())
+    return [x.strip() for x in parts if x.strip()]
+
+
+def enqueue_predictions_from_entry(max_items=2, clear_input=False, silent=False):
+    numbers = _parse_numbers_from_entry(number_entry.get())
+    if not numbers:
+        return 0
+    if len(numbers) > max_items:
+        if not silent:
+            messagebox.showwarning("Слишком много", f"Введи до {max_items} номеров за раз.")
+        return 0
+
+    bad = [n for n in numbers if n not in runners]
+    if bad:
+        if not silent:
+            messagebox.showwarning("Неизвестный номер", f"Номер(а) не зарегистрированы: {', '.join(bad)}")
+        return 0
+
+    predict_append_many(numbers)
+    if clear_input:
+        number_entry.delete(0, tk.END)
+    if not silent:
+        set_state(status=f"Добавлено в предикт-очередь: {', '.join(numbers)}", pending=pending_len())
+    return len(numbers)
+
+
+def assign_pending_with_predictions(source_label: str):
+    assigned = 0
+    while True:
+        with pending_lock:
+            if not pending_events:
+                break
+        number = predict_popleft()
+        if number is None:
+            break
+        item = pending_popleft()
+        if item is None:
+            break
+        perf_time, wall_time_str = item
+        add_event_to_runner(number, perf_time, wall_time_str)
+        assigned += 1
+
+    if assigned:
+        set_state(
+            pending=pending_len(),
+            status=f"{source_label}: авто-зачтено {assigned}. Ожидающих={pending_len()}, предикт={predict_len()}",
+        )
+    return assigned
+
+
 def _build_export_rows():
     if race_start_perf is None:
         return [], []
@@ -370,11 +447,19 @@ def add_manual_crossing():
     if not race_started:
         messagebox.showinfo("Забег не запущен", "Сначала нажми «Старт».")
         return
+    enqueue_predictions_from_entry(max_items=2, clear_input=True, silent=True)
     pending_append((time.perf_counter(), datetime.now().strftime("%H:%M:%S")))
-    set_state(pending=pending_len(), status="➕ Пересечение добавлено. Выбери номер участника.", last_event="Ручное пересечение")
+    auto_assigned = assign_pending_with_predictions("Ручное пересечение")
+    if auto_assigned == 0:
+        set_state(
+            pending=pending_len(),
+            status=f"➕ Пересечение добавлено. Введи номер и нажми Enter. Предикт={predict_len()}",
+            last_event="Ручное пересечение",
+        )
 
 
 def add_manual_crossing_hotkey(event=None):
+    enqueue_predictions_from_entry(max_items=2, clear_input=True, silent=True)
     add_manual_crossing()
     return "break"
 
@@ -385,16 +470,17 @@ def confirm_number(event=None):
         messagebox.showinfo("Нет событий", "Сейчас нет ожидающего пересечения.")
         return
 
-    number = participant_combo.get().strip()
+    number = number_entry.get().strip()
     if number not in runners:
-        messagebox.showwarning("Нужен номер", "Выбери номер участника из списка.")
+        messagebox.showwarning("Нужен номер", "Введи номер зарегистрированного участника.")
         pending_append(item)
         set_state(pending=pending_len())
         return
 
     perf_time, wall_time_str = item
     add_event_to_runner(number, perf_time, wall_time_str)
-    set_state(pending=pending_len(), status="Ожидаю следующее пересечение.")
+    number_entry.delete(0, tk.END)
+    set_state(pending=pending_len(), status=f"Ожидаю следующее пересечение. Предикт={predict_len()}")
 
 
 def skip_event():
@@ -562,11 +648,14 @@ def _process_track_crossing(track_id, x, y, line_x):
         if now_perf - t_cross <= CROSS_DEDUP_SEC and abs(y - y_cross) <= CROSS_DEDUP_Y:
             return
 
+    enqueue_predictions_from_entry(max_items=2, clear_input=True, silent=True)
     pending_append((now_perf, datetime.now().strftime("%H:%M:%S")))
+    assign_pending_with_predictions("Авто-пересечение")
     st.update(last_cross=now_perf, inside_zone=False, entered_from_left=False, armed=False)
     recent_crossings.append((now_perf, y))
     last_global_trigger = now_perf
-    set_state(pending=pending_len(), status="🏁 Есть пересечение. Выбери номер участника.")
+    if pending_len() > 0:
+        set_state(pending=pending_len(), status=f"🏁 Есть пересечение. Введи номер и нажми Enter. Предикт={predict_len()}")
 
 
 def _cleanup_track_states():
@@ -752,12 +841,10 @@ btn_frame.columnconfigure(1, weight=1)
 
 entry_box = tk.Frame(right, bg="#111827")
 entry_box.pack(fill="x", padx=14, pady=(0, 10))
-tk.Label(entry_box, text="Выбор участника", bg="#111827", fg="white", font=("Arial", 12, "bold")).pack(anchor="w", pady=(0, 6))
-participant_combo = ttk.Combobox(entry_box, values=registered_numbers, state="readonly", font=("Arial", 14))
-participant_combo.pack(fill="x")
-if registered_numbers:
-    participant_combo.set(registered_numbers[0])
-participant_combo.bind("<Return>", confirm_number)
+tk.Label(entry_box, text="Номер участника (или 1-2 номера для предикта)", bg="#111827", fg="white", font=("Arial", 12, "bold")).pack(anchor="w", pady=(0, 6))
+number_entry = tk.Entry(entry_box, font=("Arial", 16), bg="#0b1220", fg="white", insertbackground="white", relief="flat")
+number_entry.pack(fill="x", ipady=7)
+number_entry.bind("<Return>", confirm_number)
 
 row_btns = tk.Frame(entry_box, bg="#111827")
 row_btns.pack(fill="x", pady=(8, 0))
