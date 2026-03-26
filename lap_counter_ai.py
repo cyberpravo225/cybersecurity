@@ -33,13 +33,13 @@ VIEW_W = 960
 VIEW_H = 540
 
 # Производительность
-TARGET_FPS = 20
+TARGET_FPS = 30
 FRAME_TIME = 1.0 / TARGET_FPS
-MAX_PROC_WIDTH = 800
+MAX_PROC_WIDTH = 1200
 
 CONF_THRES = 0.30
 MIN_BBOX_AREA = 1500
-COOLDOWN_SEC = 0.80
+COOLDOWN_SEC = 0.35
 
 # Трекинг
 MATCH_DIST_X = 120
@@ -47,8 +47,9 @@ MATCH_DIST_Y = 120
 MIN_TRACK_AGE = 2
 MIN_DX_FOR_CROSS = 6
 TRACK_STALE_FRAMES = 10
-LINE_SIDE_MARGIN = 20
+LINE_SIDE_MARGIN = 10
 TRACK_HISTORY = 8
+FINISH_ZONE_WIDTH = 80
 
 # Если scrcpy уже повернут правильно, поставь False
 ROTATE_CAPTURE_CCW = True
@@ -74,7 +75,7 @@ except Exception:
 
 DEVICE = 0 if USE_CUDA else "cpu"
 USE_HALF = bool(USE_CUDA)
-YOLO_IMGSZ = 320 if USE_CUDA else 256
+YOLO_IMGSZ = 640 if USE_CUDA else 448
 
 # =========================
 # DPI FIX ДЛЯ WINDOWS
@@ -98,8 +99,7 @@ paused_at = None
 paused_total = 0.0
 
 raw_lock = threading.Lock()
-latest_raw_frame = None
-raw_frame_id = 0
+raw_frames = deque(maxlen=6)
 
 display_lock = threading.Lock()
 latest_display_frame = None
@@ -175,6 +175,8 @@ def clear_session_data():
 
     with pending_lock:
         pending_events.clear()
+    with raw_lock:
+        raw_frames.clear()
 
     events.clear()
     runners.clear()
@@ -535,8 +537,6 @@ def capture_hwnd(hwnd):
 # ЗАХВАТ
 # =========================
 def screen_capture_worker():
-    global latest_raw_frame, raw_frame_id
-
     last_missing_status = 0.0
     last_fail_status = 0.0
 
@@ -563,8 +563,7 @@ def screen_capture_worker():
                 continue
 
             with raw_lock:
-                latest_raw_frame = frame
-                raw_frame_id += 1
+                raw_frames.append(frame)
 
             if SHOW_CAPTURE_STATUS and ok:
                 set_state(status='Захват scrcpy_cam идет.')
@@ -654,9 +653,11 @@ def _match_tracks(detections):
 
 
 def _line_side(x, line_x):
-    if x < line_x - LINE_SIDE_MARGIN:
+    zone_left = line_x - FINISH_ZONE_WIDTH // 2
+    zone_right = line_x + FINISH_ZONE_WIDTH // 2
+    if x < zone_left - LINE_SIDE_MARGIN:
         return -1
-    if x > line_x + LINE_SIDE_MARGIN:
+    if x > zone_right + LINE_SIDE_MARGIN:
         return 1
     return 0
 
@@ -672,6 +673,8 @@ def _process_track_crossing(track_id, x, y, line_x):
             "age": 0,
             "last_cross": 0.0,
             "last_seen": now_perf,
+            "inside_zone": False,
+            "entered_from_left": False,
         }
         track_states[track_id] = st
 
@@ -686,7 +689,19 @@ def _process_track_crossing(track_id, x, y, line_x):
 
     if st["age"] < MIN_TRACK_AGE:
         return
-    if prev_side != -1 or side != 1:
+
+    # Логика "зоны": нужно реально зайти в зону с левой стороны и выйти справа.
+    if prev_side == -1 and side == 0:
+        st["inside_zone"] = True
+        st["entered_from_left"] = True
+        return
+    if side == -1:
+        st["inside_zone"] = False
+        st["entered_from_left"] = False
+        return
+    if side == 0:
+        return
+    if not (side == 1 and st["inside_zone"] and st["entered_from_left"]):
         return
 
     # Средний сдвиг по истории для устойчивости в плотной группе.
@@ -703,6 +718,8 @@ def _process_track_crossing(track_id, x, y, line_x):
     wall_time_str = datetime.now().strftime("%H:%M:%S")
     pending_append((now_perf, wall_time_str))
     st["last_cross"] = now_perf
+    st["inside_zone"] = False
+    st["entered_from_left"] = False
     last_global_trigger = now_perf
     set_state(
         pending=pending_len(),
@@ -720,19 +737,14 @@ def _cleanup_track_states():
 def analysis_worker():
     global latest_display_frame, last_global_trigger
 
-    processed_frame_id = -1
     last_ai_time = 0.0
 
     while running:
         with raw_lock:
-            if latest_raw_frame is None or raw_frame_id == processed_frame_id:
-                frame = None
-            else:
-                frame = latest_raw_frame.copy()
-                processed_frame_id = raw_frame_id
+            frame = raw_frames.popleft() if raw_frames else None
 
         if frame is None:
-            time.sleep(0.004)
+            time.sleep(0.001)
             continue
 
         if race_started and race_start_perf is not None:
@@ -746,9 +758,15 @@ def analysis_worker():
         display = proc_frame.copy()
         frame_h, frame_w = display.shape[:2]
         line_x = frame_w // 2
+        zone_left = max(0, line_x - FINISH_ZONE_WIDTH // 2)
+        zone_right = min(frame_w - 1, line_x + FINISH_ZONE_WIDTH // 2)
 
-        cv2.line(display, (line_x, 0), (line_x, frame_h), (0, 0, 255), 2)
-        draw_text(display, "FINISH LINE", line_x + 10, 25, 0.7, (0, 0, 255), 2)
+        overlay = display.copy()
+        cv2.rectangle(overlay, (zone_left, 0), (zone_right, frame_h), (0, 0, 255), -1)
+        cv2.addWeighted(overlay, 0.16, display, 0.84, 0, display)
+        cv2.line(display, (zone_left, 0), (zone_left, frame_h), (0, 0, 255), 2)
+        cv2.line(display, (zone_right, 0), (zone_right, frame_h), (0, 0, 255), 2)
+        draw_text(display, "FINISH ZONE", zone_right + 8, 25, 0.7, (0, 0, 255), 2)
 
         detections = []
         if race_started:
