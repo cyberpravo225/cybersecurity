@@ -96,6 +96,8 @@ next_track_id = 1
 frame_index = 0
 track_states = {}
 recent_crossings = deque(maxlen=120)
+last_table_update_ts = 0.0
+last_table_signature = None
 
 state_lock = threading.Lock()
 state = {
@@ -255,9 +257,11 @@ def clear_session_data():
         }
 
 
-def refresh_table():
-    for item in table.get_children():
-        table.delete(item)
+def refresh_table(force=False):
+    global last_table_update_ts, last_table_signature
+    now = time.perf_counter()
+    if not force and (now - last_table_update_ts) < 0.25:
+        return
 
     now_perf = time.perf_counter()
     sorted_numbers = sorted(
@@ -265,18 +269,44 @@ def refresh_table():
         key=lambda n: (_lap_eta_score(n, now_perf), -(runners[n]["lap"])),
         reverse=True,
     )
+    signature = []
     for number in sorted_numbers:
         rec = runners[number]
-        table.insert(
-            "",
-            "end",
-            values=(
-                number,
-                rec["lap"],
-                format_elapsed(rec["last_lap"] or 0.0) if rec["lap"] else "-",
-                format_elapsed(rec["total"] or 0.0) if rec["lap"] else "-",
-            ),
+        signature.append((
+            number,
+            rec["lap"],
+            format_elapsed(rec["last_lap"] or 0.0) if rec["lap"] else "-",
+            format_elapsed(rec["total"] or 0.0) if rec["lap"] else "-",
+        ))
+
+    sig_tuple = tuple(signature)
+    if not force and sig_tuple == last_table_signature:
+        return
+
+    existing = set(table.get_children())
+    wanted = set(registered_numbers)
+    for iid in list(existing - wanted):
+        table.delete(iid)
+
+    for number in sorted_numbers:
+        rec = runners[number]
+        values = (
+            number,
+            rec["lap"],
+            format_elapsed(rec["last_lap"] or 0.0) if rec["lap"] else "-",
+            format_elapsed(rec["total"] or 0.0) if rec["lap"] else "-",
         )
+        if table.exists(number):
+            if table.item(number, "values") != tuple(str(v) for v in values):
+                table.item(number, values=values)
+        else:
+            table.insert("", "end", iid=number, values=values)
+
+    for idx, number in enumerate(sorted_numbers):
+        table.move(number, "", idx)
+
+    last_table_signature = sig_tuple
+    last_table_update_ts = now
 
 
 def start_race():
@@ -295,7 +325,7 @@ def start_race():
         paused_at = None
 
     race_started = True
-    refresh_table()
+    refresh_table(force=True)
     set_state(status="Забег идет.", pending=pending_len(), elapsed="00:00.00", last_event="Старт")
 
 
@@ -314,7 +344,7 @@ def reset_all():
         return
     race_started = False
     clear_session_data()
-    refresh_table()
+    refresh_table(force=True)
     set_state(status="Всё очищено. Нажми «Старт».", pending=0, elapsed="00:00.00", last_event="-")
 
 
@@ -338,7 +368,7 @@ def add_event_to_runner(number, perf_time, wall_time_str):
     rec["last_wall"] = wall_time_str
 
     events.append((wall_time_str, number, rec["lap"], lap_time, rec["total"]))
-    refresh_table()
+    refresh_table(force=True)
     set_state(last_event=f"Сохранено: №{number}, круг {rec['lap']}")
 
 
