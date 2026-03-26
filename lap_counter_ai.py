@@ -406,45 +406,36 @@ def _build_export_rows():
         return [], []
 
     max_laps = max((len(runners[n]["lap_times"]) for n in registered_numbers), default=0)
-    header = [
-        "Номер",
-        "Кругов",
-        "Последний круг",
-        "Средний круг",
-        "Лучший круг",
-        "Худший круг",
-        "Общее время",
-        "Последняя отметка (часы)",
-    ]
-    for i in range(1, max_laps + 1):
-        header += [f"Круг {i} (сек)", f"Круг {i} (формат)", f"Отметка круга {i} (часы)"]
+    header = ["Номер", "Кол-во кругов", "Лучший круг, сек", "Худший круг, сек"]
+    header += [f"Круг {i}, сек" for i in range(1, max_laps + 1)]
+    header += ["Итоговое время, сек", "Место"]
+
+    ranked = []
+    for number in registered_numbers:
+        rec = runners[number]
+        if rec["lap"] > 0:
+            ranked.append((number, rec["total"]))
+    ranked.sort(key=lambda x: x[1])
+    places = {num: idx + 1 for idx, (num, _) in enumerate(ranked)}
 
     rows = []
     for number in registered_numbers:
         rec = runners[number]
         laps = rec["lap_times"]
-        best = min(laps) if laps else 0.0
-        worst = max(laps) if laps else 0.0
-        avg = (sum(laps) / len(laps)) if laps else 0.0
+        best = min(laps) if laps else ""
+        worst = max(laps) if laps else ""
+
         row = [
             number,
             rec["lap"],
-            f"{(rec['last_lap'] or 0.0):.2f}",
-            f"{avg:.2f}",
-            f"{best:.2f}",
-            f"{worst:.2f}",
-            f"{rec['total']:.2f}",
-            rec["last_wall"],
+            f"{best:.2f}" if best != "" else "",
+            f"{worst:.2f}" if worst != "" else "",
         ]
         for i in range(max_laps):
-            if i < len(laps):
-                lap_sec = laps[i]
-                t_wall = datetime.fromtimestamp(0).strftime("%H:%M:%S")
-                if i < len(rec["times"]):
-                    t_wall = datetime.fromtimestamp(time.time() - (time.perf_counter() - rec["times"][i])).strftime("%H:%M:%S")
-                row += [f"{lap_sec:.2f}", format_elapsed(lap_sec), t_wall]
-            else:
-                row += ["", "", ""]
+            row.append(f"{laps[i]:.2f}" if i < len(laps) else "")
+
+        row.append(f"{rec['total']:.2f}" if rec["lap"] > 0 else "")
+        row.append(str(places[number]) if number in places else "")
         rows.append(row)
 
     return header, rows
