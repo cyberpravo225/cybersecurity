@@ -38,17 +38,18 @@ FRAME_TIME = 1.0 / TARGET_FPS
 MAX_PROC_WIDTH = 1200
 
 CONF_THRES = 0.30
-MIN_BBOX_AREA = 1500
-COOLDOWN_SEC = 0.35
+MIN_BBOX_AREA = 900
+GLOBAL_COOLDOWN_SEC = 0.08
+TRACK_COOLDOWN_SEC = 0.20
 
 # Трекинг
 MATCH_DIST_X = 120
 MATCH_DIST_Y = 120
-MIN_TRACK_AGE = 2
-MIN_DX_FOR_CROSS = 6
+MIN_TRACK_AGE = 1
+MIN_DX_FOR_CROSS = 2
 TRACK_STALE_FRAMES = 10
 LINE_SIDE_MARGIN = 10
-TRACK_HISTORY = 8
+TRACK_HISTORY = 12
 FINISH_ZONE_WIDTH = 80
 
 # Если scrcpy уже повернут правильно, поставь False
@@ -99,7 +100,7 @@ paused_at = None
 paused_total = 0.0
 
 raw_lock = threading.Lock()
-raw_frames = deque(maxlen=6)
+raw_frames = deque(maxlen=20)
 
 display_lock = threading.Lock()
 latest_display_frame = None
@@ -690,6 +691,9 @@ def _process_track_crossing(track_id, x, y, line_x):
     if st["age"] < MIN_TRACK_AGE:
         return
 
+    zone_left = line_x - FINISH_ZONE_WIDTH // 2
+    zone_right = line_x + FINISH_ZONE_WIDTH // 2
+
     # Логика "зоны": нужно реально зайти в зону с левой стороны и выйти справа.
     if prev_side == -1 and side == 0:
         st["inside_zone"] = True
@@ -701,7 +705,16 @@ def _process_track_crossing(track_id, x, y, line_x):
         return
     if side == 0:
         return
-    if not (side == 1 and st["inside_zone"] and st["entered_from_left"]):
+    normal_zone_cross = side == 1 and st["inside_zone"] and st["entered_from_left"]
+
+    # Быстрый пробег: за 1-2 кадра перескочил сразу с левой стороны на правую.
+    fast_jump_cross = prev_side == -1 and side == 1
+
+    # Историческое пересечение: внутри короткой истории трека есть точки и слева, и справа от зоны.
+    hist_x = [pt[0] for pt in st["history"]]
+    history_cross = bool(hist_x) and (min(hist_x) < zone_left - LINE_SIDE_MARGIN) and (max(hist_x) > zone_right + LINE_SIDE_MARGIN)
+
+    if not (normal_zone_cross or fast_jump_cross or history_cross):
         return
 
     # Средний сдвиг по истории для устойчивости в плотной группе.
@@ -710,9 +723,9 @@ def _process_track_crossing(track_id, x, y, line_x):
         if dx_total < MIN_DX_FOR_CROSS:
             return
 
-    if now_perf - st["last_cross"] < COOLDOWN_SEC:
+    if now_perf - st["last_cross"] < TRACK_COOLDOWN_SEC:
         return
-    if now_perf - last_global_trigger < COOLDOWN_SEC:
+    if now_perf - last_global_trigger < GLOBAL_COOLDOWN_SEC:
         return
 
     wall_time_str = datetime.now().strftime("%H:%M:%S")
