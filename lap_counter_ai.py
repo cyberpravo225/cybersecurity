@@ -465,20 +465,31 @@ def add_manual_crossing_hotkey(event=None):
 
 
 def confirm_number(event=None):
+    numbers = _parse_numbers_from_entry(number_entry.get())
+    if not numbers:
+        messagebox.showwarning("Нужен номер", "Введи номер участника.")
+        return
+
+    bad = [n for n in numbers if n not in runners]
+    if bad:
+        messagebox.showwarning("Неизвестный номер", f"Номер(а) не зарегистрированы: {', '.join(bad)}")
+        return
+
     item = pending_popleft()
     if item is None:
-        messagebox.showinfo("Нет событий", "Сейчас нет ожидающего пересечения.")
+        if len(numbers) > 2:
+            messagebox.showwarning("Слишком много", "Для предикта введи максимум 1-2 номера.")
+            return
+        predict_append_many(numbers)
+        number_entry.delete(0, tk.END)
+        set_state(status=f"Добавлено в предикт: {', '.join(numbers)}. Ожидаю пересечение.", pending=pending_len())
         return
 
-    number = number_entry.get().strip()
-    if number not in runners:
-        messagebox.showwarning("Нужен номер", "Введи номер зарегистрированного участника.")
-        pending_append(item)
-        set_state(pending=pending_len())
-        return
-
+    number = numbers[0]
     perf_time, wall_time_str = item
     add_event_to_runner(number, perf_time, wall_time_str)
+    if len(numbers) > 1:
+        predict_append_many(numbers[1:3])
     number_entry.delete(0, tk.END)
     set_state(pending=pending_len(), status=f"Ожидаю следующее пересечение. Предикт={predict_len()}")
 
@@ -830,12 +841,84 @@ def make_button(parent, text, command, bg="#2563eb"):
     return tk.Button(parent, text=text, command=command, bg=bg, fg="white", relief="flat", bd=0, font=("Arial", 11, "bold"), height=2)
 
 
+def open_crop_window():
+    win = tk.Toplevel(root)
+    win.title("Обрезка и зум")
+    win.geometry("360x270")
+    win.resizable(False, False)
+    win.configure(bg="#111827")
+    win.transient(root)
+    win.grab_set()
+
+    cfg = _get_crop_cfg()
+    vars_map = {
+        "left": tk.IntVar(value=cfg["left"]),
+        "right": tk.IntVar(value=cfg["right"]),
+        "top": tk.IntVar(value=cfg["top"]),
+        "bottom": tk.IntVar(value=cfg["bottom"]),
+    }
+
+    def sync(*_):
+        l = vars_map["left"].get()
+        r = vars_map["right"].get()
+        t = vars_map["top"].get()
+        b = vars_map["bottom"].get()
+        if l + r >= 95:
+            if l > r:
+                vars_map["left"].set(max(0, 95 - r))
+            else:
+                vars_map["right"].set(max(0, 95 - l))
+        if t + b >= 95:
+            if t > b:
+                vars_map["top"].set(max(0, 95 - b))
+            else:
+                vars_map["bottom"].set(max(0, 95 - t))
+        _set_crop_cfg(
+            vars_map["left"].get(),
+            vars_map["right"].get(),
+            vars_map["top"].get(),
+            vars_map["bottom"].get(),
+        )
+
+    labels = [("left", "Слева, %"), ("right", "Справа, %"), ("top", "Сверху, %"), ("bottom", "Снизу, %")]
+    for row, (key, label) in enumerate(labels):
+        tk.Label(win, text=label, bg="#111827", fg="white", font=("Arial", 10, "bold")).grid(row=row, column=0, padx=12, pady=8, sticky="w")
+        tk.Scale(
+            win,
+            from_=0,
+            to=45,
+            orient="horizontal",
+            variable=vars_map[key],
+            command=sync,
+            bg="#111827",
+            fg="white",
+            troughcolor="#1f2937",
+            highlightthickness=0,
+            length=220,
+        ).grid(row=row, column=1, padx=10, pady=4, sticky="ew")
+
+    btns = tk.Frame(win, bg="#111827")
+    btns.grid(row=4, column=0, columnspan=2, sticky="ew", padx=12, pady=12)
+    btns.columnconfigure(0, weight=1)
+    btns.columnconfigure(1, weight=1)
+
+    def reset_crop():
+        for k in vars_map:
+            vars_map[k].set(0)
+        sync()
+
+    tk.Button(btns, text="Сброс", command=reset_crop, bg="#374151", fg="white", relief="flat").grid(row=0, column=0, sticky="ew", padx=(0, 6))
+    tk.Button(btns, text="Закрыть", command=win.destroy, bg="#2563eb", fg="white", relief="flat").grid(row=0, column=1, sticky="ew", padx=(6, 0))
+    sync()
+
+
 make_button(btn_frame, "Старт", start_race, "#16a34a").grid(row=0, column=0, sticky="ew", padx=3, pady=3)
 make_button(btn_frame, "Стоп", stop_race, "#dc2626").grid(row=0, column=1, sticky="ew", padx=3, pady=3)
 make_button(btn_frame, "Сброс", reset_all, "#475569").grid(row=1, column=0, sticky="ew", padx=3, pady=3)
 make_button(btn_frame, "Сохранить CSV", save_csv, "#7c3aed").grid(row=1, column=1, sticky="ew", padx=3, pady=3)
 make_button(btn_frame, "Добавить пересечение", add_manual_crossing, "#f59e0b").grid(row=2, column=0, columnspan=2, sticky="ew", padx=3, pady=3)
-make_button(btn_frame, "Полный экран (F11)", toggle_fullscreen, "#0ea5e9").grid(row=3, column=0, columnspan=2, sticky="ew", padx=3, pady=3)
+make_button(btn_frame, "Обрезка + зум", open_crop_window, "#334155").grid(row=3, column=0, columnspan=2, sticky="ew", padx=3, pady=3)
+make_button(btn_frame, "Полный экран (F11)", toggle_fullscreen, "#0ea5e9").grid(row=4, column=0, columnspan=2, sticky="ew", padx=3, pady=3)
 btn_frame.columnconfigure(0, weight=1)
 btn_frame.columnconfigure(1, weight=1)
 
@@ -872,6 +955,8 @@ table.pack(fill="both", expand=True)
 
 
 def update_gui():
+    if race_started and race_start_perf is not None:
+        set_state(elapsed=format_elapsed(time.perf_counter() - race_start_perf - paused_total))
     st = get_state()
     status_var.set(st["status"])
     pending_var.set(f"Ожидающих: {st['pending']}")
