@@ -5561,3 +5561,54 @@ body[data-page="cyberguessr"] .card-photo{
     max-width: none;
   }
 }
+
+/* Cyber neon "tip of the day" label */
+.cyber-tip-day-banner{
+  margin: 18px 0 26px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 213, 79, 0.55);
+  background:
+    radial-gradient(circle at 12% 20%, rgba(255, 213, 79, 0.08), transparent 42%),
+    linear-gradient(135deg, rgba(8, 19, 46, 0.72), rgba(2, 6, 23, 0.64) 55%, rgba(0, 0, 0, 0.7));
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 0 0 1px rgba(255, 213, 79, 0.22) inset,
+    0 0 20px rgba(255, 213, 79, 0.2),
+    0 10px 24px rgba(0, 0, 0, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.cyber-tip-day-banner::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.18) 0.8px, transparent 1px);
+  background-size: 26px 26px;
+  opacity: 0.14;
+  pointer-events: none;
+}
+
+.cyber-tip-day-icon{
+  font-size: 20px;
+  filter: drop-shadow(0 0 6px rgba(255, 213, 79, 0.95));
+  z-index: 1;
+}
+
+.cyber-tip-day-text{
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1rem, 1.8vw, 1.15rem);
+  letter-spacing: 0.13em;
+  color: #FFD54F;
+  text-transform: uppercase;
+  text-shadow:
+    0 0 6px rgba(255, 213, 79, 0.9),
+    0 0 14px rgba(255, 213, 79, 0.5);
+  z-index: 1;
+}
