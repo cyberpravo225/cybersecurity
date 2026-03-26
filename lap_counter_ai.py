@@ -125,6 +125,9 @@ state = {
     "last_event": "-",
 }
 
+crop_lock = threading.Lock()
+crop_cfg = {"left": 0, "right": 0, "top": 0, "bottom": 0}  # проценты
+
 
 # =========================
 # ВСПОМОГАТЕЛЬНОЕ
@@ -168,6 +171,43 @@ def pending_popleft():
 def pending_len():
     with pending_lock:
         return len(pending_events)
+
+
+def _get_crop_cfg():
+    with crop_lock:
+        return crop_cfg.copy()
+
+
+def _set_crop_cfg(left, right, top, bottom):
+    with crop_lock:
+        crop_cfg["left"] = int(left)
+        crop_cfg["right"] = int(right)
+        crop_cfg["top"] = int(top)
+        crop_cfg["bottom"] = int(bottom)
+
+
+def _apply_user_crop(frame):
+    cfg = _get_crop_cfg()
+    h, w = frame.shape[:2]
+
+    left_px = int(w * cfg["left"] / 100)
+    right_px = int(w * cfg["right"] / 100)
+    top_px = int(h * cfg["top"] / 100)
+    bottom_px = int(h * cfg["bottom"] / 100)
+
+    x1 = max(0, min(w - 2, left_px))
+    y1 = max(0, min(h - 2, top_px))
+    x2 = max(x1 + 1, min(w, w - right_px))
+    y2 = max(y1 + 1, min(h, h - bottom_px))
+
+    cropped = frame[y1:y2, x1:x2]
+    if cropped.size == 0:
+        return frame
+
+    # Авторастягивание обратно в рабочий прямоугольник кадра.
+    if cropped.shape[0] != h or cropped.shape[1] != w:
+        cropped = cv2.resize(cropped, (w, h), interpolation=cv2.INTER_LINEAR)
+    return cropped
 
 
 def clear_session_data():
@@ -514,6 +554,7 @@ def capture_hwnd(hwnd):
         if ROTATE_CAPTURE_CCW:
             frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
 
+        frame = _apply_user_crop(frame)
         return frame, result == 1
     finally:
         try:
@@ -944,6 +985,72 @@ def make_button(parent, text, command, bg="#2563eb", fg="white"):
     )
 
 
+def open_crop_window():
+    win = tk.Toplevel(root)
+    win.title("Обрезка захвата")
+    win.geometry("360x270")
+    win.resizable(False, False)
+    win.configure(bg="#111827")
+    win.transient(root)
+
+    cfg = _get_crop_cfg()
+    vars_map = {
+        "left": tk.IntVar(value=cfg["left"]),
+        "right": tk.IntVar(value=cfg["right"]),
+        "top": tk.IntVar(value=cfg["top"]),
+        "bottom": tk.IntVar(value=cfg["bottom"]),
+    }
+
+    def sync(*_):
+        l = vars_map["left"].get()
+        r = vars_map["right"].get()
+        t = vars_map["top"].get()
+        b = vars_map["bottom"].get()
+        # Защита от полной обрезки.
+        if l + r >= 95:
+            if l > r:
+                l = 95 - r
+                vars_map["left"].set(max(0, l))
+            else:
+                r = 95 - l
+                vars_map["right"].set(max(0, r))
+        if t + b >= 95:
+            if t > b:
+                t = 95 - b
+                vars_map["top"].set(max(0, t))
+            else:
+                b = 95 - t
+                vars_map["bottom"].set(max(0, b))
+        _set_crop_cfg(vars_map["left"].get(), vars_map["right"].get(), vars_map["top"].get(), vars_map["bottom"].get())
+
+    row = 0
+    labels = [("left", "Слева, %"), ("right", "Справа, %"), ("top", "Сверху, %"), ("bottom", "Снизу, %")]
+    for key, label in labels:
+        tk.Label(win, text=label, bg="#111827", fg="white", font=("Arial", 10, "bold")).grid(row=row, column=0, padx=12, pady=8, sticky="w")
+        sc = tk.Scale(
+            win, from_=0, to=45, orient="horizontal", variable=vars_map[key],
+            command=lambda _v: sync(), bg="#111827", fg="white", troughcolor="#1f2937",
+            highlightthickness=0, length=220
+        )
+        sc.grid(row=row, column=1, padx=10, pady=4, sticky="ew")
+        row += 1
+
+    btns = tk.Frame(win, bg="#111827")
+    btns.grid(row=row, column=0, columnspan=2, sticky="ew", padx=12, pady=12)
+    btns.columnconfigure(0, weight=1)
+    btns.columnconfigure(1, weight=1)
+
+    def reset_crop():
+        for k in vars_map:
+            vars_map[k].set(0)
+        sync()
+
+    tk.Button(btns, text="Сброс", command=reset_crop, bg="#374151", fg="white", relief="flat").grid(row=0, column=0, sticky="ew", padx=(0, 6))
+    tk.Button(btns, text="Закрыть", command=win.destroy, bg="#2563eb", fg="white", relief="flat").grid(row=0, column=1, sticky="ew", padx=(6, 0))
+
+    sync()
+
+
 btn_start = make_button(btn_frame, "Старт", start_race, bg="#16a34a")
 btn_start.grid(row=0, column=0, sticky="ew", padx=(0, 6), pady=(0, 8))
 
@@ -959,8 +1066,15 @@ btn_save.grid(row=1, column=1, sticky="ew", padx=(6, 0), pady=(0, 8))
 btn_manual = make_button(btn_frame, "Добавить пересечение", add_manual_crossing, bg="#f59e0b")
 btn_manual.grid(row=2, column=0, columnspan=2, sticky="ew", pady=(0, 8))
 
+btn_crop = tk.Button(
+    btn_frame, text="Обрезка", command=open_crop_window,
+    bg="#334155", fg="white", activebackground="#334155", activeforeground="white",
+    relief="flat", bd=0, font=("Arial", 9, "bold"), height=1, cursor="hand2"
+)
+btn_crop.grid(row=3, column=1, sticky="e", pady=(0, 6))
+
 btn_full = make_button(btn_frame, "Полный экран (F11)", toggle_fullscreen, bg="#0ea5e9")
-btn_full.grid(row=3, column=0, columnspan=2, sticky="ew", pady=(0, 2))
+btn_full.grid(row=4, column=0, columnspan=2, sticky="ew", pady=(0, 2))
 
 entry_box = tk.Frame(right, bg="#111827")
 entry_box.grid(row=5, column=0, sticky="new", padx=14, pady=(0, 10))
