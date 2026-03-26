@@ -40,7 +40,9 @@ MAX_PROC_WIDTH = 1200
 CONF_THRES = 0.30
 MIN_BBOX_AREA = 900
 GLOBAL_COOLDOWN_SEC = 0.08
-TRACK_COOLDOWN_SEC = 0.20
+TRACK_COOLDOWN_SEC = 0.45
+CROSS_DEDUP_SEC = 0.70
+CROSS_DEDUP_Y = 90
 
 # Трекинг
 MATCH_DIST_X = 120
@@ -116,6 +118,7 @@ tracks = {}
 next_track_id = 1
 frame_index = 0
 track_states = {}
+recent_crossings = deque(maxlen=120)  # (time_perf, y)
 
 state_lock = threading.Lock()
 state = {
@@ -223,6 +226,7 @@ def clear_session_data():
     runners.clear()
     tracks = {}
     track_states = {}
+    recent_crossings.clear()
     next_track_id = 1
     frame_index = 0
     last_global_trigger = 0.0
@@ -717,6 +721,7 @@ def _process_track_crossing(track_id, x, y, line_x):
             "last_seen": now_perf,
             "inside_zone": False,
             "entered_from_left": False,
+            "armed": True,
         }
         track_states[track_id] = st
 
@@ -743,6 +748,7 @@ def _process_track_crossing(track_id, x, y, line_x):
     if side == -1:
         st["inside_zone"] = False
         st["entered_from_left"] = False
+        st["armed"] = True
         return
     if side == 0:
         return
@@ -757,6 +763,8 @@ def _process_track_crossing(track_id, x, y, line_x):
 
     if not (normal_zone_cross or fast_jump_cross or history_cross):
         return
+    if not st["armed"]:
+        return
 
     # Средний сдвиг по истории для устойчивости в плотной группе.
     if len(st["history"]) >= 3:
@@ -768,12 +776,17 @@ def _process_track_crossing(track_id, x, y, line_x):
         return
     if now_perf - last_global_trigger < GLOBAL_COOLDOWN_SEC:
         return
+    for t_cross, y_cross in recent_crossings:
+        if now_perf - t_cross <= CROSS_DEDUP_SEC and abs(y - y_cross) <= CROSS_DEDUP_Y:
+            return
 
     wall_time_str = datetime.now().strftime("%H:%M:%S")
     pending_append((now_perf, wall_time_str))
     st["last_cross"] = now_perf
     st["inside_zone"] = False
     st["entered_from_left"] = False
+    st["armed"] = False
+    recent_crossings.append((now_perf, y))
     last_global_trigger = now_perf
     set_state(
         pending=pending_len(),
