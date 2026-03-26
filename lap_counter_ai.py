@@ -405,10 +405,13 @@ def _build_export_rows():
     if race_start_perf is None:
         return [], []
 
+    def fmt_sec_csv(v):
+        return f"{v:.2f} сек".replace(".", ",")
+
     max_laps = max((len(runners[n]["lap_times"]) for n in registered_numbers), default=0)
-    header = ["Номер", "Кол-во кругов", "Лучший круг, сек", "Худший круг, сек"]
-    header += [f"Круг {i}, сек" for i in range(1, max_laps + 1)]
-    header += ["Итоговое время, сек", "Место"]
+    header = ["Номер", "Кол-во кругов", "Лучший круг", "Худший круг"]
+    header += [f"Круг {i}" for i in range(1, max_laps + 1)]
+    header += ["Итоговое время", "Место"]
 
     ranked = []
     for number in registered_numbers:
@@ -428,13 +431,13 @@ def _build_export_rows():
         row = [
             number,
             rec["lap"],
-            f"{best:.2f}" if best != "" else "",
-            f"{worst:.2f}" if worst != "" else "",
+            fmt_sec_csv(best) if best != "" else "",
+            fmt_sec_csv(worst) if worst != "" else "",
         ]
         for i in range(max_laps):
-            row.append(f"{laps[i]:.2f}" if i < len(laps) else "")
+            row.append(fmt_sec_csv(laps[i]) if i < len(laps) else "")
 
-        row.append(f"{rec['total']:.2f}" if rec["lap"] > 0 else "")
+        row.append(fmt_sec_csv(rec["total"]) if rec["lap"] > 0 else "")
         row.append(str(places[number]) if number in places else "")
         rows.append(row)
 
