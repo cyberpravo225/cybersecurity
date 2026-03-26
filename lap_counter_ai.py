@@ -47,6 +47,8 @@ MATCH_DIST_Y = 120
 MIN_TRACK_AGE = 2
 MIN_DX_FOR_CROSS = 6
 TRACK_STALE_FRAMES = 10
+LINE_SIDE_MARGIN = 20
+TRACK_HISTORY = 8
 
 # Если scrcpy уже повернут правильно, поставь False
 ROTATE_CAPTURE_CCW = True
@@ -112,6 +114,7 @@ last_global_trigger = 0.0
 tracks = {}
 next_track_id = 1
 frame_index = 0
+track_states = {}
 
 state_lock = threading.Lock()
 state = {
@@ -168,7 +171,7 @@ def pending_len():
 
 def clear_session_data():
     global race_start_perf, paused_at, paused_total, last_global_trigger
-    global tracks, next_track_id, frame_index
+    global tracks, next_track_id, frame_index, track_states
 
     with pending_lock:
         pending_events.clear()
@@ -176,6 +179,7 @@ def clear_session_data():
     events.clear()
     runners.clear()
     tracks = {}
+    track_states = {}
     next_track_id = 1
     frame_index = 0
     last_global_trigger = 0.0
@@ -376,6 +380,11 @@ def add_manual_crossing():
         status="➕ Пересечение добавлено вручную. Введи номер участника.",
         last_event="Ручное пересечение"
     )
+
+
+def add_manual_crossing_hotkey(event=None):
+    add_manual_crossing()
+    return "break"
 
 
 def confirm_number(event=None):
@@ -644,6 +653,70 @@ def _match_tracks(detections):
         tracks.pop(tid, None)
 
 
+def _line_side(x, line_x):
+    if x < line_x - LINE_SIDE_MARGIN:
+        return -1
+    if x > line_x + LINE_SIDE_MARGIN:
+        return 1
+    return 0
+
+
+def _process_track_crossing(track_id, x, y, line_x):
+    global last_global_trigger
+    now_perf = time.perf_counter()
+    st = track_states.get(track_id)
+    if st is None:
+        st = {
+            "history": deque(maxlen=TRACK_HISTORY),
+            "last_non_zero_side": 0,
+            "age": 0,
+            "last_cross": 0.0,
+            "last_seen": now_perf,
+        }
+        track_states[track_id] = st
+
+    st["history"].append((x, y))
+    st["age"] += 1
+    st["last_seen"] = now_perf
+
+    side = _line_side(x, line_x)
+    prev_side = st["last_non_zero_side"]
+    if side != 0:
+        st["last_non_zero_side"] = side
+
+    if st["age"] < MIN_TRACK_AGE:
+        return
+    if prev_side != -1 or side != 1:
+        return
+
+    # Средний сдвиг по истории для устойчивости в плотной группе.
+    if len(st["history"]) >= 3:
+        dx_total = st["history"][-1][0] - st["history"][0][0]
+        if dx_total < MIN_DX_FOR_CROSS:
+            return
+
+    if now_perf - st["last_cross"] < COOLDOWN_SEC:
+        return
+    if now_perf - last_global_trigger < COOLDOWN_SEC:
+        return
+
+    wall_time_str = datetime.now().strftime("%H:%M:%S")
+    pending_append((now_perf, wall_time_str))
+    st["last_cross"] = now_perf
+    last_global_trigger = now_perf
+    set_state(
+        pending=pending_len(),
+        status="🏁 Есть пересечение слева направо. Введи номер участника.",
+    )
+
+
+def _cleanup_track_states():
+    now_perf = time.perf_counter()
+    stale_ids = [tid for tid, s in track_states.items() if now_perf - s["last_seen"] > 2.5]
+    for tid in stale_ids:
+        track_states.pop(tid, None)
+
+
 def analysis_worker():
     global latest_display_frame, last_global_trigger
 
@@ -680,7 +753,7 @@ def analysis_worker():
         detections = []
         if race_started:
             try:
-                results = model.predict(
+                results = model.track(
                     proc_frame,
                     verbose=False,
                     conf=CONF_THRES,
@@ -688,6 +761,8 @@ def analysis_worker():
                     imgsz=YOLO_IMGSZ,
                     device=DEVICE,
                     half=USE_HALF,
+                    persist=True,
+                    tracker="bytetrack.yaml",
                 )
             except Exception:
                 results = []
@@ -705,39 +780,38 @@ def analysis_worker():
 
                     center_x = (x1 + x2) // 2
                     center_y = (y1 + y2) // 2
+                    track_id = None
+                    if getattr(box, "id", None) is not None:
+                        try:
+                            track_id = int(box.id.item())
+                        except Exception:
+                            track_id = None
                     detections.append({
                         "x": center_x,
                         "y": center_y,
                         "bbox": (x1, y1, x2, y2),
+                        "track_id": track_id,
                     })
 
-            _match_tracks(detections)
-
-            now_perf = time.perf_counter()
-            for tid, tr in tracks.items():
-                if tr["age"] < MIN_TRACK_AGE:
-                    continue
-                dx = tr["x"] - tr["prev_x"]
-                if dx < MIN_DX_FOR_CROSS:
-                    continue
-                if crossed_left_to_right(tr["prev_x"], tr["x"], line_x):
-                    if now_perf - tr["last_cross"] < COOLDOWN_SEC:
+            has_ids = any(d.get("track_id") is not None for d in detections)
+            if has_ids:
+                for d in detections:
+                    tid = d.get("track_id")
+                    if tid is None:
                         continue
-                    if now_perf - last_global_trigger < COOLDOWN_SEC:
-                        continue
+                    _process_track_crossing(tid, d["x"], d["y"], line_x)
+                    x1, y1, x2, y2 = d["bbox"]
+                    cv2.rectangle(display, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                    draw_text(display, f"ID {tid}", x1, max(16, y1 - 6), 0.45, (80, 255, 80), 1)
+            else:
+                # Фоллбек, если tracker не выдал id.
+                _match_tracks(detections)
+                for tid, tr in tracks.items():
+                    _process_track_crossing(tid, tr["x"], tr["y"], line_x)
+                    x1, y1, x2, y2 = tr["bbox"]
+                    cv2.rectangle(display, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-                    wall_time_str = datetime.now().strftime("%H:%M:%S")
-                    pending_append((now_perf, wall_time_str))
-                    tr["last_cross"] = now_perf
-                    last_global_trigger = now_perf
-                    set_state(
-                        pending=pending_len(),
-                        status="🏁 Есть пересечение слева направо. Введи номер участника.",
-                    )
-
-            for tr in tracks.values():
-                x1, y1, x2, y2 = tr["bbox"]
-                cv2.rectangle(display, (x1, y1), (x2, y2), (0, 255, 0), 2)
+            _cleanup_track_states()
 
         draw_text(display, "RUNNING" if race_started else "READY", 10, 25, 0.8, (0, 255, 255) if race_started else (255, 255, 255), 2)
         draw_text(display, f"Pending: {pending_len()}", 10, frame_h - 15, 0.65, (255, 255, 0), 2)
@@ -952,6 +1026,7 @@ def update_gui():
 # =========================
 root.bind("<F11>", toggle_fullscreen)
 root.bind("<Escape>", exit_fullscreen)
+root.bind("<Tab>", add_manual_crossing_hotkey)
 
 threading.Thread(target=screen_capture_worker, daemon=True).start()
 threading.Thread(target=analysis_worker, daemon=True).start()
