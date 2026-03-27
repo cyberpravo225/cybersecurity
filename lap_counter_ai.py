@@ -31,10 +31,10 @@ FRAME_TIME = 1.0 / TARGET_FPS
 MAX_PROC_WIDTH = 1200
 CONF_THRES = 0.30
 MIN_BBOX_AREA = 900
-GLOBAL_COOLDOWN_SEC = 0.08
-TRACK_COOLDOWN_SEC = 0.45
-CROSS_DEDUP_SEC = 0.70
-CROSS_DEDUP_Y = 90
+GLOBAL_COOLDOWN_SEC = 0.03
+TRACK_COOLDOWN_SEC = 0.35
+CROSS_DEDUP_SEC = 0.30
+CROSS_DEDUP_Y = 55
 MATCH_DIST_X = 120
 MATCH_DIST_Y = 120
 MIN_TRACK_AGE = 1
@@ -95,7 +95,7 @@ tracks = {}
 next_track_id = 1
 frame_index = 0
 track_states = {}
-recent_crossings = deque(maxlen=120)
+recent_crossings = deque(maxlen=200)
 last_table_update_ts = 0.0
 last_table_signature = None
 
@@ -697,24 +697,32 @@ def _process_track_crossing(track_id, x, y, line_x):
         return
 
     hist_x = [pt[0] for pt in st["history"]]
+    prev_hist_x = st["history"][-2][0] if len(st["history"]) >= 2 else x
+    segment_cross = prev_hist_x < zone_left and x > zone_right
     crossed = (side == 1 and st["inside_zone"] and st["entered_from_left"]) or (prev_side == -1 and side == 1) or (
         bool(hist_x) and min(hist_x) < zone_left - LINE_SIDE_MARGIN and max(hist_x) > zone_right + LINE_SIDE_MARGIN
-    )
+    ) or segment_cross
     if not crossed or not st["armed"]:
         return
     if len(st["history"]) >= 3 and st["history"][-1][0] - st["history"][0][0] < MIN_DX_FOR_CROSS:
         return
     if now_perf - st["last_cross"] < TRACK_COOLDOWN_SEC or now_perf - last_global_trigger < GLOBAL_COOLDOWN_SEC:
         return
-    for t_cross, y_cross in recent_crossings:
-        if now_perf - t_cross <= CROSS_DEDUP_SEC and abs(y - y_cross) <= CROSS_DEDUP_Y:
+    for t_cross, y_cross, tid_cross in recent_crossings:
+        if now_perf - t_cross > CROSS_DEDUP_SEC:
+            continue
+        # Не дублируем один и тот же трек.
+        if tid_cross == track_id:
+            return
+        # Для разных треков режем только сверх-близкие по времени/вертикали срабатывания.
+        if abs(y - y_cross) <= CROSS_DEDUP_Y and (now_perf - t_cross) < (CROSS_DEDUP_SEC * 0.55):
             return
 
     enqueue_predictions_from_entry(max_items=2, clear_input=True, silent=True)
     pending_append((now_perf, datetime.now().strftime("%H:%M:%S")))
     assign_pending_with_predictions("Авто-пересечение")
     st.update(last_cross=now_perf, inside_zone=False, entered_from_left=False, armed=False)
-    recent_crossings.append((now_perf, y))
+    recent_crossings.append((now_perf, y, track_id))
     last_global_trigger = now_perf
     if pending_len() > 0:
         set_state(pending=pending_len(), status=f"🏁 Есть пересечение. Введи номер и нажми Enter. Предикт={predict_len()}")
