@@ -709,9 +709,9 @@ def _process_track_crossing(track_id, x, y, line_x):
     now_perf = time.perf_counter()
     st = track_states.setdefault(track_id, {
         "history": deque(maxlen=TRACK_HISTORY), "last_non_zero_side": 0, "age": 0,
-        "last_cross": 0.0, "last_seen": now_perf, "inside_zone": False,
-        "entered_from_left": False, "armed": True,
-    })
+            "last_cross": 0.0, "last_seen": now_perf, "inside_zone": False,
+            "entered_from_right": False, "armed": True,
+        })
 
     st["history"].append((x, y))
     st["age"] += 1
@@ -723,26 +723,29 @@ def _process_track_crossing(track_id, x, y, line_x):
 
     zone_left = line_x - FINISH_ZONE_WIDTH // 2
     zone_right = line_x + FINISH_ZONE_WIDTH // 2
-    if prev_side == -1 and side == 0:
+    if prev_side == 1 and side == 0:
         st["inside_zone"] = True
-        st["entered_from_left"] = True
+        st["entered_from_right"] = True
         return
-    if side == -1:
-        st.update(inside_zone=False, entered_from_left=False, armed=True)
+    if side == 1:
+        st.update(inside_zone=False, entered_from_right=False, armed=True)
         return
     if side == 0:
         return
 
     hist_x = [pt[0] for pt in st["history"]]
     prev_hist_x = st["history"][-2][0] if len(st["history"]) >= 2 else x
-    segment_cross = prev_hist_x < zone_left and x > zone_right
-    crossed = (side == 1 and st["inside_zone"] and st["entered_from_left"]) or (prev_side == -1 and side == 1) or (
+    segment_cross = prev_hist_x > zone_right and x < zone_left
+    crossed = (side == -1 and st["inside_zone"] and st["entered_from_right"]) or (prev_side == 1 and side == -1) or (
         bool(hist_x) and min(hist_x) < zone_left - LINE_SIDE_MARGIN and max(hist_x) > zone_right + LINE_SIDE_MARGIN
     ) or segment_cross
     if not crossed or not st["armed"]:
         return
-    if len(st["history"]) >= 3 and st["history"][-1][0] - st["history"][0][0] < MIN_DX_FOR_CROSS:
-        return
+    if len(st["history"]) >= 3:
+        # Для направления справа-налево суммарный dx по истории должен быть отрицательным.
+        dx_total = st["history"][-1][0] - st["history"][0][0]
+        if dx_total > -MIN_DX_FOR_CROSS:
+            return
     if now_perf - st["last_cross"] < TRACK_COOLDOWN_SEC or now_perf - last_global_trigger < GLOBAL_COOLDOWN_SEC:
         return
     for t_cross, y_cross, tid_cross in recent_crossings:
@@ -758,7 +761,7 @@ def _process_track_crossing(track_id, x, y, line_x):
     enqueue_predictions_from_entry(max_items=2, clear_input=True, silent=True)
     pending_append((now_perf, datetime.now().strftime("%H:%M:%S")))
     assign_pending_with_predictions("Авто-пересечение")
-    st.update(last_cross=now_perf, inside_zone=False, entered_from_left=False, armed=False)
+    st.update(last_cross=now_perf, inside_zone=False, entered_from_right=False, armed=False)
     recent_crossings.append((now_perf, y, track_id))
     last_global_trigger = now_perf
     if pending_len() > 0:
