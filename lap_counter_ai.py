@@ -98,6 +98,7 @@ track_states = {}
 recent_crossings = deque(maxlen=200)
 last_table_update_ts = 0.0
 last_table_signature = None
+last_predict_ui_signature = None
 
 state_lock = threading.Lock()
 state = {
@@ -189,6 +190,15 @@ def _set_zoom_pct(value):
 def _predict_snapshot():
     with predict_lock:
         return list(predicted_numbers)
+
+
+def _predict_remove_index(index: int):
+    with predict_lock:
+        if index < 0 or index >= len(predicted_numbers):
+            return None
+        value = predicted_numbers[index]
+        del predicted_numbers[index]
+        return value
 
 
 def _apply_user_crop(frame):
@@ -372,6 +382,33 @@ def add_event_to_runner(number, perf_time, wall_time_str):
     events.append((wall_time_str, number, rec["lap"], lap_time, rec["total"]))
     refresh_table(force=True)
     set_state(last_event=f"Сохранено: №{number}, круг {rec['lap']}")
+
+
+def undo_last_event(event=None):
+    if not events:
+        messagebox.showinfo("Нет событий", "В таблице нет сохраненных пересечений.")
+        return "break"
+
+    wall_time_str, number, lap_label, _, _ = events.pop()
+    rec = runners.get(str(number))
+    if rec and rec["lap"] > 0:
+        if rec["times"]:
+            rec["times"].pop()
+        if rec["lap_times"]:
+            rec["lap_times"].pop()
+        rec["lap"] = max(0, rec["lap"] - 1)
+        rec["last_lap"] = rec["lap_times"][-1] if rec["lap_times"] else None
+        rec["avg_lap"] = (sum(rec["lap_times"]) / len(rec["lap_times"])) if rec["lap_times"] else None
+        if rec["times"] and race_start_perf is not None:
+            rec["total"] = rec["times"][-1] - race_start_perf - paused_total
+            rec["last_wall"] = datetime.now().strftime("%H:%M:%S")
+        else:
+            rec["total"] = 0.0
+            rec["last_wall"] = "-"
+
+    refresh_table(force=True)
+    set_state(last_event=f"Удалено: №{number}, круг {lap_label}", pending=pending_len())
+    return "break"
 
 
 def _parse_numbers_from_entry(raw_value: str):
@@ -894,6 +931,47 @@ for txt, var, color in [
 ]:
     tk.Label(right, textvariable=var, bg="#111827", fg=color, wraplength=330, justify="left", font=("Arial", 11)).pack(anchor="w", padx=14, pady=(8, 2))
 
+predict_frame = tk.Frame(right, bg="#111827")
+predict_frame.pack(fill="x", padx=14, pady=(0, 8))
+
+
+def refresh_predict_buttons():
+    global last_predict_ui_signature
+    preds = _predict_snapshot()
+    sig = tuple(preds)
+    if sig == last_predict_ui_signature:
+        return
+    for w in predict_frame.winfo_children():
+        w.destroy()
+    if not preds:
+        tk.Label(predict_frame, text="Предикты: (пусто)", bg="#111827", fg="#9ca3af", font=("Arial", 10)).pack(anchor="w")
+        last_predict_ui_signature = sig
+        return
+
+    tk.Label(predict_frame, text="Клик по номеру — удалить предикт:", bg="#111827", fg="#cbd5e1", font=("Arial", 10)).pack(anchor="w")
+    row = tk.Frame(predict_frame, bg="#111827")
+    row.pack(fill="x", pady=(4, 0))
+    for i, n in enumerate(preds):
+        def _rm(idx=i):
+            removed = _predict_remove_index(idx)
+            if removed is not None:
+                set_state(status=f"Удален предикт: {removed}", pending=pending_len())
+            refresh_predict_buttons()
+        tk.Button(
+            row,
+            text=str(n),
+            command=_rm,
+            bg="#7c3aed",
+            fg="white",
+            relief="flat",
+            bd=0,
+            padx=8,
+            pady=3,
+            cursor="hand2",
+        ).pack(side="left", padx=(0, 6))
+    last_predict_ui_signature = sig
+
+
 btn_frame = tk.Frame(right, bg="#111827")
 btn_frame.pack(fill="x", padx=14, pady=(8, 10))
 
@@ -983,8 +1061,9 @@ make_button(btn_frame, "Стоп", stop_race, "#dc2626").grid(row=0, column=1, s
 make_button(btn_frame, "Сброс", reset_all, "#475569").grid(row=1, column=0, sticky="ew", padx=3, pady=3)
 make_button(btn_frame, "Сохранить CSV", save_csv, "#7c3aed").grid(row=1, column=1, sticky="ew", padx=3, pady=3)
 make_button(btn_frame, "Добавить пересечение", add_manual_crossing, "#f59e0b").grid(row=2, column=0, columnspan=2, sticky="ew", padx=3, pady=3)
-make_button(btn_frame, "Обрезка + зум", open_crop_window, "#334155").grid(row=3, column=0, columnspan=2, sticky="ew", padx=3, pady=3)
-make_button(btn_frame, "Полный экран (F11)", toggle_fullscreen, "#0ea5e9").grid(row=4, column=0, columnspan=2, sticky="ew", padx=3, pady=3)
+make_button(btn_frame, "Удалить последнее (Del)", undo_last_event, "#b91c1c").grid(row=3, column=0, columnspan=2, sticky="ew", padx=3, pady=3)
+make_button(btn_frame, "Обрезка + зум", open_crop_window, "#334155").grid(row=4, column=0, columnspan=2, sticky="ew", padx=3, pady=3)
+make_button(btn_frame, "Полный экран (F11)", toggle_fullscreen, "#0ea5e9").grid(row=5, column=0, columnspan=2, sticky="ew", padx=3, pady=3)
 btn_frame.columnconfigure(0, weight=1)
 btn_frame.columnconfigure(1, weight=1)
 
@@ -1028,6 +1107,7 @@ def update_gui():
     pending_var.set(f"Ожидающих: {st['pending']}")
     pred_list = _predict_snapshot()
     predict_var.set(f"Предикт: {', '.join(pred_list) if pred_list else '-'}")
+    refresh_predict_buttons()
     elapsed_var.set(st["elapsed"])
     last_event_var.set(f"Последнее: {st['last_event']}")
 
@@ -1055,6 +1135,7 @@ refresh_table()
 root.bind("<F11>", toggle_fullscreen)
 root.bind("<Escape>", exit_fullscreen)
 root.bind("<Tab>", add_manual_crossing_hotkey)
+root.bind("<Delete>", undo_last_event)
 threading.Thread(target=screen_capture_worker, daemon=True).start()
 threading.Thread(target=analysis_worker, daemon=True).start()
 root.after(20, update_gui)
