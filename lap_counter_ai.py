@@ -231,6 +231,8 @@ def clear_session_data():
 
     with pending_lock:
         pending_events.clear()
+    with predict_lock:
+        predicted_numbers.clear()
     with raw_lock:
         raw_frames.clear()
 
