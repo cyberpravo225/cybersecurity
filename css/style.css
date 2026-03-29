@@ -72,7 +72,11 @@ body{
 
 /* Home page uses wider layout to better fill desktop screens */
 body[data-page="home"] .container{
-  max-width:min(80vw, 1540px);
+  width:80vw;
+  max-width:80vw;
+  margin-inline:auto;
+  padding-left:0;
+  padding-right:0;
 }
 
 body[data-page="home"] .topbar{
