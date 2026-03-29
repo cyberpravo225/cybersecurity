@@ -4781,6 +4781,12 @@ body[data-page="home"] .hero .container{
   gap: 22px;
 }
 
+body[data-page="home"] .section > .container{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
 body[data-page="home"] .hero{
   overflow:visible;
 }
