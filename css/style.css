@@ -72,9 +72,11 @@ body{
 
 /* Home page uses wider layout to better fill desktop screens */
 body[data-page="home"] .container{
-  width:min(80vw, 1540px);
-  max-width:min(80vw, 1540px);
+  width:100%;
+  max-width:none;
   box-sizing:border-box;
+  padding-left:0;
+  padding-right:0;
 }
 
 body[data-page="home"] .topbar{
@@ -4797,8 +4799,8 @@ body[data-page="home"] .lead{
 }
 
 body[data-page="home"] .card-grid{
-  width:100%;
-  max-width:100%;
+  width:80vw;
+  max-width:80vw;
   margin:0 auto;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 22px;
@@ -4908,8 +4910,8 @@ body[data-page="home"] .tip-of-day{
 }
 
 body[data-page="home"] .tip-card{
-  width:100%;
-  max-width:100%;
+  width:80vw;
+  max-width:80vw;
   margin:0 auto;
   grid-template-columns: 240px 1fr;
   gap: 24px;
