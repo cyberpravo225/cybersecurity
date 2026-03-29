@@ -221,7 +221,12 @@ body[data-page="home"] .topbar{
 
 /* Hero */
 .hero {padding:52px 0 60px; border-radius:20px; margin:10px; overflow:hidden; position:relative}
-.hero .title{font-size:clamp(34px, 4.2vw, 52px); margin:0 0 16px; line-height:1.12}
+.hero .title{
+  font-size:clamp(42px, 5.4vw, 68px);
+  margin:0 0 16px;
+  line-height:1.08;
+  white-space:nowrap;
+}
 .hero .lead{margin:0 0 20px; color:var(--muted)}
 .hero-intro{
   max-width:560px;
@@ -569,7 +574,10 @@ border-radius:16px;
     width:auto;
     max-width:none;
   }
-  .hero .title{font-size:24px}
+  .hero .title{
+    font-size:24px;
+    white-space:normal;
+  }
   .hero-question{font-size:28px}
   .hero-subtitle{font-size:15px}
   .card-grid{
