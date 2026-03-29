@@ -4795,7 +4795,9 @@ body[data-page="home"] .lead{
 }
 
 body[data-page="home"] .card-grid{
-  width:100%;
+  width:80vw;
+  max-width:80vw;
+  margin:0 auto;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 22px;
 }
@@ -4904,6 +4906,9 @@ body[data-page="home"] .tip-of-day{
 }
 
 body[data-page="home"] .tip-card{
+  width:80vw;
+  max-width:80vw;
+  margin:0 auto;
   grid-template-columns: 240px 1fr;
   gap: 24px;
   min-height: 250px;
