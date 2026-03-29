@@ -502,15 +502,27 @@ img: "assets/Copilot_20260321_151230.png"
    Совет дня (главная)
 ========================= */
 
-/* считаем дни с запуска проекта */
+const TIP_DATE_KEY = "cybersecurity:lastTipDate";
+const TIP_INDEX_KEY = "cybersecurity:lastTipIndex";
+const START_DATE = new Date("2026-03-10T00:00:00");
 
-const startDate = new Date("2026-03-10"); 
-const today = new Date();
+const now = new Date();
+const todayKey = now.toISOString().slice(0, 10);
 
-const diffTime = today - startDate;
-const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+let todayIndex = 0;
+const savedDate = localStorage.getItem(TIP_DATE_KEY);
+const savedIndex = Number(localStorage.getItem(TIP_INDEX_KEY));
 
-const todayIndex = diffDays % tips.length;
+if (savedDate === todayKey && Number.isInteger(savedIndex) && savedIndex >= 0 && savedIndex < tips.length) {
+  todayIndex = savedIndex;
+} else {
+  const baseIndex = Number.isInteger(savedIndex) ? savedIndex : -1;
+  todayIndex = (baseIndex + 1 + tips.length) % tips.length;
+
+  localStorage.setItem(TIP_DATE_KEY, todayKey);
+  localStorage.setItem(TIP_INDEX_KEY, String(todayIndex));
+}
+
 const todayTip = tips[todayIndex];
 
 const title = document.querySelector(".tip-title");
@@ -534,9 +546,12 @@ const tipsContainer = document.querySelector(".tips-history");
 
 if(tipsContainer){
 
-for(let i = 0; i < todayIndex; i++){
+const diffTime = now - START_DATE;
+const passedDays = Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
 
-const tip = tips[i];
+for(let day = 0; day < passedDays; day++){
+
+const tip = tips[day % tips.length];
 
 const card = document.createElement("div");
 card.className = "tip-card";
