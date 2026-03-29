@@ -4781,6 +4781,13 @@ body[data-page="home"] .hero .container{
   gap: 22px;
 }
 
+body[data-page="home"] .topbar,
+body[data-page="home"] .card-grid,
+body[data-page="home"] .tip-card{
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+
 body[data-page="home"] .title{
   margin: 10px auto 0;
   max-width: 860px;
