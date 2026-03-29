@@ -222,7 +222,7 @@ body[data-page="home"] .topbar{
 /* Hero */
 .hero {padding:52px 0 60px; border-radius:20px; margin:10px; overflow:hidden; position:relative}
 .hero .title{
-  font-size:clamp(42px, 5.4vw, 68px);
+  font-size:clamp(48px, 6.2vw, 82px);
   margin:0 0 16px;
   line-height:1.08;
   white-space:nowrap;
