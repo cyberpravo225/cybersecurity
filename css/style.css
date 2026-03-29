@@ -4808,19 +4808,22 @@ body[data-page="home"] .card-grid > .card{
 
 body .card::before,
 body .tip-card::before,
+body .tests-banner::before,
 body .game-feature::before{
   inset:0;
   height:auto;
   transform:none;
   opacity:1;
   background:
+    var(--top-line, linear-gradient(90deg, transparent, rgba(147,197,253,.95), rgba(103,232,249,.92), transparent)) center top / 58% 3px no-repeat,
     radial-gradient(circle at top center, rgba(255,255,255,.28), transparent 42%),
     linear-gradient(180deg, rgba(255,255,255,.16), transparent 24%);
-  transition:opacity .28s ease;
+  transition:opacity .28s ease, background-size .34s ease;
 }
 
 body .card::after,
 body .tip-card::after,
+body .tests-banner::after,
 body .game-feature::after{
   content:"";
   position:absolute;
@@ -4829,6 +4832,9 @@ body .game-feature::after{
   bottom:-1px;
   height:3px;
   border-radius:999px;
+  transform:scaleX(.58);
+  transform-origin:center;
+  transition:transform .34s ease;
 }
 
 body .card:hover,
@@ -4843,9 +4849,18 @@ body .game-feature:hover{
 
 body .card:hover::before,
 body .tip-card:hover::before,
+body .tests-banner:hover::before,
 body .game-feature:hover::before{
   transform:none;
-  opacity:.72;
+  opacity:1;
+  background-size:calc(100% - 44px) 3px, auto, auto;
+}
+
+body .card:hover::after,
+body .tip-card:hover::after,
+body .tests-banner:hover::after,
+body .game-feature:hover::after{
+  transform:scaleX(1);
 }
 
 body[data-page="home"] .school-card,
@@ -4985,6 +5000,7 @@ body[data-page="home"] .game-feature{
 
 :root[data-theme="dark"] body .card::after,
 :root[data-theme="dark"] body .tip-card::after,
+:root[data-theme="dark"] body .tests-banner::after,
 :root[data-theme="dark"] body .game-feature::after{
   background: linear-gradient(90deg, transparent, rgba(45,212,191,.95), rgba(96,165,250,.95), transparent);
   box-shadow: 0 0 24px rgba(34,211,238,.6), 0 220px 0 0 rgba(0,0,0,0);
@@ -4992,12 +5008,14 @@ body[data-page="home"] .game-feature{
 
 :root[data-theme="dark"] body .card,
 :root[data-theme="dark"] body .tip-card,
+:root[data-theme="dark"] body .tests-banner,
 :root[data-theme="dark"] body .game-feature{
   --top-line: linear-gradient(90deg, transparent, rgba(45,212,191,.95), rgba(96,165,250,.95), transparent);
 }
 
 :root[data-theme="dark"] body .card::before,
 :root[data-theme="dark"] body .tip-card::before,
+:root[data-theme="dark"] body .tests-banner::before,
 :root[data-theme="dark"] body .game-feature::before{
   background:
     var(--top-line) center top / calc(100% - 44px) 3px no-repeat,
@@ -5059,9 +5077,11 @@ body[data-page="home"] .game-feature{
 
 :root[data-theme="light"] body .card::after,
 :root[data-theme="light"] body .tip-card::after,
+:root[data-theme="light"] body .tests-banner::after,
 :root[data-theme="light"] body .game-feature::after,
 :root:not([data-theme]) body .card::after,
 :root:not([data-theme]) body .tip-card::after,
+:root:not([data-theme]) body .tests-banner::after,
 :root:not([data-theme]) body .game-feature::after{
   background: linear-gradient(90deg, transparent, rgba(147,197,253,.95), rgba(103,232,249,.92), transparent);
   box-shadow: 0 0 20px rgba(125,211,252,.6);
@@ -5069,18 +5089,22 @@ body[data-page="home"] .game-feature{
 
 :root[data-theme="light"] body .card,
 :root[data-theme="light"] body .tip-card,
+:root[data-theme="light"] body .tests-banner,
 :root[data-theme="light"] body .game-feature,
 :root:not([data-theme]) body .card,
 :root:not([data-theme]) body .tip-card,
+:root:not([data-theme]) body .tests-banner,
 :root:not([data-theme]) body .game-feature{
   --top-line: linear-gradient(90deg, transparent, rgba(147,197,253,.95), rgba(103,232,249,.92), transparent);
 }
 
 :root[data-theme="light"] body .card::before,
 :root[data-theme="light"] body .tip-card::before,
+:root[data-theme="light"] body .tests-banner::before,
 :root[data-theme="light"] body .game-feature::before,
 :root:not([data-theme]) body .card::before,
 :root:not([data-theme]) body .tip-card::before,
+:root:not([data-theme]) body .tests-banner::before,
 :root:not([data-theme]) body .game-feature::before{
   background:
     var(--top-line) center top / calc(100% - 44px) 3px no-repeat,
