@@ -4744,6 +4744,28 @@ body[data-page="home"] .container{
     margin-left: auto;
     margin-right: auto;
   }
+
+  body[data-page="home"] .title,
+  body[data-page="home"] .hero-intro{
+    width: 100%;
+    text-align: center;
+  }
+
+  body[data-page="home"] .hero .card-grid > .card,
+  body[data-page="home"] .hero .card-grid > a.card{
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+
+  body[data-page="home"] .hero .card-photo{
+    margin: 0 auto;
+  }
+
+  body[data-page="home"] .hero .school-ages{
+    justify-content: center;
+  }
 }
 
 body .topbar{
