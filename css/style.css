@@ -5395,13 +5395,20 @@ body[data-page="home"] .hero .title{
 }
 
 body[data-page="home"] .hero .card-grid{
-  width:min(100%, 1120px);
+  width:100%;
   max-width:100%;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   justify-content:center;
   justify-items:stretch;
   margin-left:auto !important;
   margin-right:auto !important;
+}
+
+@media (min-width: 901px){
+  body[data-page="home"] .hero .card-grid{
+    width: 80vw;
+    max-width: 80vw;
+  }
 }
 
 @media (max-width: 900px){
