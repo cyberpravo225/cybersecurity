@@ -4933,28 +4933,28 @@ body[data-page="home"] .card-grid > a.card{
   align-items:center;
   gap: 18px;
   min-width:0;
-  min-height: 230px;
-  padding: 26px 30px;
+  min-height: 270px;
+  padding: 32px 36px;
 }
 
 body[data-page="home"] .card-grid > .card h3,
 body[data-page="home"] .card-grid > a.card h3{
   margin: 0 0 14px;
-  font-size: 1.9rem;
+  font-size: 2.15rem;
   line-height: 1.15;
 }
 
 body[data-page="home"] .card-grid > .card p,
 body[data-page="home"] .card-grid > a.card p{
   margin: 0;
-  max-width: 240px;
-  font-size: 1.08rem;
+  max-width: 280px;
+  font-size: 1.18rem;
   line-height: 1.55;
 }
 
 body[data-page="home"] .card-photo{
-  width: 150px;
-  height: 150px;
+  width: 176px;
+  height: 176px;
   margin: 0 22px 0 auto;
 }
 
@@ -5340,7 +5340,7 @@ body[data-page="home"] .hero-intro{
 body[data-page="home"] .hero .card-grid{
   width:fit-content;
   max-width:100%;
-  grid-template-columns: repeat(2, minmax(280px, 520px));
+  grid-template-columns: repeat(2, minmax(340px, 600px));
   justify-content:center;
   justify-items:stretch;
   margin-left:auto !important;
