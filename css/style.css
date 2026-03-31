@@ -5348,6 +5348,12 @@ body[data-page="home"] .hero-intro{
   text-align:center;
 }
 
+body[data-page="home"] .hero .title{
+  margin: 0 auto 16px;
+  white-space: normal;
+  text-wrap: balance;
+}
+
 body[data-page="home"] .hero .card-grid{
   width:fit-content;
   max-width:100%;
