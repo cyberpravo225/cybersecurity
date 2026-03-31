@@ -5294,6 +5294,8 @@ body[data-page="home"] .card-grid > a.card p{
 /* Home hero alignment tune-up: centered heading and 4-card layout */
 body[data-page="home"] .hero .container{
   align-items:center;
+  width:100%;
+  max-width:100%;
 }
 
 body[data-page="home"] .hero .title,
@@ -5302,8 +5304,9 @@ body[data-page="home"] .hero-intro{
 }
 
 body[data-page="home"] .hero .card-grid{
-  width:min(1160px, 100%);
-  grid-template-columns: repeat(2, minmax(0, 520px));
+  width:fit-content;
+  max-width:100%;
+  grid-template-columns: repeat(2, minmax(280px, 520px));
   justify-content:center;
   justify-items:stretch;
   margin-left:auto !important;
