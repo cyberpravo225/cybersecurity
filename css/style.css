@@ -5354,6 +5354,7 @@ body[data-page="home"] .hero .title{
   max-width: 100%;
   margin: 0 auto 16px;
   align-self: center;
+  transform: translateX(-1.5%);
   text-align: center;
   white-space: nowrap;
   text-wrap: nowrap;
