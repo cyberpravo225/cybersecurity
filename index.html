@@ -328,6 +328,44 @@
       background: linear-gradient(90deg, #f3fdff, #79ebff 55%, #31dbff);
       box-shadow: 0 0 10px rgba(88, 229, 255, 0.26);
     }
+
+    @media (max-width: 768px) {
+      body[data-page="home"] .hero .title {
+        font-size: clamp(2.4rem, 11vw, 4.8rem) !important;
+        line-height: 1.05;
+      }
+
+      body[data-page="home"] .school-card,
+      body[data-page="home"] .card-grid > a.card {
+        grid-template-columns: auto auto !important;
+        justify-content: center;
+        justify-items: center;
+        align-items: center;
+        column-gap: 10px;
+        row-gap: 12px;
+      }
+
+      body[data-page="home"] .school-card h3,
+      body[data-page="home"] .school-card p,
+      body[data-page="home"] .school-card .school-ages,
+      body[data-page="home"] .card-grid > a.card h3,
+      body[data-page="home"] .card-grid > a.card p {
+        grid-column: 1 / -1;
+      }
+
+      body[data-page="home"] .card-photo {
+        grid-column: 1;
+        margin: 0 !important;
+      }
+
+      body[data-page="home"] .card-arrow {
+        grid-column: 2 !important;
+        grid-row: auto !important;
+        justify-self: start !important;
+        align-self: center;
+        margin: 0 !important;
+      }
+    }
   </style>
 </head>
 
