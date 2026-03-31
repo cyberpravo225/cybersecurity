@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;800&display=swap');
+
 /* =========================================================
    Основные переменные, темы, базовая стилизация и утилиты
    ========================================================= */
@@ -4833,10 +4835,11 @@ body[data-page="home"] .tip-card{
 body[data-page="home"] .title{
   margin: 10px auto 0;
   max-width: 860px;
+  width: 100%;
   text-align:center;
   font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 800;
-  font-family: "Segoe UI Variable Display", "Avenir Next", "Montserrat", "Segoe UI", Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-family: "Unbounded", "Segoe UI Variable Display", "Avenir Next", "Montserrat", "Segoe UI", Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
   letter-spacing: 0.01em;
   line-height: 1.06;
 }
