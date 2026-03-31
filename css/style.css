@@ -4923,6 +4923,14 @@ body .game-feature:hover::before{
   --line-width:var(--line-width-hover);
 }
 
+/* Home page: remove decorative top-corner accents on primary cards */
+body[data-page="home"] .hero .card-grid > .card::before,
+body[data-page="home"] .hero .card-grid > a.card::before,
+body[data-page="home"] .card-grid .game-feature::before{
+  content:none !important;
+  background:none !important;
+}
+
 body .card:hover::after,
 body .tip-card:hover::after,
 body .tests-banner:hover::after,
