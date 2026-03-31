@@ -5395,9 +5395,9 @@ body[data-page="home"] .hero .title{
 }
 
 body[data-page="home"] .hero .card-grid{
-  width:fit-content;
+  width:min(100%, 1120px);
   max-width:100%;
-  grid-template-columns: repeat(2, minmax(340px, 600px));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   justify-content:center;
   justify-items:stretch;
   margin-left:auto !important;
@@ -5405,12 +5405,26 @@ body[data-page="home"] .hero .card-grid{
 }
 
 @media (max-width: 900px){
+  body[data-page="home"] .hero .title{
+    left: 0;
+    white-space: normal;
+    text-wrap: balance;
+  }
+
+  body[data-page="home"] .hero .card-grid{
+    grid-template-columns: 1fr;
+    width: min(100%, 560px);
+    justify-items: center;
+  }
+
   body[data-page="home"] .school-card,
   body[data-page="home"] .card-grid > a.card{
     grid-template-columns: 1fr !important;
     gap:12px !important;
     min-height:200px !important;
     padding:22px !important;
+    text-align: center;
+    width: 100%;
   }
 
   body[data-page="home"] .card-photo{
@@ -5422,7 +5436,7 @@ body[data-page="home"] .hero .card-grid{
   body[data-page="home"] .card-arrow{
     grid-column:1;
     grid-row:auto;
-    justify-self:end;
+    justify-self:center;
   }
 }
 
