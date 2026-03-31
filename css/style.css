@@ -5291,6 +5291,24 @@ body[data-page="home"] .card-grid > a.card p{
   max-width:none !important;
 }
 
+/* Home hero alignment tune-up: centered heading and 4-card layout */
+body[data-page="home"] .hero .container{
+  align-items:center;
+}
+
+body[data-page="home"] .hero .title,
+body[data-page="home"] .hero-intro{
+  text-align:center;
+}
+
+body[data-page="home"] .hero .card-grid{
+  grid-template-columns: repeat(2, minmax(280px, 520px));
+  justify-content:center;
+  max-width:1160px;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+
 @media (max-width: 900px){
   body[data-page="home"] .school-card,
   body[data-page="home"] .card-grid > a.card{
