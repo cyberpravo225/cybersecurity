@@ -5405,7 +5405,7 @@ body[data-page="home"] .hero .card-grid{
 }
 
   width: 100%;
-  max-width: 520px;
+  max-width: none;
   margin-left: auto;
   margin-right: auto;
 @media (min-width: 901px){
