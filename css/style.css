@@ -4929,7 +4929,7 @@ body[data-page="home"] .school-card,
 body[data-page="home"] .card-grid > a.card{
   display:grid;
   height:100%;
-  grid-template-columns: 1.15fr .85fr;
+  grid-template-columns: 1.15fr .85fr auto;
   align-items:center;
   gap: 18px;
   min-width:0;
@@ -4958,10 +4958,6 @@ body[data-page="home"] .card-photo{
   margin: 0 22px 0 auto;
 }
 
-body[data-page="home"] .card-grid > a.card{
-  grid-template-columns: 1.15fr .85fr auto;
-}
-
 .card-arrow{
   display: inline-flex;
   align-items: center;
@@ -4979,7 +4975,7 @@ body[data-page="home"] .card-grid > a.card{
   justify-self: end;
 }
 
-body[data-page="home"] .card-grid > a.card:hover .card-arrow{
+body[data-page="home"] .card:hover .card-arrow{
   transform: scale(1.22);
   color: color-mix(in srgb, var(--accent-2) 85%, #ffffff 15%);
   text-shadow: 0 10px 22px rgba(56,189,248,.3);
