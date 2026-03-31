@@ -4875,14 +4875,16 @@ body .card::before,
 body .tip-card::before,
 body .tests-banner::before,
 body .game-feature::before{
-  --line-width:58%;
-  --line-width-hover:calc(100% - 44px);
+  --line-width:62%;
+  --line-height:3px;
+  --line-width-hover:calc(100% - 28px);
+  --line-height-hover:5px;
   inset:0;
   height:auto;
   transform:none;
   opacity:1;
   background:
-    var(--top-line, linear-gradient(90deg, transparent, rgba(147,197,253,.95), rgba(103,232,249,.92), transparent)) center top / var(--line-width) 3px no-repeat,
+    var(--top-line, linear-gradient(90deg, transparent, rgba(147,197,253,.95), rgba(103,232,249,.92), transparent)) center top / var(--line-width) var(--line-height) no-repeat,
     radial-gradient(circle at top center, rgba(255,255,255,.28), transparent 42%),
     linear-gradient(180deg, rgba(255,255,255,.16), transparent 24%);
   transition:opacity .28s ease, background-size .34s ease;
@@ -4894,12 +4896,12 @@ body .tests-banner::after,
 body .game-feature::after{
   content:"";
   position:absolute;
-  left:22px;
-  right:22px;
+  left:14px;
+  right:14px;
   bottom:-1px;
-  height:3px;
+  height:5px;
   border-radius:999px;
-  transform:scaleX(.58);
+  transform:scaleX(.62) scaleY(.9);
   transform-origin:center;
   transition:transform .34s ease;
 }
@@ -4921,21 +4923,14 @@ body .game-feature:hover::before{
   transform:none;
   opacity:1;
   --line-width:var(--line-width-hover);
-}
-
-/* Home page: remove decorative top-corner accents on primary cards */
-body[data-page="home"] .hero .card-grid > .card::before,
-body[data-page="home"] .hero .card-grid > a.card::before,
-body[data-page="home"] .card-grid .game-feature::before{
-  content:none !important;
-  background:none !important;
+  --line-height:var(--line-height-hover);
 }
 
 body .card:hover::after,
 body .tip-card:hover::after,
 body .tests-banner:hover::after,
 body .game-feature:hover::after{
-  transform:scaleX(1);
+  transform:scaleX(1.02) scaleY(1.2);
 }
 
 body[data-page="home"] .school-card,
@@ -4978,20 +4973,20 @@ body[data-page="home"] .card-photo{
   grid-column: 3;
   grid-row: 1 / span 2;
   align-self: center;
-  transform: scale(1);
-  font-size: 2.5rem;
+  transform: translateX(0) scale(1);
+  font-size: 2.8rem;
   font-weight: 700;
   line-height: 1;
-  color: color-mix(in srgb, var(--accent) 72%, #ffffff 28%);
-  text-shadow: 0 6px 18px rgba(59,130,246,.25);
+  color: color-mix(in srgb, var(--accent) 82%, #ffffff 18%);
+  text-shadow: 0 10px 26px rgba(59,130,246,.32);
   transition: transform var(--anim), color var(--anim), text-shadow var(--anim);
   justify-self: end;
 }
 
 body[data-page="home"] .card:hover .card-arrow{
-  transform: scale(1.22);
-  color: color-mix(in srgb, var(--accent-2) 85%, #ffffff 15%);
-  text-shadow: 0 10px 22px rgba(56,189,248,.3);
+  transform: translateX(8px) scale(1.38);
+  color: color-mix(in srgb, var(--accent-2) 90%, #ffffff 10%);
+  text-shadow: 0 14px 28px rgba(56,189,248,.44);
 }
 
 @media (max-width: 1024px){
