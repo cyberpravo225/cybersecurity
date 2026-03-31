@@ -5350,8 +5350,9 @@ body[data-page="home"] .hero-intro{
 
 body[data-page="home"] .hero .title{
   margin: 0 auto 16px;
-  white-space: normal;
-  text-wrap: balance;
+  white-space: nowrap;
+  text-wrap: nowrap;
+  font-size: clamp(1.35rem, 4.4vw, 4.5rem);
 }
 
 body[data-page="home"] .hero .card-grid{
