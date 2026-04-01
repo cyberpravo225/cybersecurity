@@ -5084,13 +5084,18 @@ body[data-page="home"] .tip-image{
   min-height: 220px;
   height: 220px;
   object-fit: contain;
-  border-radius: 28px;
+  border-radius: 32px;
+  overflow: hidden;
 }
 
 body[data-page="home"] .tip-history-btn{
   flex-shrink: 0;
   justify-self: end;
   align-self: center;
+  min-height: 60px;
+  padding: 16px 28px;
+  font-size: 1.1rem;
+  border-radius: 16px;
 }
 
 body[data-page="home"] .tip-content > .tip-label{
