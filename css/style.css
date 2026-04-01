@@ -4875,19 +4875,17 @@ body .card::before,
 body .tip-card::before,
 body .tests-banner::before,
 body .game-feature::before{
-  --line-width:62%;
-  --line-height:3px;
-  --line-width-hover:calc(100% - 28px);
-  --line-height-hover:5px;
-  inset:0;
-  height:auto;
-  transform:none;
-  opacity:1;
-  background:
-    var(--top-line, linear-gradient(90deg, transparent, rgba(147,197,253,.95), rgba(103,232,249,.92), transparent)) center top / var(--line-width) var(--line-height) no-repeat,
-    radial-gradient(circle at top center, rgba(255,255,255,.28), transparent 42%),
-    linear-gradient(180deg, rgba(255,255,255,.16), transparent 24%);
-  transition:opacity .28s ease, background-size .34s ease;
+  content:"";
+  position:absolute;
+  left:14px;
+  right:14px;
+  top:-1px;
+  height:5px;
+  border-radius:999px;
+  background: linear-gradient(90deg, transparent, rgba(147,197,253,.95), rgba(103,232,249,.92), transparent);
+  transform:scaleX(.62) scaleY(.9);
+  transform-origin:center;
+  transition:transform .34s ease;
 }
 
 body .card::after,
@@ -4901,6 +4899,7 @@ body .game-feature::after{
   bottom:-1px;
   height:5px;
   border-radius:999px;
+  background: linear-gradient(90deg, transparent, rgba(147,197,253,.95), rgba(103,232,249,.92), transparent);
   transform:scaleX(.62) scaleY(.9);
   transform-origin:center;
   transition:transform .34s ease;
@@ -4920,10 +4919,7 @@ body .card:hover::before,
 body .tip-card:hover::before,
 body .tests-banner:hover::before,
 body .game-feature:hover::before{
-  transform:none;
-  opacity:1;
-  --line-width:var(--line-width-hover);
-  --line-height:var(--line-height-hover);
+  transform:scaleX(1.02) scaleY(1.2);
 }
 
 body .card:hover::after,
