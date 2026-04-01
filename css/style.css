@@ -5040,7 +5040,7 @@ body[data-page="home"] .tip-card{
 
 body[data-page="home"] .tip-card > .tip-label{
   position: absolute;
-  top: 8px;
+  top: 0;
   left: 24px;
   margin: 0;
   color: #facc15;
@@ -5051,6 +5051,10 @@ body[data-page="home"] .tip-card > .tip-label{
   font-weight: 800;
   letter-spacing: 0.02em;
   line-height: 1;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 body[data-page="home"] .tip-label-icon{
