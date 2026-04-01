@@ -5052,21 +5052,18 @@ body[data-page="home"] .tip-card > .tip-label{
   font-weight: 800;
   letter-spacing: 0.02em;
   line-height: 1;
-  padding: 0;
-  background: transparent;
-  border: none;
+  padding: 4px 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(transparent, transparent) padding-box,
+    linear-gradient(90deg, #facc15, #fde047 45%, #f59e0b) border-box;
   box-shadow: none;
   z-index: 2;
 }
 
 body[data-page="home"] .tip-card > .tip-label::after{
-  content: "";
-  width: clamp(140px, 22vw, 280px);
-  height: 2px;
-  background: #facc15;
-  border-radius: 999px;
-  margin-left: 10px;
-  opacity: 0.95;
+  content: none;
 }
 
 body[data-page="home"] .tip-label-icon{
