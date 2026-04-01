@@ -5043,40 +5043,43 @@ body[data-page="home"] .tip-card > .tip-label{
   position: absolute;
   top: -14px;
   left: 32px;
+  right: 32px;
   margin: 0;
   color: #facc15;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   font-size: clamp(1.2rem, 1.7vw, 1.5rem);
   font-weight: 800;
   letter-spacing: 0.02em;
   line-height: 1;
-  padding: 0;
+  padding: 0 2px 6px;
   border: none;
   border-radius: 0;
   background:
-    linear-gradient(90deg, #facc15, #fde047 45%, #f59e0b) 0 100% / 100% 2px no-repeat;
+    linear-gradient(90deg, rgba(250,204,21,0), #fde047 50%, rgba(245,158,11,0)) 0 100% / 100% 2px no-repeat;
   box-shadow: none;
   z-index: 2;
 }
 
-body[data-page="home"] .tip-card > .tip-label::before{
+body[data-page="home"] .tip-card > .tip-label::before,
+body[data-page="home"] .tip-card > .tip-label::after{
   content: "";
-  width: clamp(80px, 14vw, 240px);
+  flex: 1 1 auto;
+  min-width: clamp(44px, 9vw, 140px);
   height: 2px;
-  margin-right: 12px;
   border-radius: 999px;
-  background: linear-gradient(90deg, rgba(250,204,21,0), #fde047 55%, #facc15);
+}
+
+body[data-page="home"] .tip-card > .tip-label::before{
+  margin-right: 12px;
+  background: linear-gradient(90deg, rgba(250,204,21,0), #fde047 58%, #facc15);
 }
 
 body[data-page="home"] .tip-card > .tip-label::after{
-  content: "";
-  width: clamp(220px, 42vw, 860px);
-  height: 2px;
   margin-left: 12px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #facc15, #fde047 45%, rgba(250,204,21,0));
+  background: linear-gradient(90deg, #facc15, #fde047 42%, rgba(245,158,11,0));
 }
 
 body[data-page="home"] .tip-label-icon{
