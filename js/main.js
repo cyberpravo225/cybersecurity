@@ -279,6 +279,103 @@ document.addEventListener('click', (e) => {
 })();
 
 /* =========================
+   Home page micro-interactions
+   ========================= */
+(function(){
+  if (document.body?.dataset.page !== 'home') return;
+
+  const typedEl = document.getElementById('hero-typed-text');
+  if (typedEl) {
+    const phrases = [
+      'персональные рекомендации',
+      'пошаговые уроки',
+      'игровые тренировки',
+      'практичные чек-листы'
+    ];
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let deleting = false;
+
+    const tick = () => {
+      const phrase = phrases[phraseIndex];
+      typedEl.textContent = deleting
+        ? phrase.slice(0, Math.max(0, charIndex - 1))
+        : phrase.slice(0, charIndex + 1);
+      charIndex += deleting ? -1 : 1;
+
+      if (!deleting && charIndex >= phrase.length) {
+        deleting = true;
+        setTimeout(tick, 1000);
+        return;
+      }
+
+      if (deleting && charIndex <= 0) {
+        deleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+      }
+
+      setTimeout(tick, deleting ? 42 : 78);
+    };
+
+    setTimeout(tick, 500);
+  }
+
+  const tipEmoji = document.getElementById('tip-emoji');
+  if (tipEmoji) {
+    const emojis = ['💡', '🛡️', '🔒', '🧠', '⚠️', '✅'];
+    const day = new Date().getDate();
+    tipEmoji.textContent = emojis[day % emojis.length];
+  }
+
+  const progress = document.getElementById('scroll-progress');
+  const backToTop = document.getElementById('back-to-top');
+  const onScroll = () => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const ratio = max > 0 ? Math.min(1, Math.max(0, scrollTop / max)) : 0;
+    if (progress) progress.style.width = `${ratio * 100}%`;
+    if (backToTop) backToTop.classList.toggle('visible', scrollTop > 420);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  backToTop?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.querySelectorAll('.card-grid > .card').forEach((card) => {
+    card.addEventListener('mousemove', (event) => {
+      const rect = card.getBoundingClientRect();
+      const px = (event.clientX - rect.left) / rect.width;
+      const py = (event.clientY - rect.top) / rect.height;
+      const rotateY = (px - 0.5) * 8;
+      const rotateX = (0.5 - py) * 8;
+      card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-3px)`;
+      card.style.setProperty('--mx', `${px * 100}%`);
+      card.style.setProperty('--my', `${py * 100}%`);
+      card.classList.add('is-hovered');
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+      card.classList.remove('is-hovered');
+    });
+  });
+
+  const testsBtn = document.querySelector('.tests-cta-button');
+  testsBtn?.addEventListener('click', () => {
+    testsBtn.animate(
+      [
+        { transform: 'scale(1)' },
+        { transform: 'scale(1.08)' },
+        { transform: 'scale(1)' }
+      ],
+      { duration: 280, easing: 'ease-out' }
+    );
+  });
+})();
+
+/* =========================
    Unify card styles across pages
    ========================= */
 (function(){

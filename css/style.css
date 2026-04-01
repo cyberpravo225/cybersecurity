@@ -5932,3 +5932,161 @@ body[data-page="cyberguessr"] .card-photo{
     0 0 14px rgba(255, 213, 79, 0.5);
   z-index: 1;
 }
+
+/* =========================================================
+   Home page visual upgrades
+   ========================================================= */
+body[data-page="home"] .scroll-progress{
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 0;
+  z-index: 999;
+  background: linear-gradient(90deg, #22d3ee, #a78bfa 45%, #fb7185);
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
+}
+
+body[data-page="home"] .hero .title{
+  background: linear-gradient(120deg, #22d3ee, #818cf8 42%, #f472b6 80%, #facc15);
+  background-size: 220% 220%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: heroGradientFlow 9s ease infinite;
+}
+
+@keyframes heroGradientFlow{
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+body[data-page="home"] .hero-badges{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 14px;
+}
+
+body[data-page="home"] .hero-badge,
+body[data-page="home"] .stat-pill{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+  background: color-mix(in srgb, var(--bg) 78%, rgba(129, 140, 248, 0.16));
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+  font-weight: 600;
+}
+
+body[data-page="home"] .quick-stats{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 24px;
+}
+
+body[data-page="home"] #hero-typed-text{
+  color: color-mix(in srgb, var(--accent) 74%, #38bdf8);
+  font-weight: 700;
+  border-right: 2px solid currentColor;
+  padding-right: 4px;
+  animation: blinkCaret 0.9s steps(1) infinite;
+}
+
+@keyframes blinkCaret{
+  0%, 45% { border-color: currentColor; }
+  46%, 100% { border-color: transparent; }
+}
+
+body[data-page="home"] .card-grid > .card{
+  transition: transform .24s ease, box-shadow .24s ease;
+  transform-style: preserve-3d;
+}
+
+body[data-page="home"] .card-grid > .card:hover{
+  box-shadow: 0 20px 42px rgba(15, 23, 42, 0.18);
+}
+
+body[data-page="home"] .card-grid > .card::after{
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,.45), transparent 48%);
+  transition: opacity .2s ease;
+}
+
+body[data-page="home"] .card-grid > .card.is-hovered::after{
+  opacity: 1;
+}
+
+body[data-page="home"] .tests-banner{
+  position: relative;
+  overflow: hidden;
+}
+
+body[data-page="home"] .tests-banner::before{
+  content: "✨";
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 22px;
+  animation: pulseSpark 1.8s ease-in-out infinite;
+}
+
+@keyframes pulseSpark{
+  0%,100%{ transform: scale(1); opacity: .7; }
+  50%{ transform: scale(1.25); opacity: 1; }
+}
+
+body[data-page="home"] .tip-label #tip-emoji{
+  display: inline-block;
+  margin-right: 6px;
+  animation: wobble 2.4s ease-in-out infinite;
+}
+
+@keyframes wobble{
+  0%,100% { transform: rotate(0); }
+  30% { transform: rotate(12deg); }
+  60% { transform: rotate(-10deg); }
+}
+
+body[data-page="home"] .back-to-top{
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 120;
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+  background: linear-gradient(180deg, #6366f1, #4f46e5);
+  box-shadow: 0 12px 24px rgba(79, 70, 229, 0.34);
+  transition: opacity .2s ease, transform .2s ease;
+}
+
+body[data-page="home"] .back-to-top.visible{
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+@media (max-width: 768px){
+  body[data-page="home"] .quick-stats{ margin-bottom: 18px; }
+  body[data-page="home"] .hero-badge, body[data-page="home"] .stat-pill{
+    font-size: 14px;
+    padding: 7px 10px;
+  }
+}
