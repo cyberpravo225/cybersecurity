@@ -5031,7 +5031,7 @@ body[data-page="home"] .tip-card{
   width:100%;
   max-width:100%;
   margin:0 auto;
-  grid-template-columns: minmax(360px, 460px) 1fr;
+  grid-template-columns: minmax(220px, 280px) 1fr auto;
   gap: 24px;
   min-height: 250px;
   padding: 54px 24px 26px;
@@ -5077,7 +5077,6 @@ body[data-page="home"] .tip-media-wrap{
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
 }
 
 body[data-page="home"] .tip-image{
@@ -5085,11 +5084,13 @@ body[data-page="home"] .tip-image{
   min-height: 220px;
   height: 220px;
   object-fit: contain;
-  border-radius: 16px;
+  border-radius: 28px;
 }
 
 body[data-page="home"] .tip-history-btn{
   flex-shrink: 0;
+  justify-self: end;
+  align-self: center;
 }
 
 body[data-page="home"] .tip-content > .tip-label{
@@ -5330,7 +5331,10 @@ body[data-page="home"] .game-feature{
 
   body[data-page="home"] .tip-media-wrap{
     justify-content: center;
-    flex-wrap: wrap;
+  }
+
+  body[data-page="home"] .tip-history-btn{
+    justify-self: center;
   }
 
   body[data-page="home"] .card-grid > .card,
