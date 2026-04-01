@@ -5081,8 +5081,8 @@ body[data-page="home"] .tip-media-wrap{
 
 body[data-page="home"] .tip-image{
   width: clamp(200px, 23vw, 260px);
-  min-height: 220px;
-  height: 220px;
+  min-height: 210px;
+  height: 210px;
   object-fit: cover;
   object-position: center;
   border-radius: 40px;
