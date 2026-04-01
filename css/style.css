@@ -5137,25 +5137,58 @@ body[data-page="home"] .tests-cta-section{
 
 body[data-page="home"] .tests-banner{
   min-height: auto;
-  justify-content: center;
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 8px 0 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(37, 99, 235, 0.1)) !important;
+  border: 1px solid rgba(56, 189, 248, 0.24) !important;
+  box-shadow:
+    0 20px 44px rgba(2, 6, 23, 0.24),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset !important;
+  border-radius: 24px;
+  padding: 24px 28px;
 }
 
-body[data-page="home"] .tests-banner::before,
 body[data-page="home"] .tests-banner::after{
-  display:none;
+  opacity: 0.28;
+  filter: blur(4px);
+}
+
+body[data-page="home"] .tests-banner-text h2{
+  margin: 12px 0 10px;
+  font-size: clamp(1.35rem, 2.7vw, 2rem);
+  line-height: 1.25;
+}
+
+body[data-page="home"] .tests-banner-text p{
+  margin: 0;
+  max-width: 62ch;
+}
+
+body[data-page="home"] .tests-cta-label{
+  margin-bottom: 0;
+}
+
+body[data-page="home"] .tests-banner-actions{
+  display: grid;
+  gap: 12px;
+  justify-items: stretch;
 }
 
 body[data-page="home"] .tests-cta-button{
-  min-width: 360px;
-  min-height: 72px;
-  font-size: 1.5rem;
+  min-width: 320px;
+  min-height: 64px;
+  font-size: 1.2rem;
   justify-content:center;
-  padding: 18px 32px;
+  padding: 16px 30px;
   border-radius: 18px;
+}
+
+body[data-page="home"] .tests-cta-secondary{
+  min-height: 52px;
+  font-weight: 700;
+  border-radius: 14px;
 }
 
 body[data-page="home"] .game-feature{
@@ -5362,6 +5395,21 @@ body[data-page="home"] .game-feature{
     min-width: min(100%, 320px);
     font-size: 1.2rem;
     min-height: 62px;
+  }
+
+  body[data-page="home"] .tests-banner{
+    grid-template-columns: 1fr;
+    padding: 22px 18px;
+    gap: 18px;
+  }
+
+  body[data-page="home"] .tests-banner-actions{
+    width: 100%;
+  }
+
+  body[data-page="home"] .tests-cta-secondary{
+    width: min(100%, 320px);
+    justify-content: center;
   }
 }
 
