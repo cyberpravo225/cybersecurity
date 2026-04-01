@@ -5034,21 +5034,27 @@ body[data-page="home"] .tip-card{
   grid-template-columns: 240px 1fr;
   gap: 24px;
   min-height: 250px;
-  padding: 22px 24px 26px;
+  padding: 54px 24px 26px;
+  position: relative;
 }
 
 body[data-page="home"] .tip-card > .tip-label{
-  grid-column: 1 / -1;
-  justify-self: start;
+  position: absolute;
+  top: 8px;
+  left: 24px;
   margin: 0;
   color: #facc15;
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  font-size: clamp(1.08rem, 1.4vw, 1.35rem);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1;
 }
 
 body[data-page="home"] .tip-label-icon{
-  font-size: 1.05em;
+  font-size: 1.15em;
   line-height: 1;
 }
 
