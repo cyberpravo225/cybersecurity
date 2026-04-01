@@ -4883,6 +4883,7 @@ body .game-feature::before{
   height:5px;
   border-radius:999px;
   background: linear-gradient(90deg, transparent, rgba(147,197,253,.95), rgba(103,232,249,.92), transparent);
+  opacity:1;
   transform:scaleX(.62) scaleY(.9);
   transform-origin:center;
   transition:transform .34s ease;
