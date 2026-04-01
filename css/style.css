@@ -5690,6 +5690,37 @@ body:not([data-page="home"]) :is(
   transition:transform .24s ease, box-shadow .24s ease, border-color .24s ease;
 }
 
+:root[data-theme="light"] body:not([data-page="home"]) :is(
+  .card,
+  .resource-block,
+  .tip-card,
+  .tests-banner,
+  .term-card,
+  .method-card,
+  .learn-card,
+  .test-card,
+  .test-card-horizontal,
+  .mode-card,
+  .difficulty-card,
+  .game-card,
+  .senior-rule,
+  .senior-action,
+  .senior-card,
+  .cyberly-mode-card,
+  #fact-card,
+  .final-card,
+  .result-card
+){
+  background:linear-gradient(170deg, rgba(255,255,255,.68), rgba(255,255,255,.46)) !important;
+  border:1px solid rgba(255,255,255,.66) !important;
+  backdrop-filter:blur(18px) saturate(155%);
+  -webkit-backdrop-filter:blur(18px) saturate(155%);
+  box-shadow:
+    0 18px 42px rgba(30,41,59,.14),
+    inset 0 1px 0 rgba(255,255,255,.84),
+    inset 0 -1px 0 rgba(148,163,184,.14);
+}
+
 body:not([data-page="home"]) :is(
   .card,
   .tip-card,
@@ -5713,6 +5744,33 @@ body:not([data-page="home"]) :is(
   transform:translateY(-6px);
   box-shadow:0 22px 44px rgba(15,23,42,.22);
   border-color:color-mix(in srgb, var(--accent) 36%, rgba(255,255,255,.32));
+}
+
+:root[data-theme="light"] body:not([data-page="home"]) :is(
+  .card,
+  .tip-card,
+  .tests-banner,
+  .term-card,
+  .method-card,
+  .learn-card,
+  .test-card,
+  .test-card-horizontal,
+  .mode-card,
+  .difficulty-card,
+  .game-card,
+  .senior-rule,
+  .senior-action,
+  .senior-card,
+  .cyberly-mode-card,
+  #fact-card,
+  .final-card,
+  .result-card
+):hover{
+  box-shadow:
+    0 24px 52px rgba(30,41,59,.18),
+    inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 -1px 0 rgba(148,163,184,.18);
+  border-color:rgba(255,255,255,.78);
 }
 
 :root[data-theme="dark"] body:not([data-page="home"]) :is(
