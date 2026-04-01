@@ -5040,7 +5040,7 @@ body[data-page="home"] .tip-card{
 
 body[data-page="home"] .tip-card > .tip-label{
   position: absolute;
-  top: 0;
+  top: -10px;
   left: 24px;
   margin: 0;
   color: #facc15;
@@ -5055,6 +5055,7 @@ body[data-page="home"] .tip-card > .tip-label{
   background: transparent;
   border: none;
   box-shadow: none;
+  z-index: 2;
 }
 
 body[data-page="home"] .tip-label-icon{
@@ -5956,4 +5957,12 @@ body[data-page="cyberguessr"] .card-photo{
     0 0 6px rgba(255, 213, 79, 0.9),
     0 0 14px rgba(255, 213, 79, 0.5);
   z-index: 1;
+}
+
+/* Final override for homepage tip label color/position across themes */
+:root[data-theme="light"] body[data-page="home"] .tip-card > .tip-label,
+:root[data-theme="dark"] body[data-page="home"] .tip-card > .tip-label,
+:root:not([data-theme]) body[data-page="home"] .tip-card > .tip-label{
+  color: #facc15 !important;
+  top: -10px;
 }
