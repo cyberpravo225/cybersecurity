@@ -5059,6 +5059,16 @@ body[data-page="home"] .tip-card > .tip-label{
   z-index: 2;
 }
 
+body[data-page="home"] .tip-card > .tip-label::after{
+  content: "";
+  width: clamp(140px, 22vw, 280px);
+  height: 2px;
+  background: #facc15;
+  border-radius: 999px;
+  margin-left: 10px;
+  opacity: 0.95;
+}
+
 body[data-page="home"] .tip-label-icon{
   font-size: 1.25em;
   line-height: 1;
@@ -5966,4 +5976,10 @@ body[data-page="cyberguessr"] .card-photo{
 :root:not([data-theme]) body[data-page="home"] .tip-card > .tip-label{
   color: #facc15 !important;
   top: -14px;
+}
+
+:root[data-theme="light"] body[data-page="home"] .tip-card::before,
+:root[data-theme="dark"] body[data-page="home"] .tip-card::before,
+:root:not([data-theme]) body[data-page="home"] .tip-card::before{
+  display: none !important;
 }
