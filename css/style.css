@@ -5036,6 +5036,7 @@ body[data-page="home"] .tip-card{
   min-height: 250px;
   padding: 54px 24px 26px;
   position: relative;
+  overflow: visible !important;
 }
 
 body[data-page="home"] .tip-card > .tip-label{
