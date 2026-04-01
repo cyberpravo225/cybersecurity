@@ -5037,13 +5037,28 @@ body[data-page="home"] .tip-card{
   padding: 22px 24px 26px;
 }
 
+body[data-page="home"] .tip-card > .tip-label{
+  grid-column: 1 / -1;
+  justify-self: start;
+  margin: 0;
+  color: #facc15;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+body[data-page="home"] .tip-label-icon{
+  font-size: 1.05em;
+  line-height: 1;
+}
+
 body[data-page="home"] .tip-image{
   min-height: 180px;
   height: 180px;
   border-radius: 16px;
 }
 
-body[data-page="home"] .tip-label{
+body[data-page="home"] .tip-content > .tip-label{
   margin-bottom: 10px;
 }
 
