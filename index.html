@@ -329,150 +329,6 @@
       box-shadow: 0 0 10px rgba(88, 229, 255, 0.26);
     }
 
-    body[data-page="home"] .hero {
-      position: relative;
-      overflow: hidden;
-    }
-
-    body[data-page="home"] .hero .title {
-      background: linear-gradient(90deg, #69d4ff, #67f4ae, #ffe38a, #8cb8ff);
-      background-size: 240% 240%;
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      animation: home-gradient-move 10s ease infinite;
-    }
-
-    body[data-page="home"] .hero-badges,
-    body[data-page="home"] .quick-links,
-    body[data-page="home"] .hero-stats {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin: 14px 0 0;
-    }
-
-    body[data-page="home"] .hero-badge,
-    body[data-page="home"] .hero-stat {
-      border: 1px solid rgba(129, 168, 255, 0.35);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.56));
-      border-radius: 999px;
-      padding: 8px 13px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      backdrop-filter: blur(8px);
-    }
-
-    :root[data-theme="dark"] body[data-page="home"] .hero-badge,
-    :root[data-theme="dark"] body[data-page="home"] .hero-stat {
-      background: linear-gradient(180deg, rgba(19, 28, 52, 0.86), rgba(19, 28, 52, 0.62));
-    }
-
-    body[data-page="home"] .quick-links .btn {
-      border-radius: 999px;
-      font-weight: 700;
-      transition: transform 180ms ease, box-shadow 180ms ease;
-    }
-
-    body[data-page="home"] .quick-links .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 18px rgba(80, 133, 255, 0.25);
-    }
-
-    body[data-page="home"] .floating-emoji {
-      position: absolute;
-      font-size: clamp(1.2rem, 2.2vw, 2rem);
-      opacity: 0.85;
-      pointer-events: none;
-      filter: drop-shadow(0 8px 10px rgba(12, 24, 52, 0.2));
-      animation: float-emoji 4.8s ease-in-out infinite;
-    }
-
-    body[data-page="home"] .floating-emoji.e1 { top: 12%; left: 8%; }
-    body[data-page="home"] .floating-emoji.e2 { top: 16%; right: 8%; animation-delay: 0.9s; }
-    body[data-page="home"] .floating-emoji.e3 { bottom: 14%; left: 10%; animation-delay: 1.8s; }
-    body[data-page="home"] .floating-emoji.e4 { bottom: 16%; right: 9%; animation-delay: 2.6s; }
-
-    body[data-page="home"] .scroll-hint {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 16px;
-      font-size: 0.9rem;
-      opacity: 0.8;
-      animation: nudge-down 2.2s ease-in-out infinite;
-    }
-
-    body[data-page="home"] .tests-cta-button {
-      animation: pulse-cta 2.2s ease infinite;
-    }
-
-    body[data-page="home"] .tip-card {
-      border: 1px solid rgba(121, 196, 255, 0.28);
-      box-shadow: 0 22px 40px rgba(29, 63, 116, 0.14);
-      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
-    }
-
-    body[data-page="home"] .tip-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(121, 196, 255, 0.55);
-      box-shadow: 0 28px 46px rgba(29, 63, 116, 0.22);
-    }
-
-    body[data-page="home"] .game-feature {
-      position: relative;
-      overflow: hidden;
-    }
-
-    body[data-page="home"] .game-feature::after {
-      content: "";
-      position: absolute;
-      inset: -120% auto auto -20%;
-      width: 40%;
-      height: 300%;
-      background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.45), transparent);
-      transform: rotate(20deg);
-      transition: transform 600ms ease;
-      pointer-events: none;
-    }
-
-    body[data-page="home"] .game-feature:hover::after {
-      transform: rotate(20deg) translateX(380%);
-    }
-
-    body[data-page="home"] .social::before {
-      content: "🔗 ";
-    }
-
-    @keyframes home-gradient-move {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    @keyframes float-emoji {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-
-    @keyframes nudge-down {
-      0%, 100% { transform: translateY(0); opacity: 0.7; }
-      50% { transform: translateY(5px); opacity: 1; }
-    }
-
-    @keyframes pulse-cta {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(87, 138, 255, 0.34); }
-      60% { box-shadow: 0 0 0 14px rgba(87, 138, 255, 0); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      body[data-page="home"] * {
-        animation: none !important;
-        transition: none !important;
-      }
-    }
-
     @media (max-width: 768px) {
       body[data-page="home"] .hero .title {
         font-size: clamp(2rem, 9vw, 4rem) !important;
@@ -616,37 +472,13 @@
 <!-- HERO -->
 <section class="hero section parallax" data-parallax>
 
-<span class="floating-emoji e1" aria-hidden="true">🛡️</span>
-<span class="floating-emoji e2" aria-hidden="true">🔐</span>
-<span class="floating-emoji e3" aria-hidden="true">🧠</span>
-<span class="floating-emoji e4" aria-hidden="true">✨</span>
-
 <div class="container">
 
 <h1 class="title reveal">#КиберПраво: твой щит в сети</h1>
 
-<div class="hero-badges reveal delay">
-<span class="hero-badge">⚡ Интерактивно</span>
-<span class="hero-badge">🎯 Практично</span>
-<span class="hero-badge">💡 Понятно</span>
-</div>
-
 <div class="hero-intro reveal delay">
 <h2 class="hero-question">Кто вы?</h2>
 <p class="hero-subtitle">Выберете категорию чтобы получить персональные данные.</p>
-
-<div class="hero-stats">
-<span class="hero-stat">📚 20+ материалов</span>
-<span class="hero-stat">🧪 Тесты и игры</span>
-<span class="hero-stat">🌐 Для всех возрастов</span>
-</div>
-
-<div class="quick-links">
-<a href="tests.html" class="btn primary">🚀 Быстрый старт</a>
-<a href="tips.html" class="btn">🧩 Совет дня</a>
-</div>
-
-<div class="scroll-hint" aria-hidden="true">⬇️ Листайте вниз, там ещё интереснее</div>
 </div>
 
 <div class="card-grid reveal delay-2">
