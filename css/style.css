@@ -5136,23 +5136,12 @@ body[data-page="home"] .tests-cta-section{
 }
 
 body[data-page="home"] .tests-banner{
-  min-height: auto;
+  min-height: 220px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 24px;
   align-items: center;
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(37, 99, 235, 0.1)) !important;
-  border: 1px solid rgba(56, 189, 248, 0.24) !important;
-  box-shadow:
-    0 20px 44px rgba(2, 6, 23, 0.24),
-    0 0 0 1px rgba(255, 255, 255, 0.08) inset !important;
-  border-radius: 24px;
-  padding: 24px 28px;
-}
-
-body[data-page="home"] .tests-banner::after{
-  opacity: 0.28;
-  filter: blur(4px);
+  padding: 28px;
 }
 
 body[data-page="home"] .tests-banner-text h2{
