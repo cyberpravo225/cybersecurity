@@ -373,6 +373,7 @@
 </head>
 
 <body class="page" data-page="home">
+<div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
 
 <div class="theme-backdrop" aria-hidden="true">
   <div class="theme-orb theme-orb-one"></div>
@@ -475,10 +476,21 @@
 <div class="container">
 
 <h1 class="title reveal">#КиберПраво: твой щит в сети</h1>
+<div class="hero-badges reveal delay" aria-hidden="true">
+  <span class="hero-badge">🛡️ Защита</span>
+  <span class="hero-badge">🔐 Приватность</span>
+  <span class="hero-badge">🚀 Навыки</span>
+</div>
 
 <div class="hero-intro reveal delay">
 <h2 class="hero-question">Кто вы?</h2>
-<p class="hero-subtitle">Выберете категорию чтобы получить персональные данные.</p>
+<p class="hero-subtitle">Выберите категорию и получите <span id="hero-typed-text">персональные рекомендации</span>.</p>
+</div>
+
+<div class="quick-stats reveal delay-2" aria-label="Почему это важно">
+  <div class="stat-pill">⚡ 5 минут в день на кибергигиену</div>
+  <div class="stat-pill">🧠 Практика через игры и тесты</div>
+  <div class="stat-pill">🎯 Материалы для любого возраста</div>
 </div>
 
 <div class="card-grid reveal delay-2">
@@ -531,7 +543,7 @@
 
 <div class="tip-content">
 
-<span class="tip-label">Совет дня</span>
+<span class="tip-label"><span id="tip-emoji" aria-hidden="true">💡</span> Совет дня</span>
 
 <h2 class="tip-title"></h2>
 
@@ -632,6 +644,7 @@
 
 </main>
 </div>
+<button class="back-to-top" id="back-to-top" type="button" aria-label="Наверх">⬆️</button>
 
 <script src="js/main.js"></script>
 <script src="js/theme-network.js"></script>
