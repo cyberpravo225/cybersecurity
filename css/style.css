@@ -5060,9 +5060,10 @@ body[data-page="home"] .tip-card > .tip-label{
   border: none;
   border-radius: 0;
   background:
-    linear-gradient(90deg, rgba(245,158,11,0), rgba(245,158,11,0.45) 20%, rgba(253,224,71,0.58) 50%, rgba(250,204,21,0.42) 80%, rgba(250,204,21,0)) 0 50% / 100% 1px no-repeat;
-  text-shadow: 0 0 6px rgba(253,224,71,0.55), 0 0 14px rgba(250,204,21,0.35);
-  filter: drop-shadow(0 0 8px rgba(250,204,21,0.25));
+    linear-gradient(90deg, rgba(254,240,138,0.95), rgba(250,204,21,0.75) 58%, rgba(245,158,11,0)) 24px 50% / clamp(170px, 28vw, 340px) 2px no-repeat,
+    linear-gradient(90deg, rgba(245,158,11,0), rgba(245,158,11,0.2) 20%, rgba(253,224,71,0.3) 50%, rgba(250,204,21,0.18) 80%, rgba(250,204,21,0)) 0 50% / 100% 1px no-repeat;
+  text-shadow: 0 0 7px rgba(253,224,71,0.62), 0 0 15px rgba(250,204,21,0.38);
+  filter: drop-shadow(0 0 10px rgba(250,204,21,0.3));
   box-shadow: none;
   z-index: 2;
 }
