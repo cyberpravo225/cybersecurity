@@ -4659,7 +4659,7 @@ body[data-page="home"] a.game-feature-cyberguessr:visited{
 
 body[data-page="home"] .game-feature-cyberguessr .home-moon{
   position: absolute;
-  right: clamp(2px, 1.2vw, 14px);
+  right: clamp(-4px, .8vw, 8px);
   bottom: 0;
   width: clamp(270px, 31vw, 380px);
   height: calc(clamp(270px, 31vw, 380px) / 2);
@@ -4668,6 +4668,15 @@ body[data-page="home"] .game-feature-cyberguessr .home-moon{
   z-index: 0;
   opacity: 1;
   animation: cyberguessr-moon-dive 1.15s ease-out both;
+}
+
+body[data-page="home"] .game-feature-cyberguessr .home-moon::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(255,255,255,.5) 0%, rgba(255,255,255,.24) 35%, rgba(255,255,255,0) 75%);
+  mix-blend-mode: screen;
+  z-index: 2;
 }
 
 body[data-page="home"] .game-feature-cyberguessr .home-moon img{
@@ -4681,15 +4690,16 @@ body[data-page="home"] .game-feature-cyberguessr .home-moon img{
   display: block;
   border-radius: 50%;
   filter: none;
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.7), rgba(0,0,0,.2));
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,.7), rgba(0,0,0,.2));
+  z-index: 1;
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.85), rgba(0,0,0,.18));
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,.85), rgba(0,0,0,.18));
 }
 
 body[data-page="home"] .game-feature-cyberguessr .home-moon .moon-dark{
   display: none;
   filter: brightness(.72) saturate(.92);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.7), rgba(0,0,0,.2));
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,.7), rgba(0,0,0,.2));
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.85), rgba(0,0,0,.18));
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,.85), rgba(0,0,0,.18));
 }
 
 :root[data-theme="dark"] body[data-page="home"] .game-feature-cyberguessr .home-moon .moon-light{
@@ -6180,7 +6190,7 @@ body[data-page="cyberguessr"] .card-photo{
   }
 
   body[data-page="home"] .game-feature-cyberguessr .home-moon{
-    right: clamp(0px, 1.2vw, 8px);
+    right: clamp(-6px, .6vw, 4px);
     width: clamp(210px, 58vw, 290px);
     height: calc(clamp(210px, 58vw, 290px) / 2);
   }
