@@ -5170,7 +5170,7 @@ body[data-page="home"] .tests-banner-text h2{
   font-size: clamp(2rem, 3.8vw, 2.8rem);
   line-height: 1.12;
   letter-spacing: 0.01em;
-  text-align: center;
+  text-align: left;
 }
 
 body[data-page="home"] .tests-banner-text p{
@@ -5178,7 +5178,7 @@ body[data-page="home"] .tests-banner-text p{
   max-width: 42ch;
   font-size: clamp(1.2rem, 2.3vw, 1.5rem);
   line-height: 1.45;
-  text-align: center;
+  text-align: left;
 }
 
 body[data-page="home"] .tests-banner-text{
