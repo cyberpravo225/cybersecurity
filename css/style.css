@@ -5098,11 +5098,11 @@ body[data-page="home"] .tip-history-btn{
   flex-shrink: 0;
   justify-self: end;
   align-self: center;
-  min-height: 68px;
-  padding: 18px 34px;
-  font-size: 1.2rem;
+  min-height: 76px;
+  padding: 22px 42px;
+  font-size: 1.3rem;
   font-weight: 800;
-  border-radius: 20px;
+  border-radius: 22px;
   letter-spacing: 0.01em;
   box-shadow:
     0 14px 34px rgba(56, 189, 248, 0.28),
@@ -5191,12 +5191,12 @@ body[data-page="home"] .tests-banner-actions{
 }
 
 body[data-page="home"] .tests-cta-button{
-  min-width: 220px;
-  min-height: 64px;
-  padding: 16px 26px;
-  font-size: 1.2rem;
+  min-width: 260px;
+  min-height: 74px;
+  padding: 20px 34px;
+  font-size: 1.3rem;
   font-weight: 800;
-  border-radius: 16px;
+  border-radius: 18px;
 }
 
 body[data-page="home"] .game-feature{
