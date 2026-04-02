@@ -4655,19 +4655,24 @@ body[data-page="home"] .game-feature-cyberguessr::after{
 
 :root[data-theme="dark"] body[data-page="home"] .game-feature-cyberguessr::after{
   background:
-    radial-gradient(ellipse at 38% 26%, rgba(255,255,255,.65) 0 8%, rgba(255,255,255,0) 23%),
-    radial-gradient(ellipse 14% 9% at 31% 50%, rgba(134,239,172,.9) 0 60%, rgba(134,239,172,0) 100%),
-    radial-gradient(ellipse 16% 9% at 43% 46%, rgba(74,222,128,.92) 0 62%, rgba(74,222,128,0) 100%),
-    radial-gradient(ellipse 10% 6% at 55% 49%, rgba(190,242,100,.82) 0 62%, rgba(190,242,100,0) 100%),
-    radial-gradient(ellipse 8% 5% at 57% 50%, rgba(253,224,71,.55) 0 60%, rgba(253,224,71,0) 100%),
-    radial-gradient(ellipse 16% 10% at 67% 55%, rgba(74,222,128,.88) 0 60%, rgba(74,222,128,0) 100%),
-    radial-gradient(ellipse 10% 7% at 76% 48%, rgba(163,230,53,.76) 0 58%, rgba(163,230,53,0) 100%),
-    radial-gradient(ellipse 8% 5% at 70% 59%, rgba(254,215,170,.55) 0 60%, rgba(254,215,170,0) 100%),
-    radial-gradient(circle at 50% 50%, #1d4ed8 0 60%, #0f172a 80%, #020617 100%);
+    radial-gradient(circle at 52% 16%, rgba(189,242,255,.95) 0 22%, rgba(189,242,255,0) 38%),
+    radial-gradient(ellipse 23% 11% at 56% 30%, rgba(226,247,255,.7) 0 52%, rgba(226,247,255,0) 100%),
+    radial-gradient(ellipse 24% 13% at 68% 38%, rgba(206,235,255,.65) 0 56%, rgba(206,235,255,0) 100%),
+    radial-gradient(ellipse 18% 10% at 38% 43%, rgba(120,186,129,.5) 0 56%, rgba(120,186,129,0) 100%),
+    radial-gradient(ellipse 12% 8% at 49% 45%, rgba(109,165,112,.5) 0 56%, rgba(109,165,112,0) 100%),
+    radial-gradient(ellipse 10% 6% at 61% 49%, rgba(255,215,138,.42) 0 52%, rgba(255,215,138,0) 100%),
+    radial-gradient(ellipse 3.2% 2.2% at 42% 58%, rgba(255,198,92,.95) 0 60%, rgba(255,198,92,0) 100%),
+    radial-gradient(ellipse 2.8% 2% at 47% 61%, rgba(255,206,120,.9) 0 60%, rgba(255,206,120,0) 100%),
+    radial-gradient(ellipse 2.5% 1.9% at 53% 63%, rgba(255,194,88,.86) 0 60%, rgba(255,194,88,0) 100%),
+    radial-gradient(ellipse 3% 2% at 59% 60%, rgba(255,208,128,.9) 0 60%, rgba(255,208,128,0) 100%),
+    radial-gradient(ellipse 2.8% 2% at 65% 57%, rgba(255,198,92,.88) 0 60%, rgba(255,198,92,0) 100%),
+    radial-gradient(circle at 50% 52%, #35b6ff 0 18%, #0f4db8 56%, #07235f 78%, #020617 100%);
   box-shadow:
-    inset -18px -26px 44px rgba(2, 6, 23, .72),
-    0 0 0 1px rgba(125,211,252,.4),
-    0 0 34px rgba(56,189,248,.26);
+    inset -24px -36px 55px rgba(1, 7, 22, .86),
+    inset 18px 10px 36px rgba(147, 227, 255, .22),
+    0 0 0 1px rgba(125,211,252,.56),
+    0 0 26px rgba(59,130,246,.5),
+    0 0 48px rgba(56,189,248,.42);
 }
 
 :root[data-theme="light"] body[data-page="home"] .game-feature-cyberguessr::after{
