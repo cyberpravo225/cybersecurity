@@ -4660,7 +4660,7 @@ body[data-page="home"] .game-feature-cyberguessr .home-moon{
   overflow: hidden;
   pointer-events: none;
   z-index: 0;
-  opacity: .8;
+  opacity: .68;
   animation: cyberguessr-moon-dive 1.15s ease-out both;
 }
 
@@ -4674,12 +4674,12 @@ body[data-page="home"] .game-feature-cyberguessr .home-moon img{
   object-fit: cover;
   display: block;
   border-radius: 50%;
-  filter: blur(1.8px);
+  filter: blur(1px);
 }
 
 body[data-page="home"] .game-feature-cyberguessr .home-moon .moon-dark{
   display: none;
-  filter: brightness(.72) saturate(.92) blur(1.8px);
+  filter: brightness(.72) saturate(.92) blur(1px);
 }
 
 :root[data-theme="dark"] body[data-page="home"] .game-feature-cyberguessr .home-moon .moon-light{
@@ -4697,7 +4697,7 @@ body[data-page="home"] .game-feature-cyberguessr .home-moon .moon-dark{
   }
   100%{
     transform: translateY(0) scale(1);
-    opacity: .8;
+    opacity: .68;
   }
 }
 
