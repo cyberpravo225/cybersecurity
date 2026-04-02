@@ -4250,10 +4250,10 @@ body[data-page="home"] .hero{
 
 @media (max-width: 768px){
   body[data-page="home"] .game-feature-cyberguessr::after{
-    top: -86px;
-    right: -58px;
-    width: 190px;
-    height: 190px;
+    right: -54px;
+    bottom: -86px;
+    width: 205px;
+    height: 205px;
   }
 
   body[data-page="home"] .game-feature.game-feature-split,
@@ -4636,28 +4636,48 @@ body::before{
 body[data-page="home"] .game-feature-cyberguessr{
   position: relative;
   overflow: hidden;
+  grid-template-columns: 1fr;
+  align-items: start;
+  padding-right: clamp(26px, 3vw, 38px);
 }
 
 body[data-page="home"] .game-feature-cyberguessr::after{
   content: "";
   position: absolute;
-  top: -110px;
-  right: -72px;
-  width: 250px;
-  height: 250px;
+  right: -86px;
+  bottom: -138px;
+  width: 290px;
+  height: 290px;
   border-radius: 50%;
-  background:
-    radial-gradient(circle at 42% 32%, rgba(255,255,255,.9) 0 10%, rgba(255,255,255,0) 24%),
-    radial-gradient(circle at 66% 24%, rgba(255,255,255,.35) 0 9%, rgba(255,255,255,0) 30%),
-    radial-gradient(circle at 52% 58%, rgba(76,222,128,.85) 0 15%, rgba(76,222,128,0) 27%),
-    radial-gradient(circle at 34% 52%, rgba(110,231,183,.72) 0 12%, rgba(110,231,183,0) 24%),
-    radial-gradient(circle at 72% 64%, rgba(16,185,129,.7) 0 11%, rgba(16,185,129,0) 23%),
-    radial-gradient(circle at 50% 50%, #1d4ed8 0 66%, #1e40af 78%, #0b1120 100%);
-  box-shadow:
-    inset -18px -24px 40px rgba(7, 19, 52, .55),
-    0 0 0 1px rgba(125, 211, 252, .45),
-    0 0 36px rgba(56, 189, 248, .35);
   pointer-events: none;
+}
+
+:root[data-theme="dark"] body[data-page="home"] .game-feature-cyberguessr::after{
+  background:
+    radial-gradient(circle at 38% 28%, rgba(255,255,255,.82) 0 10%, rgba(255,255,255,0) 24%),
+    radial-gradient(circle at 67% 26%, rgba(186,230,253,.35) 0 9%, rgba(186,230,253,0) 30%),
+    radial-gradient(circle at 50% 58%, rgba(74,222,128,.9) 0 15%, rgba(74,222,128,0) 28%),
+    radial-gradient(circle at 30% 52%, rgba(52,211,153,.82) 0 12%, rgba(52,211,153,0) 24%),
+    radial-gradient(circle at 70% 66%, rgba(16,185,129,.76) 0 12%, rgba(16,185,129,0) 24%),
+    radial-gradient(circle at 50% 52%, #1e40af 0 62%, #0f172a 81%, #020617 100%);
+  box-shadow:
+    inset -18px -24px 44px rgba(3, 7, 18, .66),
+    0 0 0 1px rgba(125,211,252,.4),
+    0 0 34px rgba(56,189,248,.26);
+}
+
+:root[data-theme="light"] body[data-page="home"] .game-feature-cyberguessr::after{
+  background:
+    radial-gradient(circle at 38% 28%, rgba(255,255,255,.95) 0 11%, rgba(255,255,255,0) 25%),
+    radial-gradient(circle at 68% 26%, rgba(255,255,255,.58) 0 10%, rgba(255,255,255,0) 31%),
+    radial-gradient(circle at 50% 58%, rgba(16,185,129,.74) 0 15%, rgba(16,185,129,0) 28%),
+    radial-gradient(circle at 31% 52%, rgba(5,150,105,.64) 0 12%, rgba(5,150,105,0) 24%),
+    radial-gradient(circle at 72% 66%, rgba(20,184,166,.64) 0 12%, rgba(20,184,166,0) 24%),
+    radial-gradient(circle at 50% 52%, #60a5fa 0 62%, #2563eb 81%, #1d4ed8 100%);
+  box-shadow:
+    inset -16px -22px 40px rgba(30, 64, 175, .34),
+    0 0 0 1px rgba(59,130,246,.34),
+    0 0 30px rgba(59,130,246,.24);
 }
 
 .footer-section{
