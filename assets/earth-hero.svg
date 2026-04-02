@@ -1,86 +1,70 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
-  <title id="title">Земля на фоне звёздного неба</title>
-  <desc id="desc">Синяя светящаяся Земля расположена в нижней части кадра на фоне космоса и звёзд.</desc>
-
+  <title id="title">Земля в космосе</title>
+  <desc id="desc">Яркая синяя Земля с видимыми континентами на фоне звездного неба.</desc>
   <defs>
-    <radialGradient id="bg" cx="50%" cy="66%" r="72%">
-      <stop offset="0%" stop-color="#1b5fdb" stop-opacity="0.35"/>
-      <stop offset="46%" stop-color="#0d2f85" stop-opacity="0.45"/>
+    <radialGradient id="space" cx="52%" cy="62%" r="78%">
+      <stop offset="0" stop-color="#1c60d8" stop-opacity=".34"/>
+      <stop offset="50%" stop-color="#0a2b7c" stop-opacity=".46"/>
       <stop offset="100%" stop-color="#020b2a"/>
     </radialGradient>
-
-    <radialGradient id="planet" cx="56%" cy="24%" r="76%">
-      <stop offset="0%" stop-color="#b8f5ff"/>
-      <stop offset="30%" stop-color="#42bcff"/>
-      <stop offset="64%" stop-color="#0a6de4"/>
-      <stop offset="100%" stop-color="#042969"/>
+    <radialGradient id="earthOcean" cx="60%" cy="20%" r="80%">
+      <stop offset="0" stop-color="#c9fbff"/>
+      <stop offset="28%" stop-color="#47bfff"/>
+      <stop offset="62%" stop-color="#0d71e4"/>
+      <stop offset="100%" stop-color="#032864"/>
     </radialGradient>
-
-    <radialGradient id="atmo" cx="52%" cy="40%" r="60%">
-      <stop offset="74%" stop-color="#7cd8ff" stop-opacity="0"/>
-      <stop offset="91%" stop-color="#7fd8ff" stop-opacity="0.62"/>
-      <stop offset="100%" stop-color="#6abfff" stop-opacity="0"/>
+    <radialGradient id="atmo" cx="50%" cy="45%" r="62%">
+      <stop offset="74%" stop-color="#83ddff" stop-opacity="0"/>
+      <stop offset="90%" stop-color="#81d8ff" stop-opacity=".7"/>
+      <stop offset="100%" stop-color="#7ecbff" stop-opacity="0"/>
     </radialGradient>
-
-    <linearGradient id="daylight" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.58"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".58"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
     </linearGradient>
-
-    <filter id="blur" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="18"/>
-    </filter>
+    <filter id="blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="16"/></filter>
   </defs>
 
-  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <rect width="1024" height="1024" fill="url(#space)"/>
 
-  <g fill="#9fd7ff" opacity="0.95">
-    <circle cx="76" cy="58" r="2.2"/><circle cx="134" cy="148" r="1.9"/><circle cx="214" cy="92" r="2.4"/>
-    <circle cx="286" cy="68" r="1.8"/><circle cx="360" cy="124" r="2.1"/><circle cx="432" cy="82" r="2.3"/>
-    <circle cx="514" cy="104" r="2.7"/><circle cx="582" cy="66" r="1.9"/><circle cx="654" cy="130" r="2.2"/>
-    <circle cx="730" cy="88" r="2.5"/><circle cx="806" cy="140" r="2.1"/><circle cx="892" cy="76" r="2.8"/>
-    <circle cx="948" cy="152" r="2"/><circle cx="86" cy="266" r="2"/><circle cx="172" cy="214" r="2.6"/>
-    <circle cx="254" cy="284" r="2.2"/><circle cx="326" cy="248" r="1.9"/><circle cx="404" cy="308" r="2.4"/>
-    <circle cx="478" cy="256" r="2.1"/><circle cx="556" cy="316" r="2.8"/><circle cx="636" cy="248" r="2"/>
-    <circle cx="708" cy="304" r="2.4"/><circle cx="782" cy="242" r="2.1"/><circle cx="868" cy="296" r="2.6"/>
-    <circle cx="940" cy="248" r="2.2"/><circle cx="132" cy="392" r="2.4"/><circle cx="220" cy="452" r="2"/>
-    <circle cx="306" cy="402" r="2.6"/><circle cx="386" cy="466" r="2.1"/><circle cx="468" cy="416" r="2.3"/>
-    <circle cx="546" cy="478" r="2"/><circle cx="632" cy="420" r="2.7"/><circle cx="716" cy="482" r="2.2"/>
-    <circle cx="802" cy="426" r="2.8"/><circle cx="884" cy="488" r="2"/><circle cx="962" cy="434" r="2.4"/>
+  <g fill="#a9d9ff" opacity=".95">
+    <circle cx="64" cy="56" r="2.1"/><circle cx="138" cy="118" r="1.8"/><circle cx="220" cy="76" r="2.4"/><circle cx="318" cy="52" r="1.9"/>
+    <circle cx="410" cy="112" r="2.1"/><circle cx="500" cy="74" r="2.5"/><circle cx="600" cy="122" r="2.2"/><circle cx="698" cy="68" r="2.6"/>
+    <circle cx="790" cy="116" r="2.1"/><circle cx="884" cy="70" r="2.8"/><circle cx="962" cy="130" r="2"/>
+    <circle cx="80" cy="240" r="2"/><circle cx="170" cy="194" r="2.6"/><circle cx="252" cy="256" r="2.2"/><circle cx="346" cy="214" r="2"/>
+    <circle cx="432" cy="274" r="2.4"/><circle cx="526" cy="228" r="2.1"/><circle cx="614" cy="286" r="2.7"/><circle cx="702" cy="232" r="2.2"/>
+    <circle cx="792" cy="292" r="2.5"/><circle cx="882" cy="238" r="2"/><circle cx="966" cy="286" r="2.3"/>
+    <circle cx="110" cy="398" r="2.4"/><circle cx="202" cy="450" r="2"/><circle cx="294" cy="406" r="2.6"/><circle cx="382" cy="462" r="2.1"/>
+    <circle cx="476" cy="412" r="2.3"/><circle cx="562" cy="470" r="2.1"/><circle cx="654" cy="418" r="2.7"/><circle cx="744" cy="476" r="2.2"/>
+    <circle cx="836" cy="424" r="2.8"/><circle cx="926" cy="482" r="2"/>
   </g>
 
-  <g opacity="0.8">
-    <circle cx="170" cy="760" r="72" fill="#3f8dff" filter="url(#blur)"/>
-    <circle cx="880" cy="718" r="84" fill="#4da3ff" filter="url(#blur)"/>
-  </g>
+  <g opacity=".72"><circle cx="160" cy="770" r="76" fill="#3f8dff" filter="url(#blur)"/><circle cx="874" cy="726" r="86" fill="#4ea4ff" filter="url(#blur)"/></g>
 
-  <!-- Планета смещена вниз и влево, чтобы визуально быть в углу карточки -->
-  <g transform="translate(380 980)">
-    <circle cx="0" cy="0" r="520" fill="url(#planet)"/>
-    <circle cx="0" cy="0" r="548" fill="url(#atmo)"/>
+  <g transform="translate(500 1010)">
+    <circle r="540" fill="url(#earthOcean)"/>
+    <circle r="566" fill="url(#atmo)"/>
+    <ellipse cx="120" cy="-250" rx="430" ry="170" fill="url(#rim)"/>
 
-    <ellipse cx="130" cy="-242" rx="420" ry="160" fill="url(#daylight)"/>
+    <!-- лед и облака -->
+    <path d="M-90 -386c58-34 174-45 264-12 55 20 95 49 132 89-70 22-130 33-205 37-102 5-190-34-258-79 20-14 40-24 67-35z" fill="#effcff" opacity=".85"/>
+    <path d="M-290 -110c120-98 276-152 438-138 129 10 212 56 286 126-105 39-224 62-355 70-136 8-268-5-392-35-27-7-53-14-80-23 28-1 59-1 103 0z" fill="#f5fdff" opacity=".33"/>
 
-    <!-- "Ледяной" север -->
-    <path d="M-122 -384c62-28 172-36 248-8 30 11 55 24 77 45 14 14 25 30 39 44-60 22-124 36-203 38-98 2-176-30-240-70 25-19 48-35 79-49z"
-          fill="#eaf9ff" opacity="0.78"/>
+    <!-- континенты (усилены для читаемости) -->
+    <path d="M-306 -186c50-74 132-129 232-143 98-14 160 16 216 60 46 37 95 73 178 84 68 9 128 25 182 66-90 35-189 60-306 74-198 24-373 5-548-33 17-33 31-73 46-108z" fill="#7ab28a" opacity=".58"/>
+    <path d="M-188 -56c82 13 154 40 232 45 57 4 106-9 157-24 56-16 110-18 166-6-52 49-127 84-220 103-124 26-253 21-359-9-44-12-86-32-127-58 53-27 102-45 151-51z" fill="#5e9d77" opacity=".55"/>
+    <path d="M58 -178c58 3 108 20 149 48 38 26 64 60 85 98-82 27-160 36-246 30-67-4-129-19-188-43 41-52 117-137 200-133z" fill="#8fc2a1" opacity=".5"/>
 
-    <!-- Континенты -->
-    <path d="M-324 -168c38-64 114-121 205-136 82-14 131 8 170 42 34 30 72 63 131 74 44 8 92 6 139 28 30 14 56 35 82 66-52 21-132 39-202 50-151 24-347 14-525-17z"
-          fill="#8bc49f" opacity="0.44"/>
-    <path d="M-212 -58c61 12 116 38 181 42 46 3 86-8 127-21 42-14 82-17 127-8-38 37-96 64-169 79-101 20-206 14-293-9-41-11-78-28-111-49 46-24 90-41 138-34z"
-          fill="#6ab184" opacity="0.40"/>
+    <!-- ночная полусфера -->
+    <ellipse cx="-12" cy="192" rx="410" ry="198" fill="#000915" opacity=".58"/>
 
-    <!-- Ночная часть -->
-    <ellipse cx="-18" cy="186" rx="398" ry="194" fill="#000815" opacity="0.56"/>
-
-    <!-- Огни городов -->
-    <g fill="#ffc978" opacity="0.8">
-      <circle cx="-182" cy="96" r="4.8"/><circle cx="-164" cy="108" r="3.4"/><circle cx="-144" cy="101" r="3.1"/>
-      <circle cx="-112" cy="122" r="4.2"/><circle cx="-88" cy="130" r="3.6"/><circle cx="-62" cy="124" r="3.5"/>
-      <circle cx="-24" cy="144" r="4.1"/><circle cx="18" cy="132" r="3.4"/><circle cx="46" cy="146" r="4.6"/>
-      <circle cx="82" cy="138" r="3.3"/><circle cx="116" cy="126" r="4.9"/><circle cx="152" cy="142" r="3.8"/>
-      <circle cx="192" cy="136" r="4.3"/><circle cx="228" cy="150" r="3.5"/><circle cx="258" cy="138" r="4.7"/>
+    <!-- огни городов -->
+    <g fill="#ffd48a" opacity=".83">
+      <circle cx="-190" cy="94" r="4.6"/><circle cx="-172" cy="105" r="3.3"/><circle cx="-150" cy="100" r="3.1"/>
+      <circle cx="-116" cy="122" r="4.1"/><circle cx="-90" cy="130" r="3.4"/><circle cx="-64" cy="124" r="3.3"/>
+      <circle cx="-26" cy="142" r="4"/><circle cx="16" cy="132" r="3.2"/><circle cx="44" cy="145" r="4.5"/>
+      <circle cx="80" cy="138" r="3.1"/><circle cx="114" cy="126" r="4.8"/><circle cx="150" cy="142" r="3.6"/>
+      <circle cx="190" cy="136" r="4.2"/><circle cx="226" cy="150" r="3.4"/><circle cx="258" cy="138" r="4.6"/>
     </g>
   </g>
 </svg>
