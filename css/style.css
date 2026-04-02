@@ -5137,11 +5137,11 @@ body[data-page="home"] .tests-cta-section{
 
 body[data-page="home"] .tests-banner{
   min-height: 220px;
-  display: flex;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
   align-items: center;
-  justify-content: center;
+  gap: 20px;
   padding: 30px 28px;
-  text-align: center;
 }
 
 body[data-page="home"] .tests-banner > *{
@@ -5170,6 +5170,7 @@ body[data-page="home"] .tests-banner-text h2{
   font-size: clamp(2rem, 3.8vw, 2.8rem);
   line-height: 1.12;
   letter-spacing: 0.01em;
+  text-align: center;
 }
 
 body[data-page="home"] .tests-banner-text p{
@@ -5177,6 +5178,25 @@ body[data-page="home"] .tests-banner-text p{
   max-width: 42ch;
   font-size: clamp(1.2rem, 2.3vw, 1.5rem);
   line-height: 1.45;
+  text-align: center;
+}
+
+body[data-page="home"] .tests-banner-text{
+  justify-self: center;
+}
+
+body[data-page="home"] .tests-banner-actions{
+  display: flex;
+  justify-content: center;
+}
+
+body[data-page="home"] .tests-cta-button{
+  min-width: 220px;
+  min-height: 64px;
+  padding: 16px 26px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  border-radius: 16px;
 }
 
 body[data-page="home"] .game-feature{
@@ -5380,6 +5400,7 @@ body[data-page="home"] .game-feature{
   }
 
   body[data-page="home"] .tests-banner{
+    grid-template-columns: 1fr;
     padding: 24px 18px;
   }
 
@@ -5387,6 +5408,10 @@ body[data-page="home"] .game-feature{
     background-size: auto, auto, 140px 140px;
     background-position: 100% 0, 100% 100%, right 10px bottom 12px;
     opacity: 0.65;
+  }
+
+  body[data-page="home"] .tests-cta-button{
+    min-width: min(100%, 280px);
   }
 }
 
