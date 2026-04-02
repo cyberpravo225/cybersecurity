@@ -4651,18 +4651,18 @@ body[data-page="home"] .game-feature-cyberguessr > *{
   z-index: 1;
 }
 
-body[data-page="home"] .home-moon{
-  position: fixed;
-  right: clamp(10px, 2.2vw, 28px);
+body[data-page="home"] .game-feature-cyberguessr .home-moon{
+  position: absolute;
+  right: clamp(-28px, -1.5vw, -10px);
   bottom: 0;
-  width: clamp(160px, 22vw, 320px);
-  height: calc(clamp(160px, 22vw, 320px) / 2);
+  width: clamp(170px, 21vw, 260px);
+  height: calc(clamp(170px, 21vw, 260px) / 2);
   overflow: hidden;
   pointer-events: none;
-  z-index: 2;
+  z-index: 0;
 }
 
-body[data-page="home"] .home-moon img{
+body[data-page="home"] .game-feature-cyberguessr .home-moon img{
   position: absolute;
   left: 0;
   top: 0;
@@ -4674,16 +4674,16 @@ body[data-page="home"] .home-moon img{
   border-radius: 50%;
 }
 
-body[data-page="home"] .home-moon .moon-dark{
+body[data-page="home"] .game-feature-cyberguessr .home-moon .moon-dark{
   display: none;
   filter: brightness(.72) saturate(.92);
 }
 
-:root[data-theme="dark"] body[data-page="home"] .home-moon .moon-light{
+:root[data-theme="dark"] body[data-page="home"] .game-feature-cyberguessr .home-moon .moon-light{
   display: none;
 }
 
-:root[data-theme="dark"] body[data-page="home"] .home-moon .moon-dark{
+:root[data-theme="dark"] body[data-page="home"] .game-feature-cyberguessr .home-moon .moon-dark{
   display: block;
 }
 
@@ -6152,13 +6152,12 @@ body[data-page="cyberguessr"] .card-photo{
 @media (max-width: 768px){
   body[data-page="home"] .game-feature-cyberguessr{
     padding-right: clamp(18px, 4vw, 24px);
-    padding-bottom: clamp(146px, 28vw, 196px);
+    padding-bottom: clamp(96px, 22vw, 130px);
   }
 
-  body[data-page="home"] .game-feature-cyberguessr::after{
-    right: 50%;
-    transform: translateX(50%);
-    bottom: -12px;
-    width: clamp(150px, 48vw, 205px);
+  body[data-page="home"] .game-feature-cyberguessr .home-moon{
+    right: clamp(-20px, -3vw, -10px);
+    width: clamp(140px, 40vw, 200px);
+    height: calc(clamp(140px, 40vw, 200px) / 2);
   }
 }
