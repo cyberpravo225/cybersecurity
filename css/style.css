@@ -5136,12 +5136,12 @@ body[data-page="home"] .tests-cta-section{
 }
 
 body[data-page="home"] .tests-banner{
-  min-height: 190px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(250px, 320px);
-  gap: 20px;
+  min-height: 220px;
+  display: flex;
   align-items: center;
-  padding: 24px 26px;
+  justify-content: center;
+  padding: 30px 28px;
+  text-align: center;
 }
 
 body[data-page="home"] .tests-banner > *{
@@ -5166,59 +5166,17 @@ body[data-page="home"] .tests-banner::after{
 }
 
 body[data-page="home"] .tests-banner-text h2{
-  margin: 10px 0 10px;
-  font-size: clamp(1.7rem, 3vw, 2.3rem);
-  line-height: 1.15;
+  margin: 0 0 14px;
+  font-size: clamp(2rem, 3.8vw, 2.8rem);
+  line-height: 1.12;
   letter-spacing: 0.01em;
 }
 
 body[data-page="home"] .tests-banner-text p{
   margin: 0;
-  max-width: 62ch;
-  font-size: 1.08rem;
-  line-height: 1.5;
-}
-
-body[data-page="home"] .tests-cta-label{
-  margin-bottom: 0;
-  font-size: 0.8rem;
-  padding: 9px 16px;
-}
-
-body[data-page="home"] .tests-banner-points{
-  list-style: none;
-  margin: 14px 0 0;
-  padding: 0;
-  display: grid;
-  gap: 8px;
-}
-
-body[data-page="home"] .tests-banner-points li{
-  font-size: 1.02rem;
-  font-weight: 600;
-}
-
-body[data-page="home"] .tests-banner-actions{
-  display: grid;
-  gap: 12px;
-  justify-items: stretch;
-  align-content: center;
-}
-
-body[data-page="home"] .tests-cta-button{
-  min-width: 320px;
-  min-height: 68px;
-  font-size: 1.3rem;
-  justify-content:center;
-  padding: 18px 30px;
-  border-radius: 18px;
-}
-
-body[data-page="home"] .tests-cta-secondary{
-  min-height: 56px;
-  font-size: 1.05rem;
-  font-weight: 700;
-  border-radius: 14px;
+  max-width: 42ch;
+  font-size: clamp(1.2rem, 2.3vw, 1.5rem);
+  line-height: 1.45;
 }
 
 body[data-page="home"] .game-feature{
@@ -5421,31 +5379,14 @@ body[data-page="home"] .game-feature{
     min-height: 180px;
   }
 
-  body[data-page="home"] .tests-cta-button{
-    min-width: min(100%, 320px);
-    font-size: 1.22rem;
-    min-height: 62px;
-  }
-
   body[data-page="home"] .tests-banner{
-    grid-template-columns: 1fr;
-    padding: 20px 18px;
-    gap: 18px;
+    padding: 24px 18px;
   }
 
   body[data-page="home"] .tests-banner::after{
     background-size: auto, auto, 140px 140px;
     background-position: 100% 0, 100% 100%, right 10px bottom 12px;
     opacity: 0.65;
-  }
-
-  body[data-page="home"] .tests-banner-actions{
-    width: 100%;
-  }
-
-  body[data-page="home"] .tests-cta-secondary{
-    width: min(100%, 320px);
-    justify-content: center;
   }
 }
 
