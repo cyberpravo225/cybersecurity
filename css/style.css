@@ -4660,7 +4660,7 @@ body[data-page="home"] .game-feature-cyberguessr .home-moon{
   overflow: hidden;
   pointer-events: none;
   z-index: 0;
-  opacity: .52;
+  opacity: .42;
   animation: cyberguessr-moon-dive 1.15s ease-out both;
 }
 
@@ -4697,7 +4697,7 @@ body[data-page="home"] .game-feature-cyberguessr .home-moon .moon-dark{
   }
   100%{
     transform: translateY(0) scale(1);
-    opacity: .52;
+    opacity: .42;
   }
 }
 
