@@ -4644,38 +4644,45 @@ body[data-page="home"] .game-feature-cyberguessr{
 body[data-page="home"] .game-feature-cyberguessr::after{
   content: "";
   position: absolute;
-  right: -86px;
-  bottom: -138px;
-  width: 290px;
-  height: 290px;
+  right: -78px;
+  bottom: -118px;
+  width: 300px;
+  height: 300px;
   border-radius: 50%;
+  clip-path: inset(0 0 50% 0);
   pointer-events: none;
 }
 
 :root[data-theme="dark"] body[data-page="home"] .game-feature-cyberguessr::after{
   background:
-    radial-gradient(circle at 38% 28%, rgba(255,255,255,.82) 0 10%, rgba(255,255,255,0) 24%),
-    radial-gradient(circle at 67% 26%, rgba(186,230,253,.35) 0 9%, rgba(186,230,253,0) 30%),
-    radial-gradient(circle at 50% 58%, rgba(74,222,128,.9) 0 15%, rgba(74,222,128,0) 28%),
-    radial-gradient(circle at 30% 52%, rgba(52,211,153,.82) 0 12%, rgba(52,211,153,0) 24%),
-    radial-gradient(circle at 70% 66%, rgba(16,185,129,.76) 0 12%, rgba(16,185,129,0) 24%),
-    radial-gradient(circle at 50% 52%, #1e40af 0 62%, #0f172a 81%, #020617 100%);
+    radial-gradient(ellipse at 38% 26%, rgba(255,255,255,.65) 0 8%, rgba(255,255,255,0) 23%),
+    radial-gradient(ellipse 14% 9% at 31% 50%, rgba(134,239,172,.9) 0 60%, rgba(134,239,172,0) 100%),
+    radial-gradient(ellipse 16% 9% at 43% 46%, rgba(74,222,128,.92) 0 62%, rgba(74,222,128,0) 100%),
+    radial-gradient(ellipse 10% 6% at 55% 49%, rgba(190,242,100,.82) 0 62%, rgba(190,242,100,0) 100%),
+    radial-gradient(ellipse 8% 5% at 57% 50%, rgba(253,224,71,.55) 0 60%, rgba(253,224,71,0) 100%),
+    radial-gradient(ellipse 16% 10% at 67% 55%, rgba(74,222,128,.88) 0 60%, rgba(74,222,128,0) 100%),
+    radial-gradient(ellipse 10% 7% at 76% 48%, rgba(163,230,53,.76) 0 58%, rgba(163,230,53,0) 100%),
+    radial-gradient(ellipse 8% 5% at 70% 59%, rgba(254,215,170,.55) 0 60%, rgba(254,215,170,0) 100%),
+    radial-gradient(circle at 50% 50%, #1d4ed8 0 60%, #0f172a 80%, #020617 100%);
   box-shadow:
-    inset -18px -24px 44px rgba(3, 7, 18, .66),
+    inset -18px -26px 44px rgba(2, 6, 23, .72),
     0 0 0 1px rgba(125,211,252,.4),
     0 0 34px rgba(56,189,248,.26);
 }
 
 :root[data-theme="light"] body[data-page="home"] .game-feature-cyberguessr::after{
   background:
-    radial-gradient(circle at 38% 28%, rgba(255,255,255,.95) 0 11%, rgba(255,255,255,0) 25%),
-    radial-gradient(circle at 68% 26%, rgba(255,255,255,.58) 0 10%, rgba(255,255,255,0) 31%),
-    radial-gradient(circle at 50% 58%, rgba(16,185,129,.74) 0 15%, rgba(16,185,129,0) 28%),
-    radial-gradient(circle at 31% 52%, rgba(5,150,105,.64) 0 12%, rgba(5,150,105,0) 24%),
-    radial-gradient(circle at 72% 66%, rgba(20,184,166,.64) 0 12%, rgba(20,184,166,0) 24%),
-    radial-gradient(circle at 50% 52%, #60a5fa 0 62%, #2563eb 81%, #1d4ed8 100%);
+    radial-gradient(ellipse at 36% 24%, rgba(255,255,255,.9) 0 8%, rgba(255,255,255,0) 22%),
+    radial-gradient(ellipse 14% 9% at 31% 50%, rgba(22,163,74,.82) 0 60%, rgba(22,163,74,0) 100%),
+    radial-gradient(ellipse 16% 9% at 43% 46%, rgba(34,197,94,.84) 0 62%, rgba(34,197,94,0) 100%),
+    radial-gradient(ellipse 10% 6% at 55% 49%, rgba(132,204,22,.72) 0 62%, rgba(132,204,22,0) 100%),
+    radial-gradient(ellipse 8% 5% at 57% 50%, rgba(245,158,11,.55) 0 60%, rgba(245,158,11,0) 100%),
+    radial-gradient(ellipse 16% 10% at 67% 55%, rgba(34,197,94,.78) 0 60%, rgba(34,197,94,0) 100%),
+    radial-gradient(ellipse 10% 7% at 76% 48%, rgba(101,163,13,.62) 0 58%, rgba(101,163,13,0) 100%),
+    radial-gradient(ellipse 8% 5% at 70% 59%, rgba(217,119,6,.48) 0 60%, rgba(217,119,6,0) 100%),
+    radial-gradient(circle at 50% 50%, #7dd3fc 0 60%, #3b82f6 80%, #1d4ed8 100%);
   box-shadow:
-    inset -16px -22px 40px rgba(30, 64, 175, .34),
+    inset -16px -22px 40px rgba(29, 78, 216, .26),
     0 0 0 1px rgba(59,130,246,.34),
     0 0 30px rgba(59,130,246,.24);
 }
