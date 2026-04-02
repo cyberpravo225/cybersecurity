@@ -4653,14 +4653,14 @@ body[data-page="home"] .game-feature-cyberguessr > *{
 
 body[data-page="home"] .game-feature-cyberguessr .home-moon{
   position: absolute;
-  right: clamp(10px, 2.4vw, 26px);
+  right: clamp(4px, 1.6vw, 18px);
   bottom: 0;
   width: clamp(230px, 27vw, 330px);
   height: calc(clamp(230px, 27vw, 330px) / 2);
   overflow: hidden;
   pointer-events: none;
   z-index: 0;
-  opacity: .68;
+  opacity: .52;
   animation: cyberguessr-moon-dive 1.15s ease-out both;
 }
 
@@ -4674,12 +4674,12 @@ body[data-page="home"] .game-feature-cyberguessr .home-moon img{
   object-fit: cover;
   display: block;
   border-radius: 50%;
-  filter: blur(1px);
+  filter: none;
 }
 
 body[data-page="home"] .game-feature-cyberguessr .home-moon .moon-dark{
   display: none;
-  filter: brightness(.72) saturate(.92) blur(1px);
+  filter: brightness(.72) saturate(.92);
 }
 
 :root[data-theme="dark"] body[data-page="home"] .game-feature-cyberguessr .home-moon .moon-light{
@@ -4697,7 +4697,7 @@ body[data-page="home"] .game-feature-cyberguessr .home-moon .moon-dark{
   }
   100%{
     transform: translateY(0) scale(1);
-    opacity: .68;
+    opacity: .52;
   }
 }
 
@@ -6170,7 +6170,7 @@ body[data-page="cyberguessr"] .card-photo{
   }
 
   body[data-page="home"] .game-feature-cyberguessr .home-moon{
-    right: clamp(8px, 3vw, 16px);
+    right: clamp(2px, 2vw, 10px);
     width: clamp(180px, 52vw, 250px);
     height: calc(clamp(180px, 52vw, 250px) / 2);
   }
