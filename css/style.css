@@ -5098,6 +5098,16 @@ body[data-page="home"] .tip-of-day{
   margin-top: 10px;
 }
 
+body[data-page="home"] .tip-card:hover,
+body[data-page="home"] .tip-card:focus-within{
+  transform: none !important;
+}
+
+body[data-page="home"] .tip-card:hover::before,
+body[data-page="home"] .tip-card:hover::after{
+  transform: none !important;
+}
+
 body[data-page="home"] .tip-card{
   width:100%;
   max-width:100%;
