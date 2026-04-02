@@ -5144,6 +5144,27 @@ body[data-page="home"] .tests-banner{
   padding: 28px;
 }
 
+body[data-page="home"] .tests-banner > *{
+  position: relative;
+  z-index: 1;
+}
+
+body[data-page="home"] .tests-banner::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 78% 30%, rgba(56, 189, 248, 0.24), transparent 40%),
+    radial-gradient(circle at 88% 84%, rgba(59, 130, 246, 0.16), transparent 45%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 260 260'%3E%3Cg fill='none' stroke='%2378bfff' stroke-width='7' opacity='0.55'%3E%3Crect x='68' y='28' width='124' height='164' rx='20'/%3E%3Cpath d='M102 72h56M102 106h56M102 140h34' stroke-linecap='round'/%3E%3Cpath d='M146 156l12 12 30-30' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/g%3E%3Ccircle cx='182' cy='206' r='30' fill='%2378bfff' opacity='0.18'/%3E%3Cpath d='M170 199h24' stroke='%2378bfff' stroke-width='6' stroke-linecap='round' opacity='0.75'/%3E%3Cpath d='M182 187v24' stroke='%2378bfff' stroke-width='6' stroke-linecap='round' opacity='0.75'/%3E%3C/svg%3E");
+  background-size: auto, auto, 190px 190px;
+  background-repeat: no-repeat;
+  background-position: 100% 0, 100% 100%, right 16px center;
+  opacity: 0.85;
+}
+
 body[data-page="home"] .tests-banner-text h2{
   margin: 12px 0 10px;
   font-size: clamp(1.35rem, 2.7vw, 2rem);
@@ -5157,6 +5178,18 @@ body[data-page="home"] .tests-banner-text p{
 
 body[data-page="home"] .tests-cta-label{
   margin-bottom: 0;
+}
+
+body[data-page="home"] .tests-banner-points{
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+body[data-page="home"] .tests-banner-points li{
+  font-size: 0.95rem;
 }
 
 body[data-page="home"] .tests-banner-actions{
@@ -5390,6 +5423,12 @@ body[data-page="home"] .game-feature{
     grid-template-columns: 1fr;
     padding: 22px 18px;
     gap: 18px;
+  }
+
+  body[data-page="home"] .tests-banner::after{
+    background-size: auto, auto, 140px 140px;
+    background-position: 100% 0, 100% 100%, right 10px bottom 12px;
+    opacity: 0.65;
   }
 
   body[data-page="home"] .tests-banner-actions{
