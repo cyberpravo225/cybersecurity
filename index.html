@@ -20,9 +20,11 @@
       --perf-glow-soft: rgba(95, 239, 164, 0.28);
       --save-glow: rgba(112, 190, 255, 0.84);
       --save-glow-soft: rgba(112, 190, 255, 0.28);
+      --profile-glow: rgba(192, 166, 255, 0.84);
+      --profile-glow-soft: rgba(192, 166, 255, 0.28);
     }
 
-    body[data-page="home"] .topbar :is(#theme-toggle, #menu-toggle, #performance-toggle) {
+    body[data-page="home"] .topbar :is(#theme-toggle, #menu-toggle, #performance-toggle, #profile-toggle) {
       position: relative;
       overflow: visible;
       isolation: isolate;
@@ -40,7 +42,7 @@
       will-change: transform, box-shadow;
     }
 
-    body[data-page="home"] .topbar :is(#theme-toggle, #menu-toggle, #performance-toggle)::before {
+    body[data-page="home"] .topbar :is(#theme-toggle, #menu-toggle, #performance-toggle, #profile-toggle)::before {
       content: "";
       position: absolute;
       inset: -7px;
@@ -73,12 +75,16 @@
       background: radial-gradient(circle, var(--save-glow-soft) 0%, rgba(112, 190, 255, 0.16) 44%, transparent 72%);
     }
 
-    body[data-page="home"] .topbar :is(#theme-toggle, #menu-toggle, #performance-toggle):hover {
+    body[data-page="home"] .topbar #profile-toggle::before {
+      background: radial-gradient(circle, var(--profile-glow-soft) 0%, rgba(192, 166, 255, 0.16) 44%, transparent 72%);
+    }
+
+    body[data-page="home"] .topbar :is(#theme-toggle, #menu-toggle, #performance-toggle, #profile-toggle):hover {
       transform: translateY(-3px) scale(1.035);
       filter: saturate(1.06);
     }
 
-    body[data-page="home"] .topbar :is(#theme-toggle, #menu-toggle, #performance-toggle):hover::before {
+    body[data-page="home"] .topbar :is(#theme-toggle, #menu-toggle, #performance-toggle, #profile-toggle):hover::before {
       transform: scale(1.06);
       opacity: 1;
       filter: blur(15px);
@@ -138,6 +144,14 @@
         0 18px 36px rgba(15, 23, 42, 0.18);
     }
 
+    body[data-page="home"] .topbar #profile-toggle:hover {
+      border-color: rgba(212, 191, 255, 0.8);
+      box-shadow:
+        0 0 0 1px rgba(212, 191, 255, 0.12),
+        0 0 28px rgba(192, 166, 255, 0.18),
+        0 18px 36px rgba(15, 23, 42, 0.18);
+    }
+
     body[data-page="home"] .topbar #performance-toggle:hover:focus,
     body[data-page="home"] .topbar #performance-toggle:hover:focus-visible {
       transform: translateY(-3px) scale(1.035) !important;
@@ -150,7 +164,7 @@
       filter: blur(15px);
     }
 
-    body[data-page="home"] .topbar :is(#theme-toggle, #menu-toggle, #performance-toggle):focus-visible {
+    body[data-page="home"] .topbar :is(#theme-toggle, #menu-toggle, #performance-toggle, #profile-toggle):focus-visible {
       outline: none;
       transform: translateY(-2px) scale(1.03);
     }
@@ -187,12 +201,20 @@
         0 18px 36px rgba(15, 23, 42, 0.2);
     }
 
-    body[data-page="home"] .topbar :is(#theme-toggle, #menu-toggle, #performance-toggle):active {
+    body[data-page="home"] .topbar #profile-toggle:focus-visible {
+      border-color: var(--profile-glow);
+      box-shadow:
+        0 0 0 3px rgba(192, 166, 255, 0.14),
+        0 0 30px rgba(192, 166, 255, 0.16),
+        0 18px 36px rgba(15, 23, 42, 0.2);
+    }
+
+    body[data-page="home"] .topbar :is(#theme-toggle, #menu-toggle, #performance-toggle, #profile-toggle):active {
       transform: translateY(1px) scale(0.96);
       filter: saturate(1.12);
     }
 
-    body[data-page="home"] .topbar :is(#theme-toggle, #menu-toggle, #performance-toggle):active::before {
+    body[data-page="home"] .topbar :is(#theme-toggle, #menu-toggle, #performance-toggle, #profile-toggle):active::before {
       transform: scale(0.92);
       opacity: 0.78;
       filter: blur(10px);
@@ -298,6 +320,35 @@
       height: 28px;
       overflow: visible;
       transition: transform 220ms ease, filter 220ms ease;
+    }
+
+    body[data-page="home"] .topbar #profile-toggle .icon-profile {
+      width: 26px;
+      height: 26px;
+      overflow: visible;
+      transition: transform 220ms ease, filter 220ms ease;
+      filter: drop-shadow(0 0 8px rgba(192, 166, 255, 0.26));
+    }
+
+    body[data-page="home"] .topbar #profile-toggle .profile-head,
+    body[data-page="home"] .topbar #profile-toggle .profile-body {
+      fill: none;
+      stroke: #efe8ff;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 220ms ease;
+    }
+
+    body[data-page="home"] .topbar #profile-toggle .profile-head {
+      stroke-width: 1.9;
+    }
+
+    body[data-page="home"] .topbar #profile-toggle .profile-body {
+      stroke-width: 1.75;
+    }
+
+    body[data-page="home"] .topbar #profile-toggle:hover .icon-profile {
+      transform: translateY(-1px) scale(1.05);
     }
 
     body[data-page="home"] .topbar #performance-toggle .icon-bolt,
@@ -435,6 +486,13 @@
 <button id="menu-toggle" class="btn icon-btn hamburger" aria-label="Открыть меню" aria-expanded="false">
 <span class="hamburger-fallback" aria-hidden="true">☰</span>
 <span class="hamburger-box"><span class="hamburger-inner"></span></span>
+</button>
+
+<button id="profile-toggle" class="btn icon-btn" aria-label="Профиль" title="Профиль" type="button">
+<svg class="icon-profile" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+<circle class="profile-head" cx="12" cy="8" r="3.2"></circle>
+<path class="profile-body" d="M5.6 18c1.4-2.5 3.8-3.8 6.4-3.8 2.6 0 5 1.3 6.4 3.8"></path>
+</svg>
 </button>
 
 <ul class="nav-list" id="nav-list">
