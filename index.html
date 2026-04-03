@@ -564,6 +564,10 @@
       transition: border-color 180ms ease, color 180ms ease, background 180ms ease;
     }
 
+    .profile-register-toggle.profile-login-only {
+      margin-top: 8px;
+    }
+
     .profile-register-toggle:hover {
       color: var(--text-color);
       border-color: rgba(108, 132, 255, 0.7);
@@ -595,14 +599,6 @@
 
     .profile-modal__panel:not(.is-register) .profile-register-only {
       display: none;
-    }
-
-    .profile-register-title {
-      margin: 0 0 8px;
-      font-size: 0.95rem;
-      color: var(--text-muted);
-      font-weight: 700;
-      letter-spacing: 0.01em;
     }
 
     .profile-modal__status {
@@ -665,10 +661,6 @@
     :root[data-theme="dark"] .profile-modal__icon-close:hover {
       color: #e8eefc;
       border-color: rgba(154, 181, 255, 0.76);
-    }
-
-    :root[data-theme="dark"] .profile-register-title {
-      color: #b8c5e7;
     }
 
     :root[data-theme="dark"] .profile-register-toggle {
@@ -1071,7 +1063,6 @@
       <button id="profileRegisterToggle" class="profile-register-toggle profile-login-only" type="button" aria-expanded="false">Нет аккаунта? Зарегистрируйтесь</button>
 
       <div id="profileRegisterBlock" class="profile-register-block">
-        <p class="profile-register-title profile-register-only">Регистрируйтесь</p>
         <div class="profile-form-grid">
           <input id="profileUsernameInput" type="text" placeholder="Логин">
           <input id="profileBirthDateInput" type="date">
