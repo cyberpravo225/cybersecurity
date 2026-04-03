@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Регистрация</title>
+</head>
+<body>
+
+<h2>Регистрация</h2>
+
+<input id="email" placeholder="Email"><br>
+<input id="password" type="password" placeholder="Пароль"><br>
+<input id="username" placeholder="Логин"><br>
+<input id="birth_date" type="date"><br>
+
+<button onclick="register()">Зарегистрироваться</button>
+
+<h2>Вход</h2>
+
+<input id="login_email" placeholder="Email"><br>
+<input id="login_password" type="password" placeholder="Пароль"><br>
+
+<button onclick="login()">Войти</button>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<script>
+const supabase = supabase.createClient(
+  "vpnxkfpwmieerfaqijot",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZwbnhrZnB3bWllZXJmYXFpam90Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMzQ0NTIsImV4cCI6MjA5MDgxMDQ1Mn0.ImmCQUziNbBOkwZ2u3eaJu2DrLTmaKyWvUttUKKfckg"
+);
+
+// 📱 device id
+function getDeviceId() {
+  let id = localStorage.getItem("device_id");
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem("device_id", id);
+  }
+  return id;
+}
+
+// 📝 регистрация
+async function register() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const username = document.getElementById("username").value;
+  const birth_date = document.getElementById("birth_date").value;
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  await supabase.from("profiles").insert([
+    {
+      id: data.user.id,
+      username: username,
+      birth_date: birth_date,
+      score: 0,
+      device_id: getDeviceId()
+    }
+  ]);
+
+  alert("Регистрация успешна!");
+}
+
+// 🔑 вход
+async function login() {
+  const email = document.getElementById("login_email").value;
+  const password = document.getElementById("login_password").value;
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  const user = data.user;
+
+  // проверка устройства
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  if (profile.device_id !== getDeviceId()) {
+    alert("Это устройство не разрешено!");
+    await supabase.auth.signOut();
+    return;
+  }
+
+  alert("Вход выполнен!");
+}
+</script>
+
+</body>
+</html>
