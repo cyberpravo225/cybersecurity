@@ -1169,7 +1169,7 @@
     <p id="profileAuthText" class="profile-modal__text">Войдите в аккаунт.</p>
 
     <div id="profileAuthPanel" class="profile-modal__panel">
-      <div class="profile-form-grid">
+      <div class="profile-form-grid profile-login-only">
         <input id="profileEmailInput" type="email" placeholder="Почта">
         <div class="profile-password-row">
           <input id="profilePasswordInput" type="password" placeholder="Пароль">
@@ -1204,6 +1204,9 @@
           <div class="profile-account-row"><span>Возраст</span><span id="profileViewAge">—</span></div>
           <div class="profile-account-row"><span>Дата рождения</span><span id="profileViewBirthDate">—</span></div>
           <div class="profile-account-row"><span>Устройство</span><span id="profileViewDeviceId">—</span></div>
+        </div>
+        <div class="profile-modal__actions">
+          <button id="profileLogoutBtn" class="btn" type="button">Выйти</button>
         </div>
         <p class="profile-account-note">Скоро здесь появятся лучшие результаты и дополнительные достижения профиля.</p>
       </div>
