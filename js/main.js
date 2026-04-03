@@ -56,19 +56,14 @@
   const logoutBtn = document.getElementById('profileLogoutBtn');
   const statusBox = document.getElementById('profileModalStatus');
 
-  const urlInput = document.getElementById('supabaseUrlInput');
-  const anonInput = document.getElementById('supabaseAnonKeyInput');
   const emailInput = document.getElementById('profileEmailInput');
   const passwordInput = document.getElementById('profilePasswordInput');
   const usernameInput = document.getElementById('profileUsernameInput');
   const birthDateInput = document.getElementById('profileBirthDateInput');
 
-  const STORAGE_URL_KEY = 'sb_project_url';
-  const STORAGE_ANON_KEY = 'sb_anon_key';
+  const SUPABASE_URL = 'https://vpnxkfpwmieerfaqijot.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZwbnhrZnB3bWllZXJmYXFpam90Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMzQ0NTIsImV4cCI6MjA5MDgxMDQ1Mn0.ImmCQUziNbBOkwZ2u3eaJu2DrLTmaKyWvUttUKKfckg';
   const STORAGE_DEVICE_ID = 'device_id';
-
-  if (urlInput) urlInput.value = localStorage.getItem(STORAGE_URL_KEY) || '';
-  if (anonInput) anonInput.value = localStorage.getItem(STORAGE_ANON_KEY) || '';
 
   const setStatus = (text, type = '') => {
     if (!statusBox) return;
@@ -107,17 +102,10 @@
   };
 
   const createClient = () => {
-    const url = (urlInput?.value || '').trim();
-    const anon = (anonInput?.value || '').trim();
-    if (!url || !anon) {
-      throw new Error('Сначала укажи Supabase URL и anon key.');
-    }
     if (!window.supabase?.createClient) {
       throw new Error('Библиотека Supabase не загрузилась.');
     }
-    localStorage.setItem(STORAGE_URL_KEY, url);
-    localStorage.setItem(STORAGE_ANON_KEY, anon);
-    return window.supabase.createClient(url, anon);
+    return window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   };
 
   const withPending = (btn, fn) => async () => {
