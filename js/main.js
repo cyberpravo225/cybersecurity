@@ -214,6 +214,31 @@
     return data;
   };
 
+  const ensureUsernameIsFree = async (sb, username, currentUserId = null) => {
+    const normalized = (username || '').trim().toLowerCase();
+    if (!normalized) {
+      throw new Error('Логин не может быть пустым.');
+    }
+
+    const { data, error } = await sb
+      .from('profiles')
+      .select('id,username')
+      .ilike('username', username)
+      .limit(20);
+
+    if (error) throw error;
+
+    const sameUsername = (data || []).find((row) => {
+      const sameText = String(row.username || '').trim().toLowerCase() === normalized;
+      const sameUser = currentUserId && row.id === currentUserId;
+      return sameText && !sameUser;
+    });
+
+    if (sameUsername) {
+      throw new Error('Такой логин уже занят. Выбери другой.');
+    }
+  };
+
   const showCurrentProfileIfLoggedIn = async () => {
     try {
       const currentSession = await getCurrentSession();
@@ -288,6 +313,7 @@
 
       localStorage.setItem(REMEMBER_ME_KEY, rememberMe ? '1' : '0');
       const sb = createClient(rememberMe);
+      await ensureUsernameIsFree(sb, username);
       const { data, error } = await sb.auth.signUp({ email, password });
       if (error) throw error;
       if (!data?.user) {
@@ -353,6 +379,7 @@
       if (!username || !birthDate) {
         throw new Error('Заполни логин и дату рождения, чтобы сохранить профиль.');
       }
+      await ensureUsernameIsFree(currentSession.sb, username, currentSession.user.id);
 
       const updates = {
         username,
