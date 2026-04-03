@@ -426,6 +426,14 @@
       font-size: 0.95rem;
     }
 
+    .profile-modal__panel {
+      border: 1px solid rgba(124, 136, 170, 0.26);
+      border-radius: 14px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.45);
+      margin-bottom: 10px;
+    }
+
     .profile-form-grid {
       display: grid;
       gap: 10px;
@@ -488,6 +496,39 @@
       margin-top: 10px;
     }
 
+    .profile-modal__actions--login .btn {
+      width: 100%;
+    }
+
+    .profile-register-toggle {
+      width: 100%;
+      border: 1px dashed rgba(124, 136, 170, 0.6);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.7);
+      color: var(--text-muted);
+      padding: 10px 12px;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: border-color 180ms ease, color 180ms ease, background 180ms ease;
+    }
+
+    .profile-register-toggle:hover {
+      color: var(--text-color);
+      border-color: rgba(108, 132, 255, 0.7);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .profile-register-block {
+      display: none;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(124, 136, 170, 0.25);
+    }
+
+    .profile-register-block.active {
+      display: block;
+    }
+
     .profile-modal__status {
       margin-top: 10px;
       min-height: 22px;
@@ -527,6 +568,11 @@
       color: #e7eefc;
     }
 
+    :root[data-theme="dark"] .profile-modal__panel {
+      background: rgba(10, 18, 36, 0.45);
+      border-color: rgba(137, 157, 212, 0.35);
+    }
+
     :root[data-theme="dark"] .profile-form-grid input:focus {
       background: rgba(13, 23, 46, 0.92);
       border-color: rgba(137, 168, 255, 0.74);
@@ -542,6 +588,18 @@
     :root[data-theme="dark"] .profile-password-toggle:hover {
       color: #e8eefc;
       border-color: rgba(154, 181, 255, 0.75);
+    }
+
+    :root[data-theme="dark"] .profile-register-toggle {
+      background: rgba(13, 23, 46, 0.68);
+      border-color: rgba(134, 153, 214, 0.6);
+      color: #b8c5e7;
+    }
+
+    :root[data-theme="dark"] .profile-register-toggle:hover {
+      color: #e8eefc;
+      border-color: rgba(154, 181, 255, 0.76);
+      background: rgba(16, 29, 56, 0.92);
     }
 
     @media (max-width: 560px) {
@@ -916,19 +974,32 @@
     <h2 id="profileModalTitle" class="profile-modal__title">Профиль</h2>
     <p class="profile-modal__text">Создай аккаунт или войди в профиль на главной странице.</p>
 
-    <div class="profile-form-grid">
-      <input id="profileEmailInput" type="email" placeholder="Email">
-      <div class="profile-password-row">
-        <input id="profilePasswordInput" type="password" placeholder="Пароль">
-        <button id="profilePasswordToggle" class="profile-password-toggle" type="button" aria-label="Показать пароль">Показать</button>
+    <div class="profile-modal__panel">
+      <div class="profile-form-grid">
+        <input id="profileEmailInput" type="email" placeholder="Почта">
+        <div class="profile-password-row">
+          <input id="profilePasswordInput" type="password" placeholder="Пароль">
+          <button id="profilePasswordToggle" class="profile-password-toggle" type="button" aria-label="Показать пароль">Показать</button>
+        </div>
       </div>
-      <input id="profileUsernameInput" type="text" placeholder="Логин (для регистрации)">
-      <input id="profileBirthDateInput" type="date">
+
+      <div class="profile-modal__actions profile-modal__actions--login">
+        <button id="profileLoginBtn" class="btn primary" type="button">Войти в аккаунт</button>
+      </div>
+      <button id="profileRegisterToggle" class="profile-register-toggle" type="button" aria-expanded="false">Нет аккаунта? Зарегистрируйтесь</button>
+
+      <div id="profileRegisterBlock" class="profile-register-block">
+        <div class="profile-form-grid">
+          <input id="profileUsernameInput" type="text" placeholder="Логин">
+          <input id="profileBirthDateInput" type="date">
+        </div>
+        <div class="profile-modal__actions">
+          <button id="profileRegisterBtn" class="btn" type="button">Создать аккаунт</button>
+        </div>
+      </div>
     </div>
 
     <div class="profile-modal__actions">
-      <button id="profileRegisterBtn" class="btn primary" type="button">Создать профиль</button>
-      <button id="profileLoginBtn" class="btn" type="button">Войти</button>
       <button id="profileLogoutBtn" class="btn" type="button">Выйти</button>
     </div>
 
