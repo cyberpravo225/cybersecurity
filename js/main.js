@@ -56,7 +56,9 @@
   const statusBox = document.getElementById('profileModalStatus');
   const passwordToggle = document.getElementById('profilePasswordToggle');
   const registerToggle = document.getElementById('profileRegisterToggle');
-  const registerBlock = document.getElementById('profileRegisterBlock');
+  const backToLoginBtn = document.getElementById('profileBackToLoginBtn');
+  const authPanel = document.getElementById('profileAuthPanel');
+  const authText = document.getElementById('profileAuthText');
 
   const emailInput = document.getElementById('profileEmailInput');
   const passwordInput = document.getElementById('profilePasswordInput');
@@ -74,9 +76,19 @@
     if (type) statusBox.classList.add(type);
   };
 
+  const setMode = (mode) => {
+    const registerMode = mode === 'register';
+    authPanel?.classList.toggle('is-register', registerMode);
+    if (registerToggle) registerToggle.setAttribute('aria-expanded', String(registerMode));
+    if (authText) {
+      authText.textContent = registerMode ? 'Регистрируйтесь.' : 'Войдите в аккаунт.';
+    }
+  };
+
   const openModal = () => {
     modal.classList.add('active');
     modal.setAttribute('aria-hidden', 'false');
+    setMode('login');
   };
 
   const closeModal = () => {
@@ -84,11 +96,10 @@
     modal.setAttribute('aria-hidden', 'true');
     if (passwordInput) passwordInput.type = 'password';
     if (passwordToggle) {
-      passwordToggle.textContent = '👁️';
+      passwordToggle.dataset.state = 'show';
       passwordToggle.setAttribute('aria-label', 'Показать пароль');
     }
-    registerBlock?.classList.remove('active');
-    registerToggle?.setAttribute('aria-expanded', 'false');
+    setMode('login');
   };
 
   const getDeviceId = () => {
@@ -133,15 +144,14 @@
   profileToggle.addEventListener('click', openModal);
   closeBtn?.addEventListener('click', closeModal);
   registerToggle?.addEventListener('click', () => {
-    const isOpen = registerBlock?.classList.contains('active');
-    registerBlock?.classList.toggle('active', !isOpen);
-    registerToggle.setAttribute('aria-expanded', String(!isOpen));
+    setMode('register');
   });
+  backToLoginBtn?.addEventListener('click', () => setMode('login'));
   passwordToggle?.addEventListener('click', () => {
     const isHidden = passwordInput?.type === 'password';
     if (!passwordInput) return;
     passwordInput.type = isHidden ? 'text' : 'password';
-    passwordToggle.textContent = isHidden ? '🙈' : '👁️';
+    passwordToggle.dataset.state = isHidden ? 'hide' : 'show';
     passwordToggle.setAttribute('aria-label', isHidden ? 'Скрыть пароль' : 'Показать пароль');
   });
 

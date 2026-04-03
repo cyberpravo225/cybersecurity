@@ -504,10 +504,23 @@
       border-radius: 10px;
       background: rgba(248, 250, 255, 0.95);
       color: var(--text-muted);
-      font-size: 1rem;
+      font-size: 0;
       font-weight: 600;
       cursor: pointer;
       line-height: 1;
+    }
+
+    .profile-password-toggle::before {
+      content: "👁️";
+      font-size: 1rem;
+      line-height: 1;
+      transform: translateY(-1px);
+    }
+
+    .profile-password-toggle[data-state="hide"]::before {
+      content: "🙈";
+      font-size: 0.92rem;
+      transform: translateY(-0.5px);
     }
 
     .profile-password-toggle:hover {
@@ -546,20 +559,29 @@
 
     .profile-register-block {
       margin-top: 10px;
+      max-height: 240px;
+      opacity: 1;
+      overflow: visible;
+      pointer-events: auto;
+      transition: max-height 220ms ease, opacity 180ms ease, padding-top 220ms ease;
+      padding-top: 10px;
+      border-top: 1px solid rgba(124, 136, 170, 0.25);
+    }
+
+    .profile-modal__panel:not(.is-register) .profile-register-block {
       max-height: 0;
       opacity: 0;
       overflow: hidden;
       pointer-events: none;
-      transition: max-height 220ms ease, opacity 180ms ease, padding-top 220ms ease;
       padding-top: 0;
-      border-top: 1px solid rgba(124, 136, 170, 0.25);
     }
 
-    .profile-register-block.active {
-      max-height: 220px;
-      opacity: 1;
-      pointer-events: auto;
-      padding-top: 10px;
+    .profile-modal__panel.is-register .profile-login-only {
+      display: none;
+    }
+
+    .profile-modal__panel:not(.is-register) .profile-register-only {
+      display: none;
     }
 
     .profile-register-title {
@@ -1019,30 +1041,31 @@
   <div class="profile-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
     <button id="profileModalClose" class="profile-modal__icon-close" type="button" aria-label="Закрыть окно">×</button>
     <h2 id="profileModalTitle" class="profile-modal__title">Профиль</h2>
-    <p class="profile-modal__text">Создай аккаунт или войди в профиль на главной странице.</p>
+    <p id="profileAuthText" class="profile-modal__text">Войдите в аккаунт.</p>
 
-    <div class="profile-modal__panel">
+    <div id="profileAuthPanel" class="profile-modal__panel">
       <div class="profile-form-grid">
         <input id="profileEmailInput" type="email" placeholder="Почта">
         <div class="profile-password-row">
           <input id="profilePasswordInput" type="password" placeholder="Пароль">
-          <button id="profilePasswordToggle" class="profile-password-toggle" type="button" aria-label="Показать пароль">👁️</button>
+          <button id="profilePasswordToggle" class="profile-password-toggle" type="button" aria-label="Показать пароль" data-state="show"></button>
         </div>
       </div>
 
-      <div class="profile-modal__actions profile-modal__actions--login">
+      <div class="profile-modal__actions profile-modal__actions--login profile-login-only">
         <button id="profileLoginBtn" class="btn primary" type="button">Войти в аккаунт</button>
       </div>
-      <button id="profileRegisterToggle" class="profile-register-toggle" type="button" aria-expanded="false">Нет аккаунта? Зарегистрируйтесь</button>
+      <button id="profileRegisterToggle" class="profile-register-toggle profile-login-only" type="button" aria-expanded="false">Нет аккаунта? Зарегистрируйтесь</button>
 
       <div id="profileRegisterBlock" class="profile-register-block">
-        <p class="profile-register-title">Регистрация</p>
+        <p class="profile-register-title profile-register-only">Регистрируйтесь</p>
         <div class="profile-form-grid">
           <input id="profileUsernameInput" type="text" placeholder="Логин">
           <input id="profileBirthDateInput" type="date">
         </div>
         <div class="profile-modal__actions">
           <button id="profileRegisterBtn" class="btn" type="button">Создать аккаунт</button>
+          <button id="profileBackToLoginBtn" class="profile-register-toggle profile-register-only" type="button">У меня есть аккаунт</button>
         </div>
       </div>
     </div>
