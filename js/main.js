@@ -53,6 +53,7 @@
   const closeBtn = document.getElementById('profileModalClose');
   const registerBtn = document.getElementById('profileRegisterBtn');
   const loginBtn = document.getElementById('profileLoginBtn');
+  const logoutBtn = document.getElementById('profileLogoutBtn');
   const statusBox = document.getElementById('profileModalStatus');
   const passwordToggle = document.getElementById('profilePasswordToggle');
   const registerToggle = document.getElementById('profileRegisterToggle');
@@ -222,6 +223,17 @@
     }
   };
 
+  const logoutEverywhere = async () => {
+    for (const remember of [true, false]) {
+      try {
+        const sb = createClient(remember);
+        await sb.auth.signOut();
+      } catch (error) {
+        // ignore and continue, we try both storages
+      }
+    }
+  };
+
   profileToggle.addEventListener('click', () => {
     openModal();
   });
@@ -311,6 +323,16 @@
       setStatus(`Вход выполнен: ${data.user.email}`, 'ok');
     } catch (error) {
       setStatus(error.message || 'Ошибка при входе.', 'error');
+    }
+  }));
+
+  logoutBtn?.addEventListener('click', withPending(logoutBtn, async () => {
+    try {
+      await logoutEverywhere();
+      setMode('login');
+      setStatus('Вы вышли из аккаунта.', 'ok');
+    } catch (error) {
+      setStatus(error.message || 'Ошибка при выходе.', 'error');
     }
   }));
 
