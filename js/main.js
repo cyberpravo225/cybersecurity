@@ -113,9 +113,10 @@
   };
 
   const fillProfileView = (user, profile) => {
+    const derivedAge = calculateAge(profile?.birth_date);
     if (profileViewEmail) profileViewEmail.textContent = user?.email || '—';
     if (profileViewUsername) profileViewUsername.textContent = profile?.username || '—';
-    if (profileViewAge) profileViewAge.textContent = profile?.age ?? '—';
+    if (profileViewAge) profileViewAge.textContent = derivedAge ?? '—';
     if (profileViewBirthDate) profileViewBirthDate.textContent = formatBirthDate(profile?.birth_date);
     if (profileViewDeviceId) profileViewDeviceId.textContent = profile?.device_id || getDeviceId();
   };
@@ -200,7 +201,7 @@
   const getProfileRow = async (sb, userId) => {
     const { data, error } = await sb
       .from('profiles')
-      .select('username,birth_date,age,device_id')
+      .select('username,birth_date,device_id')
       .eq('id', userId)
       .maybeSingle();
     if (error) throw error;
@@ -280,7 +281,6 @@
         id: data.user.id,
         username,
         birth_date: birthDate,
-        age: calculateAge(birthDate),
         score: 0,
         device_id: getDeviceId()
       };
