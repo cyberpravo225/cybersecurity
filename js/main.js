@@ -53,7 +53,6 @@
   const closeBtn = document.getElementById('profileModalClose');
   const registerBtn = document.getElementById('profileRegisterBtn');
   const loginBtn = document.getElementById('profileLoginBtn');
-  const logoutBtn = document.getElementById('profileLogoutBtn');
   const statusBox = document.getElementById('profileModalStatus');
   const passwordToggle = document.getElementById('profilePasswordToggle');
   const registerToggle = document.getElementById('profileRegisterToggle');
@@ -207,16 +206,6 @@
     }
   }));
 
-  logoutBtn?.addEventListener('click', withPending(logoutBtn, async () => {
-    try {
-      const sb = createClient();
-      const { error } = await sb.auth.signOut();
-      if (error) throw error;
-      setStatus('Вы вышли из аккаунта.', 'ok');
-    } catch (error) {
-      setStatus(error.message || 'Ошибка при выходе.', 'error');
-    }
-  }));
 })();
 
 
