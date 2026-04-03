@@ -494,6 +494,7 @@
       right: 8px;
       top: 50%;
       transform: translateY(-50%);
+      overflow: hidden;
       width: 42px;
       height: 32px;
       padding: 0;
@@ -512,15 +513,18 @@
 
     .profile-password-toggle::before {
       content: "👁️";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 1rem;
       line-height: 1;
-      transform: translateY(-1px);
     }
 
     .profile-password-toggle[data-state="hide"]::before {
       content: "🙈";
-      font-size: 0.92rem;
-      transform: translateY(-0.5px);
+      font-size: 1rem;
     }
 
     .profile-password-toggle:hover {
