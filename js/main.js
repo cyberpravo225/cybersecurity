@@ -382,6 +382,7 @@
       await ensureUsernameIsFree(currentSession.sb, username, currentSession.user.id);
 
       const updates = {
+        id: currentSession.user.id,
         username,
         birth_date: birthDate,
         device_id: getDeviceId()
@@ -389,13 +390,12 @@
 
       const { error } = await currentSession.sb
         .from('profiles')
-        .update(updates)
-        .eq('id', currentSession.user.id);
+        .upsert(updates, { onConflict: 'id' });
 
       if (error) throw error;
 
       const refreshed = await getProfileRow(currentSession.sb, currentSession.user.id);
-      fillProfileView(currentSession.user, refreshed);
+      fillProfileView(currentSession.user, refreshed || updates);
       setStatus('Профиль обновлён.', 'ok');
     } catch (error) {
       setStatus(error.message || 'Ошибка при обновлении профиля.', 'error');
