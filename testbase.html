@@ -1,107 +1,291 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <title>Регистрация</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supabase Test Page</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root { --bg:#0f172a; --card:#111827; --text:#e5e7eb; --muted:#94a3b8; --line:#243244; --ok:#22c55e; --bad:#ef4444; --btn:#2563eb; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: linear-gradient(180deg, #0b1220, #111827); color: var(--text); }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 24px; }
+    h1 { margin: 0 0 12px; font-size: 28px; }
+    p { color: var(--muted); line-height: 1.5; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 16px; margin-top: 18px; }
+    .card { background: rgba(17,24,39,.88); border: 1px solid var(--line); border-radius: 16px; padding: 16px; box-shadow: 0 12px 30px rgba(0,0,0,.18); }
+    .card h2 { margin: 0 0 12px; font-size: 18px; }
+    label { display:block; margin: 10px 0 6px; color: var(--muted); font-size: 14px; }
+    input { width: 100%; padding: 12px 13px; border-radius: 12px; border: 1px solid var(--line); background: #0b1220; color: var(--text); outline: none; }
+    input:focus { border-color: #3b82f6; }
+    .row { display:flex; gap:10px; flex-wrap: wrap; margin-top: 12px; }
+    button { border: 0; border-radius: 12px; padding: 11px 14px; background: var(--btn); color: white; cursor: pointer; font-weight: 700; }
+    button.secondary { background: #334155; }
+    button.danger { background: #b91c1c; }
+    button:disabled { opacity:.65; cursor:not-allowed; }
+    .status { white-space: pre-wrap; background: #08101d; border: 1px solid var(--line); padding: 12px; border-radius: 12px; min-height: 120px; margin-top: 12px; font-family: Consolas, monospace; font-size: 13px; }
+    .ok { color: var(--ok); }
+    .bad { color: var(--bad); }
+    .small { font-size: 13px; color: var(--muted); }
+    code { background: #0b1220; padding: 2px 6px; border-radius: 8px; }
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <h1>Тест подключения Supabase</h1>
+    <p>Страница проверяет: подключение к проекту, регистрацию, вход, текущую сессию и запись в таблицу <code>profiles</code>.</p>
 
-<h2>Регистрация</h2>
+    <div class="grid">
+      <div class="card">
+        <h2>1) Настройка</h2>
+        <label>Project URL</label>
+        <input id="projectUrl" placeholder="https://xxxx.supabase.co" />
+        <label>anon public key</label>
+        <input id="anonKey" placeholder="eyJhbGciOi..." />
+        <div class="row">
+          <button onclick="initClient()">Подключиться</button>
+          <button class="secondary" onclick="checkSession()">Проверить сессию</button>
+        </div>
+        <div class="small">Ключи лучше вставить один раз и потом тестировать кнопками ниже.</div>
+      </div>
 
-<input id="email" placeholder="Email"><br>
-<input id="password" type="password" placeholder="Пароль"><br>
-<input id="username" placeholder="Логин"><br>
-<input id="birth_date" type="date"><br>
+      <div class="card">
+        <h2>2) Регистрация</h2>
+        <label>Email</label>
+        <input id="regEmail" placeholder="name@example.com" />
+        <label>Пароль</label>
+        <input id="regPassword" type="password" placeholder="••••••••" />
+        <label>Логин</label>
+        <input id="regUsername" placeholder="player123" />
+        <label>Дата рождения</label>
+        <input id="regBirthDate" type="date" />
+        <div class="row">
+          <button onclick="registerUser()">Зарегистрироваться</button>
+        </div>
+      </div>
 
-<button onclick="register()">Зарегистрироваться</button>
+      <div class="card">
+        <h2>3) Вход</h2>
+        <label>Email</label>
+        <input id="loginEmail" placeholder="name@example.com" />
+        <label>Пароль</label>
+        <input id="loginPassword" type="password" placeholder="••••••••" />
+        <div class="row">
+          <button onclick="loginUser()">Войти</button>
+          <button class="secondary" onclick="signOutUser()">Выйти</button>
+        </div>
+        <div class="row">
+          <button class="secondary" onclick="whoAmI()">Кто я?</button>
+          <button class="secondary" onclick="loadMyProfile()">Загрузить профиль</button>
+        </div>
+      </div>
 
-<h2>Вход</h2>
+      <div class="card">
+        <h2>4) Проверка БД</h2>
+        <div class="row">
+          <button onclick="writeTestRow()">Записать тестовый профиль</button>
+          <button class="secondary" onclick="readProfiles()">Показать profiles</button>
+        </div>
+        <div class="small">Если RLS настроен правильно, ты увидишь только свою строку или получите понятную ошибку доступа.</div>
+      </div>
+    </div>
 
-<input id="login_email" placeholder="Email"><br>
-<input id="login_password" type="password" placeholder="Пароль"><br>
+    <div class="card" style="margin-top:16px;">
+      <h2>Лог</h2>
+      <div id="status" class="status">Сначала вставь Project URL и anon key, затем нажми «Подключиться».</div>
+    </div>
+  </div>
 
-<button onclick="login()">Войти</button>
+  <script>
+    let sb = null;
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
-<script>
-const supabase = supabase.createClient(
-  "vpnxkfpwmieerfaqijot",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZwbnhrZnB3bWllZXJmYXFpam90Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMzQ0NTIsImV4cCI6MjA5MDgxMDQ1Mn0.ImmCQUziNbBOkwZ2u3eaJu2DrLTmaKyWvUttUKKfckg"
-);
-
-// 📱 device id
-function getDeviceId() {
-  let id = localStorage.getItem("device_id");
-  if (!id) {
-    id = crypto.randomUUID();
-    localStorage.setItem("device_id", id);
-  }
-  return id;
-}
-
-// 📝 регистрация
-async function register() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const username = document.getElementById("username").value;
-  const birth_date = document.getElementById("birth_date").value;
-
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password
-  });
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  await supabase.from("profiles").insert([
-    {
-      id: data.user.id,
-      username: username,
-      birth_date: birth_date,
-      score: 0,
-      device_id: getDeviceId()
+    function log(message, type = "") {
+      const box = document.getElementById("status");
+      const prefix = type === "ok" ? "[OK] " : type === "bad" ? "[ERR] " : "[INFO] ";
+      box.textContent = `${prefix}${message}\n\n` + box.textContent;
     }
-  ]);
 
-  alert("Регистрация успешна!");
-}
+    function requireClient() {
+      if (!sb) {
+        throw new Error("Сначала нажми «Подключиться» и вставь ключи Supabase.");
+      }
+    }
 
-// 🔑 вход
-async function login() {
-  const email = document.getElementById("login_email").value;
-  const password = document.getElementById("login_password").value;
+    function getDeviceId() {
+      let id = localStorage.getItem("device_id");
+      if (!id) {
+        id = crypto.randomUUID();
+        localStorage.setItem("device_id", id);
+      }
+      return id;
+    }
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
+    function calculateAge(birthDate) {
+      if (!birthDate) return null;
+      const today = new Date();
+      const birth = new Date(birthDate);
+      let age = today.getFullYear() - birth.getFullYear();
+      const m = today.getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+      return age;
+    }
 
-  if (error) {
-    alert(error.message);
-    return;
-  }
+    function initClient() {
+      try {
+        const url = document.getElementById("projectUrl").value.trim();
+        const key = document.getElementById("anonKey").value.trim();
+        if (!url || !key) throw new Error("Нужно вставить и Project URL, и anon public key.");
+        sb = supabase.createClient(url, key);
+        log("Supabase client создан. Можно тестировать регистрацию и вход.", "ok");
+      } catch (e) {
+        log(e.message, "bad");
+      }
+    }
 
-  const user = data.user;
+    async function checkSession() {
+      try {
+        requireClient();
+        const { data, error } = await sb.auth.getSession();
+        if (error) throw error;
+        const session = data.session;
+        if (!session) {
+          log("Сессии нет. Ты не вошёл в аккаунт.", "bad");
+          return;
+        }
+        log(`Сессия активна. User ID: ${session.user.id}, email: ${session.user.email}`, "ok");
+      } catch (e) {
+        log(e.message, "bad");
+      }
+    }
 
-  // проверка устройства
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
+    async function registerUser() {
+      try {
+        requireClient();
+        const email = document.getElementById("regEmail").value.trim();
+        const password = document.getElementById("regPassword").value;
+        const username = document.getElementById("regUsername").value.trim();
+        const birth_date = document.getElementById("regBirthDate").value;
 
-  if (profile.device_id !== getDeviceId()) {
-    alert("Это устройство не разрешено!");
-    await supabase.auth.signOut();
-    return;
-  }
+        if (!email || !password || !username || !birth_date) {
+          throw new Error("Заполни email, пароль, логин и дату рождения.");
+        }
 
-  alert("Вход выполнен!");
-}
-</script>
+        const { data, error } = await sb.auth.signUp({ email, password });
+        if (error) throw error;
+        if (!data?.user) throw new Error("Supabase не вернул пользователя. Возможно, включено подтверждение email.");
 
+        const profile = {
+          id: data.user.id,
+          username,
+          birth_date,
+          score: 0,
+          device_id: getDeviceId()
+        };
+
+        const { error: insertError } = await sb.from("profiles").insert(profile);
+        if (insertError) throw insertError;
+
+        log(`Регистрация прошла. User ID: ${data.user.id}. Профиль записан в profiles.`, "ok");
+      } catch (e) {
+        log(e.message, "bad");
+      }
+    }
+
+    async function loginUser() {
+      try {
+        requireClient();
+        const email = document.getElementById("loginEmail").value.trim();
+        const password = document.getElementById("loginPassword").value;
+        if (!email || !password) throw new Error("Заполни email и пароль для входа.");
+
+        const { data, error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+
+        log(`Вход выполнен. User ID: ${data.user.id}`, "ok");
+      } catch (e) {
+        log(e.message, "bad");
+      }
+    }
+
+    async function signOutUser() {
+      try {
+        requireClient();
+        const { error } = await sb.auth.signOut();
+        if (error) throw error;
+        log("Ты вышел из аккаунта.", "ok");
+      } catch (e) {
+        log(e.message, "bad");
+      }
+    }
+
+    async function whoAmI() {
+      try {
+        requireClient();
+        const { data, error } = await sb.auth.getUser();
+        if (error) throw error;
+        if (!data.user) {
+          log("Пользователь не авторизован.", "bad");
+          return;
+        }
+        log(`Ты вошёл как: ${data.user.email} | user.id=${data.user.id}`, "ok");
+      } catch (e) {
+        log(e.message, "bad");
+      }
+    }
+
+    async function loadMyProfile() {
+      try {
+        requireClient();
+        const { data: authData, error: authError } = await sb.auth.getUser();
+        if (authError) throw authError;
+        if (!authData.user) throw new Error("Сначала войди в аккаунт.");
+
+        const { data, error } = await sb.from("profiles").select("*").eq("id", authData.user.id).single();
+        if (error) throw error;
+        log(`Профиль:\n${JSON.stringify(data, null, 2)}`, "ok");
+      } catch (e) {
+        log(e.message, "bad");
+      }
+    }
+
+    async function writeTestRow() {
+      try {
+        requireClient();
+        const { data: authData, error: authError } = await sb.auth.getUser();
+        if (authError) throw authError;
+        if (!authData.user) throw new Error("Сначала войди в аккаунт.");
+
+        const row = {
+          id: authData.user.id,
+          username: document.getElementById("regUsername").value.trim() || "test_user",
+          birth_date: document.getElementById("regBirthDate").value || new Date().toISOString().slice(0, 10),
+          score: Math.floor(Math.random() * 1000),
+          device_id: getDeviceId()
+        };
+
+        const { error } = await sb.from("profiles").upsert(row);
+        if (error) throw error;
+
+        log(`Тестовая запись сохранена/обновлена: ${JSON.stringify(row)}`, "ok");
+      } catch (e) {
+        log(e.message, "bad");
+      }
+    }
+
+    async function readProfiles() {
+      try {
+        requireClient();
+        const { data: authData, error: authError } = await sb.auth.getUser();
+        if (authError) throw authError;
+        if (!authData.user) throw new Error("Сначала войди в аккаунт.");
+
+        const { data, error } = await sb.from("profiles").select("*").eq("id", authData.user.id);
+        if (error) throw error;
+        log(`Строки из profiles:\n${JSON.stringify(data, null, 2)}`, "ok");
+      } catch (e) {
+        log(e.message, "bad");
+      }
+    }
+  </script>
 </body>
 </html>
