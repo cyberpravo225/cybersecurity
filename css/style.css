@@ -3394,17 +3394,18 @@ body[data-page="home"] .hero{
 .game-feature-cyberly-ribbon{
   position:absolute;
   top:0;
-  right:0;
-  padding:7px 14px;
-  border-bottom-left-radius:12px;
-  background:rgba(255,140,32,.58);
+  right:12px;
+  transform:translateY(-50%);
+  padding:9px 16px;
+  border-radius:12px;
+  background:linear-gradient(135deg,rgba(255,165,66,.9),rgba(255,122,26,.8));
   color:#ffe56f;
-  font-size:13px;
+  font-size:14px;
   font-weight:800;
-  letter-spacing:.03em;
+  letter-spacing:.04em;
   text-transform:uppercase;
-  border-left:1px solid rgba(255,200,120,.45);
-  border-bottom:1px solid rgba(255,200,120,.45);
+  border:1px solid rgba(255,214,138,.65);
+  box-shadow:0 8px 20px rgba(0,0,0,.25);
 }
 
 .cyberly-emoji{
