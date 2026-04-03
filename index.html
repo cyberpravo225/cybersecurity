@@ -394,6 +394,13 @@
       padding: 24px;
       position: relative;
       overflow: hidden;
+      transform: translateY(10px) scale(0.985);
+      transition: transform 220ms ease, box-shadow 220ms ease;
+    }
+
+    .profile-modal.active .profile-modal__dialog {
+      transform: translateY(0) scale(1);
+      box-shadow: 0 34px 80px rgba(4, 10, 28, 0.33);
     }
 
     .profile-modal__dialog::before {
@@ -438,12 +445,14 @@
       margin: 0 0 6px;
       font-size: 1.34rem;
       letter-spacing: 0.01em;
+      padding-right: 46px;
     }
 
     .profile-modal__text {
       margin: 0 0 14px;
       color: var(--text-muted);
       font-size: 0.95rem;
+      max-width: 96%;
     }
 
     .profile-modal__panel {
@@ -546,6 +555,23 @@
       flex-wrap: wrap;
       gap: 8px;
       margin-top: 10px;
+    }
+
+    .profile-modal__panel .btn {
+      border-radius: 12px;
+      border: 1px solid rgba(124, 136, 170, 0.3);
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.09);
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+    }
+
+    .profile-modal__panel .btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(108, 132, 255, 0.58);
+      box-shadow: 0 14px 24px rgba(15, 23, 42, 0.14);
+    }
+
+    .profile-modal__panel .btn:active {
+      transform: translateY(0);
     }
 
     .profile-modal__actions--login .btn {
@@ -673,6 +699,16 @@
       color: #e8eefc;
       border-color: rgba(154, 181, 255, 0.76);
       background: rgba(16, 29, 56, 0.92);
+    }
+
+    :root[data-theme="dark"] .profile-modal__panel .btn {
+      border-color: rgba(131, 155, 220, 0.42);
+      box-shadow: 0 12px 24px rgba(4, 8, 24, 0.35);
+    }
+
+    :root[data-theme="dark"] .profile-modal__panel .btn:hover {
+      border-color: rgba(154, 181, 255, 0.76);
+      box-shadow: 0 16px 28px rgba(4, 8, 24, 0.44);
     }
 
     @media (max-width: 560px) {
