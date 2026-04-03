@@ -4659,7 +4659,7 @@ body[data-page="home"] a.game-feature-cyberguessr:visited{
 
 body[data-page="home"] .game-feature-cyberguessr .home-moon{
   position: absolute;
-  right: clamp(-14px, .2vw, 0px);
+  right: clamp(-24px, -.8vw, -8px);
   bottom: 0;
   width: clamp(270px, 31vw, 380px);
   height: calc(clamp(270px, 31vw, 380px) / 2);
@@ -6181,7 +6181,7 @@ body[data-page="cyberguessr"] .card-photo{
   }
 
   body[data-page="home"] .game-feature-cyberguessr .home-moon{
-    right: clamp(-14px, -1.2vw, -2px);
+    right: clamp(-22px, -2.2vw, -10px);
     width: clamp(210px, 58vw, 290px);
     height: calc(clamp(210px, 58vw, 290px) / 2);
   }
