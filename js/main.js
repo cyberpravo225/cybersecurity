@@ -64,10 +64,19 @@
   const passwordInput = document.getElementById('profilePasswordInput');
   const usernameInput = document.getElementById('profileUsernameInput');
   const birthDateInput = document.getElementById('profileBirthDateInput');
+  const rememberInput = document.getElementById('profileRememberInput');
 
   const SUPABASE_URL = 'https://vpnxkfpwmieerfaqijot.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZwbnhrZnB3bWllZXJmYXFpam90Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMzQ0NTIsImV4cCI6MjA5MDgxMDQ1Mn0.ImmCQUziNbBOkwZ2u3eaJu2DrLTmaKyWvUttUKKfckg';
   const STORAGE_DEVICE_ID = 'device_id';
+  const REMEMBER_ME_KEY = 'profile_remember_me';
+  const AUTH_LOCAL_KEY = 'cyber_auth_local';
+  const AUTH_SESSION_KEY = 'cyber_auth_session';
+
+  const rememberSaved = localStorage.getItem(REMEMBER_ME_KEY);
+  if (rememberInput) {
+    rememberInput.checked = rememberSaved === '1';
+  }
 
   const setStatus = (text, type = '') => {
     if (!statusBox) return;
@@ -121,11 +130,19 @@
     return age;
   };
 
-  const createClient = () => {
+  const createClient = (remember = Boolean(rememberInput?.checked)) => {
     if (!window.supabase?.createClient) {
       throw new Error('Библиотека Supabase не загрузилась.');
     }
-    return window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    return window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        storage: remember ? localStorage : sessionStorage,
+        storageKey: remember ? AUTH_LOCAL_KEY : AUTH_SESSION_KEY
+      }
+    });
   };
 
   const withPending = (btn, fn) => async () => {
@@ -143,6 +160,9 @@
 
   profileToggle.addEventListener('click', openModal);
   closeBtn?.addEventListener('click', closeModal);
+  rememberInput?.addEventListener('change', () => {
+    localStorage.setItem(REMEMBER_ME_KEY, rememberInput.checked ? '1' : '0');
+  });
   registerToggle?.addEventListener('click', () => {
     setMode('register');
   });
@@ -171,12 +191,14 @@
       const password = passwordInput?.value || '';
       const username = (usernameInput?.value || '').trim();
       const birthDate = birthDateInput?.value || '';
+      const rememberMe = Boolean(rememberInput?.checked);
 
       if (!email || !password || !username || !birthDate) {
         throw new Error('Для регистрации заполни email, пароль, логин и дату рождения.');
       }
 
-      const sb = createClient();
+      localStorage.setItem(REMEMBER_ME_KEY, rememberMe ? '1' : '0');
+      const sb = createClient(rememberMe);
       const { data, error } = await sb.auth.signUp({ email, password });
       if (error) throw error;
       if (!data?.user) {
@@ -205,9 +227,11 @@
     try {
       const email = (emailInput?.value || '').trim();
       const password = passwordInput?.value || '';
+      const rememberMe = Boolean(rememberInput?.checked);
       if (!email || !password) throw new Error('Для входа заполни email и пароль.');
 
-      const sb = createClient();
+      localStorage.setItem(REMEMBER_ME_KEY, rememberMe ? '1' : '0');
+      const sb = createClient(rememberMe);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
       if (error) throw error;
       setStatus(`Вход выполнен: ${data.user.email}`, 'ok');
