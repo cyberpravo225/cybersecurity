@@ -498,6 +498,8 @@
       width: 42px;
       height: 32px;
       padding: 0;
+      appearance: none;
+      -webkit-appearance: none;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -530,6 +532,13 @@
     .profile-password-toggle:hover {
       color: var(--text-color);
       border-color: rgba(108, 132, 255, 0.64);
+    }
+
+    .profile-password-toggle:active,
+    .profile-password-toggle:focus,
+    .profile-password-toggle:focus-visible {
+      transform: translateY(-50%) !important;
+      outline: none;
     }
 
     .profile-modal__actions {
