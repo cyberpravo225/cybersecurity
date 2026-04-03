@@ -408,10 +408,30 @@
     .profile-modal__text,
     .profile-form-grid,
     .profile-modal__actions,
-    .profile-modal__status,
-    .profile-modal__close {
+    .profile-modal__status {
       position: relative;
       z-index: 1;
+    }
+
+    .profile-modal__icon-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(124, 136, 170, 0.45);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.82);
+      color: var(--text-muted);
+      font-size: 1.25rem;
+      line-height: 1;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .profile-modal__icon-close:hover {
+      color: var(--text-color);
+      border-color: rgba(108, 132, 255, 0.7);
     }
 
     .profile-modal__title {
@@ -545,16 +565,6 @@
       color: #ef4444;
     }
 
-    .profile-modal__close {
-      margin-top: 10px;
-      border: 0;
-      background: transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 0.92rem;
-      padding: 4px 0;
-    }
-
     :root[data-theme="dark"] .profile-modal__dialog {
       background: linear-gradient(165deg, rgba(23, 31, 58, 0.98), rgba(17, 25, 46, 0.95));
       border-color: rgba(171, 188, 255, 0.28);
@@ -588,6 +598,17 @@
     :root[data-theme="dark"] .profile-password-toggle:hover {
       color: #e8eefc;
       border-color: rgba(154, 181, 255, 0.75);
+    }
+
+    :root[data-theme="dark"] .profile-modal__icon-close {
+      background: rgba(16, 29, 56, 0.88);
+      border-color: rgba(134, 153, 214, 0.58);
+      color: #b8c5e7;
+    }
+
+    :root[data-theme="dark"] .profile-modal__icon-close:hover {
+      color: #e8eefc;
+      border-color: rgba(154, 181, 255, 0.76);
     }
 
     :root[data-theme="dark"] .profile-register-toggle {
@@ -971,6 +992,7 @@
 
 <div id="profileModal" class="profile-modal" aria-hidden="true">
   <div class="profile-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+    <button id="profileModalClose" class="profile-modal__icon-close" type="button" aria-label="Закрыть окно">×</button>
     <h2 id="profileModalTitle" class="profile-modal__title">Профиль</h2>
     <p class="profile-modal__text">Создай аккаунт или войди в профиль на главной странице.</p>
 
@@ -999,12 +1021,7 @@
       </div>
     </div>
 
-    <div class="profile-modal__actions">
-      <button id="profileLogoutBtn" class="btn" type="button">Выйти</button>
-    </div>
-
     <div id="profileModalStatus" class="profile-modal__status" aria-live="polite"></div>
-    <button id="profileModalClose" class="profile-modal__close" type="button">Закрыть</button>
   </div>
 </div>
 
