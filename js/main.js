@@ -72,6 +72,7 @@
   const REMEMBER_ME_KEY = 'profile_remember_me';
   const AUTH_LOCAL_KEY = 'cyber_auth_local';
   const AUTH_SESSION_KEY = 'cyber_auth_session';
+  const LOGIN_HINT_TEXT = 'Для входа заполни email и пароль.';
 
   const rememberSaved = localStorage.getItem(REMEMBER_ME_KEY);
   if (rememberInput) {
@@ -98,6 +99,7 @@
     modal.classList.add('active');
     modal.setAttribute('aria-hidden', 'false');
     setMode('login');
+    setStatus(LOGIN_HINT_TEXT);
   };
 
   const closeModal = () => {
@@ -176,7 +178,11 @@
   });
 
   modal.addEventListener('click', (event) => {
-    if (event.target === modal) closeModal();
+    if (event.target === modal) {
+      closeModal();
+      return;
+    }
+    setStatus(LOGIN_HINT_TEXT);
   });
 
   document.addEventListener('keydown', (event) => {
