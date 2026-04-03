@@ -361,6 +361,99 @@
       transform: translateY(-1px) scale(1.05);
     }
 
+    .profile-modal {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(5, 10, 24, 0.62);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease;
+      z-index: 1200;
+    }
+
+    .profile-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .profile-modal__dialog {
+      width: min(480px, 100%);
+      background: var(--card-bg);
+      border: 1px solid rgba(124, 136, 170, 0.35);
+      border-radius: 18px;
+      box-shadow: 0 24px 60px rgba(4, 10, 28, 0.35);
+      padding: 22px;
+    }
+
+    .profile-modal__title {
+      margin: 0 0 6px;
+      font-size: 1.3rem;
+    }
+
+    .profile-modal__text {
+      margin: 0 0 14px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .profile-form-grid {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .profile-form-grid input {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(124, 136, 170, 0.4);
+      background: rgba(10, 18, 36, 0.08);
+      color: var(--text-color);
+      padding: 11px 12px;
+    }
+
+    .profile-form-grid input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .profile-modal__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .profile-modal__status {
+      margin-top: 10px;
+      min-height: 22px;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      white-space: pre-wrap;
+    }
+
+    .profile-modal__status.ok {
+      color: #22c55e;
+    }
+
+    .profile-modal__status.error {
+      color: #ef4444;
+    }
+
+    .profile-modal__close {
+      margin-top: 10px;
+      border: 0;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.92rem;
+      padding: 4px 0;
+    }
+
     body[data-page="home"] .topbar #performance-toggle .icon-bolt,
     body[data-page="home"] .topbar #performance-toggle .icon-battery,
     body[data-page="home"] .topbar #performance-toggle .battery-shell,
@@ -713,6 +806,32 @@
 </main>
 </div>
 
+<div id="profileModal" class="profile-modal" aria-hidden="true">
+  <div class="profile-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+    <h2 id="profileModalTitle" class="profile-modal__title">Профиль</h2>
+    <p class="profile-modal__text">Создай аккаунт или войди. Данные Supabase берутся из тестовой страницы и сохраняются в браузере.</p>
+
+    <div class="profile-form-grid">
+      <input id="supabaseUrlInput" type="text" placeholder="Supabase URL (https://xxxx.supabase.co)">
+      <input id="supabaseAnonKeyInput" type="text" placeholder="Supabase anon key">
+      <input id="profileEmailInput" type="email" placeholder="Email">
+      <input id="profilePasswordInput" type="password" placeholder="Пароль">
+      <input id="profileUsernameInput" type="text" placeholder="Логин (для регистрации)">
+      <input id="profileBirthDateInput" type="date">
+    </div>
+
+    <div class="profile-modal__actions">
+      <button id="profileRegisterBtn" class="btn primary" type="button">Создать профиль</button>
+      <button id="profileLoginBtn" class="btn" type="button">Войти</button>
+      <button id="profileLogoutBtn" class="btn" type="button">Выйти</button>
+    </div>
+
+    <div id="profileModalStatus" class="profile-modal__status" aria-live="polite"></div>
+    <button id="profileModalClose" class="profile-modal__close" type="button">Закрыть</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/main.js"></script>
 <script src="js/theme-network.js"></script>
 

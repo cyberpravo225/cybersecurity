@@ -42,6 +42,173 @@
     });
 })();
 
+/* =========================
+   Profile modal + Supabase auth (home page)
+   ========================= */
+(function(){
+  const profileToggle = document.getElementById('profile-toggle');
+  const modal = document.getElementById('profileModal');
+  if (!profileToggle || !modal) return;
+
+  const closeBtn = document.getElementById('profileModalClose');
+  const registerBtn = document.getElementById('profileRegisterBtn');
+  const loginBtn = document.getElementById('profileLoginBtn');
+  const logoutBtn = document.getElementById('profileLogoutBtn');
+  const statusBox = document.getElementById('profileModalStatus');
+
+  const urlInput = document.getElementById('supabaseUrlInput');
+  const anonInput = document.getElementById('supabaseAnonKeyInput');
+  const emailInput = document.getElementById('profileEmailInput');
+  const passwordInput = document.getElementById('profilePasswordInput');
+  const usernameInput = document.getElementById('profileUsernameInput');
+  const birthDateInput = document.getElementById('profileBirthDateInput');
+
+  const STORAGE_URL_KEY = 'sb_project_url';
+  const STORAGE_ANON_KEY = 'sb_anon_key';
+  const STORAGE_DEVICE_ID = 'device_id';
+
+  if (urlInput) urlInput.value = localStorage.getItem(STORAGE_URL_KEY) || '';
+  if (anonInput) anonInput.value = localStorage.getItem(STORAGE_ANON_KEY) || '';
+
+  const setStatus = (text, type = '') => {
+    if (!statusBox) return;
+    statusBox.textContent = text;
+    statusBox.classList.remove('ok', 'error');
+    if (type) statusBox.classList.add(type);
+  };
+
+  const openModal = () => {
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+  };
+
+  const closeModal = () => {
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+  };
+
+  const getDeviceId = () => {
+    let id = localStorage.getItem(STORAGE_DEVICE_ID);
+    if (!id) {
+      id = crypto.randomUUID();
+      localStorage.setItem(STORAGE_DEVICE_ID, id);
+    }
+    return id;
+  };
+
+  const calculateAge = (birthDate) => {
+    if (!birthDate) return null;
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) age--;
+    return age;
+  };
+
+  const createClient = () => {
+    const url = (urlInput?.value || '').trim();
+    const anon = (anonInput?.value || '').trim();
+    if (!url || !anon) {
+      throw new Error('Сначала укажи Supabase URL и anon key.');
+    }
+    if (!window.supabase?.createClient) {
+      throw new Error('Библиотека Supabase не загрузилась.');
+    }
+    localStorage.setItem(STORAGE_URL_KEY, url);
+    localStorage.setItem(STORAGE_ANON_KEY, anon);
+    return window.supabase.createClient(url, anon);
+  };
+
+  const withPending = (btn, fn) => async () => {
+    if (!btn) return;
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '...';
+    try {
+      await fn();
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
+  };
+
+  profileToggle.addEventListener('click', openModal);
+  closeBtn?.addEventListener('click', closeModal);
+
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) closeModal();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && modal.classList.contains('active')) {
+      closeModal();
+    }
+  });
+
+  registerBtn?.addEventListener('click', withPending(registerBtn, async () => {
+    try {
+      const email = (emailInput?.value || '').trim();
+      const password = passwordInput?.value || '';
+      const username = (usernameInput?.value || '').trim();
+      const birthDate = birthDateInput?.value || '';
+
+      if (!email || !password || !username || !birthDate) {
+        throw new Error('Для регистрации заполни email, пароль, логин и дату рождения.');
+      }
+
+      const sb = createClient();
+      const { data, error } = await sb.auth.signUp({ email, password });
+      if (error) throw error;
+      if (!data?.user) {
+        throw new Error('Пользователь не создан. Проверь подтверждение email в Supabase.');
+      }
+
+      const profileRow = {
+        id: data.user.id,
+        username,
+        birth_date: birthDate,
+        age: calculateAge(birthDate),
+        score: 0,
+        device_id: getDeviceId()
+      };
+
+      const { error: profileError } = await sb.from('profiles').insert(profileRow);
+      if (profileError) throw profileError;
+
+      setStatus('Профиль создан. Теперь можно войти.', 'ok');
+    } catch (error) {
+      setStatus(error.message || 'Ошибка при создании профиля.', 'error');
+    }
+  }));
+
+  loginBtn?.addEventListener('click', withPending(loginBtn, async () => {
+    try {
+      const email = (emailInput?.value || '').trim();
+      const password = passwordInput?.value || '';
+      if (!email || !password) throw new Error('Для входа заполни email и пароль.');
+
+      const sb = createClient();
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      setStatus(`Вход выполнен: ${data.user.email}`, 'ok');
+    } catch (error) {
+      setStatus(error.message || 'Ошибка при входе.', 'error');
+    }
+  }));
+
+  logoutBtn?.addEventListener('click', withPending(logoutBtn, async () => {
+    try {
+      const sb = createClient();
+      const { error } = await sb.auth.signOut();
+      if (error) throw error;
+      setStatus('Вы вышли из аккаунта.', 'ok');
+    } catch (error) {
+      setStatus(error.message || 'Ошибка при выходе.', 'error');
+    }
+  }));
+})();
+
 
 /* =========================
    Background animation performance toggle
