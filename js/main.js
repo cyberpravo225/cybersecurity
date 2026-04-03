@@ -59,6 +59,11 @@
   const backToLoginBtn = document.getElementById('profileBackToLoginBtn');
   const authPanel = document.getElementById('profileAuthPanel');
   const authText = document.getElementById('profileAuthText');
+  const profileViewEmail = document.getElementById('profileViewEmail');
+  const profileViewUsername = document.getElementById('profileViewUsername');
+  const profileViewAge = document.getElementById('profileViewAge');
+  const profileViewBirthDate = document.getElementById('profileViewBirthDate');
+  const profileViewDeviceId = document.getElementById('profileViewDeviceId');
 
   const emailInput = document.getElementById('profileEmailInput');
   const passwordInput = document.getElementById('profilePasswordInput');
@@ -73,6 +78,7 @@
   const AUTH_LOCAL_KEY = 'cyber_auth_local';
   const AUTH_SESSION_KEY = 'cyber_auth_session';
   const LOGIN_HINT_TEXT = 'Для входа заполни email и пароль.';
+  let currentMode = 'login';
 
   const rememberSaved = localStorage.getItem(REMEMBER_ME_KEY);
   if (rememberInput) {
@@ -87,19 +93,39 @@
   };
 
   const setMode = (mode) => {
+    currentMode = mode;
     const registerMode = mode === 'register';
+    const profileMode = mode === 'profile';
     authPanel?.classList.toggle('is-register', registerMode);
+    authPanel?.classList.toggle('is-profile', profileMode);
     if (registerToggle) registerToggle.setAttribute('aria-expanded', String(registerMode));
     if (authText) {
-      authText.textContent = registerMode ? 'Регистрируйтесь.' : 'Войдите в аккаунт.';
+      if (profileMode) authText.textContent = 'Ваш профиль.';
+      else authText.textContent = registerMode ? 'Регистрируйтесь.' : 'Войдите в аккаунт.';
     }
   };
 
-  const openModal = () => {
+  const formatBirthDate = (value) => {
+    if (!value) return '—';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return date.toLocaleDateString('ru-RU');
+  };
+
+  const fillProfileView = (user, profile) => {
+    if (profileViewEmail) profileViewEmail.textContent = user?.email || '—';
+    if (profileViewUsername) profileViewUsername.textContent = profile?.username || '—';
+    if (profileViewAge) profileViewAge.textContent = profile?.age ?? '—';
+    if (profileViewBirthDate) profileViewBirthDate.textContent = formatBirthDate(profile?.birth_date);
+    if (profileViewDeviceId) profileViewDeviceId.textContent = profile?.device_id || getDeviceId();
+  };
+
+  const openModal = async () => {
     modal.classList.add('active');
     modal.setAttribute('aria-hidden', 'false');
     setMode('login');
     setStatus(LOGIN_HINT_TEXT);
+    await showCurrentProfileIfLoggedIn();
   };
 
   const closeModal = () => {
@@ -160,7 +186,44 @@
     }
   };
 
-  profileToggle.addEventListener('click', openModal);
+  const getCurrentSession = async () => {
+    for (const remember of [true, false]) {
+      const sb = createClient(remember);
+      const { data, error } = await sb.auth.getSession();
+      if (error) continue;
+      const user = data?.session?.user;
+      if (user) return { sb, user };
+    }
+    return null;
+  };
+
+  const getProfileRow = async (sb, userId) => {
+    const { data, error } = await sb
+      .from('profiles')
+      .select('username,birth_date,age,device_id')
+      .eq('id', userId)
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  };
+
+  const showCurrentProfileIfLoggedIn = async () => {
+    try {
+      const currentSession = await getCurrentSession();
+      if (!currentSession) return;
+      const profile = await getProfileRow(currentSession.sb, currentSession.user.id);
+      fillProfileView(currentSession.user, profile);
+      setMode('profile');
+      setStatus('Вы уже вошли в аккаунт.', 'ok');
+    } catch (error) {
+      setMode('login');
+      setStatus(LOGIN_HINT_TEXT);
+    }
+  };
+
+  profileToggle.addEventListener('click', () => {
+    openModal();
+  });
   closeBtn?.addEventListener('click', closeModal);
   rememberInput?.addEventListener('change', () => {
     localStorage.setItem(REMEMBER_ME_KEY, rememberInput.checked ? '1' : '0');
@@ -182,7 +245,9 @@
       closeModal();
       return;
     }
-    setStatus(LOGIN_HINT_TEXT);
+    if (currentMode !== 'profile') {
+      setStatus(LOGIN_HINT_TEXT);
+    }
   });
 
   document.addEventListener('keydown', (event) => {
@@ -240,6 +305,9 @@
       const sb = createClient(rememberMe);
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
       if (error) throw error;
+      const profile = await getProfileRow(sb, data.user.id);
+      fillProfileView(data.user, profile);
+      setMode('profile');
       setStatus(`Вход выполнен: ${data.user.email}`, 'ok');
     } catch (error) {
       setStatus(error.message || 'Ошибка при входе.', 'error');
