@@ -367,10 +367,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 18px;
-      background: rgba(5, 10, 24, 0.62);
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
+      padding: 20px;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(130, 103, 255, 0.2), transparent 48%),
+        radial-gradient(circle at 80% 80%, rgba(74, 222, 255, 0.15), transparent 46%),
+        rgba(5, 10, 24, 0.62);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       opacity: 0;
       pointer-events: none;
       transition: opacity 220ms ease;
@@ -383,17 +386,38 @@
     }
 
     .profile-modal__dialog {
-      width: min(480px, 100%);
-      background: var(--card-bg);
-      border: 1px solid rgba(124, 136, 170, 0.35);
-      border-radius: 18px;
-      box-shadow: 0 24px 60px rgba(4, 10, 28, 0.35);
-      padding: 22px;
+      width: min(500px, 100%);
+      background: linear-gradient(165deg, rgba(255, 255, 255, 0.96), rgba(247, 250, 255, 0.9));
+      border: 1px solid rgba(120, 132, 168, 0.35);
+      border-radius: 20px;
+      box-shadow: 0 28px 70px rgba(4, 10, 28, 0.3);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-modal__dialog::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(125deg, rgba(132, 103, 255, 0.09), transparent 35%, rgba(56, 189, 248, 0.08));
+      pointer-events: none;
+    }
+
+    .profile-modal__title,
+    .profile-modal__text,
+    .profile-form-grid,
+    .profile-modal__actions,
+    .profile-modal__status,
+    .profile-modal__close {
+      position: relative;
+      z-index: 1;
     }
 
     .profile-modal__title {
       margin: 0 0 6px;
-      font-size: 1.3rem;
+      font-size: 1.34rem;
+      letter-spacing: 0.01em;
     }
 
     .profile-modal__text {
@@ -412,13 +436,49 @@
       width: 100%;
       border-radius: 12px;
       border: 1px solid rgba(124, 136, 170, 0.4);
-      background: rgba(10, 18, 36, 0.08);
+      background: rgba(255, 255, 255, 0.75);
       color: var(--text-color);
       padding: 11px 12px;
+      transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+
+    .profile-form-grid input:focus {
+      outline: none;
+      border-color: rgba(108, 132, 255, 0.74);
+      box-shadow: 0 0 0 3px rgba(108, 132, 255, 0.18);
+      background: rgba(255, 255, 255, 0.95);
     }
 
     .profile-form-grid input::placeholder {
       color: var(--text-muted);
+    }
+
+    .profile-password-row {
+      position: relative;
+    }
+
+    .profile-password-row input {
+      padding-right: 88px;
+    }
+
+    .profile-password-toggle {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 1px solid rgba(124, 136, 170, 0.4);
+      border-radius: 10px;
+      background: rgba(248, 250, 255, 0.95);
+      color: var(--text-muted);
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .profile-password-toggle:hover {
+      color: var(--text-color);
+      border-color: rgba(108, 132, 255, 0.64);
     }
 
     .profile-modal__actions {
@@ -452,6 +512,51 @@
       cursor: pointer;
       font-size: 0.92rem;
       padding: 4px 0;
+    }
+
+    :root[data-theme="dark"] .profile-modal__dialog {
+      background: linear-gradient(165deg, rgba(23, 31, 58, 0.98), rgba(17, 25, 46, 0.95));
+      border-color: rgba(171, 188, 255, 0.28);
+      box-shadow: 0 28px 70px rgba(2, 6, 20, 0.5);
+      color: #e8eefc;
+    }
+
+    :root[data-theme="dark"] .profile-form-grid input {
+      background: rgba(10, 18, 36, 0.65);
+      border-color: rgba(137, 157, 212, 0.42);
+      color: #e7eefc;
+    }
+
+    :root[data-theme="dark"] .profile-form-grid input:focus {
+      background: rgba(13, 23, 46, 0.92);
+      border-color: rgba(137, 168, 255, 0.74);
+      box-shadow: 0 0 0 3px rgba(106, 132, 255, 0.2);
+    }
+
+    :root[data-theme="dark"] .profile-password-toggle {
+      background: rgba(22, 33, 62, 0.92);
+      border-color: rgba(130, 150, 216, 0.45);
+      color: #b8c5e7;
+    }
+
+    :root[data-theme="dark"] .profile-password-toggle:hover {
+      color: #e8eefc;
+      border-color: rgba(154, 181, 255, 0.75);
+    }
+
+    @media (max-width: 560px) {
+      .profile-modal {
+        padding: 12px;
+      }
+
+      .profile-modal__dialog {
+        border-radius: 16px;
+        padding: 18px;
+      }
+
+      .profile-modal__actions .btn {
+        flex: 1 1 100%;
+      }
     }
 
     body[data-page="home"] .topbar #performance-toggle .icon-bolt,
@@ -813,7 +918,10 @@
 
     <div class="profile-form-grid">
       <input id="profileEmailInput" type="email" placeholder="Email">
-      <input id="profilePasswordInput" type="password" placeholder="Пароль">
+      <div class="profile-password-row">
+        <input id="profilePasswordInput" type="password" placeholder="Пароль">
+        <button id="profilePasswordToggle" class="profile-password-toggle" type="button" aria-label="Показать пароль">Показать</button>
+      </div>
       <input id="profileUsernameInput" type="text" placeholder="Логин (для регистрации)">
       <input id="profileBirthDateInput" type="date">
     </div>
