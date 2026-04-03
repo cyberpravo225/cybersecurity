@@ -55,6 +55,7 @@
   const loginBtn = document.getElementById('profileLoginBtn');
   const logoutBtn = document.getElementById('profileLogoutBtn');
   const statusBox = document.getElementById('profileModalStatus');
+  const passwordToggle = document.getElementById('profilePasswordToggle');
 
   const emailInput = document.getElementById('profileEmailInput');
   const passwordInput = document.getElementById('profilePasswordInput');
@@ -80,6 +81,11 @@
   const closeModal = () => {
     modal.classList.remove('active');
     modal.setAttribute('aria-hidden', 'true');
+    if (passwordInput) passwordInput.type = 'password';
+    if (passwordToggle) {
+      passwordToggle.textContent = 'Показать';
+      passwordToggle.setAttribute('aria-label', 'Показать пароль');
+    }
   };
 
   const getDeviceId = () => {
@@ -123,6 +129,13 @@
 
   profileToggle.addEventListener('click', openModal);
   closeBtn?.addEventListener('click', closeModal);
+  passwordToggle?.addEventListener('click', () => {
+    const isHidden = passwordInput?.type === 'password';
+    if (!passwordInput) return;
+    passwordInput.type = isHidden ? 'text' : 'password';
+    passwordToggle.textContent = isHidden ? 'Скрыть' : 'Показать';
+    passwordToggle.setAttribute('aria-label', isHidden ? 'Скрыть пароль' : 'Показать пароль');
+  });
 
   modal.addEventListener('click', (event) => {
     if (event.target === modal) closeModal();
