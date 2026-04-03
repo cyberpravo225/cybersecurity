@@ -490,6 +490,23 @@
       color: var(--text-muted);
     }
 
+    .profile-remember {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: -2px;
+      margin-bottom: 2px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      user-select: none;
+    }
+
+    .profile-remember input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #6c84ff;
+    }
+
     .profile-password-row {
       position: relative;
     }
@@ -665,6 +682,10 @@
       background: rgba(13, 23, 46, 0.92);
       border-color: rgba(137, 168, 255, 0.74);
       box-shadow: 0 0 0 3px rgba(106, 132, 255, 0.2);
+    }
+
+    :root[data-theme="dark"] .profile-remember {
+      color: #b8c5e7;
     }
 
     :root[data-theme="dark"] .profile-password-toggle {
@@ -1091,6 +1112,10 @@
           <input id="profilePasswordInput" type="password" placeholder="Пароль">
           <button id="profilePasswordToggle" class="profile-password-toggle" type="button" aria-label="Показать пароль" data-state="show"></button>
         </div>
+        <label class="profile-remember">
+          <input id="profileRememberInput" type="checkbox">
+          <span>Запомнить меня</span>
+        </label>
       </div>
 
       <div class="profile-modal__actions profile-modal__actions--login profile-login-only">
