@@ -54,6 +54,7 @@
   const registerBtn = document.getElementById('profileRegisterBtn');
   const loginBtn = document.getElementById('profileLoginBtn');
   const logoutBtn = document.getElementById('profileLogoutBtn');
+  const saveProfileBtn = document.getElementById('profileSaveProfileBtn');
   const statusBox = document.getElementById('profileModalStatus');
   const passwordToggle = document.getElementById('profilePasswordToggle');
   const registerToggle = document.getElementById('profileRegisterToggle');
@@ -65,6 +66,8 @@
   const profileViewAge = document.getElementById('profileViewAge');
   const profileViewBirthDate = document.getElementById('profileViewBirthDate');
   const profileViewDeviceId = document.getElementById('profileViewDeviceId');
+  const profileEditUsernameInput = document.getElementById('profileEditUsernameInput');
+  const profileEditBirthDateInput = document.getElementById('profileEditBirthDateInput');
 
   const emailInput = document.getElementById('profileEmailInput');
   const passwordInput = document.getElementById('profilePasswordInput');
@@ -120,6 +123,8 @@
     if (profileViewAge) profileViewAge.textContent = derivedAge ?? '—';
     if (profileViewBirthDate) profileViewBirthDate.textContent = formatBirthDate(profile?.birth_date);
     if (profileViewDeviceId) profileViewDeviceId.textContent = profile?.device_id || getDeviceId();
+    if (profileEditUsernameInput) profileEditUsernameInput.value = profile?.username || '';
+    if (profileEditBirthDateInput) profileEditBirthDateInput.value = profile?.birth_date || '';
   };
 
   const openModal = async () => {
@@ -333,6 +338,40 @@
       setStatus('Вы вышли из аккаунта.', 'ok');
     } catch (error) {
       setStatus(error.message || 'Ошибка при выходе.', 'error');
+    }
+  }));
+
+  saveProfileBtn?.addEventListener('click', withPending(saveProfileBtn, async () => {
+    try {
+      const currentSession = await getCurrentSession();
+      if (!currentSession?.user?.id) {
+        throw new Error('Сессия не найдена. Войдите в аккаунт заново.');
+      }
+
+      const username = (profileEditUsernameInput?.value || '').trim();
+      const birthDate = profileEditBirthDateInput?.value || '';
+      if (!username || !birthDate) {
+        throw new Error('Заполни логин и дату рождения, чтобы сохранить профиль.');
+      }
+
+      const updates = {
+        username,
+        birth_date: birthDate,
+        device_id: getDeviceId()
+      };
+
+      const { error } = await currentSession.sb
+        .from('profiles')
+        .update(updates)
+        .eq('id', currentSession.user.id);
+
+      if (error) throw error;
+
+      const refreshed = await getProfileRow(currentSession.sb, currentSession.user.id);
+      fillProfileView(currentSession.user, refreshed);
+      setStatus('Профиль обновлён.', 'ok');
+    } catch (error) {
+      setStatus(error.message || 'Ошибка при обновлении профиля.', 'error');
     }
   }));
 
