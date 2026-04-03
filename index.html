@@ -650,6 +650,53 @@
       display: none;
     }
 
+    .profile-account-view {
+      display: none;
+      gap: 10px;
+    }
+
+    .profile-modal__panel.is-profile .profile-login-only,
+    .profile-modal__panel.is-profile .profile-register-block,
+    .profile-modal__panel.is-profile .profile-remember {
+      display: none;
+    }
+
+    .profile-modal__panel.is-profile .profile-account-view {
+      display: grid;
+    }
+
+    .profile-account-card {
+      border: 1px solid rgba(124, 136, 170, 0.3);
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .profile-account-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.92rem;
+    }
+
+    .profile-account-row span:first-child {
+      color: var(--text-muted);
+    }
+
+    .profile-account-row span:last-child {
+      text-align: right;
+      word-break: break-word;
+    }
+
+    .profile-account-note {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      line-height: 1.4;
+    }
+
     .profile-modal__status {
       margin-top: 10px;
       min-height: 22px;
@@ -736,6 +783,16 @@
     :root[data-theme="dark"] .profile-modal__panel .btn:hover {
       border-color: rgba(154, 181, 255, 0.76);
       box-shadow: 0 16px 28px rgba(4, 8, 24, 0.44);
+    }
+
+    :root[data-theme="dark"] .profile-account-card {
+      background: rgba(13, 23, 46, 0.68);
+      border-color: rgba(134, 153, 214, 0.52);
+    }
+
+    :root[data-theme="dark"] .profile-account-row span:first-child,
+    :root[data-theme="dark"] .profile-account-note {
+      color: #b8c5e7;
     }
 
     @media (max-width: 560px) {
@@ -1138,6 +1195,17 @@
           <button id="profileRegisterBtn" class="btn" type="button">Создать аккаунт</button>
           <button id="profileBackToLoginBtn" class="profile-register-toggle profile-register-only" type="button">У меня есть аккаунт</button>
         </div>
+      </div>
+
+      <div id="profileAccountView" class="profile-account-view">
+        <div class="profile-account-card">
+          <div class="profile-account-row"><span>Почта</span><span id="profileViewEmail">—</span></div>
+          <div class="profile-account-row"><span>Логин</span><span id="profileViewUsername">—</span></div>
+          <div class="profile-account-row"><span>Возраст</span><span id="profileViewAge">—</span></div>
+          <div class="profile-account-row"><span>Дата рождения</span><span id="profileViewBirthDate">—</span></div>
+          <div class="profile-account-row"><span>Устройство</span><span id="profileViewDeviceId">—</span></div>
+        </div>
+        <p class="profile-account-note">Скоро здесь появятся лучшие результаты и дополнительные достижения профиля.</p>
       </div>
     </div>
 
