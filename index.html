@@ -879,6 +879,28 @@
         align-self: center;
         margin: 0 !important;
       }
+
+      body[data-page="home"] .card-grid > a.card.game-feature-binary {
+        grid-template-columns: minmax(0, 1fr) !important;
+        justify-items: center !important;
+        row-gap: 12px;
+      }
+
+      body[data-page="home"] .card-grid > a.card.game-feature-binary h3,
+      body[data-page="home"] .card-grid > a.card.game-feature-binary p {
+        text-align: center !important;
+      }
+
+      body[data-page="home"] .card-grid > a.card.game-feature-binary .game-feature-copy,
+      body[data-page="home"] .card-grid > a.card.game-feature-binary .binary-preview {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      body[data-page="home"] .card-grid > a.card.game-feature-binary .binary-chip {
+        align-self: center;
+      }
     }
   </style>
 </head>
