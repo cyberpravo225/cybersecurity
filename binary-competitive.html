@@ -31,6 +31,13 @@
     .bc-title { margin: 0; }
     .bc-sub { margin: 0; color: var(--bc-muted); }
     .bc-nav { display: flex; gap: 10px; flex-wrap: wrap; }
+    .theme-toggle { min-width: 176px; display:inline-flex; align-items:center; justify-content:center; gap:8px; }
+    .theme-icon-sun{display:none}
+    .theme-toggle-label{white-space:nowrap}
+    html[data-theme="light"] .theme-icon-sun{display:inline}
+    html[data-theme="light"] .theme-icon-moon{display:none}
+    html[data-theme="dark"] .theme-icon-sun{display:none}
+    html[data-theme="dark"] .theme-icon-moon{display:inline}
 
     .bc-shell {
       background: linear-gradient(155deg, rgba(124, 167, 255, .16), transparent 55%), var(--bc-card);
@@ -122,10 +129,15 @@
                 <h1 class="bc-title">Соревновательный режим по двоичному коду</h1>
                 <p class="bc-sub">Переводи слова в binary, набирай очки и соревнуйся по таймеру.</p>
               </div>
-              <div class="bc-nav">
-                <button class="bc-btn ghost" type="button" data-tab="competitive">⚡ Competitive</button>
-                <button class="bc-btn ghost" type="button" data-tab="tournament">🏆 Tournament</button>
-              </div>
+              <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
+                <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
+                <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
+                <span class="theme-toggle-label">Тёмная тема</span>
+              </button>
+            </div>
+            <div class="bc-nav">
+              <button class="bc-btn ghost" type="button" data-tab="competitive">⚡ Competitive</button>
+              <button class="bc-btn ghost" type="button" data-tab="tournament">🏆 Tournament</button>
             </div>
 
             <section id="competitiveMode">
@@ -238,6 +250,31 @@
   </div>
 
   <script>
+    (function initTheme() {
+      const key = "cyber_theme";
+      const root = document.documentElement;
+      const toggle = document.getElementById("themeToggle");
+      const preferredDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const saved = localStorage.getItem(key);
+      const initial = saved || (preferredDark ? "dark" : "light");
+      root.setAttribute("data-theme", initial);
+
+      function syncLabel(theme) {
+        const label = toggle.querySelector(".theme-toggle-label");
+        if (label) label.textContent = theme === "dark" ? "Светлая тема" : "Тёмная тема";
+        toggle.setAttribute("aria-pressed", String(theme === "dark"));
+      }
+
+      syncLabel(initial);
+      toggle.addEventListener("click", () => {
+        const current = root.getAttribute("data-theme") === "dark" ? "dark" : "light";
+        const next = current === "dark" ? "light" : "dark";
+        root.setAttribute("data-theme", next);
+        localStorage.setItem(key, next);
+        syncLabel(next);
+      });
+    })();
+
     const baseWords = ["cat", "dog", "sun", "moon", "star"];
     const mediumWords = ["code", "safe", "data", "byte", "fire"];
     const hardWords = ["encryption", "network", "zero1", "shield", "quantum"];
