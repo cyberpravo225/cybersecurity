@@ -27,14 +27,15 @@
     .bb-wrap { display: grid; gap: 18px; }
     .bb-header { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; }
     .bb-sub { margin: 0; color: var(--bb-muted); }
-    .bb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+    .bb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
     .bb-card {
       background: var(--bb-card);
       border: 1px solid var(--bb-border);
       border-radius: 16px;
-      padding: 16px;
+      padding: 22px;
       display: grid;
-      gap: 10px;
+      gap: 14px;
+      min-height: 260px;
       box-shadow: var(--bb-shadow);
       transform: translateY(10px);
       opacity: 0;
@@ -50,7 +51,8 @@
       box-shadow: 0 22px 46px rgba(7, 16, 40, .42);
       border-color: rgba(104, 166, 255, .65);
     }
-    .bb-card h2 { margin: 0; font-size: 1.12rem; }
+    .bb-card h2 { margin: 0; font-size: 1.35rem; }
+    .bb-desc { margin: 0; color: var(--bb-muted); line-height: 1.6; font-size: 1rem; }
     .bb-link {
       display: inline-flex;
       align-items: center;
@@ -65,7 +67,7 @@
       transition: transform .28s ease, filter .28s ease;
     }
     .bb-link:hover { transform: translateY(-2px); filter: brightness(1.06); }
-    .bb-pill { display: inline-block; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--bb-border); color: var(--bb-muted); font-size: .84rem; }
+    .bb-pill { display: inline-block; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--bb-border); color: var(--bb-muted); font-size: .95rem; }
     .theme-toggle { min-width: 160px; }
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(10px); }
@@ -73,6 +75,10 @@
     }
     @media (prefers-reduced-motion: reduce) {
       .bb-card, .bb-link { animation: none; transition: none; }
+    }
+    @media (max-width: 720px) {
+      .bb-grid { grid-template-columns: 1fr; }
+      .bb-card { min-height: unset; }
     }
   </style>
 </head>
@@ -96,35 +102,35 @@
             <article class="bb-card">
               <span class="bb-pill">1) Practice Mode</span>
               <h2>Учебный режим</h2>
-              <p class="bb-sub">Свободная тренировка перевода слов в бинарный код и подсказки по ASCII.</p>
+              <p class="bb-desc">Свободная тренировка перевода слов в бинарный код без ограничений по времени. Подходит для разогрева и освоения формата 8-битного ASCII с подсказками.</p>
               <a class="bb-link" href="binary-practice.html">Открыть Practice →</a>
             </article>
 
             <article class="bb-card">
               <span class="bb-pill">2) Competitive/Timed</span>
               <h2>Соревновательный режим</h2>
-              <p class="bb-sub">Игра на время: набирай максимум очков за ограниченный интервал.</p>
+              <p class="bb-desc">Игра на скорость: за ограниченное время переводи как можно больше слов. Чем стабильнее ответы, тем выше итоговый счёт и место в рейтинге.</p>
               <a class="bb-link" href="binary-competitive.html">Открыть Timed →</a>
             </article>
 
             <article class="bb-card">
               <span class="bb-pill">3) Self-Test</span>
               <h2>Тестовый режим</h2>
-              <p class="bb-sub">Проверка навыков без подсказок с итоговым процентом успеха.</p>
+              <p class="bb-desc">Формат самостоятельной проверки без подсказок. Выбирай объём теста, проходи серию заданий и получай точный итог: количество правильных и процент успешности.</p>
               <a class="bb-link" href="binary-self-test.html">Открыть Self-Test →</a>
             </article>
 
             <article class="bb-card">
               <span class="bb-pill">4) Tournament</span>
               <h2>Турнирный режим</h2>
-              <p class="bb-sub">Режим для турниров с участниками, очками и таблицей ранжирования.</p>
+              <p class="bb-desc">Режим для мини-соревнований: настраивай количество участников, сложность и параметры раундов, а затем отслеживай очки в турнирной таблице.</p>
               <a class="bb-link" href="binary-tournament.html">Открыть Tournament →</a>
             </article>
 
             <article class="bb-card">
               <span class="bb-pill">5) Learn</span>
               <h2>Обучающий материал</h2>
-              <p class="bb-sub">Шпаргалка по ASCII и 8-битному представлению символов.</p>
+              <p class="bb-desc">Подробная шпаргалка: как переводить символы в ASCII, почему используется 8-битная запись и как быстро проверять корректность двоичного ответа.</p>
               <a class="bb-link" href="binary-learning.html">Открыть материалы →</a>
             </article>
           </div>
