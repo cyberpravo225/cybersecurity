@@ -3,86 +3,76 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Binary Battle — режимы тренировки и турниры</title>
+  <title>Binary Battle — режимы и материалы</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
     :root {
-      --bb-bg-card: rgba(17, 30, 59, .78);
-      --bb-bg-soft: rgba(4, 13, 30, .72);
-      --bb-border: rgba(130, 171, 255, .35);
-      --bb-text: #eef4ff;
-      --bb-muted: #93a7d8;
-      --bb-good: #89ffcb;
-      --bb-bad: #ff9eb3;
-      --bb-active: linear-gradient(120deg, #6d9bff, #4de2ff);
+      --bb-bg: radial-gradient(circle at 20% 20%, rgba(88, 126, 255, .22), transparent 40%), #081327;
+      --bb-card: rgba(15, 28, 56, .84);
+      --bb-border: rgba(133, 169, 255, .35);
+      --bb-text: #eaf1ff;
+      --bb-muted: #9eb2db;
+      --bb-accent: linear-gradient(125deg, #79a3ff, #4dd9ff);
+      --bb-shadow: 0 18px 40px rgba(4, 10, 28, .35);
     }
     html[data-theme="light"] {
-      --bb-bg-card: rgba(255, 255, 255, .95);
-      --bb-bg-soft: rgba(244, 248, 255, .95);
-      --bb-border: rgba(52, 95, 184, .28);
-      --bb-text: #0f2249;
-      --bb-muted: #3f598f;
-      --bb-good: #067647;
-      --bb-bad: #b42318;
-      --bb-active: linear-gradient(120deg, #7ea2ff, #70d0ff);
+      --bb-bg: radial-gradient(circle at 20% 20%, rgba(99, 128, 255, .15), transparent 45%), #f2f7ff;
+      --bb-card: rgba(255, 255, 255, .93);
+      --bb-border: rgba(53, 94, 180, .25);
+      --bb-text: #0d2249;
+      --bb-muted: #486290;
+      --bb-shadow: 0 16px 36px rgba(44, 72, 129, .16);
     }
-    .binary-layout { display: grid; gap: 18px; }
-    .binary-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
-    .binary-card {
-      background: var(--bb-bg-card);
+    body[data-page="binary-battle"] { background: var(--bb-bg); color: var(--bb-text); }
+    .bb-wrap { display: grid; gap: 18px; }
+    .bb-header { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .bb-sub { margin: 0; color: var(--bb-muted); }
+    .bb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+    .bb-card {
+      background: var(--bb-card);
       border: 1px solid var(--bb-border);
       border-radius: 16px;
-      padding: 14px;
+      padding: 16px;
       display: grid;
-      gap: 8px;
+      gap: 10px;
+      box-shadow: var(--bb-shadow);
+      transform: translateY(10px);
+      opacity: 0;
+      animation: fadeUp .6s ease forwards;
+      transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
     }
-    .binary-card h3 { margin: 0; font-size: 1.05rem; }
-    .binary-small { margin: 0; color: var(--bb-muted); font-size: .95rem; }
-    .binary-input, .binary-select {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--bb-border);
-      background: var(--bb-bg-soft);
-      color: var(--bb-text);
-      font-size: .95rem;
+    .bb-card:nth-child(2) { animation-delay: .06s; }
+    .bb-card:nth-child(3) { animation-delay: .12s; }
+    .bb-card:nth-child(4) { animation-delay: .18s; }
+    .bb-card:nth-child(5) { animation-delay: .24s; }
+    .bb-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 22px 46px rgba(7, 16, 40, .42);
+      border-color: rgba(104, 166, 255, .65);
     }
-    .binary-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-    .binary-answer { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
-    .binary-tabs { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-    .binary-tab {
-      padding: 18px 16px;
-      border-radius: 16px;
-      border: 1px solid var(--bb-border);
-      background: var(--bb-bg-soft);
-      color: var(--bb-text);
-      cursor: pointer;
-      min-height: 78px;
-      text-align: left;
-      font-size: 1rem;
+    .bb-card h2 { margin: 0; font-size: 1.12rem; }
+    .bb-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      padding: 10px 14px;
+      border-radius: 11px;
+      text-decoration: none;
+      color: #03132e;
+      background: var(--bb-accent);
       font-weight: 700;
+      transition: transform .28s ease, filter .28s ease;
     }
-    .binary-tab.active { background: var(--bb-active); color: #031428; border-color: transparent; }
-    .binary-panel { display: none; }
-    .binary-panel.active { display: grid; gap: 12px; }
-    .binary-word {
-      margin: 0;
-      font-size: clamp(1.4rem, 3vw, 2rem);
-      font-weight: 800;
-      letter-spacing: .02em;
-    }
-    .binary-status { min-height: 24px; margin: 0; font-weight: 700; }
-    .binary-status.good { color: var(--bb-good); }
-    .binary-status.bad { color: var(--bb-bad); }
-    .binary-board table { width: 100%; border-collapse: collapse; }
-    .binary-board th, .binary-board td { border-bottom: 1px solid var(--bb-border); padding: 8px 6px; text-align: left; }
-    .binary-board th { color: var(--bb-muted); font-weight: 600; }
-    .muted-block { color: var(--bb-muted); margin: 0; }
-    .learn-block { line-height: 1.55; }
-    .binary-header-row { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .bb-link:hover { transform: translateY(-2px); filter: brightness(1.06); }
+    .bb-pill { display: inline-block; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--bb-border); color: var(--bb-muted); font-size: .84rem; }
     .theme-toggle { min-width: 160px; }
-    @media (max-width: 650px) {
-      .binary-row .btn { width: 100%; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .bb-card, .bb-link { animation: none; transition: none; }
     }
   </style>
 </head>
@@ -90,132 +80,53 @@
   <div class="site-shell">
     <main class="main">
       <section class="section">
-        <div class="container binary-layout">
+        <div class="container bb-wrap">
           <a class="btn ghost" href="index.html">← На главную</a>
 
           <div class="card" style="display:grid; gap:12px;">
-            <div class="binary-header-row">
-              <span class="game-feature-cyberly-ribbon" style="position:static; transform:none; width:max-content;">Новое!</span>
+            <div class="bb-header">
+              <span class="game-feature-cyberly-ribbon" style="position:static; transform:none; width:max-content;">Binary Battle</span>
               <button class="btn ghost theme-toggle" id="themeToggle" type="button">🌙 Тёмная тема</button>
             </div>
-            <h1 style="margin:0;">⚔️ Binary Battle</h1>
-            <p class="muted-block">Практикуй перевод слов в двоичный код в 4 режимах: учебный, соревновательный, тестовый и турнирный.</p>
-
-            <div class="binary-tabs" id="modeTabs">
-              <button class="binary-tab active" data-target="practice" type="button">1) Practice Mode<br><small>Свободная тренировка + ASCII-подсказки</small></button>
-              <button class="binary-tab" data-target="competitive" type="button">2) Competitive/Timed<br><small>60 секунд и подсчёт очков</small></button>
-              <button class="binary-tab" data-target="selftest" type="button">3) Self-Test<br><small>От 5 до 20 слов, итоговый % успеха</small></button>
-              <button class="binary-tab" data-target="tournament" type="button">4) Tournament<br><small>Турнирная таблица и настраиваемые правила</small></button>
-              <button class="binary-tab" data-target="learn" type="button">5) Обучающий материал<br><small>Как переводить в двоичный код по шагам</small></button>
-            </div>
+            <h1 style="margin:0;">Выбери раздел Binary Battle</h1>
+            <p class="bb-sub">Это навигационная страница: здесь только быстрые переходы в отдельные режимы и обучающий материал.</p>
           </div>
 
-          <div class="card binary-panel active" id="panel-practice">
-            <h2 style="margin:0;">1) Учебный режим</h2>
-            <p class="binary-small">Без ограничений по времени. Можно запросить подсказку: ASCII-код одного символа слова.</p>
-            <p class="binary-word" id="practiceWord">—</p>
-            <label>
-              Твой перевод (8-битные блоки через пробел)
-              <input class="binary-input binary-answer" id="practiceInput" placeholder="например: 01100011 01111001 01100010 01100101 01110010" />
-            </label>
-            <div class="binary-row">
-              <button class="btn" id="practiceCheck" type="button">Проверить</button>
-              <button class="btn ghost" id="practiceHint" type="button">Подсказка ASCII</button>
-              <button class="btn ghost" id="practiceNext" type="button">Следующее слово</button>
-            </div>
-            <p class="binary-status" id="practiceStatus"></p>
-          </div>
+          <div class="bb-grid">
+            <article class="bb-card">
+              <span class="bb-pill">1) Practice Mode</span>
+              <h2>Учебный режим</h2>
+              <p class="bb-sub">Свободная тренировка перевода слов в бинарный код и подсказки по ASCII.</p>
+              <a class="bb-link" href="binary-practice.html">Открыть Practice →</a>
+            </article>
 
-          <div class="card binary-panel" id="panel-competitive">
-            <h2 style="margin:0;">2) Соревновательный режим (Timed)</h2>
-            <p class="binary-small">60 секунд на максимум правильных переводов. За каждый правильный ответ +1 очко.</p>
-            <div class="binary-grid">
-              <div class="binary-card"><h3>Осталось времени</h3><p class="binary-word" id="compTime">60</p></div>
-              <div class="binary-card"><h3>Очки</h3><p class="binary-word" id="compScore">0</p></div>
-            </div>
-            <p class="binary-word" id="compWord">Нажми «Старт»</p>
-            <label>
-              Перевод слова
-              <input class="binary-input binary-answer" id="compInput" placeholder="двоичный код" />
-            </label>
-            <div class="binary-row">
-              <button class="btn" id="compStart" type="button">Старт</button>
-              <button class="btn ghost" id="compSubmit" type="button">Ответить</button>
-            </div>
-            <p class="binary-status" id="compStatus"></p>
-          </div>
+            <article class="bb-card">
+              <span class="bb-pill">2) Competitive/Timed</span>
+              <h2>Соревновательный режим</h2>
+              <p class="bb-sub">Игра на время: набирай максимум очков за ограниченный интервал.</p>
+              <a class="bb-link" href="binary-competitive.html">Открыть Timed →</a>
+            </article>
 
-          <div class="card binary-panel" id="panel-selftest">
-            <h2 style="margin:0;">3) Тестовый режим</h2>
-            <p class="binary-small">Выбери количество слов (5–20). Подсказки отключены.</p>
-            <label>
-              Количество слов
-              <input class="binary-input" id="testCount" type="number" min="5" max="20" value="8" />
-            </label>
-            <div class="binary-grid">
-              <div class="binary-card"><h3>Текущий прогресс</h3><p class="binary-word" id="testProgress">0 / 0</p></div>
-              <div class="binary-card"><h3>Верно</h3><p class="binary-word" id="testCorrect">0</p></div>
-            </div>
-            <p class="binary-word" id="testWord">Нажми «Начать тест»</p>
-            <label>
-              Перевод слова
-              <input class="binary-input binary-answer" id="testInput" />
-            </label>
-            <div class="binary-row">
-              <button class="btn" id="testStart" type="button">Начать тест</button>
-              <button class="btn ghost" id="testSubmit" type="button">Далее</button>
-            </div>
-            <p class="binary-status" id="testStatus"></p>
-            <p class="binary-status" id="testFinal"></p>
-          </div>
+            <article class="bb-card">
+              <span class="bb-pill">3) Self-Test</span>
+              <h2>Тестовый режим</h2>
+              <p class="bb-sub">Проверка навыков без подсказок с итоговым процентом успеха.</p>
+              <a class="bb-link" href="binary-self-test.html">Открыть Self-Test →</a>
+            </article>
 
-          <div class="card binary-panel" id="panel-tournament">
-            <h2 style="margin:0;">4) Турнирный режим</h2>
-            <p class="binary-small">Настрой параметры турнира: участников, сложность, время на слово, слов в туре.</p>
-            <div class="binary-grid">
-              <label>Количество участников
-                <input class="binary-input" type="number" id="tourParticipants" min="2" max="16" value="4" />
-              </label>
-              <label>Сложность слов
-                <select class="binary-select" id="tourDifficulty">
-                  <option value="short">Короткие</option>
-                  <option value="medium" selected>Средние</option>
-                  <option value="long">Длинные</option>
-                  <option value="advanced">Продвинутые</option>
-                </select>
-              </label>
-              <label>Время на слово (сек)
-                <input class="binary-input" type="number" id="tourWordTime" min="5" max="45" value="12" />
-              </label>
-              <label>Количество слов в туре
-                <input class="binary-input" type="number" id="tourRoundWords" min="3" max="20" value="6" />
-              </label>
-            </div>
-            <div class="binary-row">
-              <button class="btn" id="tourStart" type="button">Создать турнир</button>
-              <button class="btn ghost" id="tourAnswer" type="button">Подтвердить ответ</button>
-            </div>
-            <p class="binary-word" id="tourWord">Сначала создай турнир</p>
-            <label>
-              Перевод текущего слова
-              <input class="binary-input binary-answer" id="tourInput" />
-            </label>
-            <p class="binary-status" id="tourStatus"></p>
-            <div class="binary-board" id="tourBoard"></div>
-          </div>
+            <article class="bb-card">
+              <span class="bb-pill">4) Tournament</span>
+              <h2>Турнирный режим</h2>
+              <p class="bb-sub">Режим для турниров с участниками, очками и таблицей ранжирования.</p>
+              <a class="bb-link" href="binary-tournament.html">Открыть Tournament →</a>
+            </article>
 
-          <div class="card binary-panel learn-block" id="panel-learn">
-            <h2 style="margin:0;">5) Обучающий материал</h2>
-            <p class="binary-small">Как переводить слово в двоичный код:</p>
-            <ol>
-              <li>Раздели слово на символы: <code>cyber</code> → <code>c y b e r</code>.</li>
-              <li>Найди ASCII-код каждого символа: <code>c = 99</code>, <code>y = 121</code>, ...</li>
-              <li>Переведи каждый код в 8-битный бинарный формат: <code>99 = 01100011</code>.</li>
-              <li>Склей блоки через пробел. Для <code>cyber</code>:
-                <code>01100011 01111001 01100010 01100101 01110010</code>
-              </li>
-            </ol>
-            <p class="binary-small">Совет: всегда проверяй, что каждый символ записан именно 8 битами.</p>
+            <article class="bb-card">
+              <span class="bb-pill">5) Learn</span>
+              <h2>Обучающий материал</h2>
+              <p class="bb-sub">Шпаргалка по ASCII и 8-битному представлению символов.</p>
+              <a class="bb-link" href="binary-learning.html">Открыть материалы →</a>
+            </article>
           </div>
         </div>
       </section>
@@ -233,12 +144,10 @@
       root.setAttribute("data-theme", initial);
 
       function syncLabel(theme) {
-        if (!toggle) return;
         toggle.textContent = theme === "dark" ? "☀️ Светлая тема" : "🌙 Тёмная тема";
       }
 
       syncLabel(initial);
-      if (!toggle) return;
       toggle.addEventListener("click", () => {
         const current = root.getAttribute("data-theme") === "dark" ? "dark" : "light";
         const next = current === "dark" ? "light" : "dark";
@@ -247,293 +156,6 @@
         syncLabel(next);
       });
     })();
-
-    const WORD_POOLS = {
-      short: ["bit", "hex", "key", "root", "hash", "ping", "safe", "node"],
-      medium: ["cyber", "kernel", "proxy", "cipher", "packet", "socket", "binary", "token"],
-      long: ["encryption", "firewall", "malware", "protocol", "forensics", "telemetry", "hardening", "sandboxing"],
-      advanced: ["asymmetric", "obfuscation", "steganography", "cryptanalysis", "vulnerability", "authentication", "segmentation", "postexploitation"]
-    };
-
-    const ALL_WORDS = [...new Set(Object.values(WORD_POOLS).flat())];
-
-    const toBinaryWord = (word) =>
-      [...word.toLowerCase()].map((char) => char.charCodeAt(0).toString(2).padStart(8, "0")).join(" ");
-
-    const normalizeBinary = (value) => value.trim().replace(/\s+/g, " ");
-    const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
-
-    const tabs = [...document.querySelectorAll(".binary-tab")];
-    const panels = [...document.querySelectorAll(".binary-panel")];
-    tabs.forEach((tab) => tab.addEventListener("click", () => {
-      tabs.forEach((t) => t.classList.remove("active"));
-      panels.forEach((p) => p.classList.remove("active"));
-      tab.classList.add("active");
-      document.getElementById(`panel-${tab.dataset.target}`).classList.add("active");
-    }));
-
-    let practiceWord = "";
-    const practiceWordEl = document.getElementById("practiceWord");
-    const practiceInput = document.getElementById("practiceInput");
-    const practiceStatus = document.getElementById("practiceStatus");
-
-    function setPracticeWord() {
-      practiceWord = pickRandom(ALL_WORDS);
-      practiceWordEl.textContent = practiceWord;
-      practiceInput.value = "";
-      practiceStatus.textContent = "";
-      practiceStatus.className = "binary-status";
-    }
-
-    document.getElementById("practiceCheck").addEventListener("click", () => {
-      const correct = toBinaryWord(practiceWord);
-      if (normalizeBinary(practiceInput.value) === correct) {
-        practiceStatus.textContent = "Верно! Отличный перевод.";
-        practiceStatus.className = "binary-status good";
-      } else {
-        practiceStatus.textContent = `Пока неверно. Правильный вариант: ${correct}`;
-        practiceStatus.className = "binary-status bad";
-      }
-    });
-
-    document.getElementById("practiceHint").addEventListener("click", () => {
-      const chars = [...practiceWord];
-      const idx = Math.floor(Math.random() * chars.length);
-      const symbol = chars[idx];
-      practiceStatus.textContent = `Подсказка: символ «${symbol}» имеет ASCII ${symbol.charCodeAt(0)}.`;
-      practiceStatus.className = "binary-status";
-    });
-
-    document.getElementById("practiceNext").addEventListener("click", setPracticeWord);
-
-    let compTimer = null;
-    let compTimeLeft = 60;
-    let compScore = 0;
-    let compWord = "";
-    let compRunning = false;
-
-    const compTimeEl = document.getElementById("compTime");
-    const compScoreEl = document.getElementById("compScore");
-    const compWordEl = document.getElementById("compWord");
-    const compInput = document.getElementById("compInput");
-    const compStatus = document.getElementById("compStatus");
-
-    function nextCompWord() {
-      compWord = pickRandom(ALL_WORDS);
-      compWordEl.textContent = compWord;
-      compInput.value = "";
-      compInput.focus();
-    }
-
-    function endCompetitive() {
-      compRunning = false;
-      clearInterval(compTimer);
-      compStatus.textContent = `Время вышло! Итог: ${compScore} очк.`;
-      compStatus.className = "binary-status good";
-      compWordEl.textContent = "Раунд завершён";
-    }
-
-    document.getElementById("compStart").addEventListener("click", () => {
-      clearInterval(compTimer);
-      compTimeLeft = 60;
-      compScore = 0;
-      compRunning = true;
-      compTimeEl.textContent = compTimeLeft;
-      compScoreEl.textContent = compScore;
-      compStatus.textContent = "Таймер запущен. Переводи как можно быстрее!";
-      compStatus.className = "binary-status";
-      nextCompWord();
-
-      compTimer = setInterval(() => {
-        compTimeLeft -= 1;
-        compTimeEl.textContent = compTimeLeft;
-        if (compTimeLeft <= 0) endCompetitive();
-      }, 1000);
-    });
-
-    function submitCompetitive() {
-      if (!compRunning) return;
-      const answer = normalizeBinary(compInput.value);
-      const correct = toBinaryWord(compWord);
-      if (answer === correct) {
-        compScore += 1;
-        compScoreEl.textContent = compScore;
-        compStatus.textContent = "✅ Верно!";
-        compStatus.className = "binary-status good";
-      } else {
-        compStatus.textContent = "❌ Неверно, пробуй следующее слово.";
-        compStatus.className = "binary-status bad";
-      }
-      nextCompWord();
-    }
-
-    document.getElementById("compSubmit").addEventListener("click", submitCompetitive);
-    compInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") submitCompetitive();
-    });
-
-    let testRunning = false;
-    let testWords = [];
-    let testIndex = 0;
-    let testCorrect = 0;
-
-    const testCount = document.getElementById("testCount");
-    const testProgress = document.getElementById("testProgress");
-    const testCorrectEl = document.getElementById("testCorrect");
-    const testWordEl = document.getElementById("testWord");
-    const testInput = document.getElementById("testInput");
-    const testStatus = document.getElementById("testStatus");
-    const testFinal = document.getElementById("testFinal");
-
-    function updateSelfTestView() {
-      testProgress.textContent = `${Math.min(testIndex + 1, testWords.length)} / ${testWords.length}`;
-      testCorrectEl.textContent = testCorrect;
-      testWordEl.textContent = testWords[testIndex] || "Тест завершён";
-    }
-
-    document.getElementById("testStart").addEventListener("click", () => {
-      const count = Math.max(5, Math.min(20, Number(testCount.value) || 8));
-      testWords = Array.from({ length: count }, () => pickRandom(ALL_WORDS));
-      testIndex = 0;
-      testCorrect = 0;
-      testRunning = true;
-      testStatus.textContent = "Тест начат. Подсказки недоступны.";
-      testStatus.className = "binary-status";
-      testFinal.textContent = "";
-      testInput.value = "";
-      updateSelfTestView();
-    });
-
-    document.getElementById("testSubmit").addEventListener("click", () => {
-      if (!testRunning || !testWords.length) return;
-      const correct = toBinaryWord(testWords[testIndex]);
-      if (normalizeBinary(testInput.value) === correct) {
-        testCorrect += 1;
-        testStatus.textContent = "Верно.";
-        testStatus.className = "binary-status good";
-      } else {
-        testStatus.textContent = `Неверно. Верный ответ: ${correct}`;
-        testStatus.className = "binary-status bad";
-      }
-
-      testIndex += 1;
-      testInput.value = "";
-
-      if (testIndex >= testWords.length) {
-        testRunning = false;
-        const percent = Math.round((testCorrect / testWords.length) * 100);
-        testFinal.textContent = `Результат: ${testCorrect}/${testWords.length} (${percent}%).`;
-        testFinal.className = "binary-status good";
-        testWordEl.textContent = "Тест завершён";
-        testProgress.textContent = `${testWords.length} / ${testWords.length}`;
-        testCorrectEl.textContent = testCorrect;
-        return;
-      }
-
-      updateSelfTestView();
-    });
-
-    let tournament = null;
-    const tourInput = document.getElementById("tourInput");
-    const tourWord = document.getElementById("tourWord");
-    const tourStatus = document.getElementById("tourStatus");
-    const tourBoard = document.getElementById("tourBoard");
-
-    function getPoolByDifficulty(diff) {
-      if (diff === "short") return WORD_POOLS.short;
-      if (diff === "medium") return WORD_POOLS.medium;
-      if (diff === "long") return WORD_POOLS.long;
-      return WORD_POOLS.advanced;
-    }
-
-    function renderBoard() {
-      if (!tournament) {
-        tourBoard.innerHTML = "";
-        return;
-      }
-      const sorted = [...tournament.participants].sort((a, b) => b.score - a.score);
-      const rows = sorted.map((p, i) => `<tr><td>${i + 1}</td><td>${p.name}</td><td>${p.score}</td></tr>`).join("");
-      tourBoard.innerHTML = `
-        <table>
-          <thead><tr><th>#</th><th>Участник</th><th>Очки</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
-      `;
-    }
-
-    function nextTournamentTurn() {
-      const current = tournament.participants[tournament.currentParticipant];
-      const round = tournament.currentRound + 1;
-      const totalRounds = tournament.roundWords;
-
-      if (round > totalRounds) {
-        tournament.currentParticipant += 1;
-        tournament.currentRound = 0;
-        if (tournament.currentParticipant >= tournament.participants.length) {
-          tourWord.textContent = "Турнир завершён";
-          tourStatus.textContent = "Финальная таблица готова.";
-          tourStatus.className = "binary-status good";
-          renderBoard();
-          return;
-        }
-      }
-
-      const active = tournament.participants[tournament.currentParticipant];
-      tournament.activeWord = pickRandom(tournament.pool);
-      tournament.roundDeadline = Date.now() + tournament.wordTime * 1000;
-      tourWord.textContent = `${active.name}: слово «${tournament.activeWord}» (${tournament.currentRound + 1}/${tournament.roundWords})`;
-      tourInput.value = "";
-      tourInput.focus();
-      renderBoard();
-    }
-
-    document.getElementById("tourStart").addEventListener("click", () => {
-      const participantCount = Math.max(2, Math.min(16, Number(document.getElementById("tourParticipants").value) || 4));
-      const difficulty = document.getElementById("tourDifficulty").value;
-      const wordTime = Math.max(5, Math.min(45, Number(document.getElementById("tourWordTime").value) || 12));
-      const roundWords = Math.max(3, Math.min(20, Number(document.getElementById("tourRoundWords").value) || 6));
-
-      tournament = {
-        participants: Array.from({ length: participantCount }, (_, i) => ({ name: `Игрок ${i + 1}`, score: 0 })),
-        difficulty,
-        wordTime,
-        roundWords,
-        pool: getPoolByDifficulty(difficulty),
-        currentParticipant: 0,
-        currentRound: 0,
-        activeWord: "",
-        roundDeadline: 0
-      };
-
-      tourStatus.textContent = `Турнир создан: ${participantCount} участника(ов), сложность «${difficulty}».`;
-      tourStatus.className = "binary-status";
-      nextTournamentTurn();
-    });
-
-    document.getElementById("tourAnswer").addEventListener("click", () => {
-      if (!tournament || !tournament.activeWord) return;
-      const participant = tournament.participants[tournament.currentParticipant];
-      const inTime = Date.now() <= tournament.roundDeadline;
-      const correct = normalizeBinary(tourInput.value) === toBinaryWord(tournament.activeWord);
-
-      if (inTime && correct) {
-        participant.score += 1;
-        tourStatus.textContent = `${participant.name}: +1 очко (верно и вовремя).`;
-        tourStatus.className = "binary-status good";
-      } else if (!inTime) {
-        tourStatus.textContent = `${participant.name}: время вышло, очко не засчитано.`;
-        tourStatus.className = "binary-status bad";
-      } else {
-        tourStatus.textContent = `${participant.name}: неверный перевод.`;
-        tourStatus.className = "binary-status bad";
-      }
-
-      tournament.currentRound += 1;
-      nextTournamentTurn();
-    });
-
-    setPracticeWord();
-    updateSelfTestView();
   </script>
 </body>
 </html>
