@@ -42,7 +42,7 @@
 <main class="main">
 <section class="section container reveal">
 <h1>Полный гайд: ASCII и двоичный код</h1>
-<p class="lead">Пошаговое обучение: что такое ASCII, когда он появился, как им пользоваться при переводе слов в двоичный код и обратно, и полная таблица ASCII в конце.</p>
+<p class="lead">Пошаговое обучение: что такое ASCII, когда он появился, как им пользоваться при переводе слов в двоичный код и обратно, и таблица ASCII только для букв и цифр в конце.</p>
 
 <div class="method-materials">
 <div class="method-card">
@@ -106,60 +106,12 @@ T = 84 = <code>01010100</code><br>
 <div class="method-card" style="margin-top:20px;">
 <div class="method-icon">📋</div>
 <div class="method-info" style="width:100%; overflow:auto;">
-<h3>Шаг 6. Полная таблица ASCII (0–127)</h3>
+<h3>Шаг 6. Таблица ASCII: только буквы и цифры</h3>
 <table>
 <thead>
 <tr><th>Dec</th><th>Hex</th><th>Binary (8 bit)</th><th>Обозначение</th><th>Символ</th><th>Описание</th></tr>
 </thead>
 <tbody>
-<tr><td>0</td><td>0x00</td><td><code>00000000</code></td><td>NUL</td><td>—</td><td>Пустой символ</td></tr>
-<tr><td>1</td><td>0x01</td><td><code>00000001</code></td><td>SOH</td><td>—</td><td>Начало заголовка</td></tr>
-<tr><td>2</td><td>0x02</td><td><code>00000010</code></td><td>STX</td><td>—</td><td>Начало текста</td></tr>
-<tr><td>3</td><td>0x03</td><td><code>00000011</code></td><td>ETX</td><td>—</td><td>Конец текста</td></tr>
-<tr><td>4</td><td>0x04</td><td><code>00000100</code></td><td>EOT</td><td>—</td><td>Конец передачи</td></tr>
-<tr><td>5</td><td>0x05</td><td><code>00000101</code></td><td>ENQ</td><td>—</td><td>Запрос</td></tr>
-<tr><td>6</td><td>0x06</td><td><code>00000110</code></td><td>ACK</td><td>—</td><td>Подтверждение</td></tr>
-<tr><td>7</td><td>0x07</td><td><code>00000111</code></td><td>BEL</td><td>—</td><td>Звуковой сигнал</td></tr>
-<tr><td>8</td><td>0x08</td><td><code>00001000</code></td><td>BS</td><td>—</td><td>Шаг назад</td></tr>
-<tr><td>9</td><td>0x09</td><td><code>00001001</code></td><td>TAB</td><td>—</td><td>Горизонтальная табуляция</td></tr>
-<tr><td>10</td><td>0x0A</td><td><code>00001010</code></td><td>LF</td><td>—</td><td>Перевод строки</td></tr>
-<tr><td>11</td><td>0x0B</td><td><code>00001011</code></td><td>VT</td><td>—</td><td>Вертикальная табуляция</td></tr>
-<tr><td>12</td><td>0x0C</td><td><code>00001100</code></td><td>FF</td><td>—</td><td>Перевод страницы</td></tr>
-<tr><td>13</td><td>0x0D</td><td><code>00001101</code></td><td>CR</td><td>—</td><td>Возврат каретки</td></tr>
-<tr><td>14</td><td>0x0E</td><td><code>00001110</code></td><td>SO</td><td>—</td><td>Shift Out</td></tr>
-<tr><td>15</td><td>0x0F</td><td><code>00001111</code></td><td>SI</td><td>—</td><td>Shift In</td></tr>
-<tr><td>16</td><td>0x10</td><td><code>00010000</code></td><td>DLE</td><td>—</td><td>Data Link Escape</td></tr>
-<tr><td>17</td><td>0x11</td><td><code>00010001</code></td><td>DC1</td><td>—</td><td>Управление устройством 1</td></tr>
-<tr><td>18</td><td>0x12</td><td><code>00010010</code></td><td>DC2</td><td>—</td><td>Управление устройством 2</td></tr>
-<tr><td>19</td><td>0x13</td><td><code>00010011</code></td><td>DC3</td><td>—</td><td>Управление устройством 3</td></tr>
-<tr><td>20</td><td>0x14</td><td><code>00010100</code></td><td>DC4</td><td>—</td><td>Управление устройством 4</td></tr>
-<tr><td>21</td><td>0x15</td><td><code>00010101</code></td><td>NAK</td><td>—</td><td>Отрицательное подтверждение</td></tr>
-<tr><td>22</td><td>0x16</td><td><code>00010110</code></td><td>SYN</td><td>—</td><td>Синхронизация</td></tr>
-<tr><td>23</td><td>0x17</td><td><code>00010111</code></td><td>ETB</td><td>—</td><td>Конец блока передачи</td></tr>
-<tr><td>24</td><td>0x18</td><td><code>00011000</code></td><td>CAN</td><td>—</td><td>Отмена</td></tr>
-<tr><td>25</td><td>0x19</td><td><code>00011001</code></td><td>EM</td><td>—</td><td>Конец носителя</td></tr>
-<tr><td>26</td><td>0x1A</td><td><code>00011010</code></td><td>SUB</td><td>—</td><td>Замещение</td></tr>
-<tr><td>27</td><td>0x1B</td><td><code>00011011</code></td><td>ESC</td><td>—</td><td>Escape</td></tr>
-<tr><td>28</td><td>0x1C</td><td><code>00011100</code></td><td>FS</td><td>—</td><td>Разделитель файла</td></tr>
-<tr><td>29</td><td>0x1D</td><td><code>00011101</code></td><td>GS</td><td>—</td><td>Разделитель группы</td></tr>
-<tr><td>30</td><td>0x1E</td><td><code>00011110</code></td><td>RS</td><td>—</td><td>Разделитель записи</td></tr>
-<tr><td>31</td><td>0x1F</td><td><code>00011111</code></td><td>US</td><td>—</td><td>Разделитель единицы</td></tr>
-<tr><td>32</td><td>0x20</td><td><code>00100000</code></td><td>SPACE</td><td>Пробел</td><td>Пробел между словами</td></tr>
-<tr><td>33</td><td>0x21</td><td><code>00100001</code></td><td>'!'</td><td>!</td><td>Печатный символ</td></tr>
-<tr><td>34</td><td>0x22</td><td><code>00100010</code></td><td>'&quot;'</td><td>&quot;</td><td>Печатный символ</td></tr>
-<tr><td>35</td><td>0x23</td><td><code>00100011</code></td><td>'#'</td><td>#</td><td>Печатный символ</td></tr>
-<tr><td>36</td><td>0x24</td><td><code>00100100</code></td><td>'$'</td><td>$</td><td>Печатный символ</td></tr>
-<tr><td>37</td><td>0x25</td><td><code>00100101</code></td><td>'%'</td><td>%</td><td>Печатный символ</td></tr>
-<tr><td>38</td><td>0x26</td><td><code>00100110</code></td><td>'&amp;'</td><td>&amp;</td><td>Печатный символ</td></tr>
-<tr><td>39</td><td>0x27</td><td><code>00100111</code></td><td>'&#39;'</td><td>&#39;</td><td>Печатный символ</td></tr>
-<tr><td>40</td><td>0x28</td><td><code>00101000</code></td><td>'('</td><td>(</td><td>Печатный символ</td></tr>
-<tr><td>41</td><td>0x29</td><td><code>00101001</code></td><td>')'</td><td>)</td><td>Печатный символ</td></tr>
-<tr><td>42</td><td>0x2A</td><td><code>00101010</code></td><td>'*'</td><td>*</td><td>Печатный символ</td></tr>
-<tr><td>43</td><td>0x2B</td><td><code>00101011</code></td><td>'+'</td><td>+</td><td>Печатный символ</td></tr>
-<tr><td>44</td><td>0x2C</td><td><code>00101100</code></td><td>','</td><td>,</td><td>Печатный символ</td></tr>
-<tr><td>45</td><td>0x2D</td><td><code>00101101</code></td><td>'-'</td><td>-</td><td>Печатный символ</td></tr>
-<tr><td>46</td><td>0x2E</td><td><code>00101110</code></td><td>'.'</td><td>.</td><td>Печатный символ</td></tr>
-<tr><td>47</td><td>0x2F</td><td><code>00101111</code></td><td>'/'</td><td>/</td><td>Печатный символ</td></tr>
 <tr><td>48</td><td>0x30</td><td><code>00110000</code></td><td>'0'</td><td>0</td><td>Печатный символ</td></tr>
 <tr><td>49</td><td>0x31</td><td><code>00110001</code></td><td>'1'</td><td>1</td><td>Печатный символ</td></tr>
 <tr><td>50</td><td>0x32</td><td><code>00110010</code></td><td>'2'</td><td>2</td><td>Печатный символ</td></tr>
@@ -170,13 +122,6 @@ T = 84 = <code>01010100</code><br>
 <tr><td>55</td><td>0x37</td><td><code>00110111</code></td><td>'7'</td><td>7</td><td>Печатный символ</td></tr>
 <tr><td>56</td><td>0x38</td><td><code>00111000</code></td><td>'8'</td><td>8</td><td>Печатный символ</td></tr>
 <tr><td>57</td><td>0x39</td><td><code>00111001</code></td><td>'9'</td><td>9</td><td>Печатный символ</td></tr>
-<tr><td>58</td><td>0x3A</td><td><code>00111010</code></td><td>':'</td><td>:</td><td>Печатный символ</td></tr>
-<tr><td>59</td><td>0x3B</td><td><code>00111011</code></td><td>';'</td><td>;</td><td>Печатный символ</td></tr>
-<tr><td>60</td><td>0x3C</td><td><code>00111100</code></td><td>'&lt;'</td><td>&lt;</td><td>Печатный символ</td></tr>
-<tr><td>61</td><td>0x3D</td><td><code>00111101</code></td><td>'='</td><td>=</td><td>Печатный символ</td></tr>
-<tr><td>62</td><td>0x3E</td><td><code>00111110</code></td><td>'&gt;'</td><td>&gt;</td><td>Печатный символ</td></tr>
-<tr><td>63</td><td>0x3F</td><td><code>00111111</code></td><td>'?'</td><td>?</td><td>Печатный символ</td></tr>
-<tr><td>64</td><td>0x40</td><td><code>01000000</code></td><td>'@'</td><td>@</td><td>Печатный символ</td></tr>
 <tr><td>65</td><td>0x41</td><td><code>01000001</code></td><td>'A'</td><td>A</td><td>Печатный символ</td></tr>
 <tr><td>66</td><td>0x42</td><td><code>01000010</code></td><td>'B'</td><td>B</td><td>Печатный символ</td></tr>
 <tr><td>67</td><td>0x43</td><td><code>01000011</code></td><td>'C'</td><td>C</td><td>Печатный символ</td></tr>
@@ -203,12 +148,6 @@ T = 84 = <code>01010100</code><br>
 <tr><td>88</td><td>0x58</td><td><code>01011000</code></td><td>'X'</td><td>X</td><td>Печатный символ</td></tr>
 <tr><td>89</td><td>0x59</td><td><code>01011001</code></td><td>'Y'</td><td>Y</td><td>Печатный символ</td></tr>
 <tr><td>90</td><td>0x5A</td><td><code>01011010</code></td><td>'Z'</td><td>Z</td><td>Печатный символ</td></tr>
-<tr><td>91</td><td>0x5B</td><td><code>01011011</code></td><td>'['</td><td>[</td><td>Печатный символ</td></tr>
-<tr><td>92</td><td>0x5C</td><td><code>01011100</code></td><td>'\'</td><td>\</td><td>Печатный символ</td></tr>
-<tr><td>93</td><td>0x5D</td><td><code>01011101</code></td><td>']'</td><td>]</td><td>Печатный символ</td></tr>
-<tr><td>94</td><td>0x5E</td><td><code>01011110</code></td><td>'^'</td><td>^</td><td>Печатный символ</td></tr>
-<tr><td>95</td><td>0x5F</td><td><code>01011111</code></td><td>'_'</td><td>_</td><td>Печатный символ</td></tr>
-<tr><td>96</td><td>0x60</td><td><code>01100000</code></td><td>'`'</td><td>`</td><td>Печатный символ</td></tr>
 <tr><td>97</td><td>0x61</td><td><code>01100001</code></td><td>'a'</td><td>a</td><td>Печатный символ</td></tr>
 <tr><td>98</td><td>0x62</td><td><code>01100010</code></td><td>'b'</td><td>b</td><td>Печатный символ</td></tr>
 <tr><td>99</td><td>0x63</td><td><code>01100011</code></td><td>'c'</td><td>c</td><td>Печатный символ</td></tr>
@@ -235,11 +174,6 @@ T = 84 = <code>01010100</code><br>
 <tr><td>120</td><td>0x78</td><td><code>01111000</code></td><td>'x'</td><td>x</td><td>Печатный символ</td></tr>
 <tr><td>121</td><td>0x79</td><td><code>01111001</code></td><td>'y'</td><td>y</td><td>Печатный символ</td></tr>
 <tr><td>122</td><td>0x7A</td><td><code>01111010</code></td><td>'z'</td><td>z</td><td>Печатный символ</td></tr>
-<tr><td>123</td><td>0x7B</td><td><code>01111011</code></td><td>'{'</td><td>{</td><td>Печатный символ</td></tr>
-<tr><td>124</td><td>0x7C</td><td><code>01111100</code></td><td>'|'</td><td>|</td><td>Печатный символ</td></tr>
-<tr><td>125</td><td>0x7D</td><td><code>01111101</code></td><td>'}'</td><td>}</td><td>Печатный символ</td></tr>
-<tr><td>126</td><td>0x7E</td><td><code>01111110</code></td><td>'~'</td><td>~</td><td>Печатный символ</td></tr>
-<tr><td>127</td><td>0x7F</td><td><code>01111111</code></td><td>DEL</td><td>—</td><td>Удаление</td></tr>
 </tbody>
 </table>
 </div>
