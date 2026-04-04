@@ -6332,6 +6332,15 @@ body[data-page="cyberguessr"] .card-photo{
     min-width:0;
   }
 
+  body[data-page="home"] .game-feature-binary .game-feature-copy{
+    align-items:center;
+    text-align:center;
+  }
+
+  body[data-page="home"] .game-feature-binary .game-feature-copy p{
+    text-align:center;
+  }
+
   body[data-page="home"] .game-feature-binary .binary-code{
     white-space:normal;
     overflow-wrap:anywhere;
