@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Binary Battle — соревновательный и турнирный режим</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root {
+      --bc-card: rgba(14, 29, 60, .84);
+      --bc-border: rgba(126, 173, 255, .35);
+      --bc-text: #eaf2ff;
+      --bc-muted: #9fb5e2;
+      --bc-accent: linear-gradient(120deg, #74a4ff, #4de2ff);
+      --bc-ok: #74f2b7;
+      --bc-bad: #ff8f8f;
+      --bc-shadow: 0 20px 44px rgba(6, 11, 34, .45);
+    }
+
+    html[data-theme="light"] {
+      --bc-card: rgba(255, 255, 255, .95);
+      --bc-border: rgba(59, 95, 166, .24);
+      --bc-text: #102247;
+      --bc-muted: #496088;
+      --bc-shadow: 0 16px 36px rgba(42, 70, 126, .18);
+    }
+
+    body[data-page="binary-competitive"] { color: var(--bc-text); }
+    .bc-wrap { display: grid; gap: 18px; }
+    .bc-top { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+    .bc-title { margin: 0; }
+    .bc-sub { margin: 0; color: var(--bc-muted); }
+    .bc-nav { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .bc-shell {
+      background: linear-gradient(155deg, rgba(124, 167, 255, .16), transparent 55%), var(--bc-card);
+      border: 1px solid var(--bc-border);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: var(--bc-shadow), inset 0 1px 0 rgba(255,255,255,.1);
+      display: grid;
+      gap: 16px;
+    }
+
+    .bc-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .bc-field { display: grid; gap: 8px; }
+    .bc-label { font-weight: 700; font-size: .95rem; }
+    .bc-input, .bc-select, .bc-textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--bc-border);
+      background: rgba(17, 35, 72, .2);
+      color: var(--bc-text);
+      font: inherit;
+    }
+
+    html[data-theme="light"] :is(.bc-input,.bc-select,.bc-textarea) { background: rgba(255,255,255,.72); }
+    .bc-textarea { min-height: 90px; resize: vertical; }
+    .bc-status { font-weight: 700; min-height: 1.25em; }
+    .bc-status.ok { color: var(--bc-ok); }
+    .bc-status.bad { color: var(--bc-bad); }
+    .bc-word { font-size: 1.55rem; font-weight: 800; letter-spacing: .03em; }
+
+    .bc-stats { display: flex; gap: 10px; flex-wrap: wrap; }
+    .bc-pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--bc-border);
+      color: var(--bc-muted);
+      font-weight: 700;
+      font-size: .95rem;
+    }
+
+    .bc-hidden { display: none; }
+    .bc-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .bc-btn {
+      border: 1px solid transparent;
+      background: var(--bc-accent);
+      color: #04162f;
+      font-weight: 800;
+      border-radius: 12px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: transform .2s ease, filter .2s ease;
+    }
+    .bc-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    .bc-btn.ghost { background: transparent; color: var(--bc-text); border-color: var(--bc-border); }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--bc-border); }
+    th { color: var(--bc-muted); font-size: .9rem; }
+
+    @media (max-width: 840px) {
+      .bc-grid { grid-template-columns: 1fr; }
+      .bc-shell { padding: 16px; }
+    }
+  </style>
+</head>
+<body data-page="binary-competitive">
+  <div class="theme-backdrop" aria-hidden="true">
+    <div class="theme-orb theme-orb-one"></div>
+    <div class="theme-orb theme-orb-two"></div>
+    <div class="theme-grid"></div>
+    <canvas class="theme-network" id="theme-network"></canvas>
+  </div>
+
+  <div class="site-shell">
+    <main class="main">
+      <section class="section">
+        <div class="container bc-wrap">
+          <a class="btn ghost" href="binary-battle.html">← К режимам Binary Battle</a>
+
+          <div class="bc-shell">
+            <div class="bc-top">
+              <div>
+                <h1 class="bc-title">Соревновательный режим по двоичному коду</h1>
+                <p class="bc-sub">Переводи слова в binary, набирай очки и соревнуйся по таймеру.</p>
+              </div>
+              <div class="bc-nav">
+                <button class="bc-btn ghost" type="button" data-tab="competitive">⚡ Competitive</button>
+                <button class="bc-btn ghost" type="button" data-tab="tournament">🏆 Tournament</button>
+              </div>
+            </div>
+
+            <section id="competitiveMode">
+              <div class="bc-grid">
+                <div class="bc-field">
+                  <label class="bc-label" for="difficulty">Сложность</label>
+                  <select id="difficulty" class="bc-select">
+                    <option value="easy">Легко (5 слов)</option>
+                    <option value="medium">Средне (+5 слов)</option>
+                    <option value="hard">Сложно (+цифры и длинные слова)</option>
+                  </select>
+                </div>
+                <div class="bc-field">
+                  <label class="bc-label" for="duration">Таймер (сек.)</label>
+                  <input id="duration" class="bc-input" type="number" min="15" max="300" step="15" value="60" />
+                </div>
+              </div>
+
+              <div class="bc-field">
+                <label class="bc-label" for="customWords">Список слов (через запятую) — база: cat, dog, sun, moon, star</label>
+                <textarea id="customWords" class="bc-textarea">cat, dog, sun, moon, star</textarea>
+              </div>
+
+              <div class="bc-actions">
+                <button id="startCompetitive" class="bc-btn" type="button">Начать раунд</button>
+              </div>
+
+              <div class="bc-stats">
+                <span class="bc-pill">Счёт: <strong id="compScore">0</strong></span>
+                <span class="bc-pill">Таймер: <strong id="compTimer">60</strong> c</span>
+              </div>
+
+              <p class="bc-word">Слово: <span id="compWord">—</span></p>
+
+              <div class="bc-field">
+                <label class="bc-label" for="compBinaryInput">Введи двоичный код (байты через пробел)</label>
+                <input id="compBinaryInput" class="bc-input" type="text" placeholder="01000011 01100001 01110100" />
+              </div>
+
+              <div class="bc-actions">
+                <button id="checkCompetitive" class="bc-btn" type="button">Проверить</button>
+                <button id="skipCompetitive" class="bc-btn ghost" type="button">Пропустить</button>
+              </div>
+              <p id="compFeedback" class="bc-status" aria-live="polite"></p>
+            </section>
+
+            <section id="tournamentMode" class="bc-hidden">
+              <div class="bc-grid">
+                <div class="bc-field">
+                  <label class="bc-label" for="tournamentName">Название турнира</label>
+                  <input id="tournamentName" class="bc-input" type="text" placeholder="Весенний кубок" />
+                </div>
+                <div class="bc-field">
+                  <label class="bc-label" for="tournamentDuration">Таймер турнира (сек.)</label>
+                  <input id="tournamentDuration" class="bc-input" type="number" min="30" max="600" step="30" value="120" />
+                </div>
+              </div>
+
+              <div class="bc-grid">
+                <div class="bc-field">
+                  <label class="bc-label" for="tournamentDifficulty">Сложность</label>
+                  <select id="tournamentDifficulty" class="bc-select">
+                    <option value="easy">Легко</option>
+                    <option value="medium">Средне</option>
+                    <option value="hard">Сложно</option>
+                  </select>
+                </div>
+                <div class="bc-field">
+                  <label class="bc-label" for="participantName">Подключить участника</label>
+                  <div class="bc-actions">
+                    <input id="participantName" class="bc-input" type="text" placeholder="Имя игрока" />
+                    <button id="addParticipant" class="bc-btn ghost" type="button">Добавить</button>
+                  </div>
+                </div>
+              </div>
+
+              <p class="bc-sub">Участники: <span id="participantsList">нет</span></p>
+              <div class="bc-actions">
+                <button id="startTournament" class="bc-btn" type="button">Старт турнира</button>
+              </div>
+
+              <div class="bc-stats">
+                <span class="bc-pill">Турнир: <strong id="tournamentTitle">—</strong></span>
+                <span class="bc-pill">Таймер: <strong id="tourTimer">120</strong> c</span>
+                <span class="bc-pill">Ход: <strong id="activePlayer">—</strong></span>
+              </div>
+
+              <p class="bc-word">Слово: <span id="tourWord">—</span></p>
+              <div class="bc-field">
+                <label class="bc-label" for="tourBinaryInput">Ответ активного игрока</label>
+                <input id="tourBinaryInput" class="bc-input" type="text" placeholder="01000011 01100001 01110100" />
+              </div>
+              <div class="bc-actions">
+                <button id="checkTournament" class="bc-btn" type="button">Проверить ответ</button>
+              </div>
+              <p id="tourFeedback" class="bc-status" aria-live="polite"></p>
+
+              <div>
+                <h3 style="margin:4px 0 10px;">Таблица лидеров</h3>
+                <table>
+                  <thead><tr><th>#</th><th>Игрок</th><th>Очки</th></tr></thead>
+                  <tbody id="leaderboardBody"><tr><td colspan="3">Турнир ещё не запущен</td></tr></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const baseWords = ["cat", "dog", "sun", "moon", "star"];
+    const mediumWords = ["code", "safe", "data", "byte", "fire"];
+    const hardWords = ["encryption", "network", "zero1", "shield", "quantum"];
+
+    const tabs = document.querySelectorAll("[data-tab]");
+    const competitiveMode = document.getElementById("competitiveMode");
+    const tournamentMode = document.getElementById("tournamentMode");
+
+    tabs.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const target = btn.dataset.tab;
+        competitiveMode.classList.toggle("bc-hidden", target !== "competitive");
+        tournamentMode.classList.toggle("bc-hidden", target !== "tournament");
+      });
+    });
+
+    function toBinaryWord(word) {
+      return word.split("").map(ch => ch.charCodeAt(0).toString(2).padStart(8, "0")).join(" ");
+    }
+
+    function buildWords(level, customText) {
+      const userWords = customText
+        .split(",")
+        .map(w => w.trim().toLowerCase())
+        .filter(Boolean);
+
+      const pool = [...new Set([...baseWords, ...userWords])];
+      if (level === "medium") return [...pool, ...mediumWords];
+      if (level === "hard") return [...pool, ...mediumWords, ...hardWords];
+      return pool;
+    }
+
+    function randomFrom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    // Competitive
+    let compWords = [...baseWords];
+    let compWord = "cat";
+    let compScore = 0;
+    let compTimerValue = 60;
+    let compInterval = null;
+
+    const compWordEl = document.getElementById("compWord");
+    const compScoreEl = document.getElementById("compScore");
+    const compTimerEl = document.getElementById("compTimer");
+    const compInput = document.getElementById("compBinaryInput");
+    const compFeedback = document.getElementById("compFeedback");
+
+    function nextCompWord() {
+      compWord = randomFrom(compWords);
+      compWordEl.textContent = compWord;
+      compInput.value = "";
+      compInput.focus();
+    }
+
+    function setFeedback(el, ok, text) {
+      el.textContent = text;
+      el.classList.toggle("ok", ok);
+      el.classList.toggle("bad", !ok);
+    }
+
+    document.getElementById("startCompetitive").addEventListener("click", () => {
+      const level = document.getElementById("difficulty").value;
+      const duration = Number(document.getElementById("duration").value) || 60;
+      const custom = document.getElementById("customWords").value;
+
+      compWords = buildWords(level, custom);
+      compScore = 0;
+      compTimerValue = duration;
+      compScoreEl.textContent = String(compScore);
+      compTimerEl.textContent = String(compTimerValue);
+      setFeedback(compFeedback, true, "Раунд начался!");
+      nextCompWord();
+
+      clearInterval(compInterval);
+      compInterval = setInterval(() => {
+        compTimerValue -= 1;
+        compTimerEl.textContent = String(compTimerValue);
+        if (compTimerValue <= 0) {
+          clearInterval(compInterval);
+          setFeedback(compFeedback, true, `Время вышло! Итоговый счёт: ${compScore}`);
+        }
+      }, 1000);
+    });
+
+    document.getElementById("checkCompetitive").addEventListener("click", () => {
+      if (compTimerValue <= 0) return;
+      const answer = compInput.value.trim().replace(/\s+/g, " ");
+      const correct = toBinaryWord(compWord);
+      if (answer === correct) {
+        compScore += 1;
+        compScoreEl.textContent = String(compScore);
+        setFeedback(compFeedback, true, "Правильно!");
+        nextCompWord();
+      } else {
+        setFeedback(compFeedback, false, "Попробуй снова");
+      }
+    });
+
+    document.getElementById("skipCompetitive").addEventListener("click", () => {
+      if (compTimerValue > 0) nextCompWord();
+    });
+
+    // Tournament
+    let participants = [];
+    let activeIndex = 0;
+    let tourWord = "cat";
+    let tourTimerValue = 120;
+    let tourInterval = null;
+    let tourWords = [...baseWords];
+
+    const participantsListEl = document.getElementById("participantsList");
+    const leaderboardBody = document.getElementById("leaderboardBody");
+    const activePlayerEl = document.getElementById("activePlayer");
+    const tourWordEl = document.getElementById("tourWord");
+    const tourTimerEl = document.getElementById("tourTimer");
+    const tourFeedback = document.getElementById("tourFeedback");
+    const tourInput = document.getElementById("tourBinaryInput");
+
+    function renderParticipantsLine() {
+      participantsListEl.textContent = participants.length ? participants.map(p => p.name).join(", ") : "нет";
+    }
+
+    function renderLeaderboard() {
+      if (!participants.length) {
+        leaderboardBody.innerHTML = '<tr><td colspan="3">Нет участников</td></tr>';
+        return;
+      }
+      const sorted = [...participants].sort((a, b) => b.score - a.score);
+      leaderboardBody.innerHTML = sorted.map((p, i) => `<tr><td>${i + 1}</td><td>${p.name}</td><td>${p.score}</td></tr>`).join("");
+    }
+
+    function updateActivePlayer() {
+      if (!participants.length) {
+        activePlayerEl.textContent = "—";
+        return;
+      }
+      activePlayerEl.textContent = participants[activeIndex].name;
+      tourWord = randomFrom(tourWords);
+      tourWordEl.textContent = tourWord;
+      tourInput.value = "";
+      tourInput.focus();
+    }
+
+    document.getElementById("addParticipant").addEventListener("click", () => {
+      const input = document.getElementById("participantName");
+      const name = input.value.trim();
+      if (!name) return;
+      participants.push({ name, score: 0 });
+      input.value = "";
+      renderParticipantsLine();
+      renderLeaderboard();
+    });
+
+    document.getElementById("startTournament").addEventListener("click", () => {
+      if (participants.length < 2) {
+        setFeedback(tourFeedback, false, "Добавь минимум двух участников");
+        return;
+      }
+
+      const level = document.getElementById("tournamentDifficulty").value;
+      const title = document.getElementById("tournamentName").value.trim() || "Без названия";
+      const duration = Number(document.getElementById("tournamentDuration").value) || 120;
+
+      participants = participants.map(p => ({ ...p, score: 0 }));
+      activeIndex = 0;
+      tourWords = buildWords(level, baseWords.join(","));
+      tourTimerValue = duration;
+      document.getElementById("tournamentTitle").textContent = title;
+      tourTimerEl.textContent = String(tourTimerValue);
+      renderLeaderboard();
+      updateActivePlayer();
+      setFeedback(tourFeedback, true, "Турнир стартовал!");
+
+      clearInterval(tourInterval);
+      tourInterval = setInterval(() => {
+        tourTimerValue -= 1;
+        tourTimerEl.textContent = String(tourTimerValue);
+        if (tourTimerValue <= 0) {
+          clearInterval(tourInterval);
+          const winner = [...participants].sort((a, b) => b.score - a.score)[0];
+          setFeedback(tourFeedback, true, `Турнир завершён! Победитель: ${winner.name} (${winner.score})`);
+          activePlayerEl.textContent = "Завершено";
+        }
+      }, 1000);
+    });
+
+    document.getElementById("checkTournament").addEventListener("click", () => {
+      if (!participants.length || tourTimerValue <= 0) return;
+
+      const answer = tourInput.value.trim().replace(/\s+/g, " ");
+      const correct = toBinaryWord(tourWord);
+      if (answer === correct) {
+        participants[activeIndex].score += 1;
+        setFeedback(tourFeedback, true, "Правильно!");
+      } else {
+        setFeedback(tourFeedback, false, "Попробуй снова");
+      }
+      renderLeaderboard();
+      activeIndex = (activeIndex + 1) % participants.length;
+      updateActivePlayer();
+    });
+  </script>
+  <script src="js/theme-network.js"></script>
+</body>
+</html>
