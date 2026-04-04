@@ -6,32 +6,63 @@
   <title>Binary Battle — режимы тренировки и турниры</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
+    :root {
+      --bb-bg-card: rgba(17, 30, 59, .78);
+      --bb-bg-soft: rgba(4, 13, 30, .72);
+      --bb-border: rgba(130, 171, 255, .35);
+      --bb-text: #eef4ff;
+      --bb-muted: #93a7d8;
+      --bb-good: #89ffcb;
+      --bb-bad: #ff9eb3;
+      --bb-active: linear-gradient(120deg, #6d9bff, #4de2ff);
+    }
+    html[data-theme="light"] {
+      --bb-bg-card: rgba(255, 255, 255, .95);
+      --bb-bg-soft: rgba(244, 248, 255, .95);
+      --bb-border: rgba(52, 95, 184, .28);
+      --bb-text: #0f2249;
+      --bb-muted: #3f598f;
+      --bb-good: #067647;
+      --bb-bad: #b42318;
+      --bb-active: linear-gradient(120deg, #7ea2ff, #70d0ff);
+    }
     .binary-layout { display: grid; gap: 18px; }
     .binary-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
     .binary-card {
-      background: rgba(17, 30, 59, .78);
-      border: 1px solid rgba(130, 171, 255, .25);
+      background: var(--bb-bg-card);
+      border: 1px solid var(--bb-border);
       border-radius: 16px;
       padding: 14px;
       display: grid;
       gap: 8px;
     }
     .binary-card h3 { margin: 0; font-size: 1.05rem; }
-    .binary-small { margin: 0; color: #93a7d8; font-size: .95rem; }
+    .binary-small { margin: 0; color: var(--bb-muted); font-size: .95rem; }
     .binary-input, .binary-select {
       width: 100%;
       padding: 10px 12px;
       border-radius: 10px;
-      border: 1px solid rgba(130, 171, 255, .35);
-      background: rgba(4, 13, 30, .72);
-      color: #eef4ff;
+      border: 1px solid var(--bb-border);
+      background: var(--bb-bg-soft);
+      color: var(--bb-text);
       font-size: .95rem;
     }
     .binary-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
     .binary-answer { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
-    .binary-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
-    .binary-tab { padding: 10px 12px; border-radius: 999px; border: 1px solid rgba(130, 171, 255, .4); background: rgba(4, 13, 30, .55); color: #d8e6ff; cursor: pointer; }
-    .binary-tab.active { background: linear-gradient(120deg, #6d9bff, #4de2ff); color: #031428; border-color: transparent; font-weight: 700; }
+    .binary-tabs { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+    .binary-tab {
+      padding: 18px 16px;
+      border-radius: 16px;
+      border: 1px solid var(--bb-border);
+      background: var(--bb-bg-soft);
+      color: var(--bb-text);
+      cursor: pointer;
+      min-height: 78px;
+      text-align: left;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .binary-tab.active { background: var(--bb-active); color: #031428; border-color: transparent; }
     .binary-panel { display: none; }
     .binary-panel.active { display: grid; gap: 12px; }
     .binary-word {
@@ -41,13 +72,15 @@
       letter-spacing: .02em;
     }
     .binary-status { min-height: 24px; margin: 0; font-weight: 700; }
-    .binary-status.good { color: #89ffcb; }
-    .binary-status.bad { color: #ff9eb3; }
+    .binary-status.good { color: var(--bb-good); }
+    .binary-status.bad { color: var(--bb-bad); }
     .binary-board table { width: 100%; border-collapse: collapse; }
-    .binary-board th, .binary-board td { border-bottom: 1px solid rgba(130, 171, 255, .2); padding: 8px 6px; text-align: left; }
-    .binary-board th { color: #9fb4e4; font-weight: 600; }
-    .muted-block { color: #9fb4e4; margin: 0; }
+    .binary-board th, .binary-board td { border-bottom: 1px solid var(--bb-border); padding: 8px 6px; text-align: left; }
+    .binary-board th { color: var(--bb-muted); font-weight: 600; }
+    .muted-block { color: var(--bb-muted); margin: 0; }
     .learn-block { line-height: 1.55; }
+    .binary-header-row { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .theme-toggle { min-width: 160px; }
     @media (max-width: 650px) {
       .binary-row .btn { width: 100%; }
     }
@@ -61,16 +94,19 @@
           <a class="btn ghost" href="index.html">← На главную</a>
 
           <div class="card" style="display:grid; gap:12px;">
-            <span class="game-feature-cyberly-ribbon" style="position:static; transform:none; width:max-content;">Новое!</span>
+            <div class="binary-header-row">
+              <span class="game-feature-cyberly-ribbon" style="position:static; transform:none; width:max-content;">Новое!</span>
+              <button class="btn ghost theme-toggle" id="themeToggle" type="button">🌙 Тёмная тема</button>
+            </div>
             <h1 style="margin:0;">⚔️ Binary Battle</h1>
             <p class="muted-block">Практикуй перевод слов в двоичный код в 4 режимах: учебный, соревновательный, тестовый и турнирный.</p>
 
             <div class="binary-tabs" id="modeTabs">
-              <button class="binary-tab active" data-target="practice" type="button">Practice Mode</button>
-              <button class="binary-tab" data-target="competitive" type="button">Competitive/Timed</button>
-              <button class="binary-tab" data-target="selftest" type="button">Self-Test</button>
-              <button class="binary-tab" data-target="tournament" type="button">Tournament</button>
-              <button class="binary-tab" data-target="learn" type="button">Обучающий материал</button>
+              <button class="binary-tab active" data-target="practice" type="button">1) Practice Mode<br><small>Свободная тренировка + ASCII-подсказки</small></button>
+              <button class="binary-tab" data-target="competitive" type="button">2) Competitive/Timed<br><small>60 секунд и подсчёт очков</small></button>
+              <button class="binary-tab" data-target="selftest" type="button">3) Self-Test<br><small>От 5 до 20 слов, итоговый % успеха</small></button>
+              <button class="binary-tab" data-target="tournament" type="button">4) Tournament<br><small>Турнирная таблица и настраиваемые правила</small></button>
+              <button class="binary-tab" data-target="learn" type="button">5) Обучающий материал<br><small>Как переводить в двоичный код по шагам</small></button>
             </div>
           </div>
 
@@ -187,6 +223,31 @@
   </div>
 
   <script>
+    (function initTheme() {
+      const key = "cyber_theme";
+      const root = document.documentElement;
+      const toggle = document.getElementById("themeToggle");
+      const preferredDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const saved = localStorage.getItem(key);
+      const initial = saved || (preferredDark ? "dark" : "light");
+      root.setAttribute("data-theme", initial);
+
+      function syncLabel(theme) {
+        if (!toggle) return;
+        toggle.textContent = theme === "dark" ? "☀️ Светлая тема" : "🌙 Тёмная тема";
+      }
+
+      syncLabel(initial);
+      if (!toggle) return;
+      toggle.addEventListener("click", () => {
+        const current = root.getAttribute("data-theme") === "dark" ? "dark" : "light";
+        const next = current === "dark" ? "light" : "dark";
+        root.setAttribute("data-theme", next);
+        localStorage.setItem(key, next);
+        syncLabel(next);
+      });
+    })();
+
     const WORD_POOLS = {
       short: ["bit", "hex", "key", "root", "hash", "ping", "safe", "node"],
       medium: ["cyber", "kernel", "proxy", "cipher", "packet", "socket", "binary", "token"],
