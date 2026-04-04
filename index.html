@@ -914,6 +914,28 @@
         right: auto !important;
         transform: translateX(-50%) !important;
       }
+
+      body[data-page="home"] .card-grid > a.card.game-feature-cyberly {
+        grid-template-columns: minmax(0, 1fr) !important;
+        justify-items: center !important;
+      }
+
+      body[data-page="home"] .card-grid > a.card.game-feature-cyberly .game-feature-copy,
+      body[data-page="home"] .card-grid > a.card.game-feature-cyberly .cyberly-wordle-preview {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      body[data-page="home"] .card-grid > a.card.game-feature-cyberly h3,
+      body[data-page="home"] .card-grid > a.card.game-feature-cyberly p {
+        text-align: center !important;
+      }
+
+      body[data-page="home"] .card-grid > a.card.game-feature-cyberly .cyberly-wordle-preview {
+        margin-inline: auto;
+        justify-self: center;
+      }
     }
   </style>
 </head>
