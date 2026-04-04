@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Обучение двоичному коду</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="page" data-page="binary-learning">
+
+<div class="theme-backdrop" aria-hidden="true">
+  <div class="theme-orb theme-orb-one"></div>
+  <div class="theme-orb theme-orb-two"></div>
+  <div class="theme-grid"></div>
+  <canvas class="theme-network" id="theme-network"></canvas>
+</div>
+
+<div class="site">
+
+<header class="topbar glass">
+
+<a class="back-btn" href="index.html">← НАЗАД</a>
+
+<nav class="nav">
+<button id="theme-toggle-14" class="btn icon-btn" aria-label="Переключить тему">
+<svg class="icon-theme" width="22" height="22" viewBox="0 0 24 24" fill="none">
+<path class="icon-moon" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>
+<g class="icon-sun">
+<circle cx="12" cy="12" r="4"/>
+<line x1="12" y1="1" x2="12" y2="4"/>
+<line x1="12" y1="20" x2="12" y2="23"/>
+<line x1="4.2" y1="4.2" x2="6.3" y2="6.3"/>
+<line x1="17.7" y1="17.7" x2="19.8" y2="19.8"/>
+<line x1="1" y1="12" x2="4" y2="12"/>
+<line x1="20" y1="12" x2="23" y2="12"/>
+<line x1="4.2" y1="19.8" x2="6.3" y2="17.7"/>
+<line x1="17.7" y1="6.3" x2="19.8" y2="4.2"/>
+</g>
+</svg>
+</button>
+</nav>
+
+</header>
+
+<main class="main">
+<section class="section container reveal">
+
+<h1>Обучающий материал</h1>
+
+<p class="lead">
+Подробная шпаргалка: как переводить символы в ASCII, почему используется 8-битная запись
+и как быстро проверять корректность двоичного ответа.
+</p>
+
+<div class="method-materials">
+
+<div class="method-card">
+<div class="method-icon">🔤</div>
+<div class="method-info">
+<h3>Как переводить символы в ASCII</h3>
+<p>
+1) Возьми символ, например <strong>A</strong>.<br>
+2) Найди его код в ASCII: <strong>A = 65</strong>.<br>
+3) Переведи число 65 в двоичный вид: <strong>01000001</strong>.<br>
+4) Для слова переводи каждый символ отдельно: <strong>CAT</strong> →
+<strong>01000011 01000001 01010100</strong>.
+</p>
+</div>
+</div>
+
+<div class="method-card">
+<div class="method-icon">8️⃣</div>
+<div class="method-info">
+<h3>Почему используют 8 бит</h3>
+<p>
+Один символ в базовой таблице ASCII хранится в одном байте, а байт — это <strong>8 бит</strong>.
+Поэтому запись всегда дополняют ведущими нулями до 8 символов:
+<strong>1000001</strong> становится <strong>01000001</strong>.
+</p>
+</div>
+</div>
+
+<div class="method-card">
+<div class="method-icon">🔁</div>
+<div class="method-info">
+<h3>Как переводить из двоичного кода обратно в текст</h3>
+<p>
+1) Разбей строку на блоки по 8 бит.<br>
+2) Каждый блок переведи в десятичное число.<br>
+3) По таблице ASCII определи символ.<br>
+Пример: <strong>01001000 01101001</strong> → <strong>72 105</strong> → <strong>Hi</strong>.
+</p>
+</div>
+</div>
+
+<div class="method-card">
+<div class="method-icon">✅</div>
+<div class="method-info">
+<h3>Быстрая проверка ответа</h3>
+<p>
+• Проверь, что каждый символ записан ровно 8 битами.<br>
+• Сравни длину: количество байтов должно совпадать с количеством символов.<br>
+• Убедись, что в коде только <strong>0</strong> и <strong>1</strong>.<br>
+• Прогони обратный перевод: если получилось исходное слово, решение верное.
+</p>
+</div>
+</div>
+
+<div class="method-card">
+<div class="method-icon">🧠</div>
+<div class="method-info">
+<h3>Мини-шпаргалка для практики</h3>
+<p>
+Часто используемые буквы:<br>
+<strong>A</strong> = 01000001, <strong>B</strong> = 01000010, <strong>C</strong> = 01000011,<br>
+<strong>a</strong> = 01100001, <strong>b</strong> = 01100010, <strong>c</strong> = 01100011,<br>
+<strong>0</strong> = 00110000, <strong>1</strong> = 00110001, <strong>пробел</strong> = 00100000.
+</p>
+</div>
+</div>
+
+</div>
+
+</section>
+</main>
+
+</div>
+
+<script src="js/main.js"></script>
+<script src="js/theme-network.js"></script>
+</body>
+</html>
