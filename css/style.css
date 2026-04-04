@@ -6314,3 +6314,57 @@ body[data-page="cyberguessr"] .card-photo{
     height: calc(clamp(210px, 58vw, 290px) / 2);
   }
 }
+
+/* Mobile-only homepage card alignment fixes */
+@media (max-width: 640px){
+  body[data-page="home"] .tip-image{
+    margin-inline:auto;
+  }
+
+  body[data-page="home"] .game-feature-binary{
+    overflow: hidden;
+  }
+
+  body[data-page="home"] .game-feature-binary .game-feature-copy,
+  body[data-page="home"] .game-feature-binary .binary-preview{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+  }
+
+  body[data-page="home"] .game-feature-binary .binary-code{
+    white-space:normal;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+  }
+
+  body[data-page="home"] .game-feature-cyberguessr{
+    padding-bottom:0;
+  }
+
+  body[data-page="home"] .game-feature-cyberguessr .home-moon{
+    position:relative;
+    right:auto;
+    bottom:auto;
+    margin:8px auto 0;
+    width:clamp(260px, 72vw, 340px);
+    height:calc(clamp(260px, 72vw, 340px) / 2);
+  }
+
+  body[data-page="home"] .game-feature-cyberguessr .home-moon img + img{
+    display:none !important;
+  }
+
+  body[data-page="home"] .game-feature-cyberly .game-feature-copy{
+    align-items:center;
+    text-align:center;
+  }
+
+  body[data-page="home"] .game-feature-cyberly .game-feature-copy p{
+    text-align:center;
+  }
+
+  body[data-page="home"] .game-feature-cyberly .cyberly-wordle-preview{
+    margin-inline:auto;
+  }
+}
