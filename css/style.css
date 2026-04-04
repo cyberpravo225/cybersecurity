@@ -6366,6 +6366,7 @@ body[data-page="cyberguessr"] .card-photo{
     width:clamp(300px, 82vw, 420px);
     height:calc(clamp(300px, 82vw, 420px) / 2);
     transform:translateX(-50%);
+    animation:none;
   }
 
   body[data-page="home"] .game-feature-cyberly .game-feature-copy{
