@@ -6350,6 +6350,7 @@ body[data-page="cyberguessr"] .card-photo{
   body[data-page="home"] .game-feature-cyberguessr{
     position:relative;
     overflow:hidden;
+    padding-right:0;
     padding-bottom:clamp(120px, 30vw, 170px);
   }
 
@@ -6359,13 +6360,13 @@ body[data-page="cyberguessr"] .card-photo{
 
   body[data-page="home"] .game-feature-cyberguessr .home-moon{
     position:absolute;
-    left:50%;
-    right:auto;
+    left:50% !important;
+    right:auto !important;
     bottom:0;
     margin:0;
     width:clamp(300px, 82vw, 420px);
     height:calc(clamp(300px, 82vw, 420px) / 2);
-    transform:translateX(-50%);
+    transform:translateX(-50%) !important;
     animation:none;
   }
 
