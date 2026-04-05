@@ -1536,7 +1536,6 @@ border-left:3px solid #b45309;
 background:none;
 }
 
-:root[data-theme="dark"] body[data-page="methodical"] .method-card,
 :root[data-theme="dark"] body[data-page="methodical"] .constitution-book-single{
 background:
 linear-gradient(165deg,#6e0d20,#8b1530 44%,#5f0c1d) !important;
