@@ -75,7 +75,7 @@
   audio.src = AUDIO_SRC;
   audio.loop = true;
   audio.preload = 'auto';
-  audio.volume = 0.06;
+  audio.volume = 0.03;
   audio.setAttribute('playsinline', '');
   audio.style.display = 'none';
 
