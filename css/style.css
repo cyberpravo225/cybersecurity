@@ -1109,7 +1109,7 @@ perspective:1000px;
 }
 
 .constitution-book-single:hover{
-transform:perspective(900px) rotateY(0deg) translateY(-2px);
+transform:perspective(900px) rotateY(0deg) translateY(0);
 box-shadow:
 0 26px 46px rgba(42,4,11,0.56),
 inset 0 0 0 1px rgba(255,255,255,0.1);
