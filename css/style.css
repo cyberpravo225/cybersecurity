@@ -1326,7 +1326,7 @@ opacity:1;
 transform:translateX(0);
 }
 
-.constitution-pages-stage.has-next .constitution-page.is-active::before{
+.constitution-pages-stage.has-next .constitution-page.stack-current::before{
 content:"";
 position:absolute;
 right:-4px;
@@ -1338,26 +1338,30 @@ background:linear-gradient(270deg,rgba(245,222,181,.95),rgba(218,187,136,.7));
 box-shadow:0 0 12px rgba(108,67,31,.2);
 }
 
-.constitution-page.is-active{
+.constitution-page.stack-current{
 opacity:1;
 pointer-events:auto;
-transform:rotateY(0deg) scale(1);
-z-index:2;
-transition:opacity .2s ease;
+transform:translateX(0) rotateY(0deg) scale(1);
+z-index:30;
 }
 
-.constitution-page.is-turned-left{
-opacity:.78;
+.constitution-page.stack-left{
+opacity:.94;
 pointer-events:none;
-transform:translateX(-52%) rotateY(-178deg) scale(.96);
-z-index:1;
+transform:translateX(calc(-46% - (var(--stack-depth,1) * 3px))) rotateY(-176deg) scale(.96);
+z-index:calc(18 - var(--stack-depth,1));
 }
 
-.constitution-page.is-turned-right{
-opacity:.78;
+.constitution-page.stack-right{
+opacity:.92;
 pointer-events:none;
-transform:translateX(52%) rotateY(178deg) scale(.96);
-z-index:1;
+transform:translateX(calc(14px + (var(--stack-depth,1) * 3px))) rotateY(-5deg) scale(calc(1 - (var(--stack-depth,1) * 0.012)));
+z-index:calc(22 - var(--stack-depth,1));
+}
+
+.constitution-page.is-under-current{
+opacity:1 !important;
+z-index:26 !important;
 }
 
 .constitution-page h4{
@@ -1366,95 +1370,43 @@ font-size:20px;
 color:#3a1f1f;
 }
 
-.constitution-page.is-entering-next{
-animation:page-enter-next 1.2s cubic-bezier(.19,.75,.2,1) forwards;
-z-index:4;
+.constitution-page.is-flipping-next{
+animation:page-flip-next .82s ease-in-out forwards;
+z-index:40;
 }
 
-.constitution-page.is-leaving-next{
-animation:page-leave-next 1.2s cubic-bezier(.19,.75,.2,1) forwards;
-z-index:3;
+.constitution-page.is-flipping-prev{
+animation:page-flip-prev .82s ease-in-out forwards;
+z-index:40;
 }
 
-.constitution-page.is-entering-prev{
-animation:page-enter-prev 1.2s cubic-bezier(.19,.75,.2,1) forwards;
-z-index:4;
-}
-
-.constitution-page.is-leaving-prev{
-animation:page-leave-prev 1.2s cubic-bezier(.19,.75,.2,1) forwards;
-z-index:3;
-}
-
-@keyframes page-enter-next{
-from{
-opacity:0;
-transform:rotateY(96deg) translateX(28px) scale(.97);
-filter:brightness(.95);
-}
-55%{
-opacity:.88;
-transform:rotateY(18deg) translateX(6px) scale(.995);
-filter:brightness(1.03);
-}
-to{
-opacity:1;
-transform:rotateY(0deg) translateX(0) scale(1);
-filter:brightness(1);
-}
-}
-
-@keyframes page-leave-next{
-from{
-opacity:1;
-transform:rotateY(0deg) translateX(0) scale(1);
-filter:brightness(1);
+@keyframes page-flip-next{
+0%{
+transform:translateX(0) rotateY(0deg) scale(1);
+box-shadow:0 12px 22px rgba(34,22,13,0.12);
 }
 45%{
-opacity:.95;
-transform:rotateY(-36deg) translateX(-8px) scale(.985);
-filter:brightness(1.02);
+transform:translateX(-6px) rotateY(-92deg) scale(.985);
+box-shadow:-18px 8px 26px rgba(34,22,13,0.2);
 }
-to{
-opacity:.8;
-transform:translateX(-52%) rotateY(-178deg) scale(.96);
-filter:brightness(.9);
+100%{
+transform:translateX(-46%) rotateY(-176deg) scale(.96);
+box-shadow:-8px 6px 16px rgba(34,22,13,0.16);
 }
 }
 
-@keyframes page-enter-prev{
-from{
-opacity:0;
-transform:rotateY(-96deg) translateX(-28px) scale(.97);
-filter:brightness(.95);
-}
-55%{
-opacity:.88;
-transform:rotateY(-18deg) translateX(-6px) scale(.995);
-filter:brightness(1.03);
-}
-to{
-opacity:1;
-transform:rotateY(0deg) translateX(0) scale(1);
-filter:brightness(1);
-}
-}
-
-@keyframes page-leave-prev{
-from{
-opacity:1;
-transform:rotateY(0deg) translateX(0) scale(1);
-filter:brightness(1);
+@keyframes page-flip-prev{
+0%{
+transform:translateX(0) rotateY(0deg) scale(1);
+box-shadow:0 12px 22px rgba(34,22,13,0.12);
 }
 45%{
-opacity:.95;
-transform:rotateY(36deg) translateX(8px) scale(.985);
-filter:brightness(1.02);
+transform:translateX(8px) rotateY(92deg) scale(.985);
+box-shadow:18px 8px 26px rgba(34,22,13,0.2);
 }
-to{
-opacity:.8;
-transform:translateX(52%) rotateY(178deg) scale(.96);
-filter:brightness(.9);
+100%{
+transform:translateX(52%) rotateY(176deg) scale(.96);
+box-shadow:8px 6px 16px rgba(34,22,13,0.16);
 }
 }
 
