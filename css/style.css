@@ -1130,7 +1130,11 @@ text-align:center;
 z-index:3;
 overflow:hidden;
 transform-origin:left center;
-transition:transform .85s cubic-bezier(.22,.7,.17,1), box-shadow .85s ease;
+transform:rotateY(0deg) translateX(0);
+transition:
+transform .95s cubic-bezier(.16,.78,.2,1),
+box-shadow .95s ease,
+filter .95s ease;
 border-radius:12px 18px 18px 12px;
 backface-visibility:hidden;
 }
@@ -1230,9 +1234,11 @@ linear-gradient(0deg,rgba(255,250,236,0.99),rgba(255,243,214,0.99));
 border-radius:8px 16px 16px 8px;
 opacity:0;
 pointer-events:none;
-transform:rotateY(100deg) scale(.98);
+transform:rotateY(96deg) scale(.985);
 transform-origin:left center;
-transition:transform .85s cubic-bezier(.22,.7,.17,1), opacity .4s ease;
+transition:
+transform .95s cubic-bezier(.16,.78,.2,1),
+opacity .5s ease .08s;
 box-shadow:
 0 10px 24px rgba(42,4,11,0.18),
 inset 0 0 0 1px rgba(117,57,22,0.12);
@@ -1246,8 +1252,9 @@ z-index:2;
 }
 
 .constitution-book-single[open] .constitution-cover{
-transform:rotateY(-130deg);
+transform:rotateY(-122deg) translateX(-2px);
 box-shadow:-20px 8px 22px rgba(0,0,0,0.34);
+filter:brightness(.96);
 }
 
 .constitution-pagination{
@@ -1563,7 +1570,7 @@ background:linear-gradient(0deg,rgba(255,249,232,0.98),rgba(255,243,213,0.98));
   }
 
   .constitution-book-single[open] .constitution-cover{
-  transform:rotateY(-118deg);
+  transform:rotateY(-110deg) translateX(-1px);
   }
 }
 
