@@ -1132,9 +1132,9 @@ overflow:hidden;
 transform-origin:left center;
 transform:rotateY(0deg) translateX(0);
 transition:
-transform .95s cubic-bezier(.16,.78,.2,1),
-box-shadow .95s ease,
-filter .95s ease;
+transform 1.25s cubic-bezier(.16,.78,.2,1),
+box-shadow 1.25s ease,
+filter 1.25s ease;
 border-radius:12px 18px 18px 12px;
 backface-visibility:hidden;
 }
@@ -1237,8 +1237,8 @@ pointer-events:none;
 transform:rotateY(96deg) scale(.985);
 transform-origin:left center;
 transition:
-transform .95s cubic-bezier(.16,.78,.2,1),
-opacity .5s ease .08s;
+transform 1.15s cubic-bezier(.16,.78,.2,1),
+opacity .65s ease .12s;
 box-shadow:
 0 10px 24px rgba(42,4,11,0.18),
 inset 0 0 0 1px rgba(117,57,22,0.12);
