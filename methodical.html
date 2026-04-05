@@ -22,7 +22,9 @@ body[data-page="methodical"] .constitution-section{
   perspective:2200px;
   transform-style:preserve-3d;
   border-radius:18px;
-  padding:26px 30px 24px;
+  padding:26px 24px 24px;
+  max-width:560px;
+  margin:0 auto;
   background:linear-gradient(160deg,#5b0f22 0%,#7a152f 45%,#420916 100%);
   border:1px solid rgba(255,214,147,0.26);
   box-shadow:0 30px 46px rgba(39,7,14,.45), inset 0 0 0 1px rgba(255,255,255,.08);
@@ -36,7 +38,9 @@ body[data-page="methodical"] .constitution-section{
 .book-hint{font-size:12px;opacity:.92;}
 .book-stage{
   position:relative;
-  min-height:430px;
+  width:min(100%,420px);
+  margin:0 auto;
+  min-height:620px;
   transform-style:preserve-3d;
   cursor:pointer;
 }
@@ -94,11 +98,66 @@ body[data-page="methodical"] .constitution-section{
 .book-page p,.book-page li{color:#3f2c1d;}
 .book-page ul{padding-left:20px;display:grid;gap:6px;margin:0;}
 
+.book-cover-page{
+  background:
+    linear-gradient(90deg,#661126 0 10%,transparent 10% 90%,#661126 90%),
+    linear-gradient(165deg,#5a0d1f,#7b1732 45%,#4a0a1a);
+  border:1px solid rgba(243,204,125,.36);
+  box-shadow:0 22px 30px rgba(20,4,9,.35), inset 0 0 0 1px rgba(255,224,153,.22);
+}
+
+.book-cover-page::after{
+  background:
+    linear-gradient(90deg,rgba(255,224,166,.15),transparent 14%,transparent 86%,rgba(255,224,166,.15)),
+    repeating-linear-gradient(180deg,rgba(132,47,69,.42) 0 8px,rgba(160,63,88,.42) 8px 16px);
+  opacity:.44;
+}
+
+.book-cover-page .page-content{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  min-height:100%;
+  color:#f6d993;
+}
+
+.belarus-emblem{
+  margin-top:20px;
+  margin-bottom:20px;
+  font-size:58px;
+  line-height:1;
+  color:#f5c96d;
+  text-shadow:0 6px 18px rgba(0,0,0,.35);
+}
+
+.cover-title{
+  margin:0;
+  white-space:pre-line;
+  color:#f3cf82;
+  text-transform:uppercase;
+  font-size:38px;
+  letter-spacing:.08em;
+  line-height:1.2;
+  text-shadow:0 6px 14px rgba(0,0,0,.3);
+}
+
+.cover-subtitle{
+  margin-top:28px;
+  color:#e8be6d !important;
+  text-transform:uppercase;
+  letter-spacing:.18em;
+  font-size:12px;
+}
+
 @media (max-width: 700px){
   .constitution-section{padding:18px;}
   .constitution-book3d{padding:20px 16px 18px;}
-  .book-stage{min-height:490px;}
+  .book-stage{min-height:560px;}
   .book-page h4{font-size:24px;}
+  .cover-title{font-size:30px;}
+  .belarus-emblem{font-size:48px;}
 }
 </style>
 
@@ -232,17 +291,14 @@ body[data-page="methodical"] .constitution-section{
       </div>
 
       <div class="book-stage" data-book-surface>
-        <article class="book-page" data-book-page>
+        <article class="book-page book-cover-page" data-book-page>
           <div class="page-fold" aria-hidden="true"></div>
           <div class="page-content">
-            <span class="constitution-article-tag">Обложка / Статья 1</span>
-            <h4>Конституция</h4>
-            <p class="constitution-text">
-              Каждый человек имеет право на неприкосновенность личной жизни, защиту персональных данных
-              и тайну переписки. В цифровом мире это означает безопасное хранение аккаунтов,
-              паролей и личных сообщений.
-            </p>
-            <p class="constitution-note">Защита личной информации начинается с осторожного поведения в сети.</p>
+            <div class="belarus-emblem" aria-hidden="true">⚜</div>
+            <h4 class="cover-title">КАНСТЫТУЦЫЯ
+РЭСПУБЛІКІ
+БЕЛАРУСЬ</h4>
+            <p class="cover-subtitle">Официальное издание</p>
           </div>
         </article>
 
