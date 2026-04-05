@@ -1227,21 +1227,116 @@ color:#5b452d;
 }
 
 .constitution-page{
-display:none;
+position:absolute;
+inset:0;
+display:block;
 padding:16px 14px;
 border-radius:12px;
 background:rgba(255,255,255,.72);
 border:1px solid rgba(127,29,29,.15);
+box-shadow:
+0 10px 22px rgba(65,37,20,.12),
+inset 0 0 0 1px rgba(255,255,255,.4);
+opacity:0;
+pointer-events:none;
+transform-origin:left center;
+transform:rotateY(95deg) scale(.98);
+backface-visibility:hidden;
+}
+
+.constitution-pages-stage{
+position:relative;
+perspective:1800px;
+transform-style:preserve-3d;
+transition:height .35s ease;
+min-height:320px;
+}
+
+.constitution-page::after{
+content:"";
+position:absolute;
+inset:0;
+border-radius:12px;
+pointer-events:none;
+box-shadow:inset -24px 0 28px rgba(42,4,11,.07);
 }
 
 .constitution-page.is-active{
-display:block;
+opacity:1;
+pointer-events:auto;
+transform:rotateY(0deg) scale(1);
+z-index:2;
+transition:opacity .2s ease;
 }
 
 .constitution-page h4{
 margin:8px 0 12px;
 font-size:20px;
 color:#3a1f1f;
+}
+
+.constitution-page.is-entering-next{
+animation:page-enter-next .75s cubic-bezier(.22,.7,.17,1) forwards;
+z-index:4;
+}
+
+.constitution-page.is-leaving-next{
+animation:page-leave-next .75s cubic-bezier(.22,.7,.17,1) forwards;
+z-index:3;
+}
+
+.constitution-page.is-entering-prev{
+animation:page-enter-prev .75s cubic-bezier(.22,.7,.17,1) forwards;
+z-index:4;
+}
+
+.constitution-page.is-leaving-prev{
+animation:page-leave-prev .75s cubic-bezier(.22,.7,.17,1) forwards;
+z-index:3;
+}
+
+@keyframes page-enter-next{
+from{
+opacity:0;
+transform:rotateY(95deg) translateX(22px) scale(.98);
+}
+to{
+opacity:1;
+transform:rotateY(0deg) translateX(0) scale(1);
+}
+}
+
+@keyframes page-leave-next{
+from{
+opacity:1;
+transform:rotateY(0deg) translateX(0) scale(1);
+}
+to{
+opacity:0;
+transform:rotateY(-110deg) translateX(-18px) scale(.97);
+}
+}
+
+@keyframes page-enter-prev{
+from{
+opacity:0;
+transform:rotateY(-95deg) translateX(-22px) scale(.98);
+}
+to{
+opacity:1;
+transform:rotateY(0deg) translateX(0) scale(1);
+}
+}
+
+@keyframes page-leave-prev{
+from{
+opacity:1;
+transform:rotateY(0deg) translateX(0) scale(1);
+}
+to{
+opacity:0;
+transform:rotateY(110deg) translateX(18px) scale(.97);
+}
 }
 
 .constitution-article-tag{
