@@ -6918,3 +6918,263 @@ body[data-page="cyberguessr"] .card-photo{
     margin-inline:auto;
   }
 }
+
+/* =========================================================
+   Полезные контакты по кибербезопасности
+   ========================================================= */
+
+.contacts-page {
+  padding-top: 10px;
+}
+
+.contacts-header {
+  margin-bottom: 20px;
+}
+
+.contacts-header h1 {
+  margin: 0 0 10px;
+  font-size: clamp(30px, 4vw, 46px);
+  line-height: 1.1;
+}
+
+.incident-cta {
+  margin-top: 22px;
+  border-radius: 20px;
+  padding: clamp(18px, 2.8vw, 30px);
+  background: linear-gradient(155deg, rgba(15, 55, 123, 0.94), rgba(26, 81, 166, 0.92));
+  color: #f8fbff;
+  box-shadow: 0 18px 42px rgba(18, 50, 104, 0.3);
+  border: 1px solid rgba(175, 209, 255, 0.32);
+}
+
+:root[data-theme="dark"] .incident-cta {
+  background: linear-gradient(160deg, rgba(8, 34, 84, 0.95), rgba(15, 65, 132, 0.96));
+  border-color: rgba(114, 157, 217, 0.35);
+}
+
+.incident-cta-head h2 {
+  margin: 10px 0 8px;
+  font-size: clamp(24px, 2.8vw, 34px);
+}
+
+.incident-cta-head p {
+  margin: 0;
+  color: rgba(237, 244, 255, 0.95);
+}
+
+.urgency-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: rgba(218, 55, 69, 0.96);
+  color: #fff;
+  border-radius: 999px;
+  padding: 5px 12px;
+}
+
+.incident-steps {
+  margin: 20px 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 8px;
+}
+
+.incident-steps li {
+  color: rgba(245, 249, 255, 0.98);
+}
+
+.incident-cta-btn {
+  display: inline-flex;
+}
+
+.contacts-subtitle {
+  margin: 0;
+  font-size: clamp(24px, 2.6vw, 34px);
+}
+
+.contacts-note {
+  margin: 10px 0 22px;
+  color: var(--text-muted);
+}
+
+.contacts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.contact-card {
+  border-radius: 16px;
+  background: var(--card-bg);
+  border: 1px solid color-mix(in srgb, var(--accent) 14%, transparent);
+  box-shadow: 0 10px 22px rgba(7, 18, 40, 0.08);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform var(--anim), box-shadow var(--anim), border-color var(--anim);
+}
+
+.contact-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 30px rgba(7, 18, 40, 0.14);
+  border-color: color-mix(in srgb, var(--accent) 26%, transparent);
+}
+
+.contact-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.contact-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.contact-card h3 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.contact-description,
+.contact-when {
+  margin: 0;
+}
+
+.contact-when {
+  font-size: 14px;
+  color: #7f5d00;
+  background: #fff8df;
+  border-radius: 10px;
+  border: 1px solid #f2dd9a;
+  padding: 8px 10px;
+}
+
+:root[data-theme="dark"] .contact-when {
+  color: #ffe8a3;
+  background: rgba(255, 214, 102, 0.12);
+  border-color: rgba(255, 214, 102, 0.26);
+}
+
+.contact-meta {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.contact-meta div {
+  display: grid;
+  gap: 2px;
+}
+
+.contact-meta dt {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.contact-meta dd {
+  margin: 0;
+  font-size: 15px;
+}
+
+.contact-meta a {
+  color: var(--accent-2);
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.contact-meta a:hover {
+  text-decoration: underline;
+}
+
+
+.btn.secondary {
+  background: color-mix(in srgb, var(--bg) 82%, var(--accent) 18%);
+  border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+  color: var(--fg);
+}
+
+.btn.secondary:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.contact-actions {
+  margin-top: auto;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.contact-actions .btn {
+  min-width: 120px;
+  justify-content: center;
+}
+
+.contact-actions button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.extra-services {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+}
+
+.extra-services a {
+  color: var(--accent-2);
+}
+
+.do-now {
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--accent) 14%, transparent);
+  box-shadow: 0 8px 20px rgba(8, 16, 34, 0.08);
+  padding: clamp(16px, 2vw, 24px);
+  background: var(--card-bg);
+}
+
+.do-now h2 {
+  margin: 0 0 12px;
+}
+
+.do-now ul {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 8px;
+}
+
+@media (max-width: 1120px) {
+  .contacts-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .contacts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .incident-cta {
+    border-radius: 16px;
+  }
+
+  .contact-actions .btn {
+    flex: 1;
+    min-width: 0;
+  }
+}

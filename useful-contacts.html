@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Кибербезопасность: куда обратиться в Беларуси</title>
+  <meta name="description" content="Полезные контакты по кибербезопасности в Беларуси: МВД, CERT, защита персональных данных, банки, мобильные операторы и сервисы проверки ссылок.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page" data-page="contacts">
+  <div class="theme-backdrop" aria-hidden="true">
+    <div class="theme-orb theme-orb-one"></div>
+    <div class="theme-orb theme-orb-two"></div>
+    <div class="theme-grid"></div>
+    <canvas class="theme-network" id="theme-network"></canvas>
+  </div>
+
+  <div class="site">
+    <header class="topbar glass">
+      <div class="brand">
+        <a href="index.html" class="logo">
+          <img src="assets/assets/logo.png" alt="Логотип" class="site-logo">
+          <span class="brand-text">Кибербезопасность</span>
+        </a>
+      </div>
+      <nav class="nav">
+        <button id="theme-toggle" class="btn icon-btn" aria-label="Переключить тему">
+          <svg class="icon-theme" width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path class="icon-moon" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>
+            <g class="icon-sun">
+              <circle cx="12" cy="12" r="4"/>
+              <line x1="12" y1="1" x2="12" y2="4"/>
+              <line x1="12" y1="20" x2="12" y2="23"/>
+              <line x1="4.2" y1="4.2" x2="6.3" y2="6.3"/>
+              <line x1="17.7" y1="17.7" x2="19.8" y2="19.8"/>
+              <line x1="1" y1="12" x2="4" y2="12"/>
+              <line x1="20" y1="12" x2="23" y2="12"/>
+              <line x1="4.2" y1="19.8" x2="6.3" y2="17.7"/>
+              <line x1="17.7" y1="6.3" x2="19.8" y2="4.2"/>
+            </g>
+          </svg>
+        </button>
+        <a href="index.html" class="back-btn">← НАЗАД</a>
+      </nav>
+    </header>
+
+    <main class="main contacts-page">
+      <section class="section container">
+        <header class="contacts-header reveal">
+          <h1>Кибербезопасность: куда обратиться</h1>
+          <p class="lead">Полезные контакты по Беларуси, чтобы быстро среагировать при взломе аккаунта, фишинге, краже денег или утечке данных.</p>
+        </header>
+
+        <article class="incident-cta reveal delay" aria-labelledby="incident-title">
+          <div class="incident-cta-head">
+            <span class="urgency-label">Срочно</span>
+            <h2 id="incident-title">Что делать при киберинциденте</h2>
+            <p>Если вы уже столкнулись с мошенничеством, действуйте по шагам без промедления.</p>
+          </div>
+          <ol class="incident-steps" aria-label="Пошаговые действия при киберинциденте">
+            <li><strong>Позвонить в банк</strong> и срочно заблокировать карту / оспорить операцию.</li>
+            <li><strong>Заблокировать SIM или проверить номер</strong> у мобильного оператора.</li>
+            <li><strong>Сообщить о киберинциденте</strong> в профильные службы (МВД/CERT).</li>
+            <li><strong>Сменить пароли и включить 2FA</strong> в почте, банке и соцсетях.</li>
+          </ol>
+          <a href="#urgent-actions" class="btn primary incident-cta-btn">Открыть чек-лист действий</a>
+        </article>
+      </section>
+
+      <section class="section container" aria-labelledby="contacts-list-title">
+        <h2 id="contacts-list-title" class="contacts-subtitle reveal">Полезные контакты</h2>
+        <p class="contacts-note reveal delay">Ниже — кому обращаться в зависимости от ситуации: для фишинга, блокировки карты, утечки данных или подозрительных ссылок.</p>
+        <div id="contacts-grid" class="contacts-grid" role="list" aria-label="Контакты служб кибербезопасности"></div>
+      </section>
+
+      <section class="section container" id="urgent-actions" aria-labelledby="now-title">
+        <article class="do-now reveal">
+          <h2 id="now-title">Что делать прямо сейчас</h2>
+          <ul>
+            <li>Отключите подозрительное устройство от интернета и не устанавливайте «защитные» приложения по просьбе незнакомцев.</li>
+            <li>Сделайте скриншоты переписки, номера отправителя, URL-адреса сайта и подтверждений операций.</li>
+            <li>Проверьте устройство антивирусом и обновите систему/браузер до актуальной версии.</li>
+            <li>Предупредите близких, если мошенники могут использовать ваш аккаунт для новых атак.</li>
+          </ul>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/theme-network.js"></script>
+  <script src="js/useful-contacts.js"></script>
+</body>
+</html>
