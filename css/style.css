@@ -1184,9 +1184,24 @@ font-size:12px;
 }
 
 .constitution-cover-emblem{
-font-size:40px;
-filter:drop-shadow(0 4px 8px rgba(0,0,0,.28));
-color:#ffd36b;
+display:flex;
+align-items:center;
+justify-content:center;
+width:86px;
+height:86px;
+border-radius:16px;
+overflow:hidden;
+box-shadow:
+0 8px 16px rgba(0,0,0,.28),
+0 0 0 2px rgba(255,255,255,.2);
+background:rgba(255,255,255,.08);
+}
+
+.constitution-cover-emblem-image{
+display:block;
+width:100%;
+height:100%;
+object-fit:cover;
 }
 
 .constitution-cover-ornament{
@@ -1196,8 +1211,8 @@ bottom:38px;
 width:14px;
 border-radius:999px;
 background:
-repeating-linear-gradient(180deg,rgba(255,227,160,.92) 0 8px,rgba(154,95,37,.85) 8px 11px);
-box-shadow:0 0 14px rgba(245,199,113,.35);
+repeating-linear-gradient(180deg,rgba(143,22,50,.95) 0 8px,rgba(95,9,26,.92) 8px 11px);
+box-shadow:0 0 14px rgba(95,9,26,.42);
 opacity:.9;
 }
 
