@@ -29,6 +29,7 @@ body[data-page="methodical"] .constitution-section{
   border:1px solid rgba(255,214,147,0.26);
   box-shadow:0 30px 46px rgba(39,7,14,.45), inset 0 0 0 1px rgba(255,255,255,.08);
   transition:transform .52s ease;
+  cursor:pointer;
 }
 .constitution-book3d.is-zooming{transform:translateY(8px) scale(0.95);} 
 .book-glow{position:absolute;inset:10px;border-radius:12px;background:radial-gradient(circle at 60% 10%,rgba(255,233,178,.2),transparent 55%);pointer-events:none;}
@@ -42,7 +43,6 @@ body[data-page="methodical"] .constitution-section{
   margin:0 auto;
   min-height:620px;
   transform-style:preserve-3d;
-  cursor:pointer;
 }
 .book-stage::before,.book-stage::after{content:"";position:absolute;top:16px;bottom:16px;width:30%;opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:80;}
 .book-stage::before{left:-4px;background:linear-gradient(90deg,rgba(24,6,9,.34),transparent);} 
@@ -387,7 +387,7 @@ body[data-page="methodical"] .constitution-section{
   if(!book) return;
 
   const pages = Array.from(book.querySelectorAll('[data-book-page]'));
-  const surface = book.querySelector('[data-book-surface]');
+  const surface = book;
   const indicator = book.querySelector('[data-book-indicator]');
   const duration = 860;
   let current = 0;
@@ -474,7 +474,7 @@ body[data-page="methodical"] .constitution-section{
   surface.addEventListener('click', (event) => {
     const rect = surface.getBoundingClientRect();
     const clickX = event.clientX - rect.left;
-    const edgeZone = rect.width * 0.27;
+    const edgeZone = rect.width * 0.24;
     if(clickX >= rect.width - edgeZone){
       goNext();
     } else if(clickX <= edgeZone){
