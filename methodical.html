@@ -436,7 +436,8 @@ body[data-page="methodical"] .constitution-section{
   const surface = book;
   const indicator = wrap ? wrap.querySelector('[data-book-indicator]') : null;
   const duration = 860;
-  let current = 0;
+  const coverIndex = Math.max(0, pages.findIndex((page) => page.classList.contains('book-cover-page')));
+  let current = coverIndex;
   let animating = false;
   let touchStartX = 0;
 
@@ -546,6 +547,11 @@ body[data-page="methodical"] .constitution-section{
   window.setTimeout(() => {
     book.classList.remove('is-zooming');
   }, 460);
+
+  window.addEventListener('pageshow', () => {
+    current = coverIndex;
+    render();
+  });
 
   render();
 })();
