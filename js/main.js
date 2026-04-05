@@ -73,6 +73,7 @@
 
   const audio = document.createElement('audio');
   audio.src = AUDIO_SRC;
+  audio.autoplay = true;
   audio.loop = true;
   audio.preload = 'auto';
   audio.volume = 0.06;
@@ -92,16 +93,27 @@
 
   const startMusic = async () => {
     if (!musicEnabled) return;
+    audio.muted = false;
     try {
       await audio.play();
     } catch (_) {
-      // Автозапуск может быть заблокирован браузером до первого взаимодействия.
+      // Фолбэк: запускаем muted-автоплей и сразу пробуем вернуть звук.
+      try {
+        audio.muted = true;
+        await audio.play();
+        requestAnimationFrame(() => {
+          audio.muted = false;
+        });
+      } catch (_) {
+        // Автозапуск может быть полностью заблокирован браузером до первого взаимодействия.
+      }
     }
   };
 
   const stopMusic = () => {
     audio.pause();
     audio.currentTime = 0;
+    audio.muted = false;
   };
 
   const unlockOnInteraction = async () => {
