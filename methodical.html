@@ -131,21 +131,11 @@
 
 <div class="constitution-book-inner" data-book-pages>
 <div class="constitution-pagination">
-<span class="constitution-page-indicator" data-book-indicator>1 / 6</span>
+<span class="constitution-page-indicator" data-book-indicator>1 / 5</span>
 <span class="constitution-page-hint">Правый край — вперёд, левый край — назад. Поддержан свайп.</span>
 </div>
 
 <div class="constitution-pages-stage" data-book-stage data-book-surface>
-<article class="constitution-page constitution-title-page" data-book-page>
-<div class="constitution-title-ornament" aria-hidden="true"></div>
-<div class="constitution-title-center">
-<span class="constitution-title-emblem" aria-hidden="true">🛡️</span>
-<h4>КАНСТЫТУЦЫЯ<br>РЭСПУБЛІКІ<br>БЕЛАРУСЬ</h4>
-<p class="constitution-title-note">Герб Беларусі • Официальное издание</p>
-</div>
-<div class="constitution-title-ornament constitution-title-ornament-right" aria-hidden="true"></div>
-</article>
-
 <article class="constitution-page" data-book-page>
 <span class="constitution-article-tag">Статья 28</span>
 <h4>📕 Конституция — неприкосновенность личной жизни</h4>
@@ -287,7 +277,13 @@
   };
 
   const goPrev = () => {
-    if(animating || current <= 0) return;
+    if(animating) return;
+    if(current <= 0){
+      if(bookShell && bookShell.open){
+        bookShell.open = false;
+      }
+      return;
+    }
     animating = true;
     const currentPage = pages[current];
     const prevPage = pages[current - 1];
