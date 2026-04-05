@@ -1335,6 +1335,20 @@ z-index:2;
 transition:opacity .2s ease;
 }
 
+.constitution-page.is-turned-left{
+opacity:.42;
+pointer-events:none;
+transform:translateX(-46%) rotateY(-168deg) scale(.95);
+z-index:1;
+}
+
+.constitution-page.is-turned-right{
+opacity:.42;
+pointer-events:none;
+transform:translateX(46%) rotateY(168deg) scale(.95);
+z-index:1;
+}
+
 .constitution-page h4{
 margin:8px 0 12px;
 font-size:20px;
@@ -1391,9 +1405,9 @@ transform:rotateY(-36deg) translateX(-8px) scale(.985);
 filter:brightness(1.02);
 }
 to{
-opacity:.12;
-transform:rotateY(-126deg) translateX(-24px) scale(.955);
-filter:brightness(.9);
+opacity:.52;
+transform:translateX(-44%) rotateY(-166deg) scale(.95);
+filter:brightness(.86);
 }
 }
 
@@ -1427,9 +1441,9 @@ transform:rotateY(36deg) translateX(8px) scale(.985);
 filter:brightness(1.02);
 }
 to{
-opacity:.12;
-transform:rotateY(126deg) translateX(24px) scale(.955);
-filter:brightness(.9);
+opacity:.52;
+transform:translateX(44%) rotateY(166deg) scale(.95);
+filter:brightness(.86);
 }
 }
 
