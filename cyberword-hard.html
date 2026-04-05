@@ -249,6 +249,7 @@ restartBtn.addEventListener('click', restartGame);
 (async function initGame() { try { const response = await fetch(datasetUrl); if (!response.ok) throw new Error('Не удалось загрузить базу слов.'); vectors = parseVectorsPayload(await response.text()); words = validateVectors(vectors); vectorNorms = Object.fromEntries(words.map(word => [word, magnitude(vectors[word])])); loadingBox.hidden = true; gameArea.hidden = false; updateStats(); startRound(); } catch (error) { loadingBox.hidden = true; errorBox.hidden = false; errorBox.textContent = `Ошибка: ${error.message}`; } })();
 
   </script>
+  <script src="js/main.js"></script>
   <script src="js/theme-network.js"></script>
 </body>
 </html>
