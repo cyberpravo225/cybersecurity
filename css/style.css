@@ -1217,6 +1217,21 @@ radial-gradient(circle at top right,rgba(98,126,234,0.16),transparent 46%),
 linear-gradient(180deg,rgba(109,93,252,0.1),rgba(255,255,255,0.62));
 }
 
+:root[data-theme="dark"] body[data-page="methodical"] .method-card,
+:root[data-theme="dark"] body[data-page="methodical"] .constitution-card{
+background:
+linear-gradient(165deg,rgba(16,24,50,0.88),rgba(10,16,34,0.82)) !important;
+border-color:rgba(99,102,241,0.34) !important;
+box-shadow:
+0 14px 34px rgba(0,0,0,0.5),
+0 0 0 1px rgba(59,130,246,0.14) !important;
+}
+
+:root[data-theme="dark"] body[data-page="methodical"] .constitution-note{
+background:linear-gradient(90deg,rgba(88,101,242,0.2),rgba(56,189,248,0.12));
+border-left-color:#818cf8;
+}
+
 @media (max-width:640px){
   .constitution-section{
   padding:18px;
