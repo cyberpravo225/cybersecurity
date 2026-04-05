@@ -7181,7 +7181,7 @@ body[data-page="cyberguessr"] .card-photo{
 
 /* Homepage contacts banner refinement */
 body[data-page="home"] .contacts-banner {
-  margin-top: 18px;
+  margin-top: 0;
   text-decoration: none;
   border: 1px solid rgba(58, 130, 246, 0.28);
   background: linear-gradient(135deg, rgba(16, 56, 128, 0.9), rgba(25, 93, 191, 0.88));
@@ -7189,6 +7189,10 @@ body[data-page="home"] .contacts-banner {
   box-shadow: 0 18px 38px rgba(18, 62, 136, 0.22);
   position: relative;
   overflow: hidden;
+}
+
+body[data-page="home"] .contacts-banner::after {
+  content: none;
 }
 
 body[data-page="home"] .contacts-banner::before {
@@ -7243,7 +7247,7 @@ body[data-page="home"] .contacts-banner-arrow {
 
 @media (max-width: 760px) {
   body[data-page="home"] .contacts-banner {
-    margin-top: 14px;
+    margin-top: 0;
   }
 
   body[data-page="home"] .contacts-banner-arrow {
