@@ -232,7 +232,55 @@
   let current = 0;
   let animating = false;
   let touchStartX = 0;
+  let touchStartY = 0;
+  let touchCurrentX = 0;
+  let touchCurrentY = 0;
+  let swipeLocked = false;
+  let swipeHorizontal = false;
   const flipDuration = 900;
+  const swipeThreshold = 42;
+  let audioContext = null;
+
+  const ensureAudioContext = () => {
+    if(audioContext) return audioContext;
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if(!Ctx) return null;
+    audioContext = new Ctx();
+    return audioContext;
+  };
+
+  const playPageFlipSound = () => {
+    const ctx = ensureAudioContext();
+    if(!ctx) return;
+    if(ctx.state === 'suspended'){
+      ctx.resume();
+    }
+    const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.16, ctx.sampleRate);
+    const data = noiseBuffer.getChannelData(0);
+    for(let i = 0; i < data.length; i += 1){
+      data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+    }
+
+    const noise = ctx.createBufferSource();
+    noise.buffer = noiseBuffer;
+
+    const lowpass = ctx.createBiquadFilter();
+    lowpass.type = 'lowpass';
+    lowpass.frequency.value = 1350;
+    lowpass.Q.value = 0.75;
+
+    const volume = ctx.createGain();
+    const now = ctx.currentTime;
+    volume.gain.setValueAtTime(0.0001, now);
+    volume.gain.exponentialRampToValueAtTime(0.05, now + 0.03);
+    volume.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+
+    noise.connect(lowpass);
+    lowpass.connect(volume);
+    volume.connect(ctx.destination);
+    noise.start(now);
+    noise.stop(now + 0.17);
+  };
 
   const waitForFlipEnd = (page, className, onDone) => {
     let finished = false;
@@ -287,6 +335,7 @@
     const nextPage = pages[current + 1];
     nextPage.classList.add('is-under-current');
     currentPage.classList.add('is-flipping-next');
+    playPageFlipSound();
 
     waitForFlipEnd(currentPage, 'is-flipping-next', () => {
       nextPage.classList.remove('is-under-current');
@@ -309,6 +358,7 @@
     const prevPage = pages[current - 1];
     prevPage.classList.add('is-under-current');
     currentPage.classList.add('is-flipping-prev');
+    playPageFlipSound();
 
     waitForFlipEnd(currentPage, 'is-flipping-prev', () => {
       prevPage.classList.remove('is-under-current');
@@ -331,13 +381,42 @@
     });
 
     surface.addEventListener('touchstart', (event) => {
-      touchStartX = event.changedTouches[0].clientX;
+      const touch = event.changedTouches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+      touchCurrentX = touch.clientX;
+      touchCurrentY = touch.clientY;
+      swipeLocked = false;
+      swipeHorizontal = false;
+      ensureAudioContext();
     }, { passive:true });
 
+    surface.addEventListener('touchmove', (event) => {
+      if(!event.changedTouches || !event.changedTouches.length) return;
+      const touch = event.changedTouches[0];
+      touchCurrentX = touch.clientX;
+      touchCurrentY = touch.clientY;
+      const deltaX = touchCurrentX - touchStartX;
+      const deltaY = touchCurrentY - touchStartY;
+
+      if(!swipeLocked && (Math.abs(deltaX) > 9 || Math.abs(deltaY) > 9)){
+        swipeHorizontal = Math.abs(deltaX) > Math.abs(deltaY);
+        swipeLocked = true;
+      }
+
+      if(swipeHorizontal){
+        event.preventDefault();
+      }
+    }, { passive:false });
+
     surface.addEventListener('touchend', (event) => {
-      const endX = event.changedTouches[0].clientX;
+      const touch = event.changedTouches[0];
+      const endX = touch ? touch.clientX : touchCurrentX;
+      const endY = touch ? touch.clientY : touchCurrentY;
       const deltaX = touchStartX - endX;
-      if(Math.abs(deltaX) < 32) return;
+      const deltaY = touchStartY - endY;
+
+      if(Math.abs(deltaX) < swipeThreshold || Math.abs(deltaX) <= Math.abs(deltaY)) return;
       if(deltaX > 0){
         goNext();
       }else{
