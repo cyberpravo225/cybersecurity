@@ -7196,14 +7196,7 @@ body[data-page="home"] .contacts-banner::after {
 }
 
 body[data-page="home"] .contacts-banner::before {
-  content: "";
-  position: absolute;
-  inset: -40% auto auto -12%;
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent 70%);
-  pointer-events: none;
+  content: none;
 }
 
 body[data-page="home"] .contacts-banner .tests-banner-text h2,
