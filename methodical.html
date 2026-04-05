@@ -238,9 +238,11 @@
   let touchCurrentY = 0;
   let swipeLocked = false;
   let swipeHorizontal = false;
+  let coverTouchStartX = 0;
+  let coverTouchStartY = 0;
   let coverSoundTriggeredByClick = false;
   const flipDuration = 900;
-  const swipeThreshold = 42;
+  const swipeThreshold = 24;
   let audioContext = null;
 
   const ensureAudioContext = () => {
@@ -477,6 +479,33 @@
   }
 
   if(cover){
+    cover.addEventListener('touchstart', (event) => {
+      const touch = event.changedTouches[0];
+      coverTouchStartX = touch.clientX;
+      coverTouchStartY = touch.clientY;
+      ensureAudioContext();
+    }, { passive:true });
+
+    cover.addEventListener('touchend', (event) => {
+      const touch = event.changedTouches[0];
+      if(!touch) return;
+      const deltaX = touch.clientX - coverTouchStartX;
+      const deltaY = touch.clientY - coverTouchStartY;
+
+      if(Math.abs(deltaX) < swipeThreshold || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+
+      event.preventDefault();
+      if(deltaX < 0 && bookShell && !bookShell.open){
+        coverSoundTriggeredByClick = true;
+        playCoverSound(true);
+        bookShell.open = true;
+      }else if(deltaX > 0 && bookShell && bookShell.open){
+        coverSoundTriggeredByClick = true;
+        playCoverSound(false);
+        bookShell.open = false;
+      }
+    }, { passive:false });
+
     cover.addEventListener('click', () => {
       ensureAudioContext();
       const willOpen = !(bookShell && bookShell.open);
