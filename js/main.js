@@ -497,6 +497,29 @@
     link.textContent = link.textContent.replace(/^\s*[←↩]+\s*/, '').trim();
   });
 
+  document.querySelectorAll('.back-btn[href]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+      if (!document.referrer) return;
+
+      let referrerUrl;
+      let targetUrl;
+      try {
+        referrerUrl = new URL(document.referrer);
+        targetUrl = new URL(href, window.location.href);
+      } catch (_) {
+        return;
+      }
+
+      if (referrerUrl.origin === window.location.origin && referrerUrl.pathname === targetUrl.pathname) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        window.history.back();
+      }
+    });
+  });
+
   document.querySelectorAll('a, button').forEach(el => {
     const text = el.textContent || '';
     if (/главное\s+меню/i.test(text)) {
