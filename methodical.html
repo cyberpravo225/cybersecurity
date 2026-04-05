@@ -267,13 +267,17 @@
 
     const finishAnimation = () => {
       pages.forEach((page, index) => {
-        page.classList.remove('is-entering-next', 'is-entering-prev', 'is-leaving-next', 'is-leaving-prev', 'is-turned-left', 'is-turned-right');
+        page.classList.remove('is-entering-next', 'is-entering-prev', 'is-leaving-next', 'is-leaving-prev');
         page.classList.toggle('is-active', index === nextIndex);
       });
       if(forward){
         currentPage.classList.add('is-turned-left');
+        currentPage.classList.remove('is-turned-right');
+        nextPage.classList.remove('is-turned-left', 'is-turned-right');
       }else{
         currentPage.classList.add('is-turned-right');
+        currentPage.classList.remove('is-turned-left');
+        nextPage.classList.remove('is-turned-left', 'is-turned-right');
       }
       current = nextIndex;
       updatePage();
@@ -295,6 +299,9 @@
   if(bookShell){
     bookShell.addEventListener('toggle', () => {
       if(bookShell.open){
+        pages.forEach((page) => {
+          page.classList.remove('is-turned-left', 'is-turned-right');
+        });
         current = 0;
         updatePage();
       }
