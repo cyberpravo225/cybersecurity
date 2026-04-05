@@ -1221,30 +1221,12 @@ inset 0 0 0 1px rgba(117,57,22,0.12);
 opacity:1;
 pointer-events:auto;
 transform:rotateY(0deg) scale(1);
-z-index:5;
+z-index:2;
 }
 
 .constitution-book-single[open] .constitution-cover{
-transform:translateX(-104%) rotateY(-180deg) scale(1);
-box-shadow:-16px 10px 26px rgba(0,0,0,0.3);
-opacity:1;
-pointer-events:none;
-animation:constitution-cover-open .82s ease-in-out;
-}
-
-@keyframes constitution-cover-open{
-0%{
-transform:translateX(0) rotateY(0deg) scale(1);
-opacity:1;
-}
-55%{
-transform:translateX(-22px) rotateY(-112deg) scale(.995);
-opacity:1;
-}
-100%{
-transform:translateX(-104%) rotateY(-180deg) scale(1);
-opacity:1;
-}
+transform:rotateY(-130deg);
+box-shadow:-20px 8px 22px rgba(0,0,0,0.34);
 }
 
 .constitution-pagination{
@@ -1344,7 +1326,7 @@ opacity:1;
 transform:translateX(0);
 }
 
-.constitution-pages-stage.has-next .constitution-page.stack-current::before{
+.constitution-pages-stage.has-next .constitution-page.is-active::before{
 content:"";
 position:absolute;
 right:-4px;
@@ -1356,30 +1338,26 @@ background:linear-gradient(270deg,rgba(245,222,181,.95),rgba(218,187,136,.7));
 box-shadow:0 0 12px rgba(108,67,31,.2);
 }
 
-.constitution-page.stack-current{
+.constitution-page.is-active{
 opacity:1;
 pointer-events:auto;
-transform:translateX(0) rotateY(0deg) scale(1);
-z-index:30;
+transform:rotateY(0deg) scale(1);
+z-index:2;
+transition:opacity .2s ease;
 }
 
-.constitution-page.stack-left{
-opacity:.94;
+.constitution-page.is-turned-left{
+opacity:.78;
 pointer-events:none;
-transform:translateX(calc(-46% - (var(--stack-depth,1) * 3px))) rotateY(-176deg) scale(.96);
-z-index:calc(18 - var(--stack-depth,1));
+transform:translateX(-52%) rotateY(-178deg) scale(.96);
+z-index:1;
 }
 
-.constitution-page.stack-right{
-opacity:.92;
+.constitution-page.is-turned-right{
+opacity:.78;
 pointer-events:none;
-transform:translateX(calc(14px + (var(--stack-depth,1) * 3px))) rotateY(-5deg) scale(calc(1 - (var(--stack-depth,1) * 0.012)));
-z-index:calc(22 - var(--stack-depth,1));
-}
-
-.constitution-page.is-under-current{
-opacity:1 !important;
-z-index:26 !important;
+transform:translateX(52%) rotateY(178deg) scale(.96);
+z-index:1;
 }
 
 .constitution-page h4{
@@ -1388,43 +1366,95 @@ font-size:20px;
 color:#3a1f1f;
 }
 
-.constitution-page.is-flipping-next{
-animation:page-flip-next .82s ease-in-out forwards;
-z-index:40;
+.constitution-page.is-entering-next{
+animation:page-enter-next 1.2s cubic-bezier(.19,.75,.2,1) forwards;
+z-index:4;
 }
 
-.constitution-page.is-flipping-prev{
-animation:page-flip-prev .82s ease-in-out forwards;
-z-index:40;
+.constitution-page.is-leaving-next{
+animation:page-leave-next 1.2s cubic-bezier(.19,.75,.2,1) forwards;
+z-index:3;
 }
 
-@keyframes page-flip-next{
-0%{
-transform:translateX(0) rotateY(0deg) scale(1);
-box-shadow:0 12px 22px rgba(34,22,13,0.12);
+.constitution-page.is-entering-prev{
+animation:page-enter-prev 1.2s cubic-bezier(.19,.75,.2,1) forwards;
+z-index:4;
+}
+
+.constitution-page.is-leaving-prev{
+animation:page-leave-prev 1.2s cubic-bezier(.19,.75,.2,1) forwards;
+z-index:3;
+}
+
+@keyframes page-enter-next{
+from{
+opacity:0;
+transform:rotateY(96deg) translateX(28px) scale(.97);
+filter:brightness(.95);
+}
+55%{
+opacity:.88;
+transform:rotateY(18deg) translateX(6px) scale(.995);
+filter:brightness(1.03);
+}
+to{
+opacity:1;
+transform:rotateY(0deg) translateX(0) scale(1);
+filter:brightness(1);
+}
+}
+
+@keyframes page-leave-next{
+from{
+opacity:1;
+transform:rotateY(0deg) translateX(0) scale(1);
+filter:brightness(1);
 }
 45%{
-transform:translateX(-6px) rotateY(-92deg) scale(.985);
-box-shadow:-18px 8px 26px rgba(34,22,13,0.2);
+opacity:.95;
+transform:rotateY(-36deg) translateX(-8px) scale(.985);
+filter:brightness(1.02);
 }
-100%{
-transform:translateX(-46%) rotateY(-176deg) scale(.96);
-box-shadow:-8px 6px 16px rgba(34,22,13,0.16);
+to{
+opacity:.8;
+transform:translateX(-52%) rotateY(-178deg) scale(.96);
+filter:brightness(.9);
 }
 }
 
-@keyframes page-flip-prev{
-0%{
-transform:translateX(0) rotateY(0deg) scale(1);
-box-shadow:0 12px 22px rgba(34,22,13,0.12);
+@keyframes page-enter-prev{
+from{
+opacity:0;
+transform:rotateY(-96deg) translateX(-28px) scale(.97);
+filter:brightness(.95);
+}
+55%{
+opacity:.88;
+transform:rotateY(-18deg) translateX(-6px) scale(.995);
+filter:brightness(1.03);
+}
+to{
+opacity:1;
+transform:rotateY(0deg) translateX(0) scale(1);
+filter:brightness(1);
+}
+}
+
+@keyframes page-leave-prev{
+from{
+opacity:1;
+transform:rotateY(0deg) translateX(0) scale(1);
+filter:brightness(1);
 }
 45%{
-transform:translateX(8px) rotateY(92deg) scale(.985);
-box-shadow:18px 8px 26px rgba(34,22,13,0.2);
+opacity:.95;
+transform:rotateY(36deg) translateX(8px) scale(.985);
+filter:brightness(1.02);
 }
-100%{
-transform:translateX(52%) rotateY(176deg) scale(.96);
-box-shadow:8px 6px 16px rgba(34,22,13,0.16);
+to{
+opacity:.8;
+transform:translateX(52%) rotateY(178deg) scale(.96);
+filter:brightness(.9);
 }
 }
 
@@ -1512,7 +1542,7 @@ background:linear-gradient(0deg,rgba(255,249,232,0.98),rgba(255,243,213,0.98));
   }
 
   .constitution-book-single[open] .constitution-cover{
-  transform:translateX(-96%) rotateY(-178deg) scale(1);
+  transform:rotateY(-118deg);
   }
 }
 
