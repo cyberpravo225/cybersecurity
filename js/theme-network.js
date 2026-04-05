@@ -307,3 +307,119 @@
     }
   });
 })();
+
+/* =========================
+   Global background music fallback
+   ========================= */
+(function(){
+  if (window.__cyberBgMusicInitialized) return;
+  window.__cyberBgMusicInitialized = true;
+
+  const MUSIC_ENABLED_KEY = 'cyber_bg_music_enabled';
+  const AUDIO_SRC = encodeURI('assets/Voyager_ Ambient SPACE Music for Colonizing the Cosmos (Relaxing Sci Fi Music) (mp3cut.net) (2).mp3');
+
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'bg-music-toggle';
+  button.setAttribute('aria-label', 'Переключить фоновую музыку');
+  button.style.position = 'fixed';
+  button.style.right = '16px';
+  button.style.bottom = '16px';
+  button.style.zIndex = '9999';
+  button.style.border = '1px solid rgba(255,255,255,.28)';
+  button.style.borderRadius = '999px';
+  button.style.padding = '10px 14px';
+  button.style.background = 'rgba(7, 13, 34, 0.82)';
+  button.style.color = '#fff';
+  button.style.cursor = 'pointer';
+  button.style.backdropFilter = 'blur(4px)';
+  button.style.fontSize = '14px';
+  button.style.fontWeight = '600';
+  button.style.boxShadow = '0 8px 28px rgba(0, 0, 0, .35)';
+  button.style.transition = 'transform .2s ease, opacity .2s ease';
+  button.addEventListener('mouseenter', () => button.style.transform = 'translateY(-1px)');
+  button.addEventListener('mouseleave', () => button.style.transform = 'translateY(0)');
+
+  const audio = document.createElement('audio');
+  audio.src = AUDIO_SRC;
+  audio.autoplay = true;
+  audio.loop = true;
+  audio.preload = 'auto';
+  audio.volume = 0.06;
+  audio.setAttribute('playsinline', '');
+  audio.style.display = 'none';
+
+  let musicEnabled = localStorage.getItem(MUSIC_ENABLED_KEY) !== '0';
+
+  const refreshButton = () => {
+    button.textContent = musicEnabled ? '🎵 Музыка: вкл' : '🔇 Музыка: выкл';
+    button.style.opacity = musicEnabled ? '1' : '.78';
+  };
+
+  const persistSetting = () => {
+    localStorage.setItem(MUSIC_ENABLED_KEY, musicEnabled ? '1' : '0');
+  };
+
+  const startMusic = async () => {
+    if (!musicEnabled) return;
+    audio.muted = false;
+    try {
+      await audio.play();
+    } catch (_) {
+      try {
+        audio.muted = true;
+        await audio.play();
+        requestAnimationFrame(() => {
+          audio.muted = false;
+        });
+      } catch (_) {
+        // Автозапуск может быть полностью заблокирован браузером до первого взаимодействия.
+      }
+    }
+  };
+
+  const stopMusic = () => {
+    audio.pause();
+    audio.currentTime = 0;
+    audio.muted = false;
+  };
+
+  const unlockOnInteraction = async () => {
+    if (!musicEnabled || !audio.paused) {
+      detachUnlockListeners();
+      return;
+    }
+    await startMusic();
+    if (!audio.paused) detachUnlockListeners();
+  };
+
+  const detachUnlockListeners = () => {
+    window.removeEventListener('pointerdown', unlockOnInteraction);
+    window.removeEventListener('keydown', unlockOnInteraction);
+    window.removeEventListener('touchstart', unlockOnInteraction);
+  };
+
+  button.addEventListener('click', async () => {
+    musicEnabled = !musicEnabled;
+    persistSetting();
+    refreshButton();
+    if (musicEnabled) {
+      await startMusic();
+      window.addEventListener('pointerdown', unlockOnInteraction, { passive: true, once: true });
+      window.addEventListener('keydown', unlockOnInteraction, { once: true });
+      window.addEventListener('touchstart', unlockOnInteraction, { passive: true, once: true });
+    } else {
+      stopMusic();
+      detachUnlockListeners();
+    }
+  });
+
+  document.body.appendChild(audio);
+  document.body.appendChild(button);
+  refreshButton();
+  startMusic();
+
+  window.addEventListener('pointerdown', unlockOnInteraction, { passive: true, once: true });
+  window.addEventListener('keydown', unlockOnInteraction, { once: true });
+  window.addEventListener('touchstart', unlockOnInteraction, { passive: true, once: true });
+})();
