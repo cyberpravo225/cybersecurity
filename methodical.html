@@ -31,6 +31,20 @@ body[data-page="methodical"] .constitution-section{
   transition:transform .52s ease;
   cursor:pointer;
 }
+.constitution-book3d::before{
+  content:"";
+  position:absolute;
+  left:-8px;
+  top:12px;
+  bottom:12px;
+  width:14px;
+  border-radius:8px 0 0 8px;
+  background:
+    repeating-linear-gradient(180deg,rgba(255,214,147,.24) 0 7px,rgba(116,27,48,.58) 7px 14px),
+    linear-gradient(90deg,rgba(39,5,13,.86),rgba(126,26,51,.74));
+  box-shadow:inset -2px 0 4px rgba(0,0,0,.35),0 6px 12px rgba(0,0,0,.28);
+  pointer-events:none;
+}
 .constitution-book3d.is-zooming{transform:translateY(8px) scale(0.95);} 
 .book-pagination{text-align:center;color:var(--text);display:grid;gap:2px;margin-top:12px;}
 .book-indicator{font-weight:700;letter-spacing:.06em;}
@@ -113,20 +127,48 @@ body[data-page="methodical"] .constitution-section{
 .book-cover-page .page-content{
   display:flex;
   flex-direction:column;
-  justify-content:center;
+  justify-content:flex-start;
   align-items:center;
   text-align:center;
   min-height:100%;
   color:#f6d993;
+  padding-top:22px;
+  position:relative;
+}
+
+.book-cover-page .page-content::before,
+.book-cover-page .page-content::after{
+  content:"";
+  position:absolute;
+  top:18px;
+  bottom:18px;
+  width:32px;
+  border-radius:8px;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(104,24,43,.75) 0 7px,
+      rgba(153,49,75,.7) 7px 14px
+    );
+  opacity:.66;
+}
+
+.book-cover-page .page-content::before{
+  left:10px;
+}
+
+.book-cover-page .page-content::after{
+  right:10px;
 }
 
 .belarus-emblem{
-  margin-top:20px;
-  margin-bottom:20px;
-  font-size:58px;
+  margin-top:6px;
+  margin-bottom:28px;
+  font-size:60px;
   line-height:1;
   color:#f5c96d;
   text-shadow:0 6px 18px rgba(0,0,0,.35);
+  z-index:1;
 }
 
 .cover-title{
@@ -138,6 +180,7 @@ body[data-page="methodical"] .constitution-section{
   letter-spacing:.08em;
   line-height:1.2;
   text-shadow:0 6px 14px rgba(0,0,0,.3);
+  z-index:1;
 }
 
 .cover-subtitle{
@@ -155,6 +198,10 @@ body[data-page="methodical"] .constitution-section{
   .book-page h4{font-size:24px;}
   .cover-title{font-size:30px;}
   .belarus-emblem{font-size:48px;}
+  .book-cover-page .page-content::before,
+  .book-cover-page .page-content::after{
+    width:24px;
+  }
 }
 </style>
 
@@ -470,10 +517,9 @@ body[data-page="methodical"] .constitution-section{
   surface.addEventListener('click', (event) => {
     const rect = surface.getBoundingClientRect();
     const clickX = event.clientX - rect.left;
-    const edgeZone = rect.width * 0.24;
-    if(clickX >= rect.width - edgeZone){
+    if(clickX >= rect.width / 2){
       goNext();
-    } else if(clickX <= edgeZone){
+    } else {
       goPrev();
     }
   });
