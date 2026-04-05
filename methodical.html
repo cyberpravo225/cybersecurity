@@ -132,7 +132,7 @@
 <div class="constitution-book-inner" data-book-pages>
 <div class="constitution-pagination">
 <span class="constitution-page-indicator" data-book-indicator>Страница 1 из 5</span>
-<span class="constitution-page-hint">Листайте кликом: левая часть — назад, правая — вперёд.</span>
+<span class="constitution-page-hint">Листайте кликом: левая часть — назад (до обложки), правая — вперёд.</span>
 </div>
 
 <div class="constitution-pages-stage" data-book-stage data-book-surface>
@@ -238,11 +238,12 @@
   };
 
   const updatePage = () => {
+    const canGoBack = current > 0 || (bookShell && bookShell.open);
     pages.forEach((page, index) => {
       page.classList.toggle('is-active', index === current);
     });
     indicator.textContent = `Страница ${current + 1} из ${pages.length}`;
-    stage.classList.toggle('has-prev', current > 0);
+    stage.classList.toggle('has-prev', canGoBack);
     stage.classList.toggle('has-next', current < pages.length - 1);
     setStageHeight();
   };
@@ -282,6 +283,12 @@
       const rect = surface.getBoundingClientRect();
       const clickX = event.clientX - rect.left;
       const goBack = clickX < rect.width / 2;
+      if(goBack && current === 0){
+        if(bookShell){
+          bookShell.open = false;
+        }
+        return;
+      }
       animateToPage(goBack ? current - 1 : current + 1);
     });
   }
