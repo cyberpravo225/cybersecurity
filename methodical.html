@@ -132,7 +132,7 @@
 <div class="constitution-book-inner" data-book-pages>
 <div class="constitution-pagination">
 <span class="constitution-page-indicator" data-book-indicator>Страница 1 из 5</span>
-<span class="constitution-page-hint">Листайте кликом: левая часть — назад (до обложки), правая — вперёд.</span>
+<span class="constitution-page-hint">Листайте кликом: левая часть — назад, правая — вперёд.</span>
 </div>
 
 <div class="constitution-pages-stage" data-book-stage data-book-surface>
@@ -238,7 +238,7 @@
   };
 
   const updatePage = () => {
-    const canGoBack = current > 0 || (bookShell && bookShell.open);
+    const canGoBack = current > 0;
     pages.forEach((page, index) => {
       page.classList.toggle('is-active', index === current);
     });
@@ -267,9 +267,14 @@
 
     const finishAnimation = () => {
       pages.forEach((page, index) => {
-        page.classList.remove('is-entering-next', 'is-entering-prev', 'is-leaving-next', 'is-leaving-prev');
+        page.classList.remove('is-entering-next', 'is-entering-prev', 'is-leaving-next', 'is-leaving-prev', 'is-turned-left', 'is-turned-right');
         page.classList.toggle('is-active', index === nextIndex);
       });
+      if(forward){
+        currentPage.classList.add('is-turned-left');
+      }else{
+        currentPage.classList.add('is-turned-right');
+      }
       current = nextIndex;
       updatePage();
       animating = false;
@@ -283,12 +288,6 @@
       const rect = surface.getBoundingClientRect();
       const clickX = event.clientX - rect.left;
       const goBack = clickX < rect.width / 2;
-      if(goBack && current === 0){
-        if(bookShell){
-          bookShell.open = false;
-        }
-        return;
-      }
       animateToPage(goBack ? current - 1 : current + 1);
     });
   }
