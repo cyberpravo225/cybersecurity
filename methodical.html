@@ -291,27 +291,46 @@
       ctx.resume();
     }
     const now = ctx.currentTime;
-    const osc = ctx.createOscillator();
-    const toneGain = ctx.createGain();
-    const filter = ctx.createBiquadFilter();
+    const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * (isOpening ? 0.26 : 0.14), ctx.sampleRate);
+    const data = noiseBuffer.getChannelData(0);
+    for(let i = 0; i < data.length; i += 1){
+      const envelope = 1 - i / data.length;
+      data[i] = (Math.random() * 2 - 1) * envelope * (isOpening ? 0.85 : 0.55);
+    }
 
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(isOpening ? 260 : 200, now);
-    osc.frequency.exponentialRampToValueAtTime(isOpening ? 185 : 145, now + 0.14);
+    const noise = ctx.createBufferSource();
+    noise.buffer = noiseBuffer;
 
-    filter.type = 'lowpass';
-    filter.frequency.value = isOpening ? 1200 : 900;
-    filter.Q.value = 1;
+    const noiseFilter = ctx.createBiquadFilter();
+    noiseFilter.type = 'bandpass';
+    noiseFilter.frequency.value = isOpening ? 620 : 760;
+    noiseFilter.Q.value = 0.9;
 
-    toneGain.gain.setValueAtTime(0.0001, now);
-    toneGain.gain.exponentialRampToValueAtTime(0.018, now + 0.02);
-    toneGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.0001, now);
+    noiseGain.gain.exponentialRampToValueAtTime(isOpening ? 0.03 : 0.014, now + 0.02);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + (isOpening ? 0.24 : 0.14));
 
-    osc.connect(filter);
-    filter.connect(toneGain);
-    toneGain.connect(ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.17);
+    const thumpOsc = ctx.createOscillator();
+    thumpOsc.type = 'sine';
+    thumpOsc.frequency.setValueAtTime(isOpening ? 150 : 130, now);
+    thumpOsc.frequency.exponentialRampToValueAtTime(isOpening ? 86 : 92, now + (isOpening ? 0.2 : 0.12));
+
+    const thumpGain = ctx.createGain();
+    thumpGain.gain.setValueAtTime(0.0001, now);
+    thumpGain.gain.exponentialRampToValueAtTime(isOpening ? 0.028 : 0.013, now + 0.018);
+    thumpGain.gain.exponentialRampToValueAtTime(0.0001, now + (isOpening ? 0.22 : 0.12));
+
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(ctx.destination);
+    thumpOsc.connect(thumpGain);
+    thumpGain.connect(ctx.destination);
+
+    noise.start(now);
+    noise.stop(now + (isOpening ? 0.26 : 0.15));
+    thumpOsc.start(now);
+    thumpOsc.stop(now + (isOpening ? 0.23 : 0.13));
   };
 
   const waitForFlipEnd = (page, className, onDone) => {
