@@ -131,14 +131,14 @@
 
 <div class="constitution-book-inner" data-book-pages>
 <div class="constitution-pagination">
-<span class="constitution-page-indicator" data-book-indicator>Страница 1 из 5</span>
-<span class="constitution-page-hint">Листайте кликом: левая часть — назад, правая — вперёд.</span>
+<span class="constitution-page-indicator" data-book-indicator>1 / 5</span>
+<span class="constitution-page-hint">Правый край — вперёд, левый край — назад. Поддержан свайп.</span>
 </div>
 
 <div class="constitution-pages-stage" data-book-stage data-book-surface>
-<article class="constitution-page is-active" data-book-page>
+<article class="constitution-page" data-book-page>
 <span class="constitution-article-tag">Статья 28</span>
-<h4>🔐 Неприкосновенность личной жизни</h4>
+<h4>📕 Конституция — неприкосновенность личной жизни</h4>
 <p class="constitution-text">
 Каждый имеет право на защиту от незаконного вмешательства в личную жизнь,
 в том числе от посягательства на тайну корреспонденции, телефонных и иных сообщений.
@@ -229,6 +229,8 @@
   const surface = book.querySelector('[data-book-surface]');
   let current = 0;
   let animating = false;
+  let touchStartX = 0;
+  const flipDuration = 820;
 
   const setStageHeight = () => {
     const activePage = pages[current];
@@ -237,78 +239,99 @@
     }
   };
 
-  const updatePage = () => {
-    const canGoBack = current > 0;
+  const renderStacks = () => {
     pages.forEach((page, index) => {
-      page.classList.toggle('is-active', index === current);
+      page.classList.remove('stack-left', 'stack-right', 'stack-current', 'is-under-current');
+      page.style.removeProperty('--stack-depth');
+      if(index < current){
+        page.classList.add('stack-left');
+        page.style.setProperty('--stack-depth', String(current - index));
+      }else if(index === current){
+        page.classList.add('stack-current');
+      }else{
+        page.classList.add('stack-right');
+        page.style.setProperty('--stack-depth', String(index - current));
+      }
     });
-    indicator.textContent = `Страница ${current + 1} из ${pages.length}`;
-    stage.classList.toggle('has-prev', canGoBack);
+    indicator.textContent = `${current + 1} / ${pages.length}`;
+    stage.classList.toggle('has-prev', current > 0);
     stage.classList.toggle('has-next', current < pages.length - 1);
     setStageHeight();
   };
 
-  const animateToPage = (nextIndex) => {
-    if(animating || nextIndex < 0 || nextIndex > pages.length - 1 || nextIndex === current){
-      return;
-    }
+  const goNext = () => {
+    if(animating || current >= pages.length - 1) return;
     animating = true;
-
     const currentPage = pages[current];
-    const nextPage = pages[nextIndex];
-    const forward = nextIndex > current;
+    const nextPage = pages[current + 1];
+    nextPage.classList.add('is-under-current');
+    currentPage.classList.add('is-flipping-next');
 
-    const leaveClass = forward ? 'is-leaving-next' : 'is-leaving-prev';
-    const enterClass = forward ? 'is-entering-next' : 'is-entering-prev';
-
-    nextPage.classList.add('is-active', enterClass);
-    currentPage.classList.add(leaveClass);
-    setStageHeight();
-
-    const finishAnimation = () => {
-      pages.forEach((page, index) => {
-        page.classList.remove('is-entering-next', 'is-entering-prev', 'is-leaving-next', 'is-leaving-prev');
-        page.classList.toggle('is-active', index === nextIndex);
-      });
-      if(forward){
-        currentPage.classList.add('is-turned-left');
-        currentPage.classList.remove('is-turned-right');
-        nextPage.classList.remove('is-turned-left', 'is-turned-right');
-      }else{
-        currentPage.classList.add('is-turned-right');
-        currentPage.classList.remove('is-turned-left');
-        nextPage.classList.remove('is-turned-left', 'is-turned-right');
-      }
-      current = nextIndex;
-      updatePage();
+    setTimeout(() => {
+      currentPage.classList.remove('is-flipping-next');
+      nextPage.classList.remove('is-under-current');
+      current += 1;
+      renderStacks();
       animating = false;
-    };
+    }, flipDuration);
+  };
 
-    nextPage.addEventListener('animationend', finishAnimation, { once:true });
+  const goPrev = () => {
+    if(animating || current <= 0) return;
+    animating = true;
+    const currentPage = pages[current];
+    const prevPage = pages[current - 1];
+    prevPage.classList.add('is-under-current');
+    currentPage.classList.add('is-flipping-prev');
+
+    setTimeout(() => {
+      currentPage.classList.remove('is-flipping-prev');
+      prevPage.classList.remove('is-under-current');
+      current -= 1;
+      renderStacks();
+      animating = false;
+    }, flipDuration);
   };
 
   if(surface){
     surface.addEventListener('click', (event) => {
       const rect = surface.getBoundingClientRect();
-      const clickX = event.clientX - rect.left;
-      const goBack = clickX < rect.width / 2;
-      animateToPage(goBack ? current - 1 : current + 1);
+      const edgeX = event.clientX - rect.left;
+      const zone = rect.width * 0.25;
+      if(edgeX > rect.width - zone){
+        goNext();
+      }else if(edgeX < zone){
+        goPrev();
+      }
     });
+
+    surface.addEventListener('touchstart', (event) => {
+      touchStartX = event.changedTouches[0].clientX;
+    }, { passive:true });
+
+    surface.addEventListener('touchend', (event) => {
+      const endX = event.changedTouches[0].clientX;
+      const deltaX = touchStartX - endX;
+      if(Math.abs(deltaX) < 32) return;
+      if(deltaX > 0){
+        goNext();
+      }else{
+        goPrev();
+      }
+    }, { passive:true });
   }
 
   if(bookShell){
     bookShell.addEventListener('toggle', () => {
       if(bookShell.open){
-        pages.forEach((page) => {
-          page.classList.remove('is-turned-left', 'is-turned-right');
-        });
         current = 0;
-        updatePage();
+        renderStacks();
       }
     });
   }
 
-  updatePage();
+  renderStacks();
+  book.classList.add('is-ready');
   window.addEventListener('resize', setStageHeight);
 })();
 </script>
