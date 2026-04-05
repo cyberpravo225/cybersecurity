@@ -5,211 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Методическая копилка</title>
 <link rel="stylesheet" href="css/style.css">
-<style>
-body[data-page="methodical"] .constitution-section{
-  margin-top:42px;
-  padding:26px;
-  border-radius:24px;
-  background:radial-gradient(circle at 82% 10%,rgba(99,102,241,0.16),transparent 35%), linear-gradient(180deg,rgba(255,255,255,0.42),rgba(255,255,255,0.08));
-  border:1px solid rgba(99,102,241,0.24);
-}
-
-.constitution-book-wrap{max-width:860px;margin:0 auto;}
-.constitution-book-head{text-align:center;margin-bottom:18px;}
-.constitution-book-head p{color:var(--text-muted);margin-top:6px;}
-.constitution-book3d{
-  position:relative;
-  perspective:2200px;
-  transform-style:preserve-3d;
-  border-radius:18px;
-  padding:12px;
-  max-width:560px;
-  margin:0 auto;
-  background:linear-gradient(160deg,#5b0f22 0%,#7a152f 45%,#420916 100%);
-  border:1px solid rgba(255,214,147,0.26);
-  box-shadow:0 30px 46px rgba(39,7,14,.45), inset 0 0 0 1px rgba(255,255,255,.08);
-  transition:transform .52s ease;
-  cursor:pointer;
-}
-.constitution-book3d::before{
-  content:"";
-  position:absolute;
-  left:-8px;
-  top:12px;
-  bottom:12px;
-  width:14px;
-  border-radius:8px 0 0 8px;
-  background:
-    repeating-linear-gradient(180deg,rgba(255,214,147,.24) 0 7px,rgba(116,27,48,.58) 7px 14px),
-    linear-gradient(90deg,rgba(39,5,13,.86),rgba(126,26,51,.74));
-  box-shadow:inset -2px 0 4px rgba(0,0,0,.35),0 6px 12px rgba(0,0,0,.28);
-  pointer-events:none;
-}
-.constitution-book3d.is-zooming{transform:translateY(8px) scale(0.95);} 
-.book-pagination{text-align:center;color:var(--text);display:grid;gap:2px;margin-top:12px;}
-.book-indicator{font-weight:700;letter-spacing:.06em;}
-.book-hint{font-size:12px;opacity:.8;}
-.book-stage{
-  position:relative;
-  width:100%;
-  min-height:620px;
-  transform-style:preserve-3d;
-}
-.book-stage::before,.book-stage::after{content:"";position:absolute;top:16px;bottom:16px;width:30%;opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:80;}
-.book-stage::before{left:-4px;background:linear-gradient(90deg,rgba(24,6,9,.34),transparent);} 
-.book-stage::after{right:-2px;background:linear-gradient(270deg,rgba(24,6,9,.36),transparent);} 
-.constitution-book3d.has-prev .book-stage::before,.constitution-book3d.has-next .book-stage::after{opacity:1;}
-
-.book-page{
-  position:absolute;
-  inset:0;
-  border-radius:12px;
-  padding:18px;
-  background:linear-gradient(180deg,#fff8e8,#f6ebd2);
-  background-image:repeating-linear-gradient(0deg,rgba(128,97,67,0.042) 0 1px,transparent 1px 4px),linear-gradient(180deg,#fff8e8,#f6ebd2);
-  border:1px solid rgba(159,122,85,.34);
-  box-shadow:0 18px 26px rgba(18,8,5,.22), inset 0 0 0 1px rgba(255,255,255,.56);
-  transform-origin:left center;
-  transform-style:preserve-3d;
-  backface-visibility:hidden;
-  opacity:0;
-  pointer-events:none;
-}
-.book-page::after{content:"";position:absolute;inset:0;border-radius:12px;pointer-events:none;background:linear-gradient(90deg,rgba(72,42,20,.05),transparent 12%,transparent 76%,rgba(72,42,20,.08));}
-.page-fold{position:absolute;top:0;right:0;width:36%;height:100%;border-radius:0 12px 12px 0;pointer-events:none;opacity:0;transform-origin:left center;background:linear-gradient(270deg,rgba(255,255,255,.65),rgba(217,191,152,.25),rgba(120,84,44,.18));mix-blend-mode:multiply;}
-.page-content{position:relative;z-index:2;opacity:1;transform:translateY(0);}
-
-.book-page.stack-current{opacity:1;z-index:55;transform:translateX(0) rotateY(0deg);} 
-.book-page.stack-current .page-content{opacity:1;transform:translateY(0);animation:content-enter .45s ease;} 
-.book-page.stack-left{opacity:.96;z-index:calc(40 - var(--depth, 1));transform:translateX(calc(-54% - (var(--depth,1) * 2px))) rotateY(-176deg) scale(.985);} 
-.book-page.stack-right{opacity:.95;z-index:calc(46 - var(--depth, 1));transform:translateX(calc(14px + (var(--depth,1) * 2px))) rotateY(-7deg) scale(calc(1 - (var(--depth,1) * .008)));}
-.book-page.is-under{opacity:1 !important;z-index:50 !important;}
-
-.book-page.is-flipping-next{animation:book-flip-next .86s ease-in-out forwards;z-index:90;opacity:1;}
-.book-page.is-flipping-prev{animation:book-flip-prev .86s ease-in-out forwards;z-index:90;opacity:1;}
-.book-page.is-flipping-next .page-fold,.book-page.is-flipping-prev .page-fold{opacity:1;animation:fold-shift .86s ease-in-out forwards;}
-
-@keyframes book-flip-next{
-  0%{transform:translateX(0) rotateY(0deg);box-shadow:0 18px 26px rgba(18,8,5,.22);} 
-  50%{transform:translateX(-8px) rotateY(-92deg);box-shadow:-24px 10px 32px rgba(18,8,5,.38);} 
-  100%{transform:translateX(-54%) rotateY(-176deg) scale(.985);box-shadow:-8px 6px 20px rgba(18,8,5,.22);} 
-}
-@keyframes book-flip-prev{
-  0%{transform:translateX(0) rotateY(0deg);box-shadow:0 18px 26px rgba(18,8,5,.22);} 
-  50%{transform:translateX(10px) rotateY(92deg);box-shadow:22px 10px 32px rgba(18,8,5,.38);} 
-  100%{transform:translateX(52%) rotateY(176deg) scale(.985);box-shadow:8px 6px 20px rgba(18,8,5,.22);} 
-}
-@keyframes fold-shift{
-  0%{transform:skewY(0deg) scaleX(.8);}
-  50%{transform:skewY(-2deg) scaleX(1);}
-  100%{transform:skewY(0deg) scaleX(.82);} 
-}
-
-@keyframes content-enter{
-  0%{opacity:0;transform:translateY(8px);}
-  100%{opacity:1;transform:translateY(0);}
-}
-
-.book-page h4{margin:8px 0 12px;font-size:29px;color:#332116;letter-spacing:.02em;}
-.book-page p,.book-page li{color:#3f2c1d;}
-.book-page ul{padding-left:20px;display:grid;gap:6px;margin:0;}
-
-.book-cover-page{
-  background:
-    linear-gradient(90deg,#661126 0 10%,transparent 10% 90%,#661126 90%),
-    linear-gradient(165deg,#5a0d1f,#7b1732 45%,#4a0a1a);
-  border:1px solid rgba(243,204,125,.36);
-  box-shadow:0 22px 30px rgba(20,4,9,.35), inset 0 0 0 1px rgba(255,224,153,.22);
-}
-
-.book-cover-page::after{
-  background:
-    linear-gradient(90deg,rgba(255,224,166,.15),transparent 14%,transparent 86%,rgba(255,224,166,.15)),
-    repeating-linear-gradient(180deg,rgba(132,47,69,.42) 0 8px,rgba(160,63,88,.42) 8px 16px);
-  opacity:.44;
-}
-
-.book-cover-page .page-content{
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-start;
-  align-items:center;
-  text-align:center;
-  min-height:100%;
-  color:#f6d993;
-  padding-top:22px;
-  position:relative;
-}
-
-.book-cover-page .page-content::before,
-.book-cover-page .page-content::after{
-  content:"";
-  position:absolute;
-  top:18px;
-  bottom:18px;
-  width:32px;
-  border-radius:8px;
-  background:
-    repeating-linear-gradient(
-      180deg,
-      rgba(104,24,43,.75) 0 7px,
-      rgba(153,49,75,.7) 7px 14px
-    );
-  opacity:.66;
-}
-
-.book-cover-page .page-content::before{
-  left:10px;
-}
-
-.book-cover-page .page-content::after{
-  right:10px;
-}
-
-.belarus-emblem{
-  margin-top:6px;
-  margin-bottom:28px;
-  font-size:60px;
-  line-height:1;
-  color:#f5c96d;
-  text-shadow:0 6px 18px rgba(0,0,0,.35);
-  z-index:1;
-}
-
-.cover-title{
-  margin:0;
-  white-space:pre-line;
-  color:#f3cf82;
-  text-transform:uppercase;
-  font-size:38px;
-  letter-spacing:.08em;
-  line-height:1.2;
-  text-shadow:0 6px 14px rgba(0,0,0,.3);
-  z-index:1;
-}
-
-.cover-subtitle{
-  margin-top:28px;
-  color:#e8be6d !important;
-  text-transform:uppercase;
-  letter-spacing:.18em;
-  font-size:12px;
-}
-
-@media (max-width: 700px){
-  .constitution-section{padding:18px;}
-  .constitution-book3d{padding:10px;}
-  .book-stage{min-height:560px;}
-  .book-page h4{font-size:24px;}
-  .cover-title{font-size:30px;}
-  .belarus-emblem{font-size:48px;}
-  .book-cover-page .page-content::before,
-  .book-cover-page .page-content::after{
-    width:24px;
-  }
-}
-</style>
-
 </head>
 
 <body class="page" data-page="methodical">
@@ -324,97 +119,93 @@ body[data-page="methodical"] .constitution-section{
 </div>
 
 <section class="constitution-section">
-  <div class="constitution-book-wrap" data-book-wrap>
-    <div class="constitution-book-head">
-      <h3>Интерактивная книга</h3>
-      <p>Кликайте по краям страницы или листайте свайпом, чтобы перелистывать статьи.</p>
-    </div>
 
-    <div class="constitution-book3d is-zooming" data-book>
-      <div class="book-stage" data-book-surface>
-        <article class="book-page book-cover-page stack-current" data-book-page>
-          <div class="page-fold" aria-hidden="true"></div>
-          <div class="page-content">
-            <div class="belarus-emblem" aria-hidden="true">⚜</div>
-            <h4 class="cover-title">КАНСТЫТУЦЫЯ
-РЭСПУБЛІКІ
-БЕЛАРУСЬ</h4>
-            <p class="cover-subtitle">Официальное издание</p>
-          </div>
-        </article>
+<details class="constitution-book-single" id="constitution-book">
+<summary class="constitution-cover">
+<span class="constitution-cover-ornament" aria-hidden="true"></span>
+<span class="constitution-cover-emblem" aria-hidden="true">⚖️</span>
+<h3>КАНСТЫТУЦЫЯ<br>РЭСПУБЛІКІ<br>БЕЛАРУСЬ</h3>
+<p>Официальное издание</p>
+<span class="constitution-cover-ornament constitution-cover-ornament-bottom" aria-hidden="true"></span>
+</summary>
 
-        <article class="book-page stack-right" style="--depth:1;" data-book-page>
-          <div class="page-fold" aria-hidden="true"></div>
-          <div class="page-content">
-            <span class="constitution-article-tag">Статья 2</span>
-            <h4>Право на достоверную информацию</h4>
-            <p>
-              Граждане имеют право получать полную и правдивую информацию. В киберсреде это связано
-              с проверкой источников, критическим мышлением и защитой от фейков и манипуляций.
-            </p>
-            <ul>
-              <li>проверяйте URL и автора публикации;</li>
-              <li>сопоставляйте данные с официальными ресурсами;</li>
-              <li>не распространяйте непроверенные сообщения.</li>
-            </ul>
-          </div>
-        </article>
+<div class="constitution-book-inner" data-book-pages>
+<div class="constitution-pagination">
+<span class="constitution-page-indicator" data-book-indicator>1 / 5</span>
+<span class="constitution-page-hint">Правый край — вперёд, левый край — назад. Поддержан свайп.</span>
+</div>
 
-        <article class="book-page stack-right" style="--depth:2;" data-book-page>
-          <div class="page-fold" aria-hidden="true"></div>
-          <div class="page-content">
-            <span class="constitution-article-tag">Статья 3</span>
-            <h4>Ограничения ради общественной безопасности</h4>
-            <p>
-              Закон допускает ограничение отдельных цифровых действий, если это необходимо для
-              защиты общества, национальной безопасности и прав других людей.
-            </p>
-            <ul>
-              <li>противодействие кибератакам;</li>
-              <li>блокировка вредоносной инфраструктуры;</li>
-              <li>ответственность за распространение опасного контента.</li>
-            </ul>
-          </div>
-        </article>
+<div class="constitution-pages-stage" data-book-stage data-book-surface>
+<article class="constitution-page" data-book-page>
+<span class="constitution-article-tag">Статья 28</span>
+<h4>📕 Конституция — неприкосновенность личной жизни</h4>
+<p class="constitution-text">
+Каждый имеет право на защиту от незаконного вмешательства в личную жизнь,
+в том числе от посягательства на тайну корреспонденции, телефонных и иных сообщений.
+</p>
+<ul>
+<li>защита e-mail, мессенджеров и цифровых данных;</li>
+<li>запрет несанкционированного доступа.</li>
+</ul>
+</article>
 
-        <article class="book-page stack-right" style="--depth:3;" data-book-page>
-          <div class="page-fold" aria-hidden="true"></div>
-          <div class="page-content">
-            <span class="constitution-article-tag">Статья 4</span>
-            <h4>Обязанность государства защищать граждан</h4>
-            <p>
-              Государство формирует правовые и технические механизмы защиты от киберугроз,
-              развивает цифровую грамотность и инфраструктуру реагирования на инциденты.
-            </p>
-            <p class="constitution-note">
-              Важна совместная работа: государства, школы, семьи и каждого пользователя.
-            </p>
-          </div>
-        </article>
+<article class="constitution-page" data-book-page>
+<span class="constitution-article-tag">Статья 34</span>
+<h4>💻 Право на информацию</h4>
+<p class="constitution-text">
+Гражданам Республики Беларусь гарантируется право на получение, хранение и распространение полной,
+достоверной и своевременной информации о деятельности государственных органов, общественных объединений,
+о политической, экономической и международной жизни.
+</p>
+<p class="constitution-note">
+Пользование информацией может быть ограничено законодательством в целях защиты чести, достоинства,
+личной и семейной жизни граждан и полного осуществления ими своих прав.
+</p>
+</article>
 
-        <article class="book-page stack-right" style="--depth:4;" data-book-page>
-          <div class="page-fold" aria-hidden="true"></div>
-          <div class="page-content">
-            <span class="constitution-article-tag">Статья 5</span>
-            <h4>Свобода мнений и цифровая ответственность</h4>
-            <p>
-              Каждый имеет право выражать мнение, но обязан делать это ответственно: уважать других,
-              не разжигать вражду, не нарушать закон и не вредить информационной безопасности.
-            </p>
-            <ul>
-              <li>цифровая этика — основа безопасного общения;</li>
-              <li>свобода слова не равна безнаказанности;</li>
-              <li>онлайн-действия имеют реальные последствия.</li>
-            </ul>
-          </div>
-        </article>
-      </div>
-    </div>
-    <div class="book-pagination">
-      <span class="book-indicator" data-book-indicator>1 / 5</span>
-      <span class="book-hint">Левый край — назад, правый — вперёд</span>
-    </div>
-  </div>
+<article class="constitution-page" data-book-page>
+<span class="constitution-article-tag">Статья 23</span>
+<h4>⚖️ Ограничение прав и свобод</h4>
+<p class="constitution-text">
+Ограничение прав и свобод личности допускается только в случаях, предусмотренных законом,
+в интересах национальной безопасности, общественного порядка, защиты нравственности, здоровья населения,
+прав и свобод других лиц.
+</p>
+<ul>
+<li>блокировка сайтов;</li>
+<li>киберконтроль;</li>
+<li>регулирование онлайн-пространства.</li>
+</ul>
+</article>
+
+<article class="constitution-page" data-book-page>
+<span class="constitution-article-tag">Статья 59</span>
+<h4>🛡️ Обязанности государства</h4>
+<p class="constitution-text">
+Государство обязано принимать все доступные ему меры для создания внутреннего и международного порядка,
+необходимого для полного осуществления прав и свобод граждан Республики Беларусь.
+</p>
+<ul>
+<li>защита от кибератак;</li>
+<li>развитие систем кибербезопасности.</li>
+</ul>
+</article>
+
+<article class="constitution-page" data-book-page>
+<span class="constitution-article-tag">Статья 33</span>
+<h4>📡 Свобода мнений</h4>
+<p class="constitution-text">
+Каждому гарантируется свобода мнений, убеждений и их свободное выражение.
+</p>
+<p class="constitution-note">
+По смыслу Конституции и действующего законодательства недопустимо злоупотребление информацией;
+возможны ограничения в интересах общества.
+</p>
+</article>
+</div>
+</div>
+</details>
+
 </section>
 
 </section>
@@ -428,132 +219,120 @@ body[data-page="methodical"] .constitution-section{
 <script src="js/theme-network.js"></script>
 <script>
 (() => {
-  const book = document.querySelector('[data-book]');
-  const wrap = document.querySelector('[data-book-wrap]');
+  const bookShell = document.getElementById('constitution-book');
+  const book = document.querySelector('[data-book-pages]');
   if(!book) return;
 
   const pages = Array.from(book.querySelectorAll('[data-book-page]'));
-  const surface = book;
-  const indicator = wrap ? wrap.querySelector('[data-book-indicator]') : null;
-  const duration = 860;
-  const coverIndex = Math.max(0, pages.findIndex((page) => page.classList.contains('book-cover-page')));
-  let current = coverIndex;
+  const indicator = book.querySelector('[data-book-indicator]');
+  const stage = book.querySelector('[data-book-stage]');
+  const surface = book.querySelector('[data-book-surface]');
+  let current = 0;
   let animating = false;
   let touchStartX = 0;
+  const flipDuration = 820;
 
-  const playFlipSound = () => {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if(!AudioCtx) return;
-    try {
-      const ctx = new AudioCtx();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(360, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(170, ctx.currentTime + 0.14);
-      gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.024, ctx.currentTime + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.16);
-      osc.connect(gain).connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.16);
-      osc.onended = () => ctx.close();
-    } catch (error) {
-      // ignore audio errors on restricted browsers
+  const setStageHeight = () => {
+    const activePage = pages[current];
+    if(activePage && stage){
+      stage.style.height = `${activePage.offsetHeight}px`;
     }
   };
 
-  const render = () => {
+  const renderStacks = () => {
     pages.forEach((page, index) => {
-      page.classList.remove(
-        'stack-left', 'stack-right', 'stack-current',
-        'is-under', 'is-flipping-next', 'is-flipping-prev'
-      );
-
+      page.classList.remove('stack-left', 'stack-right', 'stack-current', 'is-under-current');
+      page.style.removeProperty('--stack-depth');
       if(index < current){
         page.classList.add('stack-left');
-        page.style.setProperty('--depth', String(current - index));
-      } else if(index === current){
+        page.style.setProperty('--stack-depth', String(current - index));
+      }else if(index === current){
         page.classList.add('stack-current');
-      } else {
+      }else{
         page.classList.add('stack-right');
-        page.style.setProperty('--depth', String(index - current));
+        page.style.setProperty('--stack-depth', String(index - current));
       }
     });
-
-    if(indicator){
-      indicator.textContent = `${current + 1} / ${pages.length}`;
-    }
-    book.classList.toggle('has-prev', current > 0);
-    book.classList.toggle('has-next', current < pages.length - 1);
+    indicator.textContent = `${current + 1} / ${pages.length}`;
+    stage.classList.toggle('has-prev', current > 0);
+    stage.classList.toggle('has-next', current < pages.length - 1);
+    setStageHeight();
   };
 
   const goNext = () => {
     if(animating || current >= pages.length - 1) return;
     animating = true;
-    const page = pages[current];
-    const next = pages[current + 1];
-    next.classList.add('is-under');
-    page.classList.add('is-flipping-next');
-    playFlipSound();
+    const currentPage = pages[current];
+    const nextPage = pages[current + 1];
+    nextPage.classList.add('is-under-current');
+    currentPage.classList.add('is-flipping-next');
 
-    window.setTimeout(() => {
+    setTimeout(() => {
+      currentPage.classList.remove('is-flipping-next');
+      nextPage.classList.remove('is-under-current');
       current += 1;
+      renderStacks();
       animating = false;
-      render();
-    }, duration);
+    }, flipDuration);
   };
 
   const goPrev = () => {
     if(animating || current <= 0) return;
     animating = true;
-    const page = pages[current];
-    const prev = pages[current - 1];
-    prev.classList.add('is-under');
-    page.classList.add('is-flipping-prev');
-    playFlipSound();
+    const currentPage = pages[current];
+    const prevPage = pages[current - 1];
+    prevPage.classList.add('is-under-current');
+    currentPage.classList.add('is-flipping-prev');
 
-    window.setTimeout(() => {
+    setTimeout(() => {
+      currentPage.classList.remove('is-flipping-prev');
+      prevPage.classList.remove('is-under-current');
       current -= 1;
+      renderStacks();
       animating = false;
-      render();
-    }, duration);
+    }, flipDuration);
   };
 
-  surface.addEventListener('click', (event) => {
-    const rect = surface.getBoundingClientRect();
-    const clickX = event.clientX - rect.left;
-    if(clickX >= rect.width / 2){
-      goNext();
-    } else {
-      goPrev();
-    }
-  });
+  if(surface){
+    surface.addEventListener('click', (event) => {
+      const rect = surface.getBoundingClientRect();
+      const edgeX = event.clientX - rect.left;
+      const zone = rect.width * 0.25;
+      if(edgeX > rect.width - zone){
+        goNext();
+      }else if(edgeX < zone){
+        goPrev();
+      }
+    });
 
-  surface.addEventListener('touchstart', (event) => {
-    touchStartX = event.changedTouches[0].clientX;
-  }, { passive: true });
+    surface.addEventListener('touchstart', (event) => {
+      touchStartX = event.changedTouches[0].clientX;
+    }, { passive:true });
 
-  surface.addEventListener('touchend', (event) => {
-    const deltaX = touchStartX - event.changedTouches[0].clientX;
-    if(Math.abs(deltaX) < 34) return;
-    if(deltaX > 0) {
-      goNext();
-    } else {
-      goPrev();
-    }
-  }, { passive: true });
+    surface.addEventListener('touchend', (event) => {
+      const endX = event.changedTouches[0].clientX;
+      const deltaX = touchStartX - endX;
+      if(Math.abs(deltaX) < 32) return;
+      if(deltaX > 0){
+        goNext();
+      }else{
+        goPrev();
+      }
+    }, { passive:true });
+  }
 
-  window.setTimeout(() => {
-    book.classList.remove('is-zooming');
-  }, 460);
+  if(bookShell){
+    bookShell.addEventListener('toggle', () => {
+      if(bookShell.open){
+        current = 0;
+        renderStacks();
+      }
+    });
+  }
 
-  window.addEventListener('pageshow', () => {
-    current = coverIndex;
-    render();
-  });
-
-  render();
+  renderStacks();
+  book.classList.add('is-ready');
+  window.addEventListener('resize', setStageHeight);
 })();
 </script>
 </body>
