@@ -1090,47 +1090,53 @@ font-weight:600;
 color:#4f46e5;
 }
 
-.constitution-grid{
+.constitution-bookcase{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
 gap:18px;
 }
 
 .constitution-card{
-background:var(--card-bg);
-padding:18px;
+background:linear-gradient(165deg,#7b0f24 0%,#8d1530 45%,#6e0d21 100%);
+padding:0;
 border-radius:16px;
-border:1px solid rgba(109,93,252,0.28);
+border:1px solid rgba(66,12,25,0.5);
 position:relative;
 overflow:hidden;
-transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;
+transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease,background .25s ease;
 backdrop-filter:blur(3px);
+box-shadow:
+inset 0 0 0 1px rgba(255,255,255,0.08),
+0 12px 30px rgba(42,4,11,0.32);
 }
 
 .constitution-card::before{
 content:"";
 position:absolute;
-left:0;
+left:14px;
 top:0;
-width:100%;
-height:4px;
-background:linear-gradient(90deg,#627eea,#6d5dfc);
+width:3px;
+height:100%;
+background:linear-gradient(180deg,rgba(255,255,255,0.28),rgba(255,255,255,0.08));
+opacity:.8;
 }
 
 .constitution-card:hover{
 transform:translateY(-4px);
-box-shadow:0 12px 26px rgba(0,0,0,0.15);
-border-color:rgba(98,126,234,0.5);
+box-shadow:
+inset 0 0 0 1px rgba(255,255,255,0.12),
+0 16px 34px rgba(42,4,11,0.42);
+border-color:rgba(253,224,171,0.45);
 }
 
 .constitution-summary{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:12px;
+display:grid;
+gap:10px;
 list-style:none;
 cursor:pointer;
-padding-right:8px;
+padding:20px 22px 20px 28px;
+min-height:180px;
+position:relative;
 }
 
 .constitution-summary::-webkit-details-marker{
@@ -1138,23 +1144,29 @@ display:none;
 }
 
 .constitution-summary h3{
-flex:1;
 margin:0;
-font-size:18px;
+font-size:20px;
 line-height:1.3;
+color:#f8e7c6;
+text-wrap:balance;
 }
 
 .constitution-summary::after{
-content:"⌄";
-font-size:20px;
-line-height:1;
-color:#5865f2;
+content:"Открыть ↗";
+font-size:13px;
+line-height:1.2;
+font-weight:700;
+letter-spacing:.03em;
+color:#f7d9a6;
 transition:transform .2s ease,color .2s ease;
+justify-self:end;
+text-transform:uppercase;
 }
 
 .constitution-card[open] .constitution-summary::after{
-transform:rotate(180deg);
-color:#6d5dfc;
+content:"Скрыть";
+color:#fff3cf;
+transform:none;
 }
 
 .constitution-card:not([open]) .constitution-summary{
@@ -1162,12 +1174,15 @@ margin-bottom:2px;
 }
 
 .constitution-card[open] .constitution-summary{
-margin-bottom:12px;
+margin-bottom:0;
 }
 
 .constitution-card[open]{
-box-shadow:0 12px 28px rgba(0,0,0,0.14);
-border-color:rgba(98,126,234,0.38);
+background:linear-gradient(165deg,#6f0e21 0%,#8f1632 38%,#6b0d21 100%);
+border-color:rgba(253,224,171,0.48);
+box-shadow:
+inset 0 0 0 1px rgba(255,255,255,0.1),
+0 16px 36px rgba(42,4,11,0.48);
 }
 
 .constitution-article-tag{
@@ -1179,18 +1194,28 @@ font-weight:700;
 letter-spacing:.03em;
 text-transform:uppercase;
 border-radius:999px;
-background:rgba(88,101,242,0.12);
-color:#4f46e5;
+background:rgba(248,231,198,0.2);
+color:#fbe8bc;
+border:1px solid rgba(255,255,255,0.22);
+justify-self:start;
 }
 
 .constitution-text{
-padding-left:10px;
-border-left:2px solid rgba(88,101,242,0.4);
+padding-left:12px;
+border-left:3px solid rgba(127,29,29,0.34);
+color:#3f2e1d;
 }
 
 .constitution-card p{
-color:var(--text-muted);
+color:#4f3b29;
 margin-bottom:10px;
+}
+
+.constitution-book-page{
+background:
+linear-gradient(0deg,rgba(255,253,240,0.99),rgba(255,248,228,0.99));
+border-top:1px solid rgba(255,255,255,0.2);
+padding:16px 22px 18px 26px;
 }
 
 .constitution-card ul{
@@ -1201,14 +1226,14 @@ gap:6px;
 }
 
 .constitution-card li{
-color:var(--text);
+color:#433123;
 }
 
 .constitution-note{
 padding:10px 12px;
-background:linear-gradient(90deg,rgba(88,101,242,0.08),rgba(98,126,234,0.09));
+background:linear-gradient(90deg,rgba(180,83,9,0.1),rgba(217,119,6,0.16));
 border-radius:10px;
-border-left:3px solid #5865f2;
+border-left:3px solid #b45309;
 }
 
 :root[data-theme="light"] .constitution-section{
@@ -1220,16 +1245,20 @@ linear-gradient(180deg,rgba(109,93,252,0.1),rgba(255,255,255,0.62));
 :root[data-theme="dark"] body[data-page="methodical"] .method-card,
 :root[data-theme="dark"] body[data-page="methodical"] .constitution-card{
 background:
-linear-gradient(165deg,rgba(16,24,50,0.88),rgba(10,16,34,0.82)) !important;
-border-color:rgba(99,102,241,0.34) !important;
+linear-gradient(165deg,#6e0d20,#8b1530 44%,#5f0c1d) !important;
+border-color:rgba(251,191,36,0.34) !important;
 box-shadow:
-0 14px 34px rgba(0,0,0,0.5),
-0 0 0 1px rgba(59,130,246,0.14) !important;
+inset 0 0 0 1px rgba(255,255,255,0.08),
+0 14px 34px rgba(0,0,0,0.5) !important;
 }
 
 :root[data-theme="dark"] body[data-page="methodical"] .constitution-note{
-background:linear-gradient(90deg,rgba(88,101,242,0.2),rgba(56,189,248,0.12));
-border-left-color:#818cf8;
+background:linear-gradient(90deg,rgba(217,119,6,0.22),rgba(234,179,8,0.18));
+border-left-color:#f59e0b;
+}
+
+:root[data-theme="dark"] body[data-page="methodical"] .constitution-book-page{
+background:linear-gradient(0deg,rgba(255,249,232,0.98),rgba(255,243,213,0.98));
 }
 
 @media (max-width:640px){
