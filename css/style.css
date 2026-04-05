@@ -7179,6 +7179,60 @@ body[data-page="cyberguessr"] .card-photo{
   }
 }
 
+body[data-page="home"] .tests-banner .banner-edge-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+body[data-page="home"] .tests-banner .banner-edge-lines::before,
+body[data-page="home"] .tests-banner .banner-edge-lines::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  height: 5px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(147, 197, 253, 0.95), rgba(103, 232, 249, 0.92), transparent);
+  transform: scaleX(0.62) scaleY(0.82);
+  transform-origin: center;
+}
+
+body[data-page="home"] .tests-banner .banner-edge-lines::before {
+  top: -1px;
+  animation: banner-edge-line-top 2.8s ease-in-out infinite;
+}
+
+body[data-page="home"] .tests-banner .banner-edge-lines::after {
+  bottom: -1px;
+  animation: banner-edge-line-bottom 2.8s ease-in-out infinite 0.35s;
+}
+
+@keyframes banner-edge-line-top {
+  0%, 100% {
+    transform: scaleX(0.62) scaleY(0.82);
+    opacity: 0.82;
+  }
+
+  50% {
+    transform: scaleX(1.02) scaleY(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes banner-edge-line-bottom {
+  0%, 100% {
+    transform: scaleX(0.62) scaleY(0.82);
+    opacity: 0.82;
+  }
+
+  50% {
+    transform: scaleX(1.02) scaleY(1.2);
+    opacity: 1;
+  }
+}
+
 /* Homepage contacts banner refinement */
 body[data-page="home"] .contacts-banner {
   margin-top: 0;
