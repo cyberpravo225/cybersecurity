@@ -46,6 +46,9 @@
    Global background music
    ========================= */
 (function(){
+  if (window.__cyberBgMusicInitialized) return;
+  window.__cyberBgMusicInitialized = true;
+
   const MUSIC_ENABLED_KEY = 'cyber_bg_music_enabled';
   const AUDIO_SRC = encodeURI('assets/Voyager_ Ambient SPACE Music for Colonizing the Cosmos (Relaxing Sci Fi Music) (mp3cut.net) (2).mp3');
 
