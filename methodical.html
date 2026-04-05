@@ -232,7 +232,26 @@
   let current = 0;
   let animating = false;
   let touchStartX = 0;
-  const flipDuration = 820;
+  const flipDuration = 900;
+
+  const waitForFlipEnd = (page, className, onDone) => {
+    let finished = false;
+    const complete = () => {
+      if(finished) return;
+      finished = true;
+      page.removeEventListener('animationend', handleAnimationEnd);
+      clearTimeout(fallbackTimer);
+      page.classList.remove(className);
+      onDone();
+    };
+    const handleAnimationEnd = (event) => {
+      if(event.animationName === 'page-leave-next' || event.animationName === 'page-leave-prev'){
+        complete();
+      }
+    };
+    const fallbackTimer = setTimeout(complete, flipDuration + 80);
+    page.addEventListener('animationend', handleAnimationEnd, { once:true });
+  };
 
   const setStageHeight = () => {
     const activePage = pages[current];
@@ -269,13 +288,12 @@
     nextPage.classList.add('is-under-current');
     currentPage.classList.add('is-flipping-next');
 
-    setTimeout(() => {
-      currentPage.classList.remove('is-flipping-next');
+    waitForFlipEnd(currentPage, 'is-flipping-next', () => {
       nextPage.classList.remove('is-under-current');
       current += 1;
       renderStacks();
       animating = false;
-    }, flipDuration);
+    });
   };
 
   const goPrev = () => {
@@ -292,13 +310,12 @@
     prevPage.classList.add('is-under-current');
     currentPage.classList.add('is-flipping-prev');
 
-    setTimeout(() => {
-      currentPage.classList.remove('is-flipping-prev');
+    waitForFlipEnd(currentPage, 'is-flipping-prev', () => {
       prevPage.classList.remove('is-under-current');
       current -= 1;
       renderStacks();
       animating = false;
-    }, flipDuration);
+    });
   };
 
   if(surface){

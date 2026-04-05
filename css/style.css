@@ -1288,6 +1288,7 @@ transform-origin:left center;
 transform:rotateY(95deg) scale(.98);
 backface-visibility:hidden;
 will-change:transform,opacity,filter;
+transition:transform .9s cubic-bezier(.2,.72,.2,1),opacity .9s ease,filter .9s ease;
 }
 
 .constitution-pages-stage{
@@ -1389,12 +1390,12 @@ color:#3a1f1f;
 }
 
 .constitution-page.is-flipping-next{
-animation:page-leave-next .82s cubic-bezier(.22,.72,.18,1) forwards;
+animation:page-leave-next .9s cubic-bezier(.2,.72,.2,1) forwards;
 z-index:3;
 }
 
 .constitution-page.is-flipping-prev{
-animation:page-leave-prev .82s cubic-bezier(.22,.72,.18,1) forwards;
+animation:page-leave-prev .9s cubic-bezier(.2,.72,.2,1) forwards;
 z-index:3;
 }
 
