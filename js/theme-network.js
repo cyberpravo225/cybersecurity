@@ -346,10 +346,15 @@
   audio.loop = true;
   audio.preload = 'auto';
   audio.volume = 0.06;
+  audio.defaultMuted = true;
+  audio.muted = true;
+  audio.setAttribute('muted', '');
   audio.setAttribute('playsinline', '');
   audio.style.display = 'none';
 
   let musicEnabled = localStorage.getItem(MUSIC_ENABLED_KEY) !== '0';
+  let autoplayRetryTimer = 0;
+  let autoplayRetryAttempts = 0;
 
   const refreshButton = () => {
     button.textContent = musicEnabled ? '🎵 Музыка: вкл' : '🔇 Музыка: выкл';
@@ -360,6 +365,35 @@
     localStorage.setItem(MUSIC_ENABLED_KEY, musicEnabled ? '1' : '0');
   };
 
+  const unmutePlayback = () => {
+    audio.muted = false;
+    audio.defaultMuted = false;
+    audio.removeAttribute('muted');
+  };
+
+  const stopAutoplayRetry = () => {
+    if (!autoplayRetryTimer) return;
+    clearInterval(autoplayRetryTimer);
+    autoplayRetryTimer = 0;
+    autoplayRetryAttempts = 0;
+  };
+
+  const scheduleAutoplayRetry = () => {
+    if (autoplayRetryTimer || !musicEnabled) return;
+    autoplayRetryAttempts = 0;
+    autoplayRetryTimer = window.setInterval(async () => {
+      autoplayRetryAttempts += 1;
+      if (!musicEnabled || autoplayRetryAttempts > 12) {
+        stopAutoplayRetry();
+        return;
+      }
+      await startMusic();
+      if (!audio.paused && !audio.muted) {
+        stopAutoplayRetry();
+      }
+    }, 1000);
+  };
+
   const startMusic = async () => {
     if (!musicEnabled) return;
     try {
@@ -367,14 +401,17 @@
       audio.muted = true;
       await audio.play();
       setTimeout(() => {
-        audio.muted = false;
-      }, 180);
+        unmutePlayback();
+      }, 600);
+      stopAutoplayRetry();
     } catch (_) {
       try {
-        audio.muted = false;
+        unmutePlayback();
         await audio.play();
+        stopAutoplayRetry();
       } catch (_) {
         // Автозапуск может быть полностью заблокирован браузером до первого взаимодействия.
+        scheduleAutoplayRetry();
       }
     }
   };
@@ -382,7 +419,8 @@
   const stopMusic = () => {
     audio.pause();
     audio.currentTime = 0;
-    audio.muted = false;
+    unmutePlayback();
+    stopAutoplayRetry();
   };
 
   const unlockOnInteraction = async () => {
