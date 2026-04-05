@@ -1221,13 +1221,13 @@ inset 0 0 0 1px rgba(117,57,22,0.12);
 opacity:1;
 pointer-events:auto;
 transform:rotateY(0deg) scale(1);
-z-index:2;
+z-index:5;
 }
 
 .constitution-book-single[open] .constitution-cover{
-transform:translateX(-52%) rotateY(-176deg) scale(.96);
-box-shadow:-10px 8px 20px rgba(0,0,0,0.26);
-opacity:.92;
+transform:translateX(-104%) rotateY(-180deg) scale(1);
+box-shadow:-16px 10px 26px rgba(0,0,0,0.3);
+opacity:1;
 pointer-events:none;
 animation:constitution-cover-open .82s ease-in-out;
 }
@@ -1238,12 +1238,12 @@ transform:translateX(0) rotateY(0deg) scale(1);
 opacity:1;
 }
 55%{
-transform:translateX(-8px) rotateY(-96deg) scale(.985);
-opacity:.98;
+transform:translateX(-22px) rotateY(-112deg) scale(.995);
+opacity:1;
 }
 100%{
-transform:translateX(-52%) rotateY(-176deg) scale(.96);
-opacity:.92;
+transform:translateX(-104%) rotateY(-180deg) scale(1);
+opacity:1;
 }
 }
 
@@ -1512,7 +1512,7 @@ background:linear-gradient(0deg,rgba(255,249,232,0.98),rgba(255,243,213,0.98));
   }
 
   .constitution-book-single[open] .constitution-cover{
-  transform:translateX(-46%) rotateY(-172deg) scale(.965);
+  transform:translateX(-96%) rotateY(-178deg) scale(1);
   }
 }
 
