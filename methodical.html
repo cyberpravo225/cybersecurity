@@ -220,6 +220,7 @@
 <script src="js/theme-network.js"></script>
 <script>
 (() => {
+  const bookShell = document.getElementById('constitution-book');
   const book = document.querySelector('[data-book-pages]');
   if(!book) return;
 
@@ -280,6 +281,15 @@
 
   prevBtn.addEventListener('click', () => animateToPage(current - 1));
   nextBtn.addEventListener('click', () => animateToPage(current + 1));
+
+  if(bookShell){
+    bookShell.addEventListener('toggle', () => {
+      if(bookShell.open){
+        current = 0;
+        updatePage();
+      }
+    });
+  }
 
   updatePage();
   window.addEventListener('resize', setStageHeight);
