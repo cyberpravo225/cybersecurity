@@ -1287,6 +1287,7 @@ pointer-events:none;
 transform-origin:left center;
 transform:rotateY(95deg) scale(.98);
 backface-visibility:hidden;
+will-change:transform,opacity,filter;
 }
 
 .constitution-pages-stage{
@@ -1370,14 +1371,14 @@ transition:opacity .2s ease;
 .constitution-page.stack-left{
 opacity:.78;
 pointer-events:none;
-transform:translateX(-52%) rotateY(-178deg) scale(.96);
+transform:translateX(-42%) rotateY(-162deg) scale(.965);
 z-index:1;
 }
 
 .constitution-page.stack-right{
 opacity:.78;
 pointer-events:none;
-transform:translateX(52%) rotateY(178deg) scale(.96);
+transform:translateX(42%) rotateY(162deg) scale(.965);
 z-index:1;
 }
 
@@ -1388,12 +1389,12 @@ color:#3a1f1f;
 }
 
 .constitution-page.is-flipping-next{
-animation:page-leave-next 1.2s cubic-bezier(.19,.75,.2,1) forwards;
+animation:page-leave-next .82s cubic-bezier(.22,.72,.18,1) forwards;
 z-index:3;
 }
 
 .constitution-page.is-flipping-prev{
-animation:page-leave-prev 1.2s cubic-bezier(.19,.75,.2,1) forwards;
+animation:page-leave-prev .82s cubic-bezier(.22,.72,.18,1) forwards;
 z-index:3;
 }
 
@@ -1435,7 +1436,7 @@ filter:brightness(1.02);
 }
 to{
 opacity:.8;
-transform:translateX(-52%) rotateY(-178deg) scale(.96);
+transform:translateX(-42%) rotateY(-162deg) scale(.965);
 filter:brightness(.9);
 }
 }
@@ -1471,7 +1472,7 @@ filter:brightness(1.02);
 }
 to{
 opacity:.8;
-transform:translateX(52%) rotateY(178deg) scale(.96);
+transform:translateX(42%) rotateY(162deg) scale(.965);
 filter:brightness(.9);
 }
 }
@@ -1479,15 +1480,18 @@ filter:brightness(.9);
 .constitution-article-tag{
 display:inline-flex;
 align-items:center;
-padding:4px 10px;
-font-size:12px;
-font-weight:700;
-letter-spacing:.03em;
+padding:5px 12px;
+font-size:13px;
+font-weight:800;
+letter-spacing:.05em;
 text-transform:uppercase;
 border-radius:999px;
-background:rgba(248,231,198,0.2);
-color:#fbe8bc;
-border:1px solid rgba(255,255,255,0.22);
+background:linear-gradient(135deg,#7f1d1d,#991b1b);
+color:#fff7e6;
+border:1px solid rgba(255,240,210,0.58);
+box-shadow:
+0 4px 10px rgba(62,11,11,.34),
+inset 0 1px 0 rgba(255,255,255,.2);
 justify-self:start;
 }
 
