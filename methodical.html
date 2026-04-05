@@ -229,6 +229,7 @@
   const indicator = book.querySelector('[data-book-indicator]');
   const stage = book.querySelector('[data-book-stage]');
   const surface = book.querySelector('[data-book-surface]');
+  const cover = bookShell ? bookShell.querySelector('.constitution-cover') : null;
   let current = 0;
   let animating = false;
   let touchStartX = 0;
@@ -237,6 +238,7 @@
   let touchCurrentY = 0;
   let swipeLocked = false;
   let swipeHorizontal = false;
+  let coverSoundTriggeredByClick = false;
   const flipDuration = 900;
   const swipeThreshold = 42;
   let audioContext = null;
@@ -280,6 +282,36 @@
     volume.connect(ctx.destination);
     noise.start(now);
     noise.stop(now + 0.17);
+  };
+
+  const playCoverSound = (isOpening) => {
+    const ctx = ensureAudioContext();
+    if(!ctx) return;
+    if(ctx.state === 'suspended'){
+      ctx.resume();
+    }
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const toneGain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(isOpening ? 260 : 200, now);
+    osc.frequency.exponentialRampToValueAtTime(isOpening ? 185 : 145, now + 0.14);
+
+    filter.type = 'lowpass';
+    filter.frequency.value = isOpening ? 1200 : 900;
+    filter.Q.value = 1;
+
+    toneGain.gain.setValueAtTime(0.0001, now);
+    toneGain.gain.exponentialRampToValueAtTime(0.018, now + 0.02);
+    toneGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+
+    osc.connect(filter);
+    filter.connect(toneGain);
+    toneGain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.17);
   };
 
   const waitForFlipEnd = (page, className, onDone) => {
@@ -425,12 +457,26 @@
     }, { passive:true });
   }
 
+  if(cover){
+    cover.addEventListener('click', () => {
+      ensureAudioContext();
+      const willOpen = !(bookShell && bookShell.open);
+      coverSoundTriggeredByClick = true;
+      playCoverSound(willOpen);
+    });
+  }
+
   if(bookShell){
     bookShell.addEventListener('toggle', () => {
       if(bookShell.open){
         current = 0;
         renderStacks();
+      }else{
+        if(!coverSoundTriggeredByClick){
+          playCoverSound(false);
+        }
       }
+      coverSoundTriggeredByClick = false;
     });
   }
 
