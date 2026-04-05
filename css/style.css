@@ -1342,33 +1342,40 @@ color:#3a1f1f;
 }
 
 .constitution-page.is-entering-next{
-animation:page-enter-next .85s cubic-bezier(.2,.7,.15,1) forwards;
+animation:page-enter-next 1.2s cubic-bezier(.19,.75,.2,1) forwards;
 z-index:4;
 }
 
 .constitution-page.is-leaving-next{
-animation:page-leave-next .85s cubic-bezier(.2,.7,.15,1) forwards;
+animation:page-leave-next 1.2s cubic-bezier(.19,.75,.2,1) forwards;
 z-index:3;
 }
 
 .constitution-page.is-entering-prev{
-animation:page-enter-prev .85s cubic-bezier(.2,.7,.15,1) forwards;
+animation:page-enter-prev 1.2s cubic-bezier(.19,.75,.2,1) forwards;
 z-index:4;
 }
 
 .constitution-page.is-leaving-prev{
-animation:page-leave-prev .85s cubic-bezier(.2,.7,.15,1) forwards;
+animation:page-leave-prev 1.2s cubic-bezier(.19,.75,.2,1) forwards;
 z-index:3;
 }
 
 @keyframes page-enter-next{
 from{
 opacity:0;
-transform:rotateY(95deg) translateX(22px) scale(.98);
+transform:rotateY(96deg) translateX(28px) scale(.97);
+filter:brightness(.95);
+}
+55%{
+opacity:.88;
+transform:rotateY(18deg) translateX(6px) scale(.995);
+filter:brightness(1.03);
 }
 to{
 opacity:1;
 transform:rotateY(0deg) translateX(0) scale(1);
+filter:brightness(1);
 }
 }
 
@@ -1376,21 +1383,35 @@ transform:rotateY(0deg) translateX(0) scale(1);
 from{
 opacity:1;
 transform:rotateY(0deg) translateX(0) scale(1);
+filter:brightness(1);
+}
+45%{
+opacity:.95;
+transform:rotateY(-36deg) translateX(-8px) scale(.985);
+filter:brightness(1.02);
 }
 to{
-opacity:0;
+opacity:.12;
 transform:rotateY(-126deg) translateX(-24px) scale(.955);
+filter:brightness(.9);
 }
 }
 
 @keyframes page-enter-prev{
 from{
 opacity:0;
-transform:rotateY(-95deg) translateX(-22px) scale(.98);
+transform:rotateY(-96deg) translateX(-28px) scale(.97);
+filter:brightness(.95);
+}
+55%{
+opacity:.88;
+transform:rotateY(-18deg) translateX(-6px) scale(.995);
+filter:brightness(1.03);
 }
 to{
 opacity:1;
 transform:rotateY(0deg) translateX(0) scale(1);
+filter:brightness(1);
 }
 }
 
@@ -1398,10 +1419,17 @@ transform:rotateY(0deg) translateX(0) scale(1);
 from{
 opacity:1;
 transform:rotateY(0deg) translateX(0) scale(1);
+filter:brightness(1);
+}
+45%{
+opacity:.95;
+transform:rotateY(36deg) translateX(8px) scale(.985);
+filter:brightness(1.02);
 }
 to{
-opacity:0;
+opacity:.12;
 transform:rotateY(126deg) translateX(24px) scale(.955);
+filter:brightness(.9);
 }
 }
 
