@@ -7179,50 +7179,6 @@ body[data-page="cyberguessr"] .card-photo{
   }
 }
 
-body[data-page="home"] .cyberly-animated-banner {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-}
-
-body[data-page="home"] .cyberly-animated-banner > * {
-  position: relative;
-  z-index: 1;
-}
-
-body[data-page="home"] .cyberly-animated-banner .cyberly-banner-sheen {
-  position: absolute;
-  inset: -130% 42% auto -45%;
-  height: 260%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.34), transparent);
-  transform: translateX(-150%) rotate(18deg);
-  opacity: 0;
-  pointer-events: none;
-  z-index: 0;
-  animation: cyberly-banner-sheen 4.8s ease-in-out infinite;
-}
-
-@keyframes cyberly-banner-sheen {
-  0%, 16% {
-    transform: translateX(-150%) rotate(18deg);
-    opacity: 0;
-  }
-
-  26% {
-    opacity: 0.78;
-  }
-
-  52% {
-    transform: translateX(220%) rotate(18deg);
-    opacity: 0.12;
-  }
-
-  100% {
-    transform: translateX(220%) rotate(18deg);
-    opacity: 0;
-  }
-}
-
 /* Homepage contacts banner refinement */
 body[data-page="home"] .contacts-banner {
   margin-top: 0;
