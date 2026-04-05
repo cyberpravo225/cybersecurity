@@ -1046,13 +1046,11 @@ opacity:0.7;
 
 .constitution-section{
 margin-top:42px;
-padding:26px;
-border-radius:22px;
-background:
-radial-gradient(circle at top right,rgba(98,126,234,0.2),transparent 48%),
-linear-gradient(180deg,rgba(109,93,252,0.11),rgba(15,23,42,0.03));
-border:1px solid rgba(109,93,252,0.32);
-box-shadow:0 16px 36px rgba(0,0,0,0.08);
+padding:0;
+border-radius:0;
+background:none;
+border:none;
+box-shadow:none;
 position:relative;
 overflow:hidden;
 }
@@ -1102,7 +1100,7 @@ linear-gradient(160deg,#6a0b1f 0%,#8f1632 44%,#5f091a 100%);
 box-shadow:
 0 22px 42px rgba(42,4,11,0.5),
 inset 0 0 0 1px rgba(255,255,255,0.08);
-transform:perspective(900px) rotateY(-6deg);
+transform:perspective(900px) rotateY(0deg);
 transform-origin:left center;
 transition:transform .25s ease,box-shadow .25s ease;
 position:relative;
@@ -1111,7 +1109,7 @@ perspective:1000px;
 }
 
 .constitution-book-single:hover{
-transform:perspective(900px) rotateY(-3deg) translateY(-2px);
+transform:perspective(900px) rotateY(0deg) translateY(-2px);
 box-shadow:
 0 26px 46px rgba(42,4,11,0.56),
 inset 0 0 0 1px rgba(255,255,255,0.1);
@@ -1189,6 +1187,7 @@ align-items:center;
 justify-content:center;
 width:132px;
 height:132px;
+transform:translateY(-26px);
 }
 
 .constitution-cover-emblem-image{
@@ -1522,9 +1521,7 @@ border-left:3px solid #b45309;
 }
 
 :root[data-theme="light"] .constitution-section{
-background:
-radial-gradient(circle at top right,rgba(98,126,234,0.16),transparent 46%),
-linear-gradient(180deg,rgba(109,93,252,0.1),rgba(255,255,255,0.62));
+background:none;
 }
 
 :root[data-theme="dark"] body[data-page="methodical"] .method-card,
@@ -1567,7 +1564,7 @@ background:linear-gradient(0deg,rgba(255,249,232,0.98),rgba(255,243,213,0.98));
 
 @media (max-width:640px){
   .constitution-section{
-  padding:18px;
+  padding:0;
   }
 }
 .learning-grid{
