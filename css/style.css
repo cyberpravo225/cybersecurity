@@ -1184,9 +1184,19 @@ font-size:12px;
 }
 
 .constitution-cover-emblem{
-font-size:40px;
-filter:drop-shadow(0 4px 8px rgba(0,0,0,.28));
-color:#ffd36b;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+width:108px;
+height:124px;
+filter:drop-shadow(0 6px 10px rgba(0,0,0,.28));
+}
+
+.constitution-cover-emblem img{
+width:100%;
+height:100%;
+display:block;
+object-fit:contain;
 }
 
 .constitution-cover-ornament{
