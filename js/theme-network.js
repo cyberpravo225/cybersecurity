@@ -362,16 +362,17 @@
 
   const startMusic = async () => {
     if (!musicEnabled) return;
-    audio.muted = false;
     try {
+      // Самый стабильный автостарт без клика: сначала muted-play, затем включаем звук.
+      audio.muted = true;
       await audio.play();
+      setTimeout(() => {
+        audio.muted = false;
+      }, 180);
     } catch (_) {
       try {
-        audio.muted = true;
+        audio.muted = false;
         await audio.play();
-        requestAnimationFrame(() => {
-          audio.muted = false;
-        });
       } catch (_) {
         // Автозапуск может быть полностью заблокирован браузером до первого взаимодействия.
       }
