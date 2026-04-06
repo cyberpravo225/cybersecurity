@@ -67,8 +67,8 @@
     }
 
     :root:not([data-theme="dark"]) body[data-page="home"] .topbar #theme-toggle .moon-main {
+      fill: #d7e4ff;
       stroke: #ffffff;
-      filter: drop-shadow(0 0 9px rgba(37, 99, 235, 0.5));
     }
     body[data-page="home"] .topbar :is(#theme-toggle, #menu-toggle, #performance-toggle, #profile-toggle) {
       position: relative;
@@ -344,9 +344,11 @@
 
     body[data-page="home"] .topbar #theme-toggle .moon-main {
       fill: url(#moon-gradient);
-      stroke: #f8fbff;
-      stroke-width: 1.25;
-      filter: drop-shadow(0 0 10px rgba(99, 145, 255, 0.34));
+      stroke: #ffffff;
+      stroke-width: 1.45;
+      stroke-linejoin: round;
+      transform: translateX(-0.2px) scaleX(1.1);
+      transform-origin: center;
     }
 
     body[data-page="home"] .topbar #performance-toggle .icon-performance {
@@ -1011,12 +1013,12 @@
 </linearGradient>
 <linearGradient id="moon-gradient" x1="7" y1="5" x2="17" y2="19" gradientUnits="userSpaceOnUse">
 <stop offset="0" stop-color="#FFFFFF"/>
-<stop offset="0.52" stop-color="#BFD2FF"/>
-<stop offset="1" stop-color="#5D84FF"/>
+<stop offset="0.5" stop-color="#D5E2FF"/>
+<stop offset="1" stop-color="#7FA3FF"/>
 </linearGradient>
 </defs>
 <g class="icon-moon">
-<path class="moon-main" d="M15.4 3.1a8.7 8.7 0 1 0 5.3 15.8 7.35 7.35 0 1 1-5.3-15.8z"/>
+<path class="moon-main" d="M20.2 14.1A8.5 8.5 0 1 1 13.9 3.8a7 7 0 1 0 6.3 10.3z"/>
 </g>
 <g class="icon-sun">
 <circle class="sun-ring" cx="12" cy="12" r="6.2"/>
