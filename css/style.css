@@ -7008,21 +7008,54 @@ body[data-page="cyberguessr"] .card-photo{
 }
 
 .contact-card {
+  --contact-tone: var(--accent);
+  --contact-tone-soft: color-mix(in srgb, var(--contact-tone) 14%, transparent);
+  --contact-tone-strong: color-mix(in srgb, var(--contact-tone) 30%, transparent);
+  --contact-bg: var(--card-bg);
+  --contact-note-bg: color-mix(in srgb, var(--contact-tone) 13%, #fff7de 87%);
+  --contact-note-border: color-mix(in srgb, var(--contact-tone) 28%, transparent);
+  --contact-note-text: color-mix(in srgb, var(--contact-tone) 72%, #5f4500);
   border-radius: 16px;
-  background: var(--card-bg);
-  border: 1px solid color-mix(in srgb, var(--accent) 14%, transparent);
+  background: var(--contact-bg);
+  border: 1px solid var(--contact-tone-soft);
   box-shadow: 0 10px 22px rgba(7, 18, 40, 0.08);
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   transition: transform var(--anim), box-shadow var(--anim), border-color var(--anim);
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--contact-tone) 75%, #ffffff 25%), color-mix(in srgb, var(--contact-tone) 55%, transparent));
+  opacity: 0.95;
 }
 
 .contact-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 16px 30px rgba(7, 18, 40, 0.14);
-  border-color: color-mix(in srgb, var(--accent) 26%, transparent);
+  border-color: var(--contact-tone-strong);
+}
+
+
+.contact-card--police { --contact-tone: #2563eb; }
+.contact-card--cert { --contact-tone: #0ea5a4; }
+.contact-card--privacy { --contact-tone: #7c3aed; }
+.contact-card--bank { --contact-tone: #0284c7; }
+.contact-card--mobile { --contact-tone: #d97706; }
+.contact-card--checks { --contact-tone: #059669; }
+
+:root[data-theme="dark"] .contact-card {
+  --contact-bg: linear-gradient(180deg, rgba(34, 36, 41, 0.94), rgba(30, 32, 37, 0.92));
+  --contact-note-bg: color-mix(in srgb, var(--contact-tone) 20%, rgba(255, 255, 255, 0.02));
+  --contact-note-border: color-mix(in srgb, var(--contact-tone) 42%, transparent);
+  --contact-note-text: color-mix(in srgb, var(--contact-tone) 40%, #f5f7ff 60%);
 }
 
 .contact-card-head {
@@ -7035,7 +7068,8 @@ body[data-page="cyberguessr"] .card-photo{
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  background: color-mix(in srgb, var(--contact-tone) 20%, transparent);
+  border: 1px solid color-mix(in srgb, var(--contact-tone) 34%, transparent);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -7055,17 +7089,11 @@ body[data-page="cyberguessr"] .card-photo{
 
 .contact-when {
   font-size: 14px;
-  color: #7f5d00;
-  background: #fff8df;
+  color: var(--contact-note-text);
+  background: var(--contact-note-bg);
   border-radius: 10px;
-  border: 1px solid #f2dd9a;
+  border: 1px solid var(--contact-note-border);
   padding: 8px 10px;
-}
-
-:root[data-theme="dark"] .contact-when {
-  color: #ffe8a3;
-  background: rgba(255, 214, 102, 0.12);
-  border-color: rgba(255, 214, 102, 0.26);
 }
 
 .contact-meta {
