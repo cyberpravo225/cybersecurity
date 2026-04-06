@@ -7011,14 +7011,16 @@ body[data-page="cyberguessr"] .card-photo{
   --contact-tone: var(--accent);
   --contact-tone-soft: color-mix(in srgb, var(--contact-tone) 14%, transparent);
   --contact-tone-strong: color-mix(in srgb, var(--contact-tone) 30%, transparent);
-  --contact-bg: var(--card-bg);
+  --contact-bg: linear-gradient(165deg, color-mix(in srgb, var(--contact-tone) 10%, rgba(255, 255, 255, 0.78)), color-mix(in srgb, var(--contact-tone) 5%, rgba(255, 255, 255, 0.62)));
   --contact-note-bg: color-mix(in srgb, var(--contact-tone) 13%, #fff7de 87%);
   --contact-note-border: color-mix(in srgb, var(--contact-tone) 28%, transparent);
   --contact-note-text: color-mix(in srgb, var(--contact-tone) 72%, #5f4500);
   border-radius: 16px;
   background: var(--contact-bg);
   border: 1px solid var(--contact-tone-soft);
-  box-shadow: 0 10px 22px rgba(7, 18, 40, 0.08);
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--contact-tone) 16%, rgba(7, 18, 40, 0.08));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -7052,10 +7054,10 @@ body[data-page="cyberguessr"] .card-photo{
 .contact-card--checks { --contact-tone: #059669; }
 
 :root[data-theme="dark"] .contact-card {
-  --contact-bg: linear-gradient(180deg, rgba(34, 36, 41, 0.94), rgba(30, 32, 37, 0.92));
-  --contact-note-bg: color-mix(in srgb, var(--contact-tone) 20%, rgba(255, 255, 255, 0.02));
-  --contact-note-border: color-mix(in srgb, var(--contact-tone) 42%, transparent);
-  --contact-note-text: color-mix(in srgb, var(--contact-tone) 40%, #f5f7ff 60%);
+  --contact-bg: linear-gradient(170deg, color-mix(in srgb, var(--contact-tone) 34%, rgba(15, 20, 34, 0.95)), color-mix(in srgb, var(--contact-tone) 20%, rgba(10, 14, 26, 0.92)));
+  --contact-note-bg: color-mix(in srgb, var(--contact-tone) 24%, rgba(255, 255, 255, 0.02));
+  --contact-note-border: color-mix(in srgb, var(--contact-tone) 48%, transparent);
+  --contact-note-text: color-mix(in srgb, var(--contact-tone) 42%, #f5f7ff 58%);
 }
 
 .contact-card-head {
