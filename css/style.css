@@ -7004,27 +7004,27 @@ body[data-page="cyberguessr"] .card-photo{
 .contacts-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: 22px;
 }
 
 .contact-card {
   --contact-tone: var(--accent);
   --contact-tone-soft: color-mix(in srgb, var(--contact-tone) 14%, transparent);
   --contact-tone-strong: color-mix(in srgb, var(--contact-tone) 30%, transparent);
-  --contact-bg: linear-gradient(165deg, color-mix(in srgb, var(--contact-tone) 10%, rgba(255, 255, 255, 0.78)), color-mix(in srgb, var(--contact-tone) 5%, rgba(255, 255, 255, 0.62)));
+  --contact-bg: linear-gradient(180deg, color-mix(in srgb, var(--contact-tone) 10%, #fffaf3), color-mix(in srgb, var(--contact-tone) 8%, #f6eee3));
   --contact-note-bg: color-mix(in srgb, var(--contact-tone) 13%, #fff7de 87%);
   --contact-note-border: color-mix(in srgb, var(--contact-tone) 28%, transparent);
   --contact-note-text: color-mix(in srgb, var(--contact-tone) 72%, #5f4500);
-  border-radius: 16px;
+  border-radius: 18px;
   background: var(--contact-bg);
-  border: 1px solid var(--contact-tone-soft);
-  box-shadow: 0 10px 22px color-mix(in srgb, var(--contact-tone) 16%, rgba(7, 18, 40, 0.08));
+  border: 1px solid color-mix(in srgb, var(--contact-tone) 24%, rgba(73, 58, 44, 0.08));
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--contact-tone) 16%, rgba(7, 18, 40, 0.1));
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  padding: 16px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   transition: transform var(--anim), box-shadow var(--anim), border-color var(--anim);
   position: relative;
   overflow: hidden;
@@ -7040,8 +7040,8 @@ body[data-page="cyberguessr"] .card-photo{
 }
 
 .contact-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 16px 30px rgba(7, 18, 40, 0.14);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 34px color-mix(in srgb, var(--contact-tone) 28%, rgba(14, 165, 233, 0.18));
   border-color: var(--contact-tone-strong);
 }
 
@@ -7054,33 +7054,39 @@ body[data-page="cyberguessr"] .card-photo{
 .contact-card--checks { --contact-tone: #059669; }
 
 :root[data-theme="dark"] .contact-card {
-  --contact-bg: linear-gradient(170deg, color-mix(in srgb, var(--contact-tone) 34%, rgba(15, 20, 34, 0.95)), color-mix(in srgb, var(--contact-tone) 20%, rgba(10, 14, 26, 0.92)));
+  --contact-bg: linear-gradient(170deg, color-mix(in srgb, var(--contact-tone) 28%, rgba(31, 39, 88, 0.95)), color-mix(in srgb, var(--contact-tone) 18%, rgba(21, 29, 69, 0.92)));
   --contact-note-bg: color-mix(in srgb, var(--contact-tone) 24%, rgba(255, 255, 255, 0.02));
   --contact-note-border: color-mix(in srgb, var(--contact-tone) 48%, transparent);
   --contact-note-text: color-mix(in srgb, var(--contact-tone) 42%, #f5f7ff 58%);
+  border-color: color-mix(in srgb, var(--contact-tone) 36%, rgba(255, 255, 255, 0.08));
 }
 
 .contact-card-head {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 62px;
+  gap: 12px;
   align-items: center;
-  gap: 10px;
 }
 
 .contact-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 62px;
+  height: 62px;
+  border-radius: 16px;
   background: color-mix(in srgb, var(--contact-tone) 20%, transparent);
   border: 1px solid color-mix(in srgb, var(--contact-tone) 34%, transparent);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 30px;
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--contact-tone) 24%, rgba(15, 23, 42, 0.22));
 }
 
 .contact-card h3 {
+  grid-column: 1;
   margin: 0;
-  font-size: 20px;
+  font-size: 22px;
   line-height: 1.2;
 }
 
@@ -7197,6 +7203,16 @@ body[data-page="cyberguessr"] .card-photo{
 @media (max-width: 760px) {
   .contacts-grid {
     grid-template-columns: 1fr;
+  }
+
+  .contact-card-head {
+    grid-template-columns: minmax(0, 1fr) 56px;
+  }
+
+  .contact-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 28px;
   }
 
   .incident-cta {
