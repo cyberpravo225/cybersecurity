@@ -7382,6 +7382,23 @@ body[data-page="home"] .contacts-banner:hover {
   box-shadow: 0 24px 46px rgba(14, 52, 120, 0.32);
 }
 
+:root[data-theme="light"] body[data-page="home"] .contacts-banner {
+  background: linear-gradient(135deg, rgba(234, 244, 255, 0.95), rgba(214, 231, 255, 0.92));
+  border-color: rgba(53, 103, 173, 0.36);
+  color: #0f2a4a;
+}
+
+:root[data-theme="light"] body[data-page="home"] .contacts-banner .tests-banner-text h2,
+:root[data-theme="light"] body[data-page="home"] .contacts-banner .tests-banner-text p {
+  color: #0f2a4a;
+}
+
+:root[data-theme="light"] body[data-page="home"] .contacts-banner .tests-cta-button {
+  color: #0f2a4a;
+  border-color: rgba(53, 103, 173, 0.34);
+  background: rgba(255, 255, 255, 0.6);
+}
+
 body[data-page="home"] .contacts-banner-arrow {
   position: absolute;
   right: 18px;
