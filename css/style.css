@@ -7054,7 +7054,7 @@ body[data-page="cyberguessr"] .card-photo{
 .contact-card--checks { --contact-tone: #059669; }
 
 :root[data-theme="dark"] .contact-card {
-  --contact-bg: linear-gradient(170deg, color-mix(in srgb, var(--contact-tone) 28%, rgba(31, 39, 88, 0.95)), color-mix(in srgb, var(--contact-tone) 18%, rgba(21, 29, 69, 0.92)));
+  --contact-bg: linear-gradient(170deg, color-mix(in srgb, var(--contact-tone) 24%, rgba(31, 39, 88, 0.72)), color-mix(in srgb, var(--contact-tone) 14%, rgba(21, 29, 69, 0.62)));
   --contact-note-bg: color-mix(in srgb, var(--contact-tone) 24%, rgba(255, 255, 255, 0.02));
   --contact-note-border: color-mix(in srgb, var(--contact-tone) 48%, transparent);
   --contact-note-text: color-mix(in srgb, var(--contact-tone) 42%, #f5f7ff 58%);
@@ -7181,6 +7181,12 @@ body[data-page="cyberguessr"] .card-photo{
   box-shadow: 0 8px 20px rgba(8, 16, 34, 0.08);
   padding: clamp(16px, 2vw, 24px);
   background: var(--card-bg);
+}
+
+:root[data-theme="dark"] .do-now {
+  background: linear-gradient(165deg, rgba(31, 39, 88, 0.78), rgba(21, 29, 69, 0.7));
+  border-color: rgba(138, 157, 255, 0.3);
+  box-shadow: 0 12px 28px rgba(4, 10, 28, 0.34);
 }
 
 .do-now h2 {
