@@ -24,6 +24,52 @@
       --profile-glow-soft: rgba(192, 166, 255, 0.28);
     }
 
+
+    :root:not([data-theme="dark"]) body[data-page="home"] .topbar {
+      --topbar-btn-shadow: 0 14px 30px rgba(15, 23, 42, 0.2);
+      --topbar-btn-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(239, 246, 255, 0.84));
+      --topbar-btn-border: rgba(15, 23, 42, 0.26);
+    }
+
+    :root:not([data-theme="dark"]) body[data-page="home"] .topbar :is(#theme-toggle, #menu-toggle, #performance-toggle, #profile-toggle) {
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    :root:not([data-theme="dark"]) body[data-page="home"] .topbar #menu-toggle .hamburger-inner,
+    :root:not([data-theme="dark"]) body[data-page="home"] .topbar #menu-toggle .hamburger-inner::before,
+    :root:not([data-theme="dark"]) body[data-page="home"] .topbar #menu-toggle .hamburger-inner::after {
+      background: linear-gradient(90deg, #0f172a, #1d4ed8 62%, #0ea5e9);
+      box-shadow: 0 0 10px rgba(14, 116, 255, 0.32);
+    }
+
+    :root:not([data-theme="dark"]) body[data-page="home"] .topbar #profile-toggle .profile-head,
+    :root:not([data-theme="dark"]) body[data-page="home"] .topbar #profile-toggle .profile-body {
+      stroke: #1f2a44;
+    }
+
+    :root:not([data-theme="dark"]) body[data-page="home"] .topbar #performance-toggle .icon-bolt {
+      fill: #0f9f62;
+      filter: drop-shadow(0 0 8px rgba(17, 148, 95, 0.35));
+    }
+
+    :root:not([data-theme="dark"]) body[data-page="home"] .topbar #performance-toggle .battery-shell,
+    :root:not([data-theme="dark"]) body[data-page="home"] .topbar #performance-toggle .battery-tip {
+      stroke: #1e3a8a;
+    }
+
+    :root:not([data-theme="dark"]) body[data-page="home"] .topbar #performance-toggle .battery-core {
+      fill: rgba(30, 58, 138, 0.2);
+    }
+
+    :root:not([data-theme="dark"]) body[data-page="home"] .topbar #performance-toggle .battery-cell {
+      fill: #2563eb;
+    }
+
+    :root:not([data-theme="dark"]) body[data-page="home"] .topbar #theme-toggle .moon-main {
+      stroke: #dbeafe;
+      filter: drop-shadow(0 0 7px rgba(59, 130, 246, 0.35));
+    }
     body[data-page="home"] .topbar :is(#theme-toggle, #menu-toggle, #performance-toggle, #profile-toggle) {
       position: relative;
       overflow: visible;
@@ -331,10 +377,15 @@
     body[data-page="home"] .topbar #profile-toggle .profile-head,
     body[data-page="home"] .topbar #profile-toggle .profile-body {
       fill: none;
-      stroke: #efe8ff;
+      stroke: #1f2a44;
       stroke-linecap: round;
       stroke-linejoin: round;
       transition: stroke 220ms ease;
+    }
+
+    :root[data-theme="dark"] body[data-page="home"] .topbar #profile-toggle .profile-head,
+    :root[data-theme="dark"] body[data-page="home"] .topbar #profile-toggle .profile-body {
+      stroke: #efe8ff;
     }
 
     body[data-page="home"] .topbar #profile-toggle .profile-head {
@@ -821,9 +872,9 @@
       filter: drop-shadow(0 0 8px rgba(88, 229, 255, 0.22));
     }
 
-    body[data-page="home"] .topbar #menu-toggle .hamburger-inner,
-    body[data-page="home"] .topbar #menu-toggle .hamburger-inner::before,
-    body[data-page="home"] .topbar #menu-toggle .hamburger-inner::after {
+    :root[data-theme="dark"] body[data-page="home"] .topbar #menu-toggle .hamburger-inner,
+    :root[data-theme="dark"] body[data-page="home"] .topbar #menu-toggle .hamburger-inner::before,
+    :root[data-theme="dark"] body[data-page="home"] .topbar #menu-toggle .hamburger-inner::after {
       background: linear-gradient(90deg, #f3fdff, #79ebff 55%, #31dbff);
       box-shadow: 0 0 10px rgba(88, 229, 255, 0.26);
     }
