@@ -5,6 +5,38 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>CyberGuessr — выбор режима</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    body[data-page="cyberguessr"] .card-grid{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:1.5rem;
+      max-width:1100px;
+      margin-inline:auto;
+    }
+
+    body[data-page="cyberguessr"] .card{
+      min-height:300px;
+      padding:1.8rem 1.5rem;
+    }
+
+    body[data-page="cyberguessr"] .card-photo{
+      width:108px;
+      height:108px;
+    }
+
+    body[data-page="cyberguessr"] .card h3{
+      font-size:1.5rem;
+    }
+
+    body[data-page="cyberguessr"] .card p{
+      font-size:1.04rem;
+    }
+
+    @media (max-width:700px){
+      body[data-page="cyberguessr"] .card-grid{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
 </head>
 
 <body class="page" data-page="cyberguessr">
