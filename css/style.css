@@ -6947,6 +6947,10 @@ body[data-page="cyberguessr"] .card-photo{
   border: 1px solid color-mix(in srgb, var(--accent) 14%, transparent);
 }
 
+:root[data-theme="light"] .incident-cta {
+  background: linear-gradient(180deg, rgba(255, 250, 243, 0.74), rgba(245, 234, 221, 0.66));
+}
+
 :root[data-theme="dark"] .incident-cta {
   background: linear-gradient(165deg, rgba(31, 39, 88, 0.78), rgba(21, 29, 69, 0.7));
   border-color: rgba(138, 157, 255, 0.3);
@@ -7053,6 +7057,10 @@ body[data-page="cyberguessr"] .card-photo{
 .contact-card--bank { --contact-tone: #0284c7; }
 .contact-card--mobile { --contact-tone: #d97706; }
 .contact-card--checks { --contact-tone: #059669; }
+
+:root[data-theme="light"] .contact-card {
+  --contact-bg: linear-gradient(180deg, color-mix(in srgb, var(--contact-tone) 10%, rgba(255, 250, 243, 0.78)), color-mix(in srgb, var(--contact-tone) 8%, rgba(246, 238, 227, 0.68)));
+}
 
 :root[data-theme="dark"] .contact-card {
   --contact-bg: linear-gradient(170deg, color-mix(in srgb, var(--contact-tone) 24%, rgba(31, 39, 88, 0.72)), color-mix(in srgb, var(--contact-tone) 14%, rgba(21, 29, 69, 0.62)));
@@ -7182,6 +7190,10 @@ body[data-page="cyberguessr"] .card-photo{
   box-shadow: 0 8px 20px rgba(8, 16, 34, 0.08);
   padding: clamp(16px, 2vw, 24px);
   background: var(--card-bg);
+}
+
+:root[data-theme="light"] .do-now {
+  background: linear-gradient(180deg, rgba(255, 250, 243, 0.74), rgba(245, 234, 221, 0.66));
 }
 
 :root[data-theme="dark"] .do-now {
