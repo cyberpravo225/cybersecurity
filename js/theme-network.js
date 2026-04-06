@@ -316,6 +316,9 @@
   window.__cyberBgMusicInitialized = true;
 
   const MUSIC_ENABLED_KEY = 'cyber_bg_music_enabled';
+  const MUSIC_TIME_KEY = 'cyber_bg_music_time';
+  const MUSIC_TIME_TS_KEY = 'cyber_bg_music_time_ts';
+  const MUSIC_TIME_TTL_MS = 6 * 60 * 60 * 1000;
   const AUDIO_SRC = encodeURI('assets/Voyager_ Ambient SPACE Music for Colonizing the Cosmos (Relaxing Sci Fi Music) (mp3cut.net) (2).mp3');
 
   const button = document.createElement('button');
@@ -355,6 +358,8 @@
   let musicEnabled = localStorage.getItem(MUSIC_ENABLED_KEY) !== '0';
   let autoplayRetryTimer = 0;
   let autoplayRetryAttempts = 0;
+  let visibilityPaused = false;
+  let lastProgressSaveTs = 0;
 
   const refreshButton = () => {
     button.textContent = musicEnabled ? '🎵 Музыка: вкл' : '🔇 Музыка: выкл';
@@ -369,6 +374,36 @@
     audio.muted = false;
     audio.defaultMuted = false;
     audio.removeAttribute('muted');
+  };
+
+  const savePlaybackPosition = () => {
+    if (!Number.isFinite(audio.currentTime) || audio.currentTime < 0) return;
+    localStorage.setItem(MUSIC_TIME_KEY, String(audio.currentTime));
+    localStorage.setItem(MUSIC_TIME_TS_KEY, String(Date.now()));
+  };
+
+  const clearSavedPlaybackPosition = () => {
+    localStorage.removeItem(MUSIC_TIME_KEY);
+    localStorage.removeItem(MUSIC_TIME_TS_KEY);
+  };
+
+  const restorePlaybackPosition = () => {
+    const rawTime = localStorage.getItem(MUSIC_TIME_KEY);
+    const rawTs = Number(localStorage.getItem(MUSIC_TIME_TS_KEY) || '0');
+    if (!rawTime) return;
+
+    const savedTime = Number(rawTime);
+    const expired = Number.isFinite(rawTs) && rawTs > 0 && (Date.now() - rawTs > MUSIC_TIME_TTL_MS);
+    if (!Number.isFinite(savedTime) || savedTime < 0 || expired) {
+      clearSavedPlaybackPosition();
+      return;
+    }
+
+    try {
+      audio.currentTime = savedTime;
+    } catch (_) {
+      // Если метаданные еще не готовы, позиция восстановится на событии loadedmetadata.
+    }
   };
 
   const stopAutoplayRetry = () => {
@@ -417,10 +452,12 @@
   };
 
   const stopMusic = () => {
+    visibilityPaused = false;
     audio.pause();
     audio.currentTime = 0;
     unmutePlayback();
     stopAutoplayRetry();
+    clearSavedPlaybackPosition();
   };
 
   const unlockOnInteraction = async () => {
@@ -456,9 +493,49 @@
   document.body.appendChild(audio);
   document.body.appendChild(button);
   refreshButton();
+  restorePlaybackPosition();
+  audio.addEventListener('loadedmetadata', restorePlaybackPosition, { once: true });
+  audio.addEventListener('timeupdate', () => {
+    if (audio.paused || !musicEnabled) return;
+    const now = Date.now();
+    if (now - lastProgressSaveTs < 1500) return;
+    lastProgressSaveTs = now;
+    savePlaybackPosition();
+  });
   startMusic();
 
   window.addEventListener('pointerdown', unlockOnInteraction, { passive: true, once: true });
   window.addEventListener('keydown', unlockOnInteraction, { once: true });
   window.addEventListener('touchstart', unlockOnInteraction, { passive: true, once: true });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (!audio.paused) {
+        visibilityPaused = true;
+        savePlaybackPosition();
+        audio.pause();
+      }
+      stopAutoplayRetry();
+      return;
+    }
+
+    if (!musicEnabled) return;
+    if (visibilityPaused || audio.paused) {
+      visibilityPaused = false;
+      startMusic();
+    }
+  });
+
+  window.addEventListener('pagehide', () => {
+    savePlaybackPosition();
+    audio.pause();
+    stopAutoplayRetry();
+  });
+
+  window.addEventListener('beforeunload', savePlaybackPosition);
+  window.addEventListener('pageshow', () => {
+    if (!musicEnabled) return;
+    restorePlaybackPosition();
+    startMusic();
+  });
 })();
