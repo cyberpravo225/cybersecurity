@@ -5,6 +5,19 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Полное обучение ASCII и двоичному коду</title>
 <link rel="stylesheet" href="css/style.css">
+<style>
+:root[data-theme="light"] body.page[data-page="binary-learning"] .method-card{
+background:rgba(255,250,243,0.72);
+backdrop-filter:blur(8px);
+-webkit-backdrop-filter:blur(8px);
+}
+
+:root[data-theme="dark"] body.page[data-page="binary-learning"] .method-card{
+background:rgba(31,39,88,0.64);
+backdrop-filter:blur(8px);
+-webkit-backdrop-filter:blur(8px);
+}
+</style>
 </head>
 
 <body class="page" data-page="binary-learning">
@@ -87,6 +100,10 @@ T = 84 = <code>01010100</code><br>
 <p>1) Раздели строку на блоки по 8 бит.<br>
 2) Каждый блок переведи в десятичное число.<br>
 3) По таблице ASCII найди символ.</p>
+<p><strong>Формула перевода:</strong><br>
+Для 8 бит <code>b7 b6 b5 b4 b3 b2 b1 b0</code> десятичное значение считается так:<br>
+<code>Dec = b7·2⁷ + b6·2⁶ + b5·2⁵ + b4·2⁴ + b3·2³ + b2·2² + b1·2¹ + b0·2⁰</code>.<br>
+Обратный перевод (Dec → Bin): последовательно дели число на 2, записывай остатки и читай их снизу вверх.</p>
 <p>Пример: <code>01001000 01101001</code> → 72 и 105 → <strong>H</strong> и <strong>i</strong> → <strong>Hi</strong>.</p>
 </div>
 </div>
