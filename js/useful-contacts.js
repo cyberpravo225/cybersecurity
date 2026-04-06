@@ -1,6 +1,7 @@
 const CONTACT_CATEGORIES = [
   {
     id: 'mvd-cybercrime',
+    tone: 'police',
     icon: '🛡️',
     title: 'МВД / киберпреступления',
     description: 'Для взлома аккаунтов, мошенничества, шантажа, кражи денег и иных преступлений в сети.',
@@ -12,6 +13,7 @@ const CONTACT_CATEGORIES = [
   },
   {
     id: 'cert',
+    tone: 'cert',
     icon: '🧪',
     title: 'CERT / реагирование на киберинциденты',
     description: 'Для фишинговых сайтов, вредоносных файлов, подозрительных доменов и технических инцидентов.',
@@ -23,6 +25,7 @@ const CONTACT_CATEGORIES = [
   },
   {
     id: 'personal-data',
+    tone: 'privacy',
     icon: '🔐',
     title: 'Защита персональных данных',
     description: 'Для утечки данных, незаконной обработки персональной информации и нарушений прав субъектов данных.',
@@ -34,6 +37,7 @@ const CONTACT_CATEGORIES = [
   },
   {
     id: 'banks',
+    tone: 'bank',
     icon: '💳',
     title: 'Банки',
     description: 'Для срочной блокировки карты, оспаривания операций, защиты интернет-банка и перевыпуска реквизитов.',
@@ -45,6 +49,7 @@ const CONTACT_CATEGORIES = [
   },
   {
     id: 'operators',
+    tone: 'mobile',
     icon: '📱',
     title: 'Мобильные операторы',
     description: 'Для риска SIM-swap, неожиданной потери связи, странных SMS и подозрительной переоформленной SIM.',
@@ -56,6 +61,7 @@ const CONTACT_CATEGORIES = [
   },
   {
     id: 'online-checks',
+    tone: 'checks',
     icon: '🔎',
     title: 'Проверка ссылок / файлов / сайтов',
     description: 'Для быстрой онлайн-проверки URL, файлов и репутации домена перед открытием или запуском.',
@@ -82,7 +88,7 @@ function renderContactCard(contact) {
   const telValue = hasPhone ? sanitizeTel(contact.phone) : '';
 
   return `
-    <article class="contact-card" role="listitem" aria-labelledby="${contact.id}-title">
+    <article class="contact-card contact-card--${contact.tone || 'default'}" role="listitem" aria-labelledby="${contact.id}-title">
       <header class="contact-card-head">
         <span class="contact-icon" aria-hidden="true">${contact.icon}</span>
         <h3 id="${contact.id}-title">${contact.title}</h3>
