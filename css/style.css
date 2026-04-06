@@ -6948,13 +6948,13 @@ body[data-page="cyberguessr"] .card-photo{
 }
 
 :root[data-theme="light"] .incident-cta {
-  background: linear-gradient(180deg, rgba(255, 252, 247, 0.82), rgba(245, 234, 221, 0.72));
+  background: linear-gradient(180deg, rgba(255, 252, 247, 0.72), rgba(245, 234, 221, 0.58));
   border-color: rgba(160, 122, 84, 0.2);
   box-shadow: 0 12px 28px rgba(69, 50, 32, 0.1);
 }
 
 :root[data-theme="dark"] .incident-cta {
-  background: linear-gradient(165deg, rgba(31, 39, 88, 0.78), rgba(21, 29, 69, 0.7));
+  background: linear-gradient(165deg, rgba(31, 39, 88, 0.66), rgba(21, 29, 69, 0.56));
   border-color: rgba(138, 157, 255, 0.3);
   box-shadow: 0 12px 28px rgba(4, 10, 28, 0.34);
 }
@@ -7061,7 +7061,7 @@ body[data-page="cyberguessr"] .card-photo{
 .contact-card--checks { --contact-tone: #059669; }
 
 :root[data-theme="light"] .contact-card {
-  --contact-bg: linear-gradient(180deg, color-mix(in srgb, var(--contact-tone) 10%, rgba(255, 252, 247, 0.84)), color-mix(in srgb, var(--contact-tone) 8%, rgba(246, 238, 227, 0.72)));
+  --contact-bg: linear-gradient(180deg, color-mix(in srgb, var(--contact-tone) 10%, rgba(255, 252, 247, 0.72)), color-mix(in srgb, var(--contact-tone) 8%, rgba(246, 238, 227, 0.58)));
   border-color: color-mix(in srgb, var(--contact-tone) 22%, rgba(126, 92, 61, 0.15));
   box-shadow: 0 14px 28px color-mix(in srgb, var(--contact-tone) 16%, rgba(69, 50, 32, 0.1));
 }
@@ -7077,7 +7077,7 @@ body[data-page="cyberguessr"] .card-photo{
 }
 
 :root[data-theme="dark"] .contact-card {
-  --contact-bg: linear-gradient(170deg, color-mix(in srgb, var(--contact-tone) 24%, rgba(31, 39, 88, 0.72)), color-mix(in srgb, var(--contact-tone) 14%, rgba(21, 29, 69, 0.62)));
+  --contact-bg: linear-gradient(170deg, color-mix(in srgb, var(--contact-tone) 22%, rgba(31, 39, 88, 0.62)), color-mix(in srgb, var(--contact-tone) 12%, rgba(21, 29, 69, 0.52)));
   --contact-note-bg: color-mix(in srgb, var(--contact-tone) 24%, rgba(255, 255, 255, 0.02));
   --contact-note-border: color-mix(in srgb, var(--contact-tone) 48%, transparent);
   --contact-note-text: color-mix(in srgb, var(--contact-tone) 42%, #f5f7ff 58%);
@@ -7207,13 +7207,13 @@ body[data-page="cyberguessr"] .card-photo{
 }
 
 :root[data-theme="light"] .do-now {
-  background: linear-gradient(180deg, rgba(255, 252, 247, 0.82), rgba(245, 234, 221, 0.72));
+  background: linear-gradient(180deg, rgba(255, 252, 247, 0.72), rgba(245, 234, 221, 0.58));
   border-color: rgba(160, 122, 84, 0.2);
   box-shadow: 0 12px 28px rgba(69, 50, 32, 0.1);
 }
 
 :root[data-theme="dark"] .do-now {
-  background: linear-gradient(165deg, rgba(31, 39, 88, 0.78), rgba(21, 29, 69, 0.7));
+  background: linear-gradient(165deg, rgba(31, 39, 88, 0.66), rgba(21, 29, 69, 0.56));
   border-color: rgba(138, 157, 255, 0.3);
   box-shadow: 0 12px 28px rgba(4, 10, 28, 0.34);
 }
