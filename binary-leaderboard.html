@@ -6,11 +6,32 @@
   <title>Binary Battle — Таблица лидеров</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
+    :root {
+      --lb-text: #eaf2ff;
+      --lb-muted: #9eb2db;
+      --lb-border: rgba(126,173,255,.35);
+      --lb-table-line: rgba(126,173,255,.35);
+    }
+    html[data-theme="light"] {
+      --lb-text: #102247;
+      --lb-muted: #64748b;
+      --lb-border: rgba(53,94,180,.25);
+      --lb-table-line: rgba(53,94,180,.25);
+    }
+    body { color: var(--lb-text); }
     .lb-wrap { display: grid; gap: 16px; }
     .lb-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
     .lb-table { width: 100%; border-collapse: collapse; }
-    .lb-table th,.lb-table td { text-align:left; padding: 8px; border-bottom: 1px solid rgba(126,173,255,.35); }
-    .lb-status { color: #64748b; }
+    .lb-table th,.lb-table td { text-align:left; padding: 8px; border-bottom: 1px solid var(--lb-table-line); }
+    .lb-status { color: var(--lb-muted); }
+    .lb-head { display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; }
+    .theme-toggle { min-width: 176px; display:inline-flex; align-items:center; gap:8px; justify-content:center; }
+    .theme-icon-sun{display:none}
+    .theme-toggle-label{white-space:nowrap}
+    html[data-theme="light"] .theme-icon-sun{display:inline}
+    html[data-theme="light"] .theme-icon-moon{display:none}
+    html[data-theme="dark"] .theme-icon-sun{display:none}
+    html[data-theme="dark"] .theme-icon-moon{display:inline}
     @media (max-width: 900px){ .lb-grid{grid-template-columns:1fr;} }
   </style>
 </head>
@@ -20,7 +41,14 @@
       <div class="container lb-wrap">
         <a class="btn ghost" href="index.html">← На главную</a>
         <div class="card">
-          <h1>Таблица лидеров Binary Battle</h1>
+          <div class="lb-head">
+            <h1 style="margin:0;">Таблица лидеров Binary Battle</h1>
+            <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
+              <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
+              <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
+              <span class="theme-toggle-label">Тёмная тема</span>
+            </button>
+          </div>
           <p class="lb-status" id="lbStatus">Загрузка…</p>
         </div>
         <div class="lb-grid">
@@ -39,6 +67,32 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-auth.js"></script>
   <script>
+    (function initTheme() {
+      const key = 'cyber_theme';
+      const root = document.documentElement;
+      const toggle = document.getElementById('themeToggle');
+      if (!toggle) return;
+      const preferredDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const saved = localStorage.getItem(key);
+      const initial = saved || (preferredDark ? 'dark' : 'light');
+      root.setAttribute('data-theme', initial);
+
+      function syncLabel(theme) {
+        const label = toggle.querySelector('.theme-toggle-label');
+        if (label) label.textContent = theme === 'dark' ? 'Светлая тема' : 'Тёмная тема';
+        toggle.setAttribute('aria-pressed', String(theme === 'dark'));
+      }
+
+      syncLabel(initial);
+      toggle.addEventListener('click', () => {
+        const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+        const next = current === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        localStorage.setItem(key, next);
+        syncLabel(next);
+      });
+    })();
+
     (async function () {
       const status = document.getElementById('lbStatus');
       try {
