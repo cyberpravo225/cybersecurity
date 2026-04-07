@@ -35,35 +35,44 @@
     @media (max-width: 900px){ .lb-grid{grid-template-columns:1fr;} }
   </style>
 </head>
-<body>
-  <main class="main">
-    <section class="section">
-      <div class="container lb-wrap">
-        <a class="btn ghost" href="index.html">← На главную</a>
-        <div class="card">
-          <div class="lb-head">
-            <h1 style="margin:0;">Таблица лидеров Binary Battle</h1>
-            <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
-              <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
-              <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
-              <span class="theme-toggle-label">Тёмная тема</span>
-            </button>
-          </div>
-          <p class="lb-status" id="lbStatus">Загрузка…</p>
-        </div>
-        <div class="lb-grid">
+<body data-page="binary-leaderboard">
+  <div class="theme-backdrop" aria-hidden="true">
+    <div class="theme-orb theme-orb-one"></div>
+    <div class="theme-orb theme-orb-two"></div>
+    <div class="theme-grid"></div>
+    <canvas class="theme-network" id="theme-network"></canvas>
+  </div>
+
+  <div class="site-shell">
+    <main class="main">
+      <section class="section">
+        <div class="container lb-wrap">
+          <a class="btn ghost" href="index.html">← На главную</a>
           <div class="card">
-            <h2>Группа 10–16</h2>
-            <table class="lb-table"><thead><tr><th>#</th><th>Игрок</th><th>Время</th><th>Ош.</th><th>Score</th></tr></thead><tbody id="group1016"></tbody></table>
+            <div class="lb-head">
+              <h1 style="margin:0;">Таблица лидеров Binary Battle</h1>
+              <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
+                <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
+                <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
+                <span class="theme-toggle-label">Тёмная тема</span>
+              </button>
+            </div>
+            <p class="lb-status" id="lbStatus">Загрузка…</p>
           </div>
-          <div class="card">
-            <h2>Группа 16+</h2>
-            <table class="lb-table"><thead><tr><th>#</th><th>Игрок</th><th>Время</th><th>Ош.</th><th>Score</th></tr></thead><tbody id="group16plus"></tbody></table>
+          <div class="lb-grid">
+            <div class="card">
+              <h2>Группа 10–16</h2>
+              <table class="lb-table"><thead><tr><th>#</th><th>Игрок</th><th>Время</th><th>Ош.</th><th>Score</th></tr></thead><tbody id="group1016"></tbody></table>
+            </div>
+            <div class="card">
+              <h2>Группа 16+</h2>
+              <table class="lb-table"><thead><tr><th>#</th><th>Игрок</th><th>Время</th><th>Ош.</th><th>Score</th></tr></thead><tbody id="group16plus"></tbody></table>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-  </main>
+      </section>
+    </main>
+  </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-auth.js"></script>
   <script>
@@ -127,5 +136,6 @@
       }
     })();
   </script>
+  <script src="js/theme-network.js"></script>
 </body>
 </html>
