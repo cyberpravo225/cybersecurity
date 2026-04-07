@@ -157,10 +157,6 @@
       const toBinaryWord = (word) => word.toUpperCase().split('').map(ch => ch.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
       const normalizeText = (v) => String(v || '').trim().toUpperCase();
       const pickRandomWords = (arr, count = WORDS_PER_STAGE) => [...arr].sort(() => Math.random() - 0.5).slice(0, count);
-      const parseAnswers = (input) => String(input || '')
-        .split(/[\n,;|]+/)
-        .map((part) => part.trim())
-        .filter(Boolean);
 
       const state = {
         stage: 0,
@@ -178,20 +174,17 @@
         const promptEl = document.getElementById('promptText');
         const stageLabel = document.getElementById('stageLabel');
         const currentWords = state.stage === 1 ? state.words1 : state.words2;
-        if (!currentWords.length) return;
+        const currentWord = currentWords[state.index];
+        if (!currentWord) return;
         if (state.stage === 1) {
           stageLabel.textContent = '1/2 (binary → text)';
-          promptEl.innerHTML = currentWords
-            .map((word, idx) => `${idx + 1}) ${toBinaryWord(word)}`)
-            .join('<br>');
+          promptEl.textContent = toBinaryWord(currentWord);
         } else {
           stageLabel.textContent = '2/2 (text → binary)';
-          promptEl.textContent = currentWords.map((word, idx) => `${idx + 1}) ${word.toUpperCase()}`).join(' | ');
+          promptEl.textContent = currentWord.toUpperCase();
         }
         document.getElementById('answerInput').value = '';
-        document.getElementById('answerInput').placeholder = state.stage === 1
-          ? 'Введите 2 слова через запятую'
-          : 'Введите 2 бинарных строки через запятую';
+        document.getElementById('answerInput').placeholder = 'Введите перевод';
         document.getElementById('answerInput').focus();
       }
 
@@ -251,36 +244,37 @@
 
       document.getElementById('submitAnswerBtn').addEventListener('click', async () => {
         if (!state.stage || state.finished) return;
-        const answers = parseAnswers(document.getElementById('answerInput').value);
+        const answer = document.getElementById('answerInput').value.trim();
         const currentWords = state.stage === 1 ? state.words1 : state.words2;
-        const expectedAnswers = state.stage === 1
-          ? currentWords.map((word) => normalizeText(word))
-          : currentWords.map((word) => toBinaryWord(word));
-        const normalizedAnswers = state.stage === 1
-          ? answers.map((item) => normalizeText(item))
-          : answers.map((item) => item.replace(/\s+/g, ' ').trim());
+        const currentWord = currentWords[state.index];
+        const expected = state.stage === 1 ? normalizeText(currentWord) : toBinaryWord(currentWord);
+        const actual = state.stage === 1 ? normalizeText(answer) : answer.replace(/\s+/g, ' ').trim();
 
-        const isCorrect = normalizedAnswers.length === expectedAnswers.length
-          && normalizedAnswers.every((item, idx) => item === expectedAnswers[idx]);
-
-        if (!isCorrect) {
+        if (actual !== expected) {
           state.errors += 1;
           document.getElementById('errorsCount').textContent = String(state.errors);
-          setFeedback(false, `Ошибка. Верные ответы: ${expectedAnswers.join(' | ')}`);
+          setFeedback(false, `Ошибка. Верный ответ: ${expected}`);
           return;
         }
 
-        const stageTime = stopStageTimer();
-        state.stageTimes[state.stage - 1] = stageTime;
-        if (state.stage === 1) {
-          state.stage = 2;
-          state.index = 0;
-          renderPrompt();
-          startStageTimer();
-          setFeedback(true, 'Этап 2 начался. Переводи текст в binary.');
+        state.index += 1;
+        if (state.index >= WORDS_PER_STAGE) {
+          const stageTime = stopStageTimer();
+          state.stageTimes[state.stage - 1] = stageTime;
+          if (state.stage === 1) {
+            state.stage = 2;
+            state.index = 0;
+            renderPrompt();
+            startStageTimer();
+            setFeedback(true, 'Этап 2 начался. Переводи текст в binary.');
+            return;
+          }
+          await finishGame();
           return;
         }
-        await finishGame();
+
+        renderPrompt();
+        setFeedback(true, 'Верно! Следующее слово.');
       });
 
       const modal = document.getElementById('binaryModal');
