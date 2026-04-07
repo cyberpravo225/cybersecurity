@@ -6,272 +6,76 @@
   <title>Binary Battle — соревновательный и турнирный режим</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
-    :root {
-      --bc-card: rgba(14, 29, 60, .84);
-      --bc-border: rgba(126, 173, 255, .35);
-      --bc-text: #eaf2ff;
-      --bc-muted: #9fb5e2;
-      --bc-accent: linear-gradient(120deg, #74a4ff, #4de2ff);
-      --bc-ok: #74f2b7;
-      --bc-bad: #ff8f8f;
-      --bc-shadow: 0 20px 44px rgba(6, 11, 34, .45);
-    }
-
-    html[data-theme="light"] {
-      --bc-card: rgba(255, 255, 255, .95);
-      --bc-border: rgba(59, 95, 166, .24);
-      --bc-text: #102247;
-      --bc-muted: #496088;
-      --bc-shadow: 0 16px 36px rgba(42, 70, 126, .18);
-    }
-
-    body[data-page="binary-competitive"] { color: var(--bc-text); }
-    .bc-wrap { display: grid; gap: 18px; }
-    .bc-top { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
-    .bc-title { margin: 0; }
-    .bc-sub { margin: 0; color: var(--bc-muted); }
-    .bc-nav {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-      flex-wrap: wrap;
-      padding: 8px;
-      border-radius: 16px;
-      border: 1px solid var(--bc-border);
-      background: rgba(11, 24, 52, .55);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
-    html[data-theme="light"] .bc-nav { background: rgba(255, 255, 255, .78); }
-    .theme-toggle { min-width: 176px; display:inline-flex; align-items:center; justify-content:center; gap:8px; }
-    .theme-icon-sun{display:none}
-    .theme-toggle-label{white-space:nowrap}
-    html[data-theme="light"] .theme-icon-sun{display:inline}
-    html[data-theme="light"] .theme-icon-moon{display:none}
-    html[data-theme="dark"] .theme-icon-sun{display:none}
-    html[data-theme="dark"] .theme-icon-moon{display:inline}
-
-    .bc-shell {
-      background: linear-gradient(155deg, rgba(124, 167, 255, .16), transparent 55%), var(--bc-card);
-      border: 1px solid var(--bc-border);
-      border-radius: 24px;
-      padding: 22px;
-      box-shadow: var(--bc-shadow), inset 0 1px 0 rgba(255,255,255,.1);
-      backdrop-filter: blur(24px) saturate(150%);
-      -webkit-backdrop-filter: blur(24px) saturate(150%);
-      display: grid;
-      gap: 16px;
-    }
-
-    .bc-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    .bc-field { display: grid; gap: 8px; }
-    .bc-label { font-weight: 700; font-size: .95rem; }
-    .bc-input, .bc-select, .bc-textarea {
-      width: 100%;
-      padding: 11px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--bc-border);
-      background: rgba(17, 35, 72, .2);
-      color: var(--bc-text);
-      font: inherit;
-    }
-
-    html[data-theme="light"] :is(.bc-input,.bc-select,.bc-textarea) { background: rgba(255,255,255,.72); }
-    .bc-textarea { min-height: 90px; resize: vertical; }
-    .bc-status { font-weight: 700; min-height: 1.25em; }
-    .bc-status.ok { color: var(--bc-ok); }
-    .bc-status.bad { color: var(--bc-bad); }
-    .bc-word { font-size: 1.55rem; font-weight: 800; letter-spacing: .03em; }
-
-    .bc-stats { display: flex; gap: 10px; flex-wrap: wrap; }
-    .bc-pill {
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--bc-border);
-      color: var(--bc-muted);
-      font-weight: 700;
-      font-size: .95rem;
-    }
-
-    .bc-hidden { display: none; }
-    .bc-actions { display: flex; flex-wrap: wrap; gap: 10px; }
-    .bc-btn {
-      border: 1px solid transparent;
-      background: var(--bc-accent);
-      color: #04162f;
-      font-weight: 800;
-      border-radius: 12px;
-      padding: 10px 14px;
-      cursor: pointer;
-      transition: transform .2s ease, filter .2s ease;
-    }
-    .bc-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
-    .bc-btn.ghost { background: transparent; color: var(--bc-text); border-color: var(--bc-border); }
-    .bc-nav .bc-btn {
-      width: 100%;
-      justify-content: center;
-      text-align: center;
-      background: transparent;
-      color: var(--bc-muted);
-      border-color: transparent;
-    }
-    .bc-nav .bc-btn:hover { border-color: var(--bc-border); color: var(--bc-text); }
-    .bc-nav .bc-btn.is-active {
-      background: var(--bc-accent);
-      color: #03142c;
-      border-color: transparent;
-      box-shadow: 0 8px 22px rgba(77, 226, 255, .35);
-    }
-
-    table { width: 100%; border-collapse: collapse; }
-    th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--bc-border); }
-    th { color: var(--bc-muted); font-size: .9rem; }
-
-    @media (max-width: 840px) {
-      .bc-grid { grid-template-columns: 1fr; }
-      .bc-shell { padding: 16px; }
-      .bc-nav { grid-template-columns: 1fr; }
-    }
+    :root { --bc-border: rgba(126, 173, 255, .35); --bc-muted:#9fb5e2; }
+    html[data-theme="light"] { --bc-muted:#496088; }
+    .bc-wrap { display:grid; gap:18px; }
+    .bc-shell { border:1px solid var(--bc-border); border-radius:24px; padding:22px; display:grid; gap:14px; background: rgba(15, 28, 56, .84); }
+    html[data-theme="light"] .bc-shell { background: rgba(255,255,255,.95); }
+    .bc-nav { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    .bc-btn { border:1px solid var(--bc-border); border-radius:12px; padding:10px 14px; cursor:pointer; background:transparent; color:inherit; font-weight:700; }
+    .bc-btn.is-active { background: linear-gradient(120deg, #74a4ff, #4de2ff); color:#03142c; border-color:transparent; }
+    .bc-hidden { display:none; }
+    .bc-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    .bc-field { display:grid; gap:8px; }
+    .bc-input { width:100%; padding:11px 12px; border-radius:12px; border:1px solid var(--bc-border); background:rgba(17,35,72,.2); color:inherit; }
+    .bc-status { min-height:1.4em; font-weight:700; }
+    .bc-status.ok { color:#16a34a; }
+    .bc-status.bad { color:#dc2626; }
+    .bc-pill { display:inline-block; margin-right:8px; padding:8px 12px; border:1px solid var(--bc-border); border-radius:999px; color:var(--bc-muted); font-weight:700; }
+    .binary-modal { position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; z-index:50; }
+    .binary-modal.active { display:flex; }
+    .binary-modal__content { width:min(760px,94vw); max-height:84vh; overflow:auto; background:#fff; color:#0f172a; border-radius:14px; padding:16px; }
+    .binary-table { width:100%; border-collapse:collapse; }
+    .binary-table th,.binary-table td { border-bottom:1px solid #cbd5e1; padding:6px; }
+    @media (max-width:840px){ .bc-grid,.bc-nav{grid-template-columns:1fr;} }
   </style>
 </head>
 <body data-page="binary-competitive">
-  <div class="theme-backdrop" aria-hidden="true">
-    <div class="theme-orb theme-orb-one"></div>
-    <div class="theme-orb theme-orb-two"></div>
-    <div class="theme-grid"></div>
-    <canvas class="theme-network" id="theme-network"></canvas>
-  </div>
-
   <div class="site-shell">
     <main class="main">
       <section class="section">
         <div class="container bc-wrap">
           <a class="btn ghost" href="binary-battle.html">← К режимам Binary Battle</a>
-
           <div class="bc-shell">
-            <div class="bc-top">
-              <div>
-                <h1 class="bc-title">Соревновательный режим по двоичному коду</h1>
-                <p class="bc-sub">Переводи слова в binary, набирай очки и соревнуйся по таймеру.</p>
-              </div>
-              <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
-                <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
-                <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
-                <span class="theme-toggle-label">Тёмная тема</span>
-              </button>
-            </div>
+            <h1 style="margin:0;">Соревновательный режим по двоичному коду</h1>
+            <p style="margin:0;color:var(--bc-muted)">2 этапа: binary → text и text → binary. Финал: меньше score — лучше.</p>
+
             <div class="bc-nav">
-              <button class="bc-btn ghost" type="button" data-tab="competitive">⚡ Competitive</button>
-              <button class="bc-btn ghost" type="button" data-tab="tournament">🏆 Tournament</button>
+              <button class="bc-btn" type="button" data-tab="competitive">⚡ Competitive</button>
+              <button class="bc-btn" type="button" data-tab="tournament">🏆 Tournament</button>
             </div>
 
             <section id="competitiveMode">
               <div class="bc-grid">
-                <div class="bc-field">
-                  <label class="bc-label" for="difficulty">Сложность</label>
-                  <select id="difficulty" class="bc-select">
-                    <option value="easy">Легко (5 слов)</option>
-                    <option value="medium">Средне (+5 слов)</option>
-                    <option value="hard">Сложно (+цифры и длинные слова)</option>
-                  </select>
-                </div>
-                <div class="bc-field">
-                  <label class="bc-label" for="duration">Таймер (сек.)</label>
-                  <input id="duration" class="bc-input" type="number" min="15" max="300" step="15" value="60" />
-                </div>
+                <div class="bc-field"><strong>Возрастная группа</strong><span id="ageGroupLabel">—</span></div>
+                <div class="bc-field"><strong>Пользователь</strong><span id="usernameLabel">—</span></div>
               </div>
-
+              <div>
+                <span class="bc-pill">Этап: <strong id="stageLabel">—</strong></span>
+                <span class="bc-pill">Таймер этапа: <strong id="stageTimer">0.0</strong>с</span>
+                <span class="bc-pill">Ошибки: <strong id="errorsCount">0</strong></span>
+              </div>
+              <p><strong>Задание:</strong> <span id="promptText">Нажмите «Начать игру»</span></p>
               <div class="bc-field">
-                <label class="bc-label" for="customWords">Список слов (через запятую) — база: cat, dog, sun, moon, star</label>
-                <textarea id="customWords" class="bc-textarea">cat, dog, sun, moon, star</textarea>
+                <label for="answerInput">Ваш ответ</label>
+                <input id="answerInput" class="bc-input" type="text" placeholder="Введите перевод" />
               </div>
-
-              <div class="bc-actions">
-                <button id="startCompetitive" class="bc-btn" type="button">Начать раунд</button>
-              </div>
-
-              <div class="bc-stats">
-                <span class="bc-pill">Счёт: <strong id="compScore">0</strong></span>
-                <span class="bc-pill">Таймер: <strong id="compTimer">60</strong> c</span>
-              </div>
-
-              <p class="bc-word">Слово: <span id="compWord">—</span></p>
-
-              <div class="bc-field">
-                <label class="bc-label" for="compBinaryInput">Введи двоичный код (байты через пробел)</label>
-                <input id="compBinaryInput" class="bc-input" type="text" placeholder="01000011 01100001 01110100" />
-              </div>
-
-              <div class="bc-actions">
-                <button id="checkCompetitive" class="bc-btn" type="button">Проверить</button>
-                <button id="skipCompetitive" class="bc-btn ghost" type="button">Пропустить</button>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <button id="startGameBtn" class="bc-btn" type="button">Начать игру</button>
+                <button id="submitAnswerBtn" class="bc-btn" type="button">Проверить</button>
+                <button id="showBinaryTableBtn" class="bc-btn" type="button">Показать таблицу двоичного кода (Tab)</button>
               </div>
               <p id="compFeedback" class="bc-status" aria-live="polite"></p>
+              <div id="finalResult" class="bc-hidden">
+                <h3>Результат</h3>
+                <p>Время: <strong id="resultTime"></strong> сек</p>
+                <p>Ошибки: <strong id="resultErrors"></strong></p>
+                <p>Итоговый score: <strong id="resultScore"></strong></p>
+              </div>
             </section>
 
             <section id="tournamentMode" class="bc-hidden">
-              <div class="bc-grid">
-                <div class="bc-field">
-                  <label class="bc-label" for="tournamentName">Название турнира</label>
-                  <input id="tournamentName" class="bc-input" type="text" placeholder="Весенний кубок" />
-                </div>
-                <div class="bc-field">
-                  <label class="bc-label" for="tournamentDuration">Таймер турнира (сек.)</label>
-                  <input id="tournamentDuration" class="bc-input" type="number" min="30" max="600" step="30" value="120" />
-                </div>
-              </div>
-
-              <div class="bc-grid">
-                <div class="bc-field">
-                  <label class="bc-label" for="tournamentDifficulty">Сложность</label>
-                  <select id="tournamentDifficulty" class="bc-select">
-                    <option value="easy">Легко</option>
-                    <option value="medium">Средне</option>
-                    <option value="hard">Сложно</option>
-                  </select>
-                </div>
-                <div class="bc-field">
-                  <label class="bc-label" for="participantName">Подключить участника</label>
-                  <div class="bc-actions">
-                    <input id="participantName" class="bc-input" type="text" placeholder="Имя игрока" />
-                    <button id="addParticipant" class="bc-btn ghost" type="button">Добавить</button>
-                  </div>
-                </div>
-              </div>
-
-              <p class="bc-sub">Участники: <span id="participantsList">нет</span></p>
-              <div class="bc-actions">
-                <button id="startTournament" class="bc-btn" type="button">Старт турнира</button>
-              </div>
-
-              <div class="bc-stats">
-                <span class="bc-pill">Турнир: <strong id="tournamentTitle">—</strong></span>
-                <span class="bc-pill">Таймер: <strong id="tourTimer">120</strong> c</span>
-                <span class="bc-pill">Ход: <strong id="activePlayer">—</strong></span>
-              </div>
-
-              <p class="bc-word">Слово: <span id="tourWord">—</span></p>
-              <div class="bc-field">
-                <label class="bc-label" for="tourBinaryInput">Ответ активного игрока</label>
-                <input id="tourBinaryInput" class="bc-input" type="text" placeholder="01000011 01100001 01110100" />
-              </div>
-              <div class="bc-actions">
-                <button id="checkTournament" class="bc-btn" type="button">Проверить ответ</button>
-              </div>
-              <p id="tourFeedback" class="bc-status" aria-live="polite"></p>
-
-              <div>
-                <h3 style="margin:4px 0 10px;">Таблица лидеров</h3>
-                <table>
-                  <thead><tr><th>#</th><th>Игрок</th><th>Очки</th></tr></thead>
-                  <tbody id="leaderboardBody"><tr><td colspan="3">Турнир ещё не запущен</td></tr></tbody>
-                </table>
-              </div>
+              <p>Турнирный режим оставлен без изменений.</p>
             </section>
           </div>
         </div>
@@ -279,238 +83,218 @@
     </main>
   </div>
 
-  <script>
-    (function initTheme() {
-      const key = "cyber_theme";
-      const root = document.documentElement;
-      const toggle = document.getElementById("themeToggle");
-      const preferredDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-      const saved = localStorage.getItem(key);
-      const initial = saved || (preferredDark ? "dark" : "light");
-      root.setAttribute("data-theme", initial);
+  <div id="binaryModal" class="binary-modal" aria-hidden="true">
+    <div class="binary-modal__content">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="margin:0;">Таблица двоичного кода ASCII (A-Z)</h3>
+        <button id="closeBinaryModal" class="bc-btn" type="button">Закрыть</button>
+      </div>
+      <table class="binary-table"><thead><tr><th>Буква</th><th>Двоичный код</th></tr></thead><tbody id="binaryTableBody"></tbody></table>
+    </div>
+  </div>
 
-      function syncLabel(theme) {
-        const label = toggle.querySelector(".theme-toggle-label");
-        if (label) label.textContent = theme === "dark" ? "Светлая тема" : "Тёмная тема";
-        toggle.setAttribute("aria-pressed", String(theme === "dark"));
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-auth.js"></script>
+  <script>
+    (async function () {
+      const tabs = document.querySelectorAll('[data-tab]');
+      const competitiveMode = document.getElementById('competitiveMode');
+      const tournamentMode = document.getElementById('tournamentMode');
+      tabs.forEach((btn) => btn.addEventListener('click', () => {
+        const t = btn.dataset.tab;
+        competitiveMode.classList.toggle('bc-hidden', t !== 'competitive');
+        tournamentMode.classList.toggle('bc-hidden', t !== 'tournament');
+        tabs.forEach((i) => i.classList.toggle('is-active', i === btn));
+      }));
+      tabs[0]?.classList.add('is-active');
+
+      const setFeedback = (ok, text) => {
+        const el = document.getElementById('compFeedback');
+        el.textContent = text;
+        el.classList.toggle('ok', ok);
+        el.classList.toggle('bad', !ok);
+      };
+
+      let session;
+      let profile;
+      try {
+        session = await window.CyberSupabaseAuth.requireAuth({ message: 'Для игры нужно войти в аккаунт.' });
+        profile = await window.CyberSupabaseAuth.getProfile(session.sb, session.user.id);
+      } catch (error) {
+        setFeedback(false, 'Перенаправляем на страницу авторизации…');
+        return;
       }
 
-      syncLabel(initial);
-      toggle.addEventListener("click", () => {
-        const current = root.getAttribute("data-theme") === "dark" ? "dark" : "light";
-        const next = current === "dark" ? "light" : "dark";
-        root.setAttribute("data-theme", next);
-        localStorage.setItem(key, next);
-        syncLabel(next);
+      const age = window.CyberSupabaseAuth.calculateAgeFromBirthDate(profile?.birth_date);
+      const ageGroup = window.CyberSupabaseAuth.getAgeGroup(age);
+      document.getElementById('usernameLabel').textContent = profile?.username || session.user.email || 'Игрок';
+      document.getElementById('ageGroupLabel').textContent = ageGroup || '—';
+
+      if (!profile?.birth_date || age === null) {
+        setFeedback(false, 'Профиль заполнен некорректно: отсутствует корректная birth_date.');
+        document.getElementById('startGameBtn').disabled = true;
+        return;
+      }
+      if (ageGroup === 'blocked') {
+        setFeedback(false, 'Вход в игру доступен только с 10 лет.');
+        document.getElementById('startGameBtn').disabled = true;
+        return;
+      }
+
+      const wordPools = {
+        '10-16': {
+          stage1: ['cat', 'dog', 'sun', 'book', 'fish', 'milk', 'tree', 'game', 'code', 'bird'],
+          stage2: ['home', 'star', 'apple', 'desk', 'green', 'light', 'river', 'train', 'phone', 'robot']
+        },
+        '16+': {
+          stage1: ['cipher', 'token', 'patch', 'audit', 'proxy', 'logic', 'stack', 'cache', 'vault', 'trace'],
+          stage2: ['threat', 'guard', 'shell', 'crypt', 'debug', 'scope', 'bytes', 'secure', 'query', 'rules']
+        }
+      };
+
+      const toBinaryWord = (word) => word.toUpperCase().split('').map(ch => ch.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
+      const normalizeText = (v) => String(v || '').trim().toUpperCase();
+      const pickRandomWords = (arr, count = 5) => [...arr].sort(() => Math.random() - 0.5).slice(0, count);
+
+      const state = {
+        stage: 0,
+        index: 0,
+        words1: [],
+        words2: [],
+        stageStart: 0,
+        stageTimes: [0, 0],
+        timerId: null,
+        errors: 0,
+        finished: false
+      };
+
+      function renderPrompt() {
+        const promptEl = document.getElementById('promptText');
+        const stageLabel = document.getElementById('stageLabel');
+        const currentWord = state.stage === 1 ? state.words1[state.index] : state.words2[state.index];
+        if (!currentWord) return;
+        if (state.stage === 1) {
+          stageLabel.textContent = '1/2 (binary → text)';
+          promptEl.textContent = toBinaryWord(currentWord);
+        } else {
+          stageLabel.textContent = '2/2 (text → binary)';
+          promptEl.textContent = currentWord.toUpperCase();
+        }
+        document.getElementById('answerInput').value = '';
+        document.getElementById('answerInput').focus();
+      }
+
+      function startStageTimer() {
+        clearInterval(state.timerId);
+        state.stageStart = performance.now();
+        state.timerId = setInterval(() => {
+          const sec = (performance.now() - state.stageStart) / 1000;
+          document.getElementById('stageTimer').textContent = sec.toFixed(1);
+        }, 100);
+      }
+
+      function stopStageTimer() {
+        clearInterval(state.timerId);
+        const sec = (performance.now() - state.stageStart) / 1000;
+        return Math.max(0, sec);
+      }
+
+      async function finishGame() {
+        state.finished = true;
+        const totalTimeInSeconds = state.stageTimes[0] + state.stageTimes[1];
+        const finalScore = totalTimeInSeconds + (state.errors * 10);
+        document.getElementById('resultTime').textContent = totalTimeInSeconds.toFixed(1);
+        document.getElementById('resultErrors').textContent = String(state.errors);
+        document.getElementById('resultScore').textContent = finalScore.toFixed(1);
+        document.getElementById('finalResult').classList.remove('bc-hidden');
+        setFeedback(true, 'Игра завершена. Результат сохранён в таблицу лидеров.');
+
+        try {
+          const { error } = await session.sb.from('leaderboard').insert({
+            user_id: session.user.id,
+            username: profile?.username || session.user.email || 'Игрок',
+            age_group: ageGroup,
+            total_time: Number(totalTimeInSeconds.toFixed(3)),
+            errors: state.errors,
+            final_score: Number(finalScore.toFixed(3))
+          });
+          if (error) throw error;
+        } catch (error) {
+          setFeedback(false, `Игра завершена, но результат не сохранён: ${error.message}`);
+        }
+      }
+
+      document.getElementById('startGameBtn').addEventListener('click', () => {
+        state.stage = 1;
+        state.index = 0;
+        state.errors = 0;
+        state.finished = false;
+        state.words1 = pickRandomWords(wordPools[ageGroup].stage1, 5);
+        state.words2 = pickRandomWords(wordPools[ageGroup].stage2, 5);
+        document.getElementById('errorsCount').textContent = '0';
+        document.getElementById('finalResult').classList.add('bc-hidden');
+        renderPrompt();
+        startStageTimer();
+        setFeedback(true, 'Этап 1 начался. Переводи binary в текст.');
+      });
+
+      document.getElementById('submitAnswerBtn').addEventListener('click', async () => {
+        if (!state.stage || state.finished) return;
+        const answer = document.getElementById('answerInput').value.trim();
+        const currentWord = state.stage === 1 ? state.words1[state.index] : state.words2[state.index];
+        const expected = state.stage === 1 ? normalizeText(currentWord) : toBinaryWord(currentWord);
+        const actual = state.stage === 1 ? normalizeText(answer) : answer.replace(/\s+/g, ' ').trim();
+
+        if (actual !== expected) {
+          state.errors += 1;
+          document.getElementById('errorsCount').textContent = String(state.errors);
+          setFeedback(false, `Ошибка. Верный ответ: ${expected}`);
+          return;
+        }
+
+        state.index += 1;
+        if (state.index >= 5) {
+          const stageTime = stopStageTimer();
+          state.stageTimes[state.stage - 1] = stageTime;
+          if (state.stage === 1) {
+            state.stage = 2;
+            state.index = 0;
+            renderPrompt();
+            startStageTimer();
+            setFeedback(true, 'Этап 2 начался. Переводи текст в binary.');
+            return;
+          }
+          await finishGame();
+          return;
+        }
+
+        renderPrompt();
+        setFeedback(true, 'Верно! Следующее слово.');
+      });
+
+      const modal = document.getElementById('binaryModal');
+      const tableBody = document.getElementById('binaryTableBody');
+      const rows = Array.from({ length: 26 }, (_, i) => {
+        const ch = String.fromCharCode(65 + i);
+        return `<tr><td>${ch}</td><td>${toBinaryWord(ch)}</td></tr>`;
+      }).join('');
+      tableBody.innerHTML = rows;
+
+      function toggleModal(show) {
+        modal.classList.toggle('active', show);
+        modal.setAttribute('aria-hidden', String(!show));
+      }
+
+      document.getElementById('showBinaryTableBtn').addEventListener('click', () => toggleModal(true));
+      document.getElementById('closeBinaryModal').addEventListener('click', () => toggleModal(false));
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Tab') {
+          event.preventDefault();
+          toggleModal(true);
+        }
+        if (event.key === 'Escape') toggleModal(false);
       });
     })();
-
-    const baseWords = ["cat", "dog", "sun", "moon", "star"];
-    const mediumWords = ["code", "safe", "data", "byte", "fire"];
-    const hardWords = ["encryption", "network", "zero1", "shield", "quantum"];
-
-    const tabs = document.querySelectorAll("[data-tab]");
-    const competitiveMode = document.getElementById("competitiveMode");
-    const tournamentMode = document.getElementById("tournamentMode");
-
-    tabs.forEach(btn => {
-      btn.addEventListener("click", () => {
-        const target = btn.dataset.tab;
-        competitiveMode.classList.toggle("bc-hidden", target !== "competitive");
-        tournamentMode.classList.toggle("bc-hidden", target !== "tournament");
-        tabs.forEach(item => item.classList.toggle("is-active", item === btn));
-      });
-    });
-    tabs[0]?.classList.add("is-active");
-
-    function toBinaryWord(word) {
-      return word.split("").map(ch => ch.charCodeAt(0).toString(2).padStart(8, "0")).join(" ");
-    }
-
-    function buildWords(level, customText) {
-      const userWords = customText
-        .split(",")
-        .map(w => w.trim().toLowerCase())
-        .filter(Boolean);
-
-      const pool = [...new Set([...baseWords, ...userWords])];
-      if (level === "medium") return [...pool, ...mediumWords];
-      if (level === "hard") return [...pool, ...mediumWords, ...hardWords];
-      return pool;
-    }
-
-    function randomFrom(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
-
-    // Competitive
-    let compWords = [...baseWords];
-    let compWord = "cat";
-    let compScore = 0;
-    let compTimerValue = 60;
-    let compInterval = null;
-
-    const compWordEl = document.getElementById("compWord");
-    const compScoreEl = document.getElementById("compScore");
-    const compTimerEl = document.getElementById("compTimer");
-    const compInput = document.getElementById("compBinaryInput");
-    const compFeedback = document.getElementById("compFeedback");
-
-    function nextCompWord() {
-      compWord = randomFrom(compWords);
-      compWordEl.textContent = compWord;
-      compInput.value = "";
-      compInput.focus();
-    }
-
-    function setFeedback(el, ok, text) {
-      el.textContent = text;
-      el.classList.toggle("ok", ok);
-      el.classList.toggle("bad", !ok);
-    }
-
-    document.getElementById("startCompetitive").addEventListener("click", () => {
-      const level = document.getElementById("difficulty").value;
-      const duration = Number(document.getElementById("duration").value) || 60;
-      const custom = document.getElementById("customWords").value;
-
-      compWords = buildWords(level, custom);
-      compScore = 0;
-      compTimerValue = duration;
-      compScoreEl.textContent = String(compScore);
-      compTimerEl.textContent = String(compTimerValue);
-      setFeedback(compFeedback, true, "Раунд начался!");
-      nextCompWord();
-
-      clearInterval(compInterval);
-      compInterval = setInterval(() => {
-        compTimerValue -= 1;
-        compTimerEl.textContent = String(compTimerValue);
-        if (compTimerValue <= 0) {
-          clearInterval(compInterval);
-          setFeedback(compFeedback, true, `Время вышло! Итоговый счёт: ${compScore}`);
-        }
-      }, 1000);
-    });
-
-    document.getElementById("checkCompetitive").addEventListener("click", () => {
-      if (compTimerValue <= 0) return;
-      const answer = compInput.value.trim().replace(/\s+/g, " ");
-      const correct = toBinaryWord(compWord);
-      if (answer === correct) {
-        compScore += 1;
-        compScoreEl.textContent = String(compScore);
-        setFeedback(compFeedback, true, "Правильно!");
-        nextCompWord();
-      } else {
-        setFeedback(compFeedback, false, "Попробуй снова");
-      }
-    });
-
-    document.getElementById("skipCompetitive").addEventListener("click", () => {
-      if (compTimerValue > 0) nextCompWord();
-    });
-
-    // Tournament
-    let participants = [];
-    let activeIndex = 0;
-    let tourWord = "cat";
-    let tourTimerValue = 120;
-    let tourInterval = null;
-    let tourWords = [...baseWords];
-
-    const participantsListEl = document.getElementById("participantsList");
-    const leaderboardBody = document.getElementById("leaderboardBody");
-    const activePlayerEl = document.getElementById("activePlayer");
-    const tourWordEl = document.getElementById("tourWord");
-    const tourTimerEl = document.getElementById("tourTimer");
-    const tourFeedback = document.getElementById("tourFeedback");
-    const tourInput = document.getElementById("tourBinaryInput");
-
-    function renderParticipantsLine() {
-      participantsListEl.textContent = participants.length ? participants.map(p => p.name).join(", ") : "нет";
-    }
-
-    function renderLeaderboard() {
-      if (!participants.length) {
-        leaderboardBody.innerHTML = '<tr><td colspan="3">Нет участников</td></tr>';
-        return;
-      }
-      const sorted = [...participants].sort((a, b) => b.score - a.score);
-      leaderboardBody.innerHTML = sorted.map((p, i) => `<tr><td>${i + 1}</td><td>${p.name}</td><td>${p.score}</td></tr>`).join("");
-    }
-
-    function updateActivePlayer() {
-      if (!participants.length) {
-        activePlayerEl.textContent = "—";
-        return;
-      }
-      activePlayerEl.textContent = participants[activeIndex].name;
-      tourWord = randomFrom(tourWords);
-      tourWordEl.textContent = tourWord;
-      tourInput.value = "";
-      tourInput.focus();
-    }
-
-    document.getElementById("addParticipant").addEventListener("click", () => {
-      const input = document.getElementById("participantName");
-      const name = input.value.trim();
-      if (!name) return;
-      participants.push({ name, score: 0 });
-      input.value = "";
-      renderParticipantsLine();
-      renderLeaderboard();
-    });
-
-    document.getElementById("startTournament").addEventListener("click", () => {
-      if (participants.length < 2) {
-        setFeedback(tourFeedback, false, "Добавь минимум двух участников");
-        return;
-      }
-
-      const level = document.getElementById("tournamentDifficulty").value;
-      const title = document.getElementById("tournamentName").value.trim() || "Без названия";
-      const duration = Number(document.getElementById("tournamentDuration").value) || 120;
-
-      participants = participants.map(p => ({ ...p, score: 0 }));
-      activeIndex = 0;
-      tourWords = buildWords(level, baseWords.join(","));
-      tourTimerValue = duration;
-      document.getElementById("tournamentTitle").textContent = title;
-      tourTimerEl.textContent = String(tourTimerValue);
-      renderLeaderboard();
-      updateActivePlayer();
-      setFeedback(tourFeedback, true, "Турнир стартовал!");
-
-      clearInterval(tourInterval);
-      tourInterval = setInterval(() => {
-        tourTimerValue -= 1;
-        tourTimerEl.textContent = String(tourTimerValue);
-        if (tourTimerValue <= 0) {
-          clearInterval(tourInterval);
-          const winner = [...participants].sort((a, b) => b.score - a.score)[0];
-          setFeedback(tourFeedback, true, `Турнир завершён! Победитель: ${winner.name} (${winner.score})`);
-          activePlayerEl.textContent = "Завершено";
-        }
-      }, 1000);
-    });
-
-    document.getElementById("checkTournament").addEventListener("click", () => {
-      if (!participants.length || tourTimerValue <= 0) return;
-
-      const answer = tourInput.value.trim().replace(/\s+/g, " ");
-      const correct = toBinaryWord(tourWord);
-      if (answer === correct) {
-        participants[activeIndex].score += 1;
-        setFeedback(tourFeedback, true, "Правильно!");
-      } else {
-        setFeedback(tourFeedback, false, "Попробуй снова");
-      }
-      renderLeaderboard();
-      activeIndex = (activeIndex + 1) % participants.length;
-      updateActivePlayer();
-    });
   </script>
-  <script src="js/theme-network.js"></script>
 </body>
 </html>

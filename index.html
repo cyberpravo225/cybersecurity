@@ -1229,6 +1229,14 @@
 
 </a>
 
+<a href="binary-leaderboard.html" class="card game-feature game-feature-split reveal delay" aria-label="Таблица лидеров Binary Battle">
+<div class="game-feature-copy">
+<h3>🏆 Таблица лидеров</h3>
+<p>Смотри топ-10 игроков отдельно для групп 10–16 и 16+, сравнивай время, ошибки и итоговый score.</p>
+</div>
+<span class="card-arrow" aria-hidden="true">›</span>
+</a>
+
 </div>
 
 </div>
@@ -1370,6 +1378,14 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-auth.js"></script>
+<script>
+  (async function(){
+    try {
+      await window.CyberSupabaseAuth.requireAuth({ message: 'Войдите в аккаунт, чтобы открыть главное меню.' });
+    } catch (_) {}
+  })();
+</script>
 <script src="js/main.js"></script>
 <script src="js/theme-network.js"></script>
 
