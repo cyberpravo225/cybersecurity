@@ -6,27 +6,49 @@
   <title>Binary Battle — соревновательный и турнирный режим</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
-    :root { --bc-border: rgba(126, 173, 255, .35); --bc-muted:#9fb5e2; }
-    html[data-theme="light"] { --bc-muted:#496088; }
+    :root {
+      --bc-bg: rgba(15, 28, 56, .84);
+      --bc-border: rgba(126, 173, 255, .35);
+      --bc-muted:#9fb5e2;
+      --bc-text: #eaf2ff;
+      --bc-input-bg: rgba(17,35,72,.2);
+      --bc-modal-bg: #fff;
+      --bc-modal-text: #0f172a;
+    }
+    html[data-theme="light"] {
+      --bc-bg: rgba(255,255,255,.95);
+      --bc-muted:#496088;
+      --bc-text: #102247;
+      --bc-input-bg: rgba(255,255,255,.82);
+      --bc-modal-bg: #fff;
+      --bc-modal-text: #0f172a;
+    }
     .bc-wrap { display:grid; gap:18px; }
-    .bc-shell { border:1px solid var(--bc-border); border-radius:24px; padding:22px; display:grid; gap:14px; background: rgba(15, 28, 56, .84); }
-    html[data-theme="light"] .bc-shell { background: rgba(255,255,255,.95); }
+    body[data-page="binary-competitive"] { color: var(--bc-text); }
+    .bc-shell { border:1px solid var(--bc-border); border-radius:24px; padding:22px; display:grid; gap:14px; background: var(--bc-bg); }
     .bc-nav { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
     .bc-btn { border:1px solid var(--bc-border); border-radius:12px; padding:10px 14px; cursor:pointer; background:transparent; color:inherit; font-weight:700; }
     .bc-btn.is-active { background: linear-gradient(120deg, #74a4ff, #4de2ff); color:#03142c; border-color:transparent; }
     .bc-hidden { display:none; }
     .bc-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
     .bc-field { display:grid; gap:8px; }
-    .bc-input { width:100%; padding:11px 12px; border-radius:12px; border:1px solid var(--bc-border); background:rgba(17,35,72,.2); color:inherit; }
+    .bc-input { width:100%; padding:11px 12px; border-radius:12px; border:1px solid var(--bc-border); background:var(--bc-input-bg); color:inherit; }
     .bc-status { min-height:1.4em; font-weight:700; }
     .bc-status.ok { color:#16a34a; }
     .bc-status.bad { color:#dc2626; }
     .bc-pill { display:inline-block; margin-right:8px; padding:8px 12px; border:1px solid var(--bc-border); border-radius:999px; color:var(--bc-muted); font-weight:700; }
     .binary-modal { position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; z-index:50; }
     .binary-modal.active { display:flex; }
-    .binary-modal__content { width:min(760px,94vw); max-height:84vh; overflow:auto; background:#fff; color:#0f172a; border-radius:14px; padding:16px; }
+    .binary-modal__content { width:min(760px,94vw); max-height:84vh; overflow:auto; background:var(--bc-modal-bg); color:var(--bc-modal-text); border-radius:14px; padding:16px; }
     .binary-table { width:100%; border-collapse:collapse; }
     .binary-table th,.binary-table td { border-bottom:1px solid #cbd5e1; padding:6px; }
+    .theme-toggle { min-width: 176px; display:inline-flex; align-items:center; gap:8px; justify-content:center; }
+    .theme-icon-sun{display:none}
+    .theme-toggle-label{white-space:nowrap}
+    html[data-theme="light"] .theme-icon-sun{display:inline}
+    html[data-theme="light"] .theme-icon-moon{display:none}
+    html[data-theme="dark"] .theme-icon-sun{display:none}
+    html[data-theme="dark"] .theme-icon-moon{display:inline}
     @media (max-width:840px){ .bc-grid,.bc-nav{grid-template-columns:1fr;} }
   </style>
 </head>
@@ -37,7 +59,14 @@
         <div class="container bc-wrap">
           <a class="btn ghost" href="binary-battle.html">← К режимам Binary Battle</a>
           <div class="bc-shell">
-            <h1 style="margin:0;">Соревновательный режим по двоичному коду</h1>
+            <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;">
+              <h1 style="margin:0;">Соревновательный режим по двоичному коду</h1>
+              <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
+                <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
+                <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
+                <span class="theme-toggle-label">Тёмная тема</span>
+              </button>
+            </div>
             <p style="margin:0;color:var(--bc-muted)">2 этапа: binary → text и text → binary, по 2 слова в каждом этапе. Финал: меньше score — лучше.</p>
 
             <div class="bc-nav">
@@ -96,6 +125,32 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-auth.js"></script>
   <script>
+    (function initTheme() {
+      const key = 'cyber_theme';
+      const root = document.documentElement;
+      const toggle = document.getElementById('themeToggle');
+      if (!toggle) return;
+      const preferredDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const saved = localStorage.getItem(key);
+      const initial = saved || (preferredDark ? 'dark' : 'light');
+      root.setAttribute('data-theme', initial);
+
+      function syncLabel(theme) {
+        const label = toggle.querySelector('.theme-toggle-label');
+        if (label) label.textContent = theme === 'dark' ? 'Светлая тема' : 'Тёмная тема';
+        toggle.setAttribute('aria-pressed', String(theme === 'dark'));
+      }
+
+      syncLabel(initial);
+      toggle.addEventListener('click', () => {
+        const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+        const next = current === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        localStorage.setItem(key, next);
+        syncLabel(next);
+      });
+    })();
+
     (async function () {
       const tabs = document.querySelectorAll('[data-tab]');
       const competitiveMode = document.getElementById('competitiveMode');
