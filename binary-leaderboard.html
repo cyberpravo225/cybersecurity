@@ -70,7 +70,9 @@
       color: var(--lb-muted);
       padding-left: 2px;
     }
-    .lb-select {
+    .lb-dropdown { position: relative; }
+    .lb-dd-toggle {
+      width: 100%;
       padding:10px 40px 10px 12px;
       border-radius:14px;
       border:1px solid color-mix(in oklab, var(--lb-border) 60%, #74a4ff 40%);
@@ -82,29 +84,58 @@
       background-position: center, center, right 12px center;
       background-size: auto, auto, 16px;
       color:inherit;
+      text-align: left;
       font-weight:700;
       min-width: 170px;
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
       box-shadow: 0 10px 20px rgba(77,226,255,.14), inset 0 1px 0 rgba(255,255,255,.12);
       cursor: pointer;
       transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease, filter .2s ease;
+      font: inherit;
     }
-    .lb-select:focus {
+    .lb-dd-toggle:focus {
       outline: none;
       border-color: color-mix(in oklab, var(--lb-border) 20%, #4de2ff 80%);
       box-shadow: 0 0 0 3px rgba(77,226,255,.2), 0 12px 24px rgba(77,226,255,.22);
       filter: brightness(1.03);
     }
-    .lb-select:hover {
+    .lb-dd-toggle:hover {
       border-color: color-mix(in oklab, var(--lb-border) 45%, #4de2ff 55%);
       box-shadow: 0 12px 24px rgba(77,226,255,.2);
       transform: translateY(-1px);
     }
-    .lb-select option {
-      background: var(--lb-select-option-bg);
+    .lb-dd-menu {
+      position: absolute;
+      z-index: 30;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      margin: 0;
+      padding: 8px;
+      list-style: none;
+      border-radius: 14px;
+      border: 1px solid color-mix(in oklab, var(--lb-border) 55%, #4de2ff 45%);
+      background: linear-gradient(180deg, var(--lb-select-option-bg), color-mix(in oklab, var(--lb-select-option-bg) 86%, #4de2ff 14%));
+      box-shadow: 0 16px 28px rgba(5, 10, 24, .3);
+      display: none;
+      gap: 4px;
+    }
+    .lb-dropdown.open .lb-dd-menu { display: grid; }
+    .lb-dd-option {
+      width: 100%;
+      text-align: left;
+      border: 1px solid transparent;
+      background: transparent;
       color: var(--lb-text);
+      padding: 8px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+    }
+    .lb-dd-option:hover,
+    .lb-dd-option.is-active {
+      border-color: color-mix(in oklab, var(--lb-border) 45%, #4de2ff 55%);
+      background: linear-gradient(120deg, rgba(116,164,255,.2), rgba(77,226,255,.22));
     }
     .theme-toggle {
       border-radius: 14px;
@@ -151,20 +182,26 @@
               <span class="lb-sort-label">Сортировка:</span>
               <div class="lb-sort-group">
                 <span class="lb-sort-caption">Поле</span>
-                <select id="sortBy" class="lb-select">
-                  <option value="points">По очкам</option>
-                  <option value="time">По времени</option>
-                  <option value="stage1">По этапу 1</option>
-                  <option value="stage2">По этапу 2</option>
-                  <option value="errors">По ошибкам</option>
-                </select>
+                <div class="lb-dropdown" id="sortByDropdown">
+                  <button type="button" class="lb-dd-toggle" id="sortByToggle">По очкам</button>
+                  <ul class="lb-dd-menu" id="sortByMenu">
+                    <li><button class="lb-dd-option is-active" type="button" data-value="points">По очкам</button></li>
+                    <li><button class="lb-dd-option" type="button" data-value="time">По времени</button></li>
+                    <li><button class="lb-dd-option" type="button" data-value="stage1">По этапу 1</button></li>
+                    <li><button class="lb-dd-option" type="button" data-value="stage2">По этапу 2</button></li>
+                    <li><button class="lb-dd-option" type="button" data-value="errors">По ошибкам</button></li>
+                  </ul>
+                </div>
               </div>
               <div class="lb-sort-group">
                 <span class="lb-sort-caption">Порядок</span>
-                <select id="sortOrder" class="lb-select">
-                  <option value="asc">По возрастанию</option>
-                  <option value="desc">По убыванию</option>
-                </select>
+                <div class="lb-dropdown" id="sortOrderDropdown">
+                  <button type="button" class="lb-dd-toggle" id="sortOrderToggle">По возрастанию</button>
+                  <ul class="lb-dd-menu" id="sortOrderMenu">
+                    <li><button class="lb-dd-option is-active" type="button" data-value="asc">По возрастанию</button></li>
+                    <li><button class="lb-dd-option" type="button" data-value="desc">По убыванию</button></li>
+                  </ul>
+                </div>
               </div>
             </div>
             <p class="lb-status" id="lbStatus">Загрузка…</p>
@@ -214,8 +251,14 @@
 
     (async function () {
       const status = document.getElementById('lbStatus');
-      const sortByEl = document.getElementById('sortBy');
-      const sortOrderEl = document.getElementById('sortOrder');
+      const sortByDropdown = document.getElementById('sortByDropdown');
+      const sortOrderDropdown = document.getElementById('sortOrderDropdown');
+      const sortByToggle = document.getElementById('sortByToggle');
+      const sortOrderToggle = document.getElementById('sortOrderToggle');
+      const sortByMenu = document.getElementById('sortByMenu');
+      const sortOrderMenu = document.getElementById('sortOrderMenu');
+      let sortBy = 'points';
+      let sortOrder = 'asc';
       try {
         await window.CyberSupabaseAuth.requireAuth({ message: 'Войдите в аккаунт, чтобы посмотреть таблицу лидеров.' });
         const sb = window.CyberSupabaseAuth.createClient(true);
@@ -251,8 +294,7 @@
         }
 
         function sortRows(rows) {
-          const sortBy = sortByEl.value;
-          const order = sortOrderEl.value === 'desc' ? -1 : 1;
+          const order = sortOrder === 'desc' ? -1 : 1;
           const keyMap = {
             points: 'points',
             time: 'time',
@@ -292,10 +334,56 @@
           renderRows(document.getElementById('group16plus'), byGroup['16+']);
         }
 
-        sortByEl.value = 'points';
-        sortOrderEl.value = 'asc';
-        sortByEl.addEventListener('change', rerender);
-        sortOrderEl.addEventListener('change', rerender);
+        function closeDropdowns() {
+          sortByDropdown.classList.remove('open');
+          sortOrderDropdown.classList.remove('open');
+        }
+
+        function setActive(menu, value) {
+          menu.querySelectorAll('.lb-dd-option').forEach((btn) => {
+            btn.classList.toggle('is-active', btn.dataset.value === value);
+          });
+        }
+
+        sortByToggle.addEventListener('click', () => {
+          sortOrderDropdown.classList.remove('open');
+          sortByDropdown.classList.toggle('open');
+        });
+
+        sortOrderToggle.addEventListener('click', () => {
+          sortByDropdown.classList.remove('open');
+          sortOrderDropdown.classList.toggle('open');
+        });
+
+        sortByMenu.addEventListener('click', (event) => {
+          const btn = event.target.closest('.lb-dd-option');
+          if (!btn) return;
+          sortBy = btn.dataset.value;
+          sortByToggle.textContent = btn.textContent;
+          setActive(sortByMenu, sortBy);
+          closeDropdowns();
+          rerender();
+        });
+
+        sortOrderMenu.addEventListener('click', (event) => {
+          const btn = event.target.closest('.lb-dd-option');
+          if (!btn) return;
+          sortOrder = btn.dataset.value;
+          sortOrderToggle.textContent = btn.textContent;
+          setActive(sortOrderMenu, sortOrder);
+          closeDropdowns();
+          rerender();
+        });
+
+        document.addEventListener('click', (event) => {
+          if (event.target.closest('.lb-dropdown')) return;
+          closeDropdowns();
+        });
+
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') closeDropdowns();
+        });
+
         rerender();
         status.textContent = 'Место фиксируется по очкам (минимум сверху). Сортировку таблицы можно менять отдельно.';
       } catch (error) {
