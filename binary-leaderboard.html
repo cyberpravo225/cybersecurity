@@ -25,6 +25,8 @@
     .lb-table th,.lb-table td { text-align:left; padding: 8px; border-bottom: 1px solid var(--lb-table-line); }
     .lb-status { color: var(--lb-muted); }
     .lb-head { display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; }
+    .lb-sort { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .lb-select { padding:8px 10px; border-radius:10px; border:1px solid var(--lb-border); background:transparent; color:inherit; }
     .theme-toggle { min-width: 176px; display:inline-flex; align-items:center; gap:8px; justify-content:center; }
     .theme-icon-sun{display:none}
     .theme-toggle-label{white-space:nowrap}
@@ -57,16 +59,30 @@
                 <span class="theme-toggle-label">Тёмная тема</span>
               </button>
             </div>
+            <div class="lb-sort">
+              <span>Сортировка:</span>
+              <select id="sortBy" class="lb-select">
+                <option value="points">По очкам</option>
+                <option value="time">По времени</option>
+                <option value="stage1">По этапу 1</option>
+                <option value="stage2">По этапу 2</option>
+                <option value="errors">По ошибкам</option>
+              </select>
+              <select id="sortOrder" class="lb-select">
+                <option value="asc">По возрастанию</option>
+                <option value="desc">По убыванию</option>
+              </select>
+            </div>
             <p class="lb-status" id="lbStatus">Загрузка…</p>
           </div>
           <div class="lb-grid">
             <div class="card">
               <h2>Группа 10–16</h2>
-              <table class="lb-table"><thead><tr><th>#</th><th>Игрок</th><th>Этап 1</th><th>Этап 2</th><th>Общее</th><th>Ош.</th></tr></thead><tbody id="group1016"></tbody></table>
+              <table class="lb-table"><thead><tr><th>#</th><th>Игрок</th><th>Этап 1</th><th>Этап 2</th><th>Время</th><th>Ош.</th><th>Очки</th></tr></thead><tbody id="group1016"></tbody></table>
             </div>
             <div class="card">
               <h2>Группа 16+</h2>
-              <table class="lb-table"><thead><tr><th>#</th><th>Игрок</th><th>Этап 1</th><th>Этап 2</th><th>Общее</th><th>Ош.</th></tr></thead><tbody id="group16plus"></tbody></table>
+              <table class="lb-table"><thead><tr><th>#</th><th>Игрок</th><th>Этап 1</th><th>Этап 2</th><th>Время</th><th>Ош.</th><th>Очки</th></tr></thead><tbody id="group16plus"></tbody></table>
             </div>
           </div>
         </div>
@@ -104,6 +120,8 @@
 
     (async function () {
       const status = document.getElementById('lbStatus');
+      const sortByEl = document.getElementById('sortBy');
+      const sortOrderEl = document.getElementById('sortOrder');
       try {
         await window.CyberSupabaseAuth.requireAuth({ message: 'Войдите в аккаунт, чтобы посмотреть таблицу лидеров.' });
         const sb = window.CyberSupabaseAuth.createClient(true);
@@ -116,7 +134,20 @@
         if (error) throw error;
 
         const byGroup = { '10-16': [], '16+': [] };
-        (data || []).forEach(row => byGroup[row.age_group]?.push(row));
+        (data || []).forEach((row) => {
+          const stage1 = Number(row.stage1_time) || 0;
+          const stage2 = Number(row.stage2_time) || 0;
+          const errors = Number(row.errors) || 0;
+          const computedPoints = stage1 + stage2 + (errors * 20);
+          byGroup[row.age_group]?.push({
+            ...row,
+            stage1,
+            stage2,
+            errors,
+            time: Number(row.total_time) || 0,
+            points: computedPoints
+          });
+        });
 
         function formatTime(totalSeconds) {
           const seconds = Math.max(0, Number(totalSeconds) || 0);
@@ -125,19 +156,42 @@
           return `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
         }
 
+        function sortRows(rows) {
+          const sortBy = sortByEl.value;
+          const order = sortOrderEl.value === 'desc' ? -1 : 1;
+          const keyMap = {
+            points: 'points',
+            time: 'time',
+            stage1: 'stage1',
+            stage2: 'stage2',
+            errors: 'errors'
+          };
+          const key = keyMap[sortBy] || 'points';
+          return [...rows].sort((a, b) => (a[key] - b[key]) * order);
+        }
+
         function renderRows(el, rows) {
+          const sorted = sortRows(rows);
           if (!rows.length) {
-            el.innerHTML = '<tr><td colspan="6">Пока нет результатов</td></tr>';
+            el.innerHTML = '<tr><td colspan="7">Пока нет результатов</td></tr>';
             return;
           }
-          el.innerHTML = rows.slice(0, 10).map((row, idx) =>
-            `<tr><td>${idx + 1}</td><td>${row.username || 'Игрок'}</td><td>${formatTime(row.stage1_time)}</td><td>${formatTime(row.stage2_time)}</td><td>${formatTime(row.total_time)}</td><td>${row.errors}</td></tr>`
+          el.innerHTML = sorted.slice(0, 10).map((row, idx) =>
+            `<tr><td>${idx + 1}</td><td>${row.username || 'Игрок'}</td><td>${formatTime(row.stage1)}</td><td>${formatTime(row.stage2)}</td><td>${formatTime(row.time)}</td><td>${row.errors}</td><td>${formatTime(row.points)}</td></tr>`
           ).join('');
         }
 
-        renderRows(document.getElementById('group1016'), byGroup['10-16']);
-        renderRows(document.getElementById('group16plus'), byGroup['16+']);
-        status.textContent = 'Топ-10 игроков по минимальному общему времени.';
+        function rerender() {
+          renderRows(document.getElementById('group1016'), byGroup['10-16']);
+          renderRows(document.getElementById('group16plus'), byGroup['16+']);
+        }
+
+        sortByEl.value = 'points';
+        sortOrderEl.value = 'asc';
+        sortByEl.addEventListener('change', rerender);
+        sortOrderEl.addEventListener('change', rerender);
+        rerender();
+        status.textContent = 'Базовая сортировка: по очкам (минимум сверху). Можно менять сортировку.';
       } catch (error) {
         status.textContent = error.message || 'Не удалось загрузить таблицу лидеров.';
       }
