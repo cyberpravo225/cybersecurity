@@ -1,79 +1,30 @@
 <!doctype html>
 <html lang="ru" data-theme="light">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Binary Battle — режим игры по двоичному коду</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Binary Battle — Таблица лидеров</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
     :root {
-      --bc-bg: rgba(15, 28, 56, .84);
-      --bc-border: rgba(126, 173, 255, .35);
-      --bc-muted:#9fb5e2;
-      --bc-text: #eaf2ff;
-      --bc-input-bg: rgba(17,35,72,.2);
-      --bc-modal-bg: #fff;
-      --bc-modal-text: #0f172a;
+      --lb-text: #eaf2ff;
+      --lb-muted: #9eb2db;
+      --lb-border: rgba(126,173,255,.35);
+      --lb-table-line: rgba(126,173,255,.35);
     }
     html[data-theme="light"] {
-      --bc-bg: rgba(255,255,255,.95);
-      --bc-muted:#496088;
-      --bc-text: #102247;
-      --bc-input-bg: rgba(255,255,255,.82);
-      --bc-modal-bg: #fff;
-      --bc-modal-text: #0f172a;
+      --lb-text: #102247;
+      --lb-muted: #64748b;
+      --lb-border: rgba(53,94,180,.25);
+      --lb-table-line: rgba(53,94,180,.25);
     }
-    .bc-wrap { display:grid; gap:18px; }
-    body[data-page="binary-competitive"] { color: var(--bc-text); }
-    .bc-shell { border:1px solid var(--bc-border); border-radius:24px; padding:22px; display:grid; gap:16px; background: var(--bc-bg); }
-    .bc-nav { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
-    .bc-btn { border:1px solid var(--bc-border); border-radius:12px; padding:10px 14px; cursor:pointer; background:transparent; color:inherit; font-weight:700; }
-    .bc-btn.is-active { background: linear-gradient(120deg, #74a4ff, #4de2ff); color:#03142c; border-color:transparent; }
-    .bc-hidden { display:none; }
-    .bc-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
-    .bc-field { display:grid; gap:8px; }
-    .bc-input { width:100%; padding:11px 12px; border-radius:12px; border:1px solid var(--bc-border); background:var(--bc-input-bg); color:inherit; }
-    .bc-status { min-height:1.4em; font-weight:700; }
-    .bc-status.ok { color:#16a34a; }
-    .bc-status.bad { color:#dc2626; }
-    .bc-pill { display:inline-block; margin-right:8px; padding:8px 12px; border:1px solid var(--bc-border); border-radius:999px; color:var(--bc-muted); font-weight:700; }
-    #competitiveMode { display:grid; gap:12px; }
-    .bc-hero-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px; }
-    .bc-hero-card { border: 1px solid var(--bc-border); border-radius: 16px; padding: 14px 16px; background: linear-gradient(140deg, rgba(116,164,255,.32), rgba(77,226,255,.24)); display: grid; gap: 8px; }
-    .bc-hero-title { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--bc-muted); font-weight: 800; }
-    .bc-hero-value { font-size: clamp(22px, 3vw, 34px); font-weight: 900; line-height: 1.1; }
-    .bc-stats { display:flex; flex-wrap:wrap; gap:10px; }
-    .bc-stat-pill { padding: 10px 14px; border-radius: 999px; border:1px solid var(--bc-border); font-weight: 800; background: rgba(116,164,255,.24); }
-    .bc-stat-pill strong { font-size: 20px; margin-left: 6px; }
-    .bc-task { margin:0; border:1px solid var(--bc-border); border-radius: 14px; padding: 14px 16px; background: rgba(116,164,255,.22); }
-    .bc-task-label { display:block; font-size:13px; text-transform:uppercase; letter-spacing:.08em; color:var(--bc-muted); font-weight:800; margin-bottom:6px; }
-    .bc-task-text { font-size: clamp(18px, 2.2vw, 26px); font-weight: 900; }
-    .bc-answer-label { font-size:18px; font-weight:900; }
-    .bc-answer-input { font-size:20px; padding:14px 16px; border-radius:14px; }
-    .bc-start-btn { font-size: clamp(20px, 2.4vw, 30px); font-weight: 900; padding: 16px 28px; border-radius: 16px; background: linear-gradient(120deg, #74a4ff, #4de2ff); color:#03142c; border: none; box-shadow: 0 14px 34px rgba(77, 226, 255, .35); }
-    .bc-table-btn.is-active { background: linear-gradient(120deg, #74a4ff, #4de2ff); color:#03142c; border-color:transparent; }
-    #submitAnswerBtn,
-    #showBinaryTableBtn {
-      background: linear-gradient(120deg, rgba(116,164,255,.45), rgba(77,226,255,.35));
-      border-color: rgba(126, 173, 255, .55);
-      box-shadow: 0 10px 24px rgba(77, 226, 255, .2);
-      font-weight: 800;
-    }
-    #submitAnswerBtn:hover,
-    #showBinaryTableBtn:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.06);
-    }
-    .binary-modal { position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; z-index:50; }
-    .binary-modal.active { display:flex; }
-    .binary-modal__content { width:min(760px,94vw); max-height:84vh; overflow:auto; background:linear-gradient(180deg, var(--bc-bg), color-mix(in oklab, var(--bc-bg) 80%, #4de2ff 20%)); color:var(--bc-text); border-radius:18px; padding:18px; border:1px solid var(--bc-border); box-shadow:0 20px 40px rgba(0,0,0,.28); scrollbar-width: thin; scrollbar-color: #6ac9ff rgba(116,164,255,.2); }
-    .binary-table { width:100%; border-collapse:collapse; }
-    .binary-table th,.binary-table td { border-bottom:1px solid var(--bc-border); padding:8px; }
-    .binary-table th { text-align:left; color:var(--bc-muted); }
-    .binary-modal__content::-webkit-scrollbar { width: 10px; }
-    .binary-modal__content::-webkit-scrollbar-track { background: rgba(116,164,255,.18); border-radius: 999px; }
-    .binary-modal__content::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #74a4ff, #4de2ff); border-radius: 999px; border: 2px solid rgba(15, 28, 56, .2); }
-    .binary-modal__content::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #8ab3ff, #7decff); }
+    body { color: var(--lb-text); }
+    .lb-wrap { display: grid; gap: 16px; }
+    .lb-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .lb-table { width: 100%; border-collapse: collapse; }
+    .lb-table th,.lb-table td { text-align:left; padding: 8px; border-bottom: 1px solid var(--lb-table-line); }
+    .lb-status { color: var(--lb-muted); }
+    .lb-head { display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; }
     .theme-toggle { min-width: 176px; display:inline-flex; align-items:center; gap:8px; justify-content:center; }
     .theme-icon-sun{display:none}
     .theme-toggle-label{white-space:nowrap}
@@ -81,10 +32,10 @@
     html[data-theme="light"] .theme-icon-moon{display:none}
     html[data-theme="dark"] .theme-icon-sun{display:none}
     html[data-theme="dark"] .theme-icon-moon{display:inline}
-    @media (max-width:840px){ .bc-grid,.bc-nav,.bc-hero-grid{grid-template-columns:1fr;} }
+    @media (max-width: 900px){ .lb-grid{grid-template-columns:1fr;} }
   </style>
 </head>
-<body data-page="binary-competitive">
+<body data-page="binary-leaderboard">
   <div class="theme-backdrop" aria-hidden="true">
     <div class="theme-orb theme-orb-one"></div>
     <div class="theme-orb theme-orb-two"></div>
@@ -95,72 +46,33 @@
   <div class="site-shell">
     <main class="main">
       <section class="section">
-        <div class="container bc-wrap">
-          <a class="btn ghost" href="binary-battle.html">← К режимам игры</a>
-          <div class="bc-shell">
-            <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;">
-              <h1 style="margin:0;">Режим игры по двоичному коду</h1>
+        <div class="container lb-wrap">
+          <a class="btn ghost" href="index.html">← На главную</a>
+          <div class="card">
+            <div class="lb-head">
+              <h1 style="margin:0;">Таблица лидеров Binary Battle</h1>
               <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
                 <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
                 <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
                 <span class="theme-toggle-label">Тёмная тема</span>
               </button>
             </div>
-            <p style="margin:0;color:var(--bc-muted)">2 этапа: двоичный код → текст и текст → двоичный код, по 2 слова в каждом этапе. Финал: меньше итог — лучше.</p>
-
-            <div class="bc-nav">
-              <button class="bc-btn" type="button" data-tab="competitive">⚡ Игра</button>
-              <button class="bc-btn" type="button" data-tab="tournament">🏆 Сетка</button>
+            <p class="lb-status" id="lbStatus">Загрузка…</p>
+          </div>
+          <div class="lb-grid">
+            <div class="card">
+              <h2>Группа 10–16</h2>
+              <table class="lb-table"><thead><tr><th>#</th><th>Игрок</th><th>Этап 1</th><th>Этап 2</th><th>Общее</th><th>Ош.</th></tr></thead><tbody id="group1016"></tbody></table>
             </div>
-
-            <section id="competitiveMode">
-              <div class="bc-hero-grid">
-                <div class="bc-hero-card"><span class="bc-hero-title">Возрастная группа</span><span class="bc-hero-value" id="ageGroupLabel">—</span></div>
-                <div class="bc-hero-card"><span class="bc-hero-title">Пользователь</span><span class="bc-hero-value" id="usernameLabel">—</span></div>
-              </div>
-              <div class="bc-stats">
-                <span class="bc-stat-pill">Этап: <strong id="stageLabel">—</strong></span>
-                <span class="bc-stat-pill">Таймер этапа: <strong id="stageTimer">0.0</strong>с</span>
-                <span class="bc-stat-pill">Ошибки: <strong id="errorsCount">0</strong></span>
-              </div>
-              <p class="bc-task"><span class="bc-task-label">Задание</span><span class="bc-task-text" id="promptText">Нажмите «Начать игру»</span></p>
-              <div class="bc-field">
-                <label class="bc-answer-label" for="answerInput">Ваш ответ</label>
-                <input id="answerInput" class="bc-input bc-answer-input" type="text" placeholder="Введите перевод" />
-              </div>
-              <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                <button id="startGameBtn" class="bc-btn bc-start-btn" type="button">Начать игру</button>
-                <button id="submitAnswerBtn" class="bc-btn bc-hidden" type="button">Дальше</button>
-                <button id="showBinaryTableBtn" class="bc-btn bc-table-btn" type="button">Таблица двоичного кода (Tab)</button>
-              </div>
-              <p id="compFeedback" class="bc-status" aria-live="polite"></p>
-              <div id="finalResult" class="bc-hidden">
-                <h3>Результат</h3>
-                <p>Время: <strong id="resultTime"></strong> сек</p>
-                <p>Ошибки: <strong id="resultErrors"></strong></p>
-                <p>Итог: <strong id="resultScore"></strong></p>
-              </div>
-            </section>
-
-            <section id="tournamentMode" class="bc-hidden">
-              <p>Режим сетки оставлен без изменений.</p>
-            </section>
+            <div class="card">
+              <h2>Группа 16+</h2>
+              <table class="lb-table"><thead><tr><th>#</th><th>Игрок</th><th>Этап 1</th><th>Этап 2</th><th>Общее</th><th>Ош.</th></tr></thead><tbody id="group16plus"></tbody></table>
+            </div>
           </div>
         </div>
       </section>
     </main>
   </div>
-
-  <div id="binaryModal" class="binary-modal" aria-hidden="true">
-    <div class="binary-modal__content">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <h3 style="margin:0;">Таблица двоичного кода ASCII (A-Z)</h3>
-        <button id="closeBinaryModal" class="bc-btn" type="button">Закрыть</button>
-      </div>
-      <table class="binary-table"><thead><tr><th>Буква</th><th>Двоичный код</th></tr></thead><tbody id="binaryTableBody"></tbody></table>
-    </div>
-  </div>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-auth.js"></script>
   <script>
@@ -191,223 +103,44 @@
     })();
 
     (async function () {
-      const tabs = document.querySelectorAll('[data-tab]');
-      const competitiveMode = document.getElementById('competitiveMode');
-      const tournamentMode = document.getElementById('tournamentMode');
-      tabs.forEach((btn) => btn.addEventListener('click', () => {
-        const t = btn.dataset.tab;
-        competitiveMode.classList.toggle('bc-hidden', t !== 'competitive');
-        tournamentMode.classList.toggle('bc-hidden', t !== 'tournament');
-        tabs.forEach((i) => i.classList.toggle('is-active', i === btn));
-      }));
-      tabs[0]?.classList.add('is-active');
-
-      const WORDS_PER_STAGE = 2;
-
-      const setFeedback = (ok, text) => {
-        const el = document.getElementById('compFeedback');
-        el.textContent = text;
-        el.classList.toggle('ok', ok);
-        el.classList.toggle('bad', !ok);
-      };
-
-      let session;
-      let profile;
+      const status = document.getElementById('lbStatus');
       try {
-        session = await window.CyberSupabaseAuth.requireAuth({ message: 'Для игры нужно войти в аккаунт.' });
-        profile = await window.CyberSupabaseAuth.getProfile(session.sb, session.user.id);
-      } catch (error) {
-        setFeedback(false, 'Перенаправляем на страницу авторизации…');
-        return;
-      }
+        await window.CyberSupabaseAuth.requireAuth({ message: 'Войдите в аккаунт, чтобы посмотреть таблицу лидеров.' });
+        const sb = window.CyberSupabaseAuth.createClient(true);
+        const { data, error } = await sb
+          .from('leaderboard')
+          .select('username,age_group,total_time,stage1_time,stage2_time,errors,final_score')
+          .in('age_group', ['10-16', '16+'])
+          .order('final_score', { ascending: true })
+          .limit(50);
+        if (error) throw error;
 
-      const age = window.CyberSupabaseAuth.calculateAgeFromBirthDate(profile?.birth_date);
-      const ageGroup = window.CyberSupabaseAuth.getAgeGroup(age);
-      document.getElementById('usernameLabel').textContent = profile?.username || session.user.email || 'Игрок';
-      document.getElementById('ageGroupLabel').textContent = ageGroup || '—';
+        const byGroup = { '10-16': [], '16+': [] };
+        (data || []).forEach(row => byGroup[row.age_group]?.push(row));
 
-      if (!profile?.birth_date || age === null) {
-        setFeedback(false, 'Профиль заполнен некорректно: отсутствует корректная birth_date.');
-        document.getElementById('startGameBtn').disabled = true;
-        return;
-      }
-      if (ageGroup === 'blocked') {
-        setFeedback(false, 'Вход в игру доступен только с 10 лет.');
-        document.getElementById('startGameBtn').disabled = true;
-        return;
-      }
-
-      const wordPools = {
-        '10-16': {
-          stage1: ['cat', 'dog', 'sun', 'book', 'fish', 'milk', 'tree', 'game', 'code', 'bird'],
-          stage2: ['home', 'star', 'apple', 'desk', 'green', 'light', 'river', 'train', 'phone', 'robot']
-        },
-        '16+': {
-          stage1: ['cipher', 'token', 'patch', 'audit', 'proxy', 'logic', 'stack', 'cache', 'vault', 'trace'],
-          stage2: ['threat', 'guard', 'shell', 'crypt', 'debug', 'scope', 'bytes', 'secure', 'query', 'rules']
+        function formatTime(totalSeconds) {
+          const seconds = Math.max(0, Number(totalSeconds) || 0);
+          const mm = Math.floor(seconds / 60);
+          const ss = Math.floor(seconds % 60);
+          return `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
         }
-      };
 
-      const toBinaryWord = (word) => word.toUpperCase().split('').map(ch => ch.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
-      const normalizeText = (v) => String(v || '').trim().toUpperCase();
-      const pickRandomWords = (arr, count = WORDS_PER_STAGE) => [...arr].sort(() => Math.random() - 0.5).slice(0, count);
-
-      const state = {
-        stage: 0,
-        index: 0,
-        words1: [],
-        words2: [],
-        stageStart: 0,
-        stageTimes: [0, 0],
-        timerId: null,
-        errors: 0,
-        penaltySeconds: 0,
-        finished: false
-      };
-
-      function renderPrompt() {
-        const promptEl = document.getElementById('promptText');
-        const stageLabel = document.getElementById('stageLabel');
-        const currentWords = state.stage === 1 ? state.words1 : state.words2;
-        const currentWord = currentWords[state.index];
-        if (!currentWord) return;
-        if (state.stage === 1) {
-          stageLabel.textContent = '1/2 (двоичный код → текст)';
-          promptEl.textContent = toBinaryWord(currentWord);
-        } else {
-          stageLabel.textContent = '2/2 (текст → двоичный код)';
-          promptEl.textContent = currentWord.toUpperCase();
-        }
-        document.getElementById('answerInput').value = '';
-        document.getElementById('answerInput').placeholder = 'Введите перевод';
-        document.getElementById('answerInput').focus();
-      }
-
-      function startStageTimer() {
-        clearInterval(state.timerId);
-        state.stageStart = performance.now();
-        state.timerId = setInterval(() => {
-          const sec = (performance.now() - state.stageStart) / 1000;
-          document.getElementById('stageTimer').textContent = sec.toFixed(1);
-        }, 100);
-      }
-
-      function stopStageTimer() {
-        clearInterval(state.timerId);
-        const sec = (performance.now() - state.stageStart) / 1000;
-        return Math.max(0, sec);
-      }
-
-      async function finishGame() {
-        state.finished = true;
-        const totalTimeInSeconds = state.stageTimes[0] + state.stageTimes[1] + state.penaltySeconds;
-        const finalScore = totalTimeInSeconds;
-        document.getElementById('resultTime').textContent = totalTimeInSeconds.toFixed(1);
-        document.getElementById('resultErrors').textContent = String(state.errors);
-        document.getElementById('resultScore').textContent = finalScore.toFixed(1);
-        document.getElementById('finalResult').classList.remove('bc-hidden');
-        setFeedback(true, 'Игра завершена. Результат сохранён в таблицу лидеров.');
-
-        try {
-          const { error } = await session.sb.from('leaderboard').insert({
-            user_id: session.user.id,
-            username: profile?.username || session.user.email || 'Игрок',
-            age_group: ageGroup,
-            total_time: Number(totalTimeInSeconds.toFixed(3)),
-            errors: state.errors,
-            final_score: Number(finalScore.toFixed(3))
-          });
-          if (error) throw error;
-        } catch (error) {
-          setFeedback(false, `Игра завершена, но результат не сохранён: ${error.message}`);
-        }
-      }
-
-      document.getElementById('startGameBtn').addEventListener('click', () => {
-        state.stage = 1;
-        state.index = 0;
-        state.errors = 0;
-        state.penaltySeconds = 0;
-        state.finished = false;
-        state.words1 = pickRandomWords(wordPools[ageGroup].stage1, WORDS_PER_STAGE);
-        state.words2 = pickRandomWords(wordPools[ageGroup].stage2, WORDS_PER_STAGE);
-        document.getElementById('errorsCount').textContent = '0';
-        document.getElementById('finalResult').classList.add('bc-hidden');
-        document.getElementById('startGameBtn').classList.add('bc-hidden');
-        document.getElementById('submitAnswerBtn').classList.remove('bc-hidden');
-        renderPrompt();
-        startStageTimer();
-        setFeedback(true, 'Этап 1 начался. Переводи двоичный код в текст.');
-      });
-
-      async function goNextTask(message, ok) {
-        state.index += 1;
-        if (state.index >= WORDS_PER_STAGE) {
-          const stageTime = stopStageTimer();
-          state.stageTimes[state.stage - 1] = stageTime;
-          if (state.stage === 1) {
-            state.stage = 2;
-            state.index = 0;
-            renderPrompt();
-            startStageTimer();
-            setFeedback(true, message || 'Этап 2 начался. Переводи текст в двоичный код.');
+        function renderRows(el, rows) {
+          if (!rows.length) {
+            el.innerHTML = '<tr><td colspan="6">Пока нет результатов</td></tr>';
             return;
           }
-          await finishGame();
-          return;
+          el.innerHTML = rows.slice(0, 10).map((row, idx) =>
+            `<tr><td>${idx + 1}</td><td>${row.username || 'Игрок'}</td><td>${formatTime(row.stage1_time)}</td><td>${formatTime(row.stage2_time)}</td><td>${formatTime(row.total_time)}</td><td>${row.errors}</td></tr>`
+          ).join('');
         }
-        renderPrompt();
-        setFeedback(ok, message);
+
+        renderRows(document.getElementById('group1016'), byGroup['10-16']);
+        renderRows(document.getElementById('group16plus'), byGroup['16+']);
+        status.textContent = 'Топ-10 игроков по минимальному общему времени.';
+      } catch (error) {
+        status.textContent = error.message || 'Не удалось загрузить таблицу лидеров.';
       }
-
-      document.getElementById('submitAnswerBtn').addEventListener('click', async () => {
-        if (!state.stage || state.finished) return;
-        const answer = document.getElementById('answerInput').value.trim();
-        const currentWords = state.stage === 1 ? state.words1 : state.words2;
-        const currentWord = currentWords[state.index];
-        const expected = state.stage === 1 ? normalizeText(currentWord) : toBinaryWord(currentWord);
-        const actual = state.stage === 1 ? normalizeText(answer) : answer.replace(/\s+/g, ' ').trim();
-
-        if (actual !== expected) {
-          state.errors += 1;
-          state.penaltySeconds += 20;
-          document.getElementById('errorsCount').textContent = String(state.errors);
-          await goNextTask(`Неверно: +20 сек. Правильный ответ: ${expected}. Следующее задание.`, false);
-          return;
-        }
-
-        await goNextTask('Верно! Следующее задание.', true);
-      });
-
-      const modal = document.getElementById('binaryModal');
-      const tableBody = document.getElementById('binaryTableBody');
-      const rows = Array.from({ length: 26 }, (_, i) => {
-        const ch = String.fromCharCode(65 + i);
-        return `<tr><td>${ch}</td><td>${toBinaryWord(ch)}</td></tr>`;
-      }).join('');
-      tableBody.innerHTML = rows;
-
-      function toggleModal(show) {
-        modal.classList.toggle('active', show);
-        modal.setAttribute('aria-hidden', String(!show));
-        document.getElementById('showBinaryTableBtn').classList.toggle('is-active', show);
-      }
-
-      document.getElementById('showBinaryTableBtn').addEventListener('click', () => {
-        const next = !modal.classList.contains('active');
-        toggleModal(next);
-      });
-      document.getElementById('closeBinaryModal').addEventListener('click', () => toggleModal(false));
-      document.addEventListener('keydown', (event) => {
-        if (event.key === 'Tab') {
-          event.preventDefault();
-          toggleModal(true);
-        }
-        if (event.key === 'Escape') toggleModal(false);
-      });
-      document.addEventListener('keyup', (event) => {
-        if (event.key === 'Tab') toggleModal(false);
-      });
     })();
   </script>
   <script src="js/theme-network.js"></script>
