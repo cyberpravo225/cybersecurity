@@ -38,7 +38,7 @@
           <a class="btn ghost" href="binary-battle.html">← К режимам Binary Battle</a>
           <div class="bc-shell">
             <h1 style="margin:0;">Соревновательный режим по двоичному коду</h1>
-            <p style="margin:0;color:var(--bc-muted)">2 этапа: binary → text и text → binary. Финал: меньше score — лучше.</p>
+            <p style="margin:0;color:var(--bc-muted)">2 этапа: binary → text и text → binary, по 2 слова в каждом этапе. Финал: меньше score — лучше.</p>
 
             <div class="bc-nav">
               <button class="bc-btn" type="button" data-tab="competitive">⚡ Competitive</button>
@@ -108,6 +108,8 @@
       }));
       tabs[0]?.classList.add('is-active');
 
+      const WORDS_PER_STAGE = 2;
+
       const setFeedback = (ok, text) => {
         const el = document.getElementById('compFeedback');
         el.textContent = text;
@@ -154,7 +156,7 @@
 
       const toBinaryWord = (word) => word.toUpperCase().split('').map(ch => ch.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
       const normalizeText = (v) => String(v || '').trim().toUpperCase();
-      const pickRandomWords = (arr, count = 5) => [...arr].sort(() => Math.random() - 0.5).slice(0, count);
+      const pickRandomWords = (arr, count = WORDS_PER_STAGE) => [...arr].sort(() => Math.random() - 0.5).slice(0, count);
 
       const state = {
         stage: 0,
@@ -171,7 +173,8 @@
       function renderPrompt() {
         const promptEl = document.getElementById('promptText');
         const stageLabel = document.getElementById('stageLabel');
-        const currentWord = state.stage === 1 ? state.words1[state.index] : state.words2[state.index];
+        const currentWords = state.stage === 1 ? state.words1 : state.words2;
+        const currentWord = currentWords[state.index];
         if (!currentWord) return;
         if (state.stage === 1) {
           stageLabel.textContent = '1/2 (binary → text)';
@@ -181,6 +184,7 @@
           promptEl.textContent = currentWord.toUpperCase();
         }
         document.getElementById('answerInput').value = '';
+        document.getElementById('answerInput').placeholder = 'Введите перевод';
         document.getElementById('answerInput').focus();
       }
 
@@ -229,8 +233,8 @@
         state.index = 0;
         state.errors = 0;
         state.finished = false;
-        state.words1 = pickRandomWords(wordPools[ageGroup].stage1, 5);
-        state.words2 = pickRandomWords(wordPools[ageGroup].stage2, 5);
+        state.words1 = pickRandomWords(wordPools[ageGroup].stage1, WORDS_PER_STAGE);
+        state.words2 = pickRandomWords(wordPools[ageGroup].stage2, WORDS_PER_STAGE);
         document.getElementById('errorsCount').textContent = '0';
         document.getElementById('finalResult').classList.add('bc-hidden');
         renderPrompt();
@@ -241,7 +245,8 @@
       document.getElementById('submitAnswerBtn').addEventListener('click', async () => {
         if (!state.stage || state.finished) return;
         const answer = document.getElementById('answerInput').value.trim();
-        const currentWord = state.stage === 1 ? state.words1[state.index] : state.words2[state.index];
+        const currentWords = state.stage === 1 ? state.words1 : state.words2;
+        const currentWord = currentWords[state.index];
         const expected = state.stage === 1 ? normalizeText(currentWord) : toBinaryWord(currentWord);
         const actual = state.stage === 1 ? normalizeText(answer) : answer.replace(/\s+/g, ' ').trim();
 
@@ -253,7 +258,7 @@
         }
 
         state.index += 1;
-        if (state.index >= 5) {
+        if (state.index >= WORDS_PER_STAGE) {
           const stageTime = stopStageTimer();
           state.stageTimes[state.stage - 1] = stageTime;
           if (state.stage === 1) {
