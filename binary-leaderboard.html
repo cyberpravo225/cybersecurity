@@ -164,7 +164,7 @@
     @media (max-width: 900px){ .lb-grid{grid-template-columns:1fr;} }
   </style>
 </head>
-<body data-page="binary-leaderboard">
+<body class="page" data-page="binary-leaderboard">
   <div class="theme-backdrop" aria-hidden="true">
     <div class="theme-orb theme-orb-one"></div>
     <div class="theme-orb theme-orb-two"></div>
@@ -172,7 +172,7 @@
     <canvas class="theme-network" id="theme-network"></canvas>
   </div>
 
-  <div class="site-shell">
+  <div class="site">
     <main class="main">
       <section class="section">
         <div class="container lb-wrap">
@@ -230,6 +230,15 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-auth.js"></script>
+  <script>
+    (function initBackgroundAnimationPreference() {
+      const root = document.documentElement;
+      const saved = localStorage.getItem('cyber_bg_anim');
+      const enabled = saved !== '0';
+      root.classList.toggle('bg-anim-on', enabled);
+      root.classList.toggle('bg-anim-off', !enabled);
+    })();
+  </script>
   <script>
     (function initTheme() {
       const key = 'cyber_theme';
