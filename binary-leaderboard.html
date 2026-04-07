@@ -31,6 +31,7 @@
       background: linear-gradient(160deg, color-mix(in oklab, var(--lb-text) 6%, transparent), transparent);
       box-shadow: 0 14px 28px rgba(13, 24, 49, .16);
       transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease;
+      overflow: visible;
     }
     .lb-wrap .card:hover {
       transform: translateY(-2px);
@@ -55,6 +56,8 @@
       border:1px solid var(--lb-border);
       border-radius:14px;
       background: linear-gradient(120deg, rgba(116,164,255,.18), rgba(77,226,255,.12));
+      position: relative;
+      z-index: 40;
     }
     .lb-sort-label { font-weight:700; color: var(--lb-muted); }
     .lb-sort-group {
@@ -105,7 +108,7 @@
     }
     .lb-dd-menu {
       position: absolute;
-      z-index: 30;
+      z-index: 80;
       top: calc(100% + 8px);
       left: 0;
       right: 0;
