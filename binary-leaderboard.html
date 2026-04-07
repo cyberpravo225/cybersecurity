@@ -62,11 +62,11 @@
           <div class="lb-grid">
             <div class="card">
               <h2>Группа 10–16</h2>
-              <table class="lb-table"><thead><tr><th>#</th><th>Игрок</th><th>Время</th><th>Ош.</th><th>Score</th></tr></thead><tbody id="group1016"></tbody></table>
+              <table class="lb-table"><thead><tr><th>#</th><th>Игрок</th><th>Этап 1</th><th>Этап 2</th><th>Общее</th><th>Ош.</th></tr></thead><tbody id="group1016"></tbody></table>
             </div>
             <div class="card">
               <h2>Группа 16+</h2>
-              <table class="lb-table"><thead><tr><th>#</th><th>Игрок</th><th>Время</th><th>Ош.</th><th>Score</th></tr></thead><tbody id="group16plus"></tbody></table>
+              <table class="lb-table"><thead><tr><th>#</th><th>Игрок</th><th>Этап 1</th><th>Этап 2</th><th>Общее</th><th>Ош.</th></tr></thead><tbody id="group16plus"></tbody></table>
             </div>
           </div>
         </div>
@@ -109,7 +109,7 @@
         const sb = window.CyberSupabaseAuth.createClient(true);
         const { data, error } = await sb
           .from('leaderboard')
-          .select('username,age_group,total_time,errors,final_score')
+          .select('username,age_group,total_time,stage1_time,stage2_time,errors,final_score')
           .in('age_group', ['10-16', '16+'])
           .order('final_score', { ascending: true })
           .limit(50);
@@ -118,19 +118,26 @@
         const byGroup = { '10-16': [], '16+': [] };
         (data || []).forEach(row => byGroup[row.age_group]?.push(row));
 
+        function formatTime(totalSeconds) {
+          const seconds = Math.max(0, Number(totalSeconds) || 0);
+          const mm = Math.floor(seconds / 60);
+          const ss = Math.floor(seconds % 60);
+          return `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+        }
+
         function renderRows(el, rows) {
           if (!rows.length) {
-            el.innerHTML = '<tr><td colspan="5">Пока нет результатов</td></tr>';
+            el.innerHTML = '<tr><td colspan="6">Пока нет результатов</td></tr>';
             return;
           }
           el.innerHTML = rows.slice(0, 10).map((row, idx) =>
-            `<tr><td>${idx + 1}</td><td>${row.username || 'Игрок'}</td><td>${Number(row.total_time).toFixed(1)}</td><td>${row.errors}</td><td>${Number(row.final_score).toFixed(1)}</td></tr>`
+            `<tr><td>${idx + 1}</td><td>${row.username || 'Игрок'}</td><td>${formatTime(row.stage1_time)}</td><td>${formatTime(row.stage2_time)}</td><td>${formatTime(row.total_time)}</td><td>${row.errors}</td></tr>`
           ).join('');
         }
 
         renderRows(document.getElementById('group1016'), byGroup['10-16']);
         renderRows(document.getElementById('group16plus'), byGroup['16+']);
-        status.textContent = 'Топ-10 игроков по минимальному итоговому score.';
+        status.textContent = 'Топ-10 игроков по минимальному общему времени.';
       } catch (error) {
         status.textContent = error.message || 'Не удалось загрузить таблицу лидеров.';
       }

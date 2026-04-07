@@ -120,7 +120,7 @@
               </div>
               <div class="bc-stats">
                 <span class="bc-stat-pill">Этап: <strong id="stageLabel">—</strong></span>
-                <span class="bc-stat-pill">Таймер этапа: <strong id="stageTimer">0.0</strong>с</span>
+                <span class="bc-stat-pill">Таймер: <strong id="stageTimer">0.0</strong>с</span>
                 <span class="bc-stat-pill">Ошибки: <strong id="errorsCount">0</strong></span>
               </div>
               <p class="bc-task"><span class="bc-task-label">Задание</span><span class="bc-task-text" id="promptText">Нажмите «Начать игру»</span></p>
@@ -274,6 +274,7 @@
         words1: [],
         words2: [],
         stageStart: 0,
+        gameStart: 0,
         stageTimes: [0, 0],
         timerId: null,
         errors: 0,
@@ -301,9 +302,10 @@
 
       function startStageTimer() {
         clearInterval(state.timerId);
+        if (!state.gameStart) state.gameStart = performance.now();
         state.stageStart = performance.now();
         state.timerId = setInterval(() => {
-          const sec = (performance.now() - state.stageStart) / 1000;
+          const sec = ((performance.now() - state.gameStart) / 1000) + state.penaltySeconds;
           document.getElementById('stageTimer').textContent = sec.toFixed(1);
         }, 100);
       }
@@ -330,6 +332,8 @@
             username: profile?.username || session.user.email || 'Игрок',
             age_group: ageGroup,
             total_time: Number(totalTimeInSeconds.toFixed(3)),
+            stage1_time: Number(state.stageTimes[0].toFixed(3)),
+            stage2_time: Number(state.stageTimes[1].toFixed(3)),
             errors: state.errors,
             final_score: Number(finalScore.toFixed(3))
           });
@@ -344,6 +348,7 @@
         state.index = 0;
         state.errors = 0;
         state.penaltySeconds = 0;
+        state.gameStart = performance.now();
         state.finished = false;
         state.words1 = pickRandomWords(wordPools[ageGroup].stage1, WORDS_PER_STAGE);
         state.words2 = pickRandomWords(wordPools[ageGroup].stage2, WORDS_PER_STAGE);

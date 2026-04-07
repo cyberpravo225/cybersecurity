@@ -3,11 +3,19 @@ create table if not exists public.leaderboard (
   user_id uuid not null references auth.users(id) on delete cascade,
   username text not null,
   age_group text not null check (age_group in ('10-16','16+')),
+  stage1_time numeric not null default 0,
+  stage2_time numeric not null default 0,
   total_time numeric not null,
   errors integer not null default 0,
   final_score numeric not null,
   created_at timestamptz not null default now()
 );
+
+alter table if exists public.leaderboard
+  add column if not exists stage1_time numeric not null default 0;
+
+alter table if exists public.leaderboard
+  add column if not exists stage2_time numeric not null default 0;
 
 create index if not exists leaderboard_age_group_score_idx
   on public.leaderboard(age_group, final_score, created_at);
