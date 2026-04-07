@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Binary Battle — соревновательный и турнирный режим</title>
+  <title>Binary Battle — режим игры по двоичному коду</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
     :root {
@@ -37,11 +37,26 @@
     .bc-status.ok { color:#16a34a; }
     .bc-status.bad { color:#dc2626; }
     .bc-pill { display:inline-block; margin-right:8px; padding:8px 12px; border:1px solid var(--bc-border); border-radius:999px; color:var(--bc-muted); font-weight:700; }
+    .bc-hero-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:14px; }
+    .bc-hero-card { border: 1px solid var(--bc-border); border-radius: 16px; padding: 14px 16px; background: linear-gradient(140deg, rgba(116,164,255,.18), rgba(77,226,255,.1)); display: grid; gap: 8px; }
+    .bc-hero-title { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--bc-muted); font-weight: 800; }
+    .bc-hero-value { font-size: clamp(22px, 3vw, 34px); font-weight: 900; line-height: 1.1; }
+    .bc-stats { display:flex; flex-wrap:wrap; gap:10px; }
+    .bc-stat-pill { padding: 10px 14px; border-radius: 999px; border:1px solid var(--bc-border); font-weight: 800; background: rgba(116,164,255,.12); }
+    .bc-stat-pill strong { font-size: 20px; margin-left: 6px; }
+    .bc-task { margin:0; border:1px solid var(--bc-border); border-radius: 14px; padding: 14px 16px; background: rgba(116,164,255,.1); }
+    .bc-task-label { display:block; font-size:13px; text-transform:uppercase; letter-spacing:.08em; color:var(--bc-muted); font-weight:800; margin-bottom:6px; }
+    .bc-task-text { font-size: clamp(18px, 2.2vw, 26px); font-weight: 900; }
+    .bc-answer-label { font-size:18px; font-weight:900; }
+    .bc-answer-input { font-size:20px; padding:14px 16px; border-radius:14px; }
+    .bc-start-btn { font-size: clamp(20px, 2.4vw, 30px); font-weight: 900; padding: 16px 28px; border-radius: 16px; background: linear-gradient(120deg, #74a4ff, #4de2ff); color:#03142c; border: none; box-shadow: 0 14px 34px rgba(77, 226, 255, .35); }
+    .bc-table-btn.is-active { background: linear-gradient(120deg, #74a4ff, #4de2ff); color:#03142c; border-color:transparent; }
     .binary-modal { position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; z-index:50; }
     .binary-modal.active { display:flex; }
-    .binary-modal__content { width:min(760px,94vw); max-height:84vh; overflow:auto; background:var(--bc-modal-bg); color:var(--bc-modal-text); border-radius:14px; padding:16px; }
+    .binary-modal__content { width:min(760px,94vw); max-height:84vh; overflow:auto; background:linear-gradient(180deg, var(--bc-bg), color-mix(in oklab, var(--bc-bg) 80%, #4de2ff 20%)); color:var(--bc-text); border-radius:18px; padding:18px; border:1px solid var(--bc-border); box-shadow:0 20px 40px rgba(0,0,0,.28); }
     .binary-table { width:100%; border-collapse:collapse; }
-    .binary-table th,.binary-table td { border-bottom:1px solid #cbd5e1; padding:6px; }
+    .binary-table th,.binary-table td { border-bottom:1px solid var(--bc-border); padding:8px; }
+    .binary-table th { text-align:left; color:var(--bc-muted); }
     .theme-toggle { min-width: 176px; display:inline-flex; align-items:center; gap:8px; justify-content:center; }
     .theme-icon-sun{display:none}
     .theme-toggle-label{white-space:nowrap}
@@ -49,7 +64,7 @@
     html[data-theme="light"] .theme-icon-moon{display:none}
     html[data-theme="dark"] .theme-icon-sun{display:none}
     html[data-theme="dark"] .theme-icon-moon{display:inline}
-    @media (max-width:840px){ .bc-grid,.bc-nav{grid-template-columns:1fr;} }
+    @media (max-width:840px){ .bc-grid,.bc-nav,.bc-hero-grid{grid-template-columns:1fr;} }
   </style>
 </head>
 <body data-page="binary-competitive">
@@ -64,54 +79,54 @@
     <main class="main">
       <section class="section">
         <div class="container bc-wrap">
-          <a class="btn ghost" href="binary-battle.html">← К режимам Binary Battle</a>
+          <a class="btn ghost" href="binary-battle.html">← К режимам игры</a>
           <div class="bc-shell">
             <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;">
-              <h1 style="margin:0;">Соревновательный режим по двоичному коду</h1>
+              <h1 style="margin:0;">Режим игры по двоичному коду</h1>
               <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
                 <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
                 <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
                 <span class="theme-toggle-label">Тёмная тема</span>
               </button>
             </div>
-            <p style="margin:0;color:var(--bc-muted)">2 этапа: binary → text и text → binary, по 2 слова в каждом этапе. Финал: меньше score — лучше.</p>
+            <p style="margin:0;color:var(--bc-muted)">2 этапа: двоичный код → текст и текст → двоичный код, по 2 слова в каждом этапе. Финал: меньше итог — лучше.</p>
 
             <div class="bc-nav">
-              <button class="bc-btn" type="button" data-tab="competitive">⚡ Competitive</button>
-              <button class="bc-btn" type="button" data-tab="tournament">🏆 Tournament</button>
+              <button class="bc-btn" type="button" data-tab="competitive">⚡ Игра</button>
+              <button class="bc-btn" type="button" data-tab="tournament">🏆 Сетка</button>
             </div>
 
             <section id="competitiveMode">
-              <div class="bc-grid">
-                <div class="bc-field"><strong>Возрастная группа</strong><span id="ageGroupLabel">—</span></div>
-                <div class="bc-field"><strong>Пользователь</strong><span id="usernameLabel">—</span></div>
+              <div class="bc-hero-grid">
+                <div class="bc-hero-card"><span class="bc-hero-title">Возрастная группа</span><span class="bc-hero-value" id="ageGroupLabel">—</span></div>
+                <div class="bc-hero-card"><span class="bc-hero-title">Пользователь</span><span class="bc-hero-value" id="usernameLabel">—</span></div>
               </div>
-              <div>
-                <span class="bc-pill">Этап: <strong id="stageLabel">—</strong></span>
-                <span class="bc-pill">Таймер этапа: <strong id="stageTimer">0.0</strong>с</span>
-                <span class="bc-pill">Ошибки: <strong id="errorsCount">0</strong></span>
+              <div class="bc-stats">
+                <span class="bc-stat-pill">Этап: <strong id="stageLabel">—</strong></span>
+                <span class="bc-stat-pill">Таймер этапа: <strong id="stageTimer">0.0</strong>с</span>
+                <span class="bc-stat-pill">Ошибки: <strong id="errorsCount">0</strong></span>
               </div>
-              <p><strong>Задание:</strong> <span id="promptText">Нажмите «Начать игру»</span></p>
+              <p class="bc-task"><span class="bc-task-label">Задание</span><span class="bc-task-text" id="promptText">Нажмите «Начать игру»</span></p>
               <div class="bc-field">
-                <label for="answerInput">Ваш ответ</label>
-                <input id="answerInput" class="bc-input" type="text" placeholder="Введите перевод" />
+                <label class="bc-answer-label" for="answerInput">Ваш ответ</label>
+                <input id="answerInput" class="bc-input bc-answer-input" type="text" placeholder="Введите перевод" />
               </div>
               <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                <button id="startGameBtn" class="bc-btn" type="button">Начать игру</button>
-                <button id="submitAnswerBtn" class="bc-btn" type="button">Проверить</button>
-                <button id="showBinaryTableBtn" class="bc-btn" type="button">Показать таблицу двоичного кода (Tab)</button>
+                <button id="startGameBtn" class="bc-btn bc-start-btn" type="button">Начать игру</button>
+                <button id="submitAnswerBtn" class="bc-btn bc-hidden" type="button">Дальше</button>
+                <button id="showBinaryTableBtn" class="bc-btn bc-table-btn" type="button">Таблица двоичного кода (Tab)</button>
               </div>
               <p id="compFeedback" class="bc-status" aria-live="polite"></p>
               <div id="finalResult" class="bc-hidden">
                 <h3>Результат</h3>
                 <p>Время: <strong id="resultTime"></strong> сек</p>
                 <p>Ошибки: <strong id="resultErrors"></strong></p>
-                <p>Итоговый score: <strong id="resultScore"></strong></p>
+                <p>Итог: <strong id="resultScore"></strong></p>
               </div>
             </section>
 
             <section id="tournamentMode" class="bc-hidden">
-              <p>Турнирный режим оставлен без изменений.</p>
+              <p>Режим сетки оставлен без изменений.</p>
             </section>
           </div>
         </div>
@@ -229,6 +244,7 @@
         stageTimes: [0, 0],
         timerId: null,
         errors: 0,
+        penaltySeconds: 0,
         finished: false
       };
 
@@ -239,10 +255,10 @@
         const currentWord = currentWords[state.index];
         if (!currentWord) return;
         if (state.stage === 1) {
-          stageLabel.textContent = '1/2 (binary → text)';
+          stageLabel.textContent = '1/2 (двоичный код → текст)';
           promptEl.textContent = toBinaryWord(currentWord);
         } else {
-          stageLabel.textContent = '2/2 (text → binary)';
+          stageLabel.textContent = '2/2 (текст → двоичный код)';
           promptEl.textContent = currentWord.toUpperCase();
         }
         document.getElementById('answerInput').value = '';
@@ -267,8 +283,8 @@
 
       async function finishGame() {
         state.finished = true;
-        const totalTimeInSeconds = state.stageTimes[0] + state.stageTimes[1];
-        const finalScore = totalTimeInSeconds + (state.errors * 10);
+        const totalTimeInSeconds = state.stageTimes[0] + state.stageTimes[1] + state.penaltySeconds;
+        const finalScore = totalTimeInSeconds;
         document.getElementById('resultTime').textContent = totalTimeInSeconds.toFixed(1);
         document.getElementById('resultErrors').textContent = String(state.errors);
         document.getElementById('resultScore').textContent = finalScore.toFixed(1);
@@ -294,15 +310,38 @@
         state.stage = 1;
         state.index = 0;
         state.errors = 0;
+        state.penaltySeconds = 0;
         state.finished = false;
         state.words1 = pickRandomWords(wordPools[ageGroup].stage1, WORDS_PER_STAGE);
         state.words2 = pickRandomWords(wordPools[ageGroup].stage2, WORDS_PER_STAGE);
         document.getElementById('errorsCount').textContent = '0';
         document.getElementById('finalResult').classList.add('bc-hidden');
+        document.getElementById('startGameBtn').classList.add('bc-hidden');
+        document.getElementById('submitAnswerBtn').classList.remove('bc-hidden');
         renderPrompt();
         startStageTimer();
-        setFeedback(true, 'Этап 1 начался. Переводи binary в текст.');
+        setFeedback(true, 'Этап 1 начался. Переводи двоичный код в текст.');
       });
+
+      async function goNextTask(message, ok) {
+        state.index += 1;
+        if (state.index >= WORDS_PER_STAGE) {
+          const stageTime = stopStageTimer();
+          state.stageTimes[state.stage - 1] = stageTime;
+          if (state.stage === 1) {
+            state.stage = 2;
+            state.index = 0;
+            renderPrompt();
+            startStageTimer();
+            setFeedback(true, message || 'Этап 2 начался. Переводи текст в двоичный код.');
+            return;
+          }
+          await finishGame();
+          return;
+        }
+        renderPrompt();
+        setFeedback(ok, message);
+      }
 
       document.getElementById('submitAnswerBtn').addEventListener('click', async () => {
         if (!state.stage || state.finished) return;
@@ -314,29 +353,13 @@
 
         if (actual !== expected) {
           state.errors += 1;
+          state.penaltySeconds += 20;
           document.getElementById('errorsCount').textContent = String(state.errors);
-          setFeedback(false, `Ошибка. Верный ответ: ${expected}`);
+          await goNextTask(`Неверно: +20 сек. Правильный ответ: ${expected}. Следующее задание.`, false);
           return;
         }
 
-        state.index += 1;
-        if (state.index >= WORDS_PER_STAGE) {
-          const stageTime = stopStageTimer();
-          state.stageTimes[state.stage - 1] = stageTime;
-          if (state.stage === 1) {
-            state.stage = 2;
-            state.index = 0;
-            renderPrompt();
-            startStageTimer();
-            setFeedback(true, 'Этап 2 начался. Переводи текст в binary.');
-            return;
-          }
-          await finishGame();
-          return;
-        }
-
-        renderPrompt();
-        setFeedback(true, 'Верно! Следующее слово.');
+        await goNextTask('Верно! Следующее задание.', true);
       });
 
       const modal = document.getElementById('binaryModal');
@@ -350,9 +373,13 @@
       function toggleModal(show) {
         modal.classList.toggle('active', show);
         modal.setAttribute('aria-hidden', String(!show));
+        document.getElementById('showBinaryTableBtn').classList.toggle('is-active', show);
       }
 
-      document.getElementById('showBinaryTableBtn').addEventListener('click', () => toggleModal(true));
+      document.getElementById('showBinaryTableBtn').addEventListener('click', () => {
+        const next = !modal.classList.contains('active');
+        toggleModal(next);
+      });
       document.getElementById('closeBinaryModal').addEventListener('click', () => toggleModal(false));
       document.addEventListener('keydown', (event) => {
         if (event.key === 'Tab') {
@@ -360,6 +387,9 @@
           toggleModal(true);
         }
         if (event.key === 'Escape') toggleModal(false);
+      });
+      document.addEventListener('keyup', (event) => {
+        if (event.key === 'Tab') toggleModal(false);
       });
     })();
   </script>
