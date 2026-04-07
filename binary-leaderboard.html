@@ -25,8 +25,27 @@
     .lb-table th,.lb-table td { text-align:left; padding: 8px; border-bottom: 1px solid var(--lb-table-line); }
     .lb-status { color: var(--lb-muted); }
     .lb-head { display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; }
-    .lb-sort { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-    .lb-select { padding:8px 10px; border-radius:10px; border:1px solid var(--lb-border); background:transparent; color:inherit; }
+    .lb-sort {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      padding:10px 12px;
+      border:1px solid var(--lb-border);
+      border-radius:14px;
+      background: linear-gradient(120deg, rgba(116,164,255,.18), rgba(77,226,255,.12));
+    }
+    .lb-sort-label { font-weight:700; color: var(--lb-muted); }
+    .lb-select {
+      padding:9px 12px;
+      border-radius:12px;
+      border:1px solid var(--lb-border);
+      background: color-mix(in oklab, white 10%, transparent);
+      color:inherit;
+      font-weight:700;
+      min-width: 170px;
+    }
+    .lb-select:focus { outline:2px solid rgba(116,164,255,.55); outline-offset:1px; }
     .theme-toggle { min-width: 176px; display:inline-flex; align-items:center; gap:8px; justify-content:center; }
     .theme-icon-sun{display:none}
     .theme-toggle-label{white-space:nowrap}
@@ -60,7 +79,7 @@
               </button>
             </div>
             <div class="lb-sort">
-              <span>Сортировка:</span>
+              <span class="lb-sort-label">Сортировка:</span>
               <select id="sortBy" class="lb-select">
                 <option value="points">По очкам</option>
                 <option value="time">По времени</option>
@@ -78,11 +97,11 @@
           <div class="lb-grid">
             <div class="card">
               <h2>Группа 10–16</h2>
-              <table class="lb-table"><thead><tr><th>#</th><th>Игрок</th><th>Этап 1</th><th>Этап 2</th><th>Время</th><th>Ош.</th><th>Очки</th></tr></thead><tbody id="group1016"></tbody></table>
+              <table class="lb-table"><thead><tr><th>Место</th><th>Игрок</th><th>Этап 1</th><th>Этап 2</th><th>Время</th><th>Ош.</th><th>Очки</th></tr></thead><tbody id="group1016"></tbody></table>
             </div>
             <div class="card">
               <h2>Группа 16+</h2>
-              <table class="lb-table"><thead><tr><th>#</th><th>Игрок</th><th>Этап 1</th><th>Этап 2</th><th>Время</th><th>Ош.</th><th>Очки</th></tr></thead><tbody id="group16plus"></tbody></table>
+              <table class="lb-table"><thead><tr><th>Место</th><th>Игрок</th><th>Этап 1</th><th>Этап 2</th><th>Время</th><th>Ош.</th><th>Очки</th></tr></thead><tbody id="group16plus"></tbody></table>
             </div>
           </div>
         </div>
@@ -170,14 +189,26 @@
           return [...rows].sort((a, b) => (a[key] - b[key]) * order);
         }
 
+        function assignPlaces(rows) {
+          const base = [...rows].sort((a, b) =>
+            (a.points - b.points) || (a.time - b.time) || (a.stage1 - b.stage1) || (a.stage2 - b.stage2)
+          );
+          base.forEach((row, idx) => {
+            row.place = idx + 1;
+          });
+        }
+
+        assignPlaces(byGroup['10-16']);
+        assignPlaces(byGroup['16+']);
+
         function renderRows(el, rows) {
           const sorted = sortRows(rows);
           if (!rows.length) {
             el.innerHTML = '<tr><td colspan="7">Пока нет результатов</td></tr>';
             return;
           }
-          el.innerHTML = sorted.slice(0, 10).map((row, idx) =>
-            `<tr><td>${idx + 1}</td><td>${row.username || 'Игрок'}</td><td>${formatTime(row.stage1)}</td><td>${formatTime(row.stage2)}</td><td>${formatTime(row.time)}</td><td>${row.errors}</td><td>${formatTime(row.points)}</td></tr>`
+          el.innerHTML = sorted.slice(0, 10).map((row) =>
+            `<tr><td>${row.place}</td><td>${row.username || 'Игрок'}</td><td>${formatTime(row.stage1)}</td><td>${formatTime(row.stage2)}</td><td>${formatTime(row.time)}</td><td>${row.errors}</td><td>${formatTime(row.points)}</td></tr>`
           ).join('');
         }
 
@@ -191,7 +222,7 @@
         sortByEl.addEventListener('change', rerender);
         sortOrderEl.addEventListener('change', rerender);
         rerender();
-        status.textContent = 'Базовая сортировка: по очкам (минимум сверху). Можно менять сортировку.';
+        status.textContent = 'Место фиксируется по очкам (минимум сверху). Сортировку таблицы можно менять отдельно.';
       } catch (error) {
         status.textContent = error.message || 'Не удалось загрузить таблицу лидеров.';
       }
