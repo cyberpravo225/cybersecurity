@@ -25,6 +25,7 @@
     body { color: var(--lb-text); }
     .lb-wrap { display: grid; gap: 16px; }
     .lb-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .lb-grid { position: relative; z-index: 1; }
     .lb-wrap .card {
       border-radius: 20px;
       border: 1px solid var(--lb-border);
@@ -32,6 +33,10 @@
       box-shadow: 0 14px 28px rgba(13, 24, 49, .16);
       transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease;
       overflow: visible;
+    }
+    .lb-wrap > .card:first-of-type {
+      position: relative;
+      z-index: 120;
     }
     .lb-wrap .card:hover {
       transform: translateY(-2px);
