@@ -177,6 +177,7 @@
       <div class="row" style="justify-content:center;">
         <button id="toggleHintsBtn">Режим подсказок: ВКЛ</button>
         <button id="toggleMusicBtn">Звук: ВКЛ</button>
+        <button id="toggleThemeBtn">Тема: Светлая</button>
         <a href="index.html"><button>← На главную</button></a>
       </div>
     </div>
@@ -194,6 +195,7 @@
         <button id="hubBtn">Хаб</button>
         <button id="libraryBtn">Библиотека</button>
         <button id="shopBtn">Магазин</button>
+        <button id="themeBtn">Тема</button>
         <button id="pauseBtn">Пауза</button>
       </div>
     </div>
@@ -244,7 +246,7 @@ const defaults = () => ({
   chapter: 0, xp: 0, coco: 0, leaf: 0,
   bought: [], unlockedItems: [], cards: [],
   mocoGrowth: 0, gameFlags: {}, hints: true, sound: true,
-  zoneLevel: 0, streak: 0, finished: false
+  zoneLevel: 0, streak: 0, finished: false, theme: 'light'
 });
 
 class SaveManager {
@@ -419,8 +421,10 @@ class Game {
     this.toastEl = document.getElementById('toast');
     this.running = false;
     this.paused = false;
-    this.audio = new (window.AudioContext || window.webkitAudioContext)();
+    this.audio = null;
+    this.themeBtn = null;
     this.bindStartScreen();
+    this.applyTheme(this.state.theme || 'light');
   }
 
   async init() {
@@ -436,17 +440,36 @@ class Game {
     const cont = document.getElementById('continueBtn');
     const hintsBtn = document.getElementById('toggleHintsBtn');
     const musicBtn = document.getElementById('toggleMusicBtn');
+    const themeStartBtn = document.getElementById('toggleThemeBtn');
+    this.themeBtn = document.getElementById('themeBtn');
 
-    hintsBtn.onclick = () => { this.state.hints = !this.state.hints; hintsBtn.textContent = `Режим подсказок: ${this.state.hints ? 'ВКЛ' : 'ВЫКЛ'}`; SaveManager.save(this.state); };
-    musicBtn.onclick = () => { this.state.sound = !this.state.sound; musicBtn.textContent = `Звук: ${this.state.sound ? 'ВКЛ' : 'ВЫКЛ'}`; SaveManager.save(this.state); };
+    const updateMenuLabels = () => {
+      hintsBtn.textContent = `Режим подсказок: ${this.state.hints ? 'ВКЛ' : 'ВЫКЛ'}`;
+      musicBtn.textContent = `Звук: ${this.state.sound ? 'ВКЛ' : 'ВЫКЛ'}`;
+      const themeLabel = this.state.theme === 'dark' ? 'Тёмная' : 'Светлая';
+      themeStartBtn.textContent = `Тема: ${themeLabel}`;
+      this.themeBtn.textContent = `Тема: ${themeLabel}`;
+    };
+    updateMenuLabels();
+
+    hintsBtn.onclick = () => { this.state.hints = !this.state.hints; SaveManager.save(this.state); updateMenuLabels(); };
+    musicBtn.onclick = () => { this.state.sound = !this.state.sound; SaveManager.save(this.state); updateMenuLabels(); };
+    themeStartBtn.onclick = () => { this.toggleTheme(); updateMenuLabels(); };
+    this.themeBtn.onclick = () => { this.toggleTheme(); updateMenuLabels(); };
 
     play.onclick = () => {
+      this.ensureAudio();
+      const selectedTheme = this.state.theme;
       this.state = defaults();
+      this.state.theme = selectedTheme;
+      this.applyTheme(this.state.theme);
       SaveManager.save(this.state);
       start.classList.add('hidden');
       this.startFlow(0);
+      updateMenuLabels();
     };
     cont.onclick = () => {
+      this.ensureAudio();
       start.classList.add('hidden');
       this.startFlow(this.state.chapter || 0);
     };
@@ -455,6 +478,29 @@ class Game {
     document.getElementById('libraryBtn').onclick = () => this.showLibrary();
     document.getElementById('shopBtn').onclick = () => this.showShop();
     document.getElementById('pauseBtn').onclick = () => { this.paused = !this.paused; this.notify(this.paused ? 'Пауза' : 'Продолжаем!'); };
+  }
+
+  ensureAudio() {
+    if (this.audio) return;
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return;
+    try { this.audio = new Ctx(); } catch { this.audio = null; }
+  }
+
+  applyTheme(theme) {
+    this.state.theme = theme;
+    document.documentElement.setAttribute('data-theme', theme);
+    if (theme === 'dark') {
+      document.body.style.background = 'linear-gradient(165deg, #20395e, #1b2743)';
+    } else {
+      document.body.style.background = 'linear-gradient(165deg, var(--bg1), var(--bg2))';
+    }
+    SaveManager.save(this.state);
+  }
+
+  toggleTheme() {
+    this.applyTheme(this.state.theme === 'dark' ? 'light' : 'dark');
+    this.world.setSunset(this.state.bought.includes('sunset_mode') || this.state.theme === 'dark');
   }
 
   startFlow(chapter) {
@@ -469,12 +515,12 @@ class Game {
     document.getElementById('cocoChip').textContent = `🥥 Кокосы: ${this.state.coco}`;
     document.getElementById('leafChip').textContent = `🍃 Листья: ${this.state.leaf}`;
     this.world.setZoneLevel(this.state.zoneLevel);
-    this.world.setSunset(this.state.bought.includes('sunset_mode'));
+    this.world.setSunset(this.state.bought.includes('sunset_mode') || this.state.theme === 'dark');
     this.world.character.applyUnlocks(this.state.unlockedItems);
   }
 
   playTone(freq, dur = 0.1) {
-    if (!this.state.sound) return;
+    if (!this.state.sound || !this.audio) return;
     const osc = this.audio.createOscillator();
     const gain = this.audio.createGain();
     osc.frequency.value = freq;
