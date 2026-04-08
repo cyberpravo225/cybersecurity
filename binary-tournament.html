@@ -122,14 +122,33 @@
       color: color-mix(in oklab, var(--bc-text) 78%, white 22%);
       line-height: 1.35;
     }
-    .role-gate,
-    #tournamentFlow {
-      transition: opacity .3s ease, transform .3s ease;
+    .role-stage {
+      display: grid;
+      min-height: calc(100vh - 180px);
     }
-    .role-gate.is-hiding,
-    #tournamentFlow.is-hiding {
+    .role-stage > section,
+    .role-stage > div {
+      grid-area: 1 / 1;
+      transition: opacity .35s ease, transform .35s ease;
+    }
+    #roleGate {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #tournamentFlow {
       opacity: 0;
       transform: translateY(10px);
+      pointer-events: none;
+    }
+    .role-stage.is-flow #roleGate {
+      opacity: 0;
+      transform: translateY(-8px);
+      pointer-events: none;
+    }
+    .role-stage.is-flow #tournamentFlow {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
     }
 
     html[data-theme="light"] .theme-icon-sun{display:inline}
@@ -152,31 +171,33 @@
       <section class="section">
         <div class="container bc-wrap">
           <a class="btn ghost" href="binary-battle.html">← К режимам игры</a>
-          <section id="roleGate" class="role-gate">
-            <div class="role-gate__box">
-              <h1 class="role-gate__title">Выберите роль в турнире</h1>
-              <p class="role-gate__subtitle">Сначала выберите: вы участник или создатель комнаты.</p>
-              <div class="role-gate__nick">
-                <label class="bc-field" id="guestNicknameWrap">
-                  <span>Ник для этой сессии (если вы без аккаунта)</span>
-                  <input id="sessionNickname" class="bc-input" type="text" maxlength="30" placeholder="Введите ник" />
-                </label>
-                <p id="sessionNicknameStatus" class="role-gate__status" aria-live="polite"></p>
+          <div id="roleStage" class="role-stage">
+            <section id="roleGate" class="role-gate">
+              <div class="role-gate__box">
+                <h1 class="role-gate__title">Выберите роль в турнире</h1>
+                <p class="role-gate__subtitle">Сначала выберите: вы участник или создатель комнаты.</p>
+                <div class="role-gate__nick">
+                  <label class="bc-field" id="guestNicknameWrap">
+                    <span>Ник для этой сессии (если вы без аккаунта)</span>
+                    <input id="sessionNickname" class="bc-input" type="text" maxlength="30" placeholder="Введите ник" />
+                  </label>
+                  <p id="authNicknameLabel" class="role-gate__status bc-hidden"></p>
+                  <p id="sessionNicknameStatus" class="role-gate__status" aria-live="polite"></p>
+                </div>
+                <div class="role-gate__cards">
+                  <button id="roleParticipantBtn" class="role-card" type="button">
+                    <h3>Я участник</h3>
+                    <p>Войти в уже созданную комнату по коду.</p>
+                  </button>
+                  <button id="roleCreatorBtn" class="role-card" type="button">
+                    <h3>Я создатель</h3>
+                    <p>Настроить параметры турнира и создать комнату.</p>
+                  </button>
+                </div>
               </div>
-              <div class="role-gate__cards">
-                <button id="roleParticipantBtn" class="role-card" type="button">
-                  <h3>Я участник</h3>
-                  <p>Войти в уже созданную комнату по коду.</p>
-                </button>
-                <button id="roleCreatorBtn" class="role-card" type="button">
-                  <h3>Я создатель</h3>
-                  <p>Настроить параметры турнира и создать комнату.</p>
-                </button>
-              </div>
-            </div>
-          </section>
+            </section>
 
-          <div id="tournamentFlow" class="bc-shell bc-hidden">
+          <div id="tournamentFlow" class="bc-shell">
             <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;">
               <h1 style="margin:0;">Binary Battle — Турнир</h1>
               <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
@@ -292,6 +313,7 @@
               </div>
             </section>
           </div>
+          </div>
         </div>
       </section>
     </main>
@@ -337,9 +359,11 @@
 
     (async function () {
       const tournamentFeedback = document.getElementById('tournamentFeedback');
+      const roleStage = document.getElementById('roleStage');
       const roleGate = document.getElementById('roleGate');
       const tournamentFlow = document.getElementById('tournamentFlow');
       const guestNicknameWrap = document.getElementById('guestNicknameWrap');
+      const authNicknameLabel = document.getElementById('authNicknameLabel');
       const sessionNicknameInput = document.getElementById('sessionNickname');
       const sessionNicknameStatus = document.getElementById('sessionNicknameStatus');
       const roleParticipantBtn = document.getElementById('roleParticipantBtn');
@@ -361,8 +385,9 @@
       if (authProfile?.username) {
         sessionNickname = authProfile.username;
         guestNicknameWrap.classList.add('bc-hidden');
-        sessionNicknameStatus.textContent = `Вы вошли как: ${sessionNickname}`;
-        sessionNicknameStatus.classList.add('ok');
+        authNicknameLabel.textContent = `Вы вошли как: ${sessionNickname}`;
+        authNicknameLabel.classList.remove('bc-hidden');
+        authNicknameLabel.classList.add('ok');
       } else {
         const savedGuestNickname = sessionStorage.getItem('bb_tournament_guest_nick') || '';
         if (savedGuestNickname) sessionNicknameInput.value = savedGuestNickname;
@@ -419,13 +444,7 @@
       async function enterFlow(mode) {
         const canContinue = await resolveSessionNickname();
         if (!canContinue) return false;
-        roleGate.classList.add('is-hiding');
-        await new Promise((resolve) => setTimeout(resolve, 280));
-        roleGate.classList.add('bc-hidden');
-        roleGate.classList.remove('is-hiding');
-        tournamentFlow.classList.remove('bc-hidden');
-        tournamentFlow.classList.add('is-hiding');
-        requestAnimationFrame(() => tournamentFlow.classList.remove('is-hiding'));
+        roleStage.classList.add('is-flow');
         toggleTournamentPanel(mode);
         joinRoomBtn.classList.toggle('bc-hidden', mode !== 'join');
         createRoomBtn.classList.toggle('bc-hidden', mode !== 'create');
