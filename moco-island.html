@@ -210,12 +210,23 @@ let THREE_LIB = null;
 let FBXLoaderLib = null;
 const DEP_LOAD_TIMEOUT_MS = 5000;
 const MODEL_LOAD_TIMEOUT_MS = 7000;
+const FBX_PATHS = ['assets/Idlematerial.fbx', './assets/Idlematerial.fbx', '/assets/Idlematerial.fbx'];
 
 function withTimeout(promise, ms, label) {
   return Promise.race([
     promise,
     new Promise((_, reject) => setTimeout(() => reject(new Error(`${label} timeout`)), ms))
   ]);
+}
+
+async function detectAssetPath(candidates) {
+  for (const path of candidates) {
+    try {
+      const res = await fetch(path, { method: 'HEAD' });
+      if (res.ok) return path;
+    } catch {}
+  }
+  return candidates[0];
 }
 
 async function loadThreeDeps() {
@@ -291,8 +302,9 @@ class CharacterSystem {
   async init() {
     const THREE = THREE_LIB;
     try {
+      const assetPath = await detectAssetPath(FBX_PATHS);
       const fbxLoader = new FBXLoaderLib();
-      const fbx = await withTimeout(fbxLoader.loadAsync('assets/Idlematerial.fbx'), MODEL_LOAD_TIMEOUT_MS, 'fbx monkey model');
+      const fbx = await withTimeout(fbxLoader.loadAsync(assetPath), MODEL_LOAD_TIMEOUT_MS, 'fbx monkey model');
       this.mesh = fbx;
       this.normalizeMesh(this.mesh, 2.2);
       this.mesh.rotation.y = -Math.PI / 2;
@@ -486,7 +498,8 @@ class NullWorld {
   async init() {}
   async checkFbxAvailability() {
     try {
-      const resp = await fetch('assets/Idlematerial.fbx', { method: 'HEAD' });
+      const assetPath = await detectAssetPath(FBX_PATHS);
+      const resp = await fetch(assetPath, { method: 'HEAD' });
       this.hasFbxHint = resp.ok;
     } catch {}
   }
@@ -551,7 +564,7 @@ class NullWorld {
     if (!this.hasFbxHint) {
       ctx.fillStyle = 'rgba(16,50,77,0.86)';
       ctx.font = 'bold 14px Segoe UI';
-      ctx.fillText('Для 3D модели добавьте assets/Idlematerial.fbx', Math.max(20, mx - 170), my + 56);
+      ctx.fillText('Нужен файл assets/Idlematerial.fbx', Math.max(20, mx - 130), my + 56);
     }
 
     if (this.unlocked.includes('hat_palm')) {
