@@ -396,8 +396,9 @@
       const joinAndStartGameBtn = document.getElementById('joinAndStartGameBtn');
 
       let creatorRoomCode = '';
-      let creatorPollTimer = null;
       let participantWatchTimer = null;
+      let currentRoomChannel = null;
+      let connectedPlayers = [];
 
       const sb = window.CyberSupabaseAuth.createClient(false);
       const activeSession = await window.CyberSupabaseAuth.getCurrentSession();
@@ -505,31 +506,18 @@
         return Math.random().toString(36).slice(2, 9).toUpperCase();
       }
 
-      function roomStorageKey(code) {
-        return `bb_tournament_room_${code}`;
+      function normalizeCode(rawCode) {
+        return String(rawCode || '').trim().toUpperCase();
       }
 
-      function loadRoom(code) {
-        try {
-          const raw = localStorage.getItem(roomStorageKey(code));
-          return raw ? JSON.parse(raw) : null;
-        } catch (_) {
-          return null;
-        }
-      }
-
-      function saveRoom(room) {
-        localStorage.setItem(roomStorageKey(room.code), JSON.stringify(room));
-      }
-
-      function renderConnectedPlayers(room) {
+      function renderConnectedPlayers(room = {}) {
         connectedPlayersList.innerHTML = '';
-        (room?.participants || []).forEach((nickname) => {
+        (room.participants || []).forEach((nickname) => {
           const li = document.createElement('li');
           li.textContent = nickname;
           connectedPlayersList.appendChild(li);
         });
-        if (room?.started) {
+        if (room.started) {
           creatorStartStatus.textContent = 'Игра запущена. Участники уже могут начинать.';
           creatorStartStatus.classList.add('ok');
         } else {
@@ -538,50 +526,91 @@
         }
       }
 
-      function startCreatorPolling() {
-        if (!creatorRoomCode) return;
-        if (creatorPollTimer) clearInterval(creatorPollTimer);
-        creatorPollTimer = setInterval(() => {
-          const room = loadRoom(creatorRoomCode);
-          if (room) renderConnectedPlayers(room);
-        }, 1200);
+      function clearParticipantWatcher() {
+        if (participantWatchTimer) {
+          clearInterval(participantWatchTimer);
+          participantWatchTimer = null;
+        }
       }
 
-      document.getElementById('joinRoomConfirmBtn').addEventListener('click', () => {
-        const code = document.getElementById('joinRoomCode').value.trim().toUpperCase();
+      async function openRoomChannel(code, role) {
+        const normalizedCode = normalizeCode(code);
+        if (!normalizedCode) return null;
+
+        if (currentRoomChannel) {
+          try { await currentRoomChannel.unsubscribe(); } catch (_) {}
+          currentRoomChannel = null;
+        }
+
+        const channel = sb.channel(`bb_tournament_${normalizedCode}`);
+
+        channel.on('broadcast', { event: 'participant_joined' }, ({ payload }) => {
+          const nickname = String(payload?.nickname || '').trim();
+          if (!nickname) return;
+          if (!connectedPlayers.includes(nickname)) {
+            connectedPlayers.push(nickname);
+            renderConnectedPlayers({ participants: connectedPlayers, started: creatorStartStatus.classList.contains('ok') });
+          }
+        });
+
+        channel.on('broadcast', { event: 'game_started' }, () => {
+          if (role === 'participant') {
+            setTournamentFeedback(true, `Игра в комнате ${normalizedCode} началась! Можно играть.`);
+            clearParticipantWatcher();
+          }
+          renderConnectedPlayers({ participants: connectedPlayers, started: true });
+        });
+
+        await new Promise((resolve, reject) => {
+          const timeoutId = setTimeout(() => reject(new Error('timeout')), 7000);
+          channel.subscribe((status) => {
+            if (status === 'SUBSCRIBED') {
+              clearTimeout(timeoutId);
+              resolve();
+            }
+            if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
+              clearTimeout(timeoutId);
+              reject(new Error(status));
+            }
+          });
+        });
+
+        currentRoomChannel = channel;
+        return channel;
+      }
+
+      document.getElementById('joinRoomConfirmBtn').addEventListener('click', async () => {
+        const code = normalizeCode(document.getElementById('joinRoomCode').value);
         const nickname = document.getElementById('joinNickname').value.trim();
         if (!code || !nickname) {
           setTournamentFeedback(false, 'Укажите и код комнаты, и ник для входа.');
           return;
         }
 
-        const room = loadRoom(code);
-        if (!room) {
-          setTournamentFeedback(false, `Комната ${code} не найдена. Проверьте код или ссылку.`);
+        try {
+          await openRoomChannel(code, 'participant');
+        } catch (_) {
+          setTournamentFeedback(false, 'Не удалось подключиться к комнате. Проверьте интернет и попробуйте ещё раз.');
           return;
         }
 
-        if (!room.participants.includes(nickname)) {
-          room.participants.push(nickname);
-          saveRoom(room);
+        try {
+          await currentRoomChannel.send({
+            type: 'broadcast',
+            event: 'participant_joined',
+            payload: { code, nickname, joinedAt: Date.now() }
+          });
+        } catch (_) {
+          setTournamentFeedback(false, 'Не удалось отправить запрос на вход. Попробуйте ещё раз.');
+          return;
         }
 
-        if (participantWatchTimer) clearInterval(participantWatchTimer);
+        clearParticipantWatcher();
         participantWatchTimer = setInterval(() => {
-          const liveRoom = loadRoom(code);
-          if (!liveRoom) return;
-          if (liveRoom.started) {
-            setTournamentFeedback(true, `Игра в комнате ${code} началась! Можно играть.`);
-            clearInterval(participantWatchTimer);
-            participantWatchTimer = null;
-          }
-        }, 1200);
+          setTournamentFeedback(true, `Вы подключены к комнате ${code}. Ожидание начала игры создателем…`);
+        }, 4000);
 
-        if (room.started) {
-          setTournamentFeedback(true, `Вы подключились к комнате ${code}. Игра уже началась.`);
-        } else {
-          setTournamentFeedback(true, `Вы подключились к комнате ${code}. Ожидание начала игры создателем…`);
-        }
+        setTournamentFeedback(true, `Вы подключены к комнате ${code}. Ожидание начала игры создателем…`);
       });
 
       document.getElementById('confirmCreateRoomBtn').addEventListener('click', () => {
@@ -611,6 +640,7 @@
         }
 
         const roomCode = generateRoomCode();
+        connectedPlayers = [];
         const roomUrl = new URL(window.location.href);
         roomUrl.searchParams.set('room', roomCode);
         const roomLink = roomUrl.toString();
@@ -621,18 +651,15 @@
           code: roomCode,
           creator: sessionNickname,
           participants: [],
-          started: false,
-          createdAt: Date.now(),
-          settings: { playersCount, wordsCount, stageTextToCodeCount, stageCodeToTextCount, timeLimit, guessedWordsLimit, errorsElimination, wordLengthMin, wordLengthMax }
+          started: false
         };
-        saveRoom(room);
         creatorRoomCode = roomCode;
         renderConnectedPlayers(room);
-        startCreatorPolling();
         createdRoomPanel.classList.remove('bc-hidden');
 
-        const totalMinutes = (timeLimit / 60).toFixed(1);
-        setTournamentFeedback(true, `Комната создана: ${playersCount} игроков, ${wordsCount} слов, время ${timeLimit} сек (${totalMinutes} мин).`);
+        openRoomChannel(roomCode, 'creator')
+          .then(() => setTournamentFeedback(true, `Комната создана: ${playersCount} игроков, ${wordsCount} слов, время ${timeLimit} сек (${(timeLimit / 60).toFixed(1)} мин). Ожидайте подключения участников.`))
+          .catch(() => setTournamentFeedback(false, 'Комната создана, но подключение к каналу не удалось. Проверьте интернет и попробуйте создать заново.'));
       });
 
       document.getElementById('copyRoomLinkBtn').addEventListener('click', async () => {
@@ -677,44 +704,45 @@
         }
       });
 
-      startGameBtn.addEventListener('click', () => {
-        if (!creatorRoomCode) {
+      startGameBtn.addEventListener('click', async () => {
+        if (!creatorRoomCode || !currentRoomChannel) {
           setTournamentFeedback(false, 'Сначала создайте комнату.');
           return;
         }
-        const room = loadRoom(creatorRoomCode);
-        if (!room) {
-          setTournamentFeedback(false, 'Комната не найдена. Создайте новую.');
-          return;
+        try {
+          await currentRoomChannel.send({ type: 'broadcast', event: 'game_started', payload: { code: creatorRoomCode, startedAt: Date.now() } });
+          renderConnectedPlayers({ participants: connectedPlayers, started: true });
+          setTournamentFeedback(true, 'Игра начата. Участники получили сигнал старта.');
+        } catch (_) {
+          setTournamentFeedback(false, 'Не удалось запустить игру. Проверьте соединение и повторите.');
         }
-        room.started = true;
-        saveRoom(room);
-        renderConnectedPlayers(room);
-        setTournamentFeedback(true, 'Игра начата. Участники видят сообщение о старте.');
       });
 
-      joinAndStartGameBtn.addEventListener('click', () => {
-        if (!creatorRoomCode) {
+      joinAndStartGameBtn.addEventListener('click', async () => {
+        if (!creatorRoomCode || !currentRoomChannel) {
           setTournamentFeedback(false, 'Сначала создайте комнату.');
           return;
         }
-        const room = loadRoom(creatorRoomCode);
-        if (!room) {
-          setTournamentFeedback(false, 'Комната не найдена. Создайте новую.');
-          return;
+        if (!connectedPlayers.includes(sessionNickname)) {
+          connectedPlayers.push(sessionNickname);
         }
-        if (!room.participants.includes(sessionNickname)) {
-          room.participants.push(sessionNickname);
+        try {
+          await currentRoomChannel.send({ type: 'broadcast', event: 'participant_joined', payload: { code: creatorRoomCode, nickname: sessionNickname, joinedAt: Date.now() } });
+          await currentRoomChannel.send({ type: 'broadcast', event: 'game_started', payload: { code: creatorRoomCode, startedAt: Date.now() } });
+          renderConnectedPlayers({ participants: connectedPlayers, started: true });
+          setTournamentFeedback(true, 'Вы присоединились как участник и сразу начали игру.');
+        } catch (_) {
+          setTournamentFeedback(false, 'Не удалось отправить команды старта. Проверьте соединение.');
         }
-        room.started = true;
-        saveRoom(room);
-        renderConnectedPlayers(room);
-        setTournamentFeedback(true, 'Вы присоединились как участник и сразу начали игру.');
       });
 
-      const presetRoomCode = new URL(window.location.href).searchParams.get('room');
+      const presetRoomCode = normalizeCode(new URL(window.location.href).searchParams.get('room'));
       if (presetRoomCode) {
-        document.getElementById('joinRoomCode').value = presetRoomCode.toUpperCase();
+        document.getElementById('joinRoomCode').value = presetRoomCode;
+        const opened = await enterFlow('join');
+        if (opened) {
+          setTournamentFeedback(true, 'Ссылка открыта. Введите ник и нажмите «Войти».');
+        }
       }
     })();
   </script>
