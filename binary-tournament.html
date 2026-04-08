@@ -44,6 +44,12 @@
     .bt-actions { display:flex; flex-wrap:wrap; gap:10px; }
     .bt-code-box { font-size: clamp(24px, 4vw, 36px); font-weight: 900; letter-spacing: .1em; padding: 10px 14px; border-radius: 12px; border: 1px dashed var(--bc-border); width: fit-content; }
     .bt-link-wrap { display:grid; gap:8px; }
+    .bt-join-ways { display:grid; gap:10px; grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .bt-join-way { border:1px solid var(--bc-border); border-radius:12px; padding:10px; background:var(--bc-input-bg); display:grid; gap:8px; }
+    .bt-join-way h4 { margin:0; font-size:14px; }
+    .bt-players-list { margin:0; padding-left:18px; display:grid; gap:4px; }
+    .bt-players-list:empty::before { content:"Пока никто не подключился"; color:var(--bc-muted); margin-left:-18px; list-style:none; }
+    .bt-waiting { margin:0; font-weight:700; color:var(--bc-muted); }
     .bt-muted { color: var(--bc-muted); margin:0; }
     .role-gate {
       min-height: calc(100vh - 280px);
@@ -153,7 +159,7 @@
     html[data-theme="light"] .theme-icon-moon{display:none}
     html[data-theme="dark"] .theme-icon-sun{display:none}
     html[data-theme="dark"] .theme-icon-moon{display:inline}
-    @media (max-width:840px){ .bt-choice,.bt-grid,.bt-subgrid,.role-gate__cards{grid-template-columns:1fr;} }
+    @media (max-width:840px){ .bt-choice,.bt-grid,.bt-subgrid,.role-gate__cards,.bt-join-ways{grid-template-columns:1fr;} }
   </style>
 </head>
 <body class="page" data-page="binary-tournament">
@@ -280,7 +286,7 @@
 
                 <div id="createdRoomPanel" class="bt-panel bc-hidden">
                   <h3>Комната создана</h3>
-                  <p class="bt-muted">Введите ники участников, затем отправьте им код или ссылку для входа.</p>
+                  <p class="bt-muted">После создания доступны 3 независимых способа входа: по коду, по ссылке или готовым текстом-приглашением.</p>
                   <div class="bt-grid">
                     <div>
                       <div>Код игры</div>
@@ -291,13 +297,31 @@
                         <span>Ссылка для входа</span>
                         <input id="createdRoomLink" class="bc-input" type="text" readonly />
                       </label>
-                      <button id="copyRoomLinkBtn" class="bc-btn" type="button">Скопировать ссылку</button>
                     </div>
                   </div>
-                  <label class="bc-field">
-                    <span>Ники участников (по одному на строку)</span>
-                    <textarea id="participantsNicknames" class="bc-input" rows="6" placeholder="Player_1&#10;Player_2"></textarea>
-                  </label>
+                  <div class="bt-join-ways">
+                    <div class="bt-join-way">
+                      <h4>Способ 1: код комнаты</h4>
+                      <button id="copyRoomCodeBtn" class="bc-btn" type="button">Скопировать код</button>
+                    </div>
+                    <div class="bt-join-way">
+                      <h4>Способ 2: ссылка</h4>
+                      <button id="copyRoomLinkBtn" class="bc-btn" type="button">Скопировать ссылку</button>
+                    </div>
+                    <div class="bt-join-way">
+                      <h4>Способ 3: текст-приглашение</h4>
+                      <button id="copyRoomInviteBtn" class="bc-btn" type="button">Скопировать приглашение</button>
+                    </div>
+                  </div>
+                  <div class="bt-actions">
+                    <button id="startGameBtn" class="bc-btn" type="button">Начать игру</button>
+                    <button id="joinAndStartGameBtn" class="bc-btn is-active" type="button">Присоединиться и начать игру</button>
+                  </div>
+                  <p id="creatorStartStatus" class="bt-waiting">Игра ещё не начата.</p>
+                  <div class="bc-field">
+                    <span>Подключившиеся участники</span>
+                    <ul id="connectedPlayersList" class="bt-players-list"></ul>
+                  </div>
                 </div>
 
                 <p id="tournamentFeedback" class="bc-status" aria-live="polite"></p>
@@ -364,6 +388,16 @@
       const createdRoomPanel = document.getElementById('createdRoomPanel');
       const joinNicknameInput = document.getElementById('joinNickname');
       const joinNicknameWrap = document.getElementById('joinNicknameWrap');
+      const createdRoomCodeEl = document.getElementById('createdRoomCode');
+      const createdRoomLinkEl = document.getElementById('createdRoomLink');
+      const connectedPlayersList = document.getElementById('connectedPlayersList');
+      const creatorStartStatus = document.getElementById('creatorStartStatus');
+      const startGameBtn = document.getElementById('startGameBtn');
+      const joinAndStartGameBtn = document.getElementById('joinAndStartGameBtn');
+
+      let creatorRoomCode = '';
+      let creatorPollTimer = null;
+      let participantWatchTimer = null;
 
       const sb = window.CyberSupabaseAuth.createClient(false);
       const activeSession = await window.CyberSupabaseAuth.getCurrentSession();
@@ -471,6 +505,48 @@
         return Math.random().toString(36).slice(2, 9).toUpperCase();
       }
 
+      function roomStorageKey(code) {
+        return `bb_tournament_room_${code}`;
+      }
+
+      function loadRoom(code) {
+        try {
+          const raw = localStorage.getItem(roomStorageKey(code));
+          return raw ? JSON.parse(raw) : null;
+        } catch (_) {
+          return null;
+        }
+      }
+
+      function saveRoom(room) {
+        localStorage.setItem(roomStorageKey(room.code), JSON.stringify(room));
+      }
+
+      function renderConnectedPlayers(room) {
+        connectedPlayersList.innerHTML = '';
+        (room?.participants || []).forEach((nickname) => {
+          const li = document.createElement('li');
+          li.textContent = nickname;
+          connectedPlayersList.appendChild(li);
+        });
+        if (room?.started) {
+          creatorStartStatus.textContent = 'Игра запущена. Участники уже могут начинать.';
+          creatorStartStatus.classList.add('ok');
+        } else {
+          creatorStartStatus.textContent = 'Игра ещё не начата.';
+          creatorStartStatus.classList.remove('ok');
+        }
+      }
+
+      function startCreatorPolling() {
+        if (!creatorRoomCode) return;
+        if (creatorPollTimer) clearInterval(creatorPollTimer);
+        creatorPollTimer = setInterval(() => {
+          const room = loadRoom(creatorRoomCode);
+          if (room) renderConnectedPlayers(room);
+        }, 1200);
+      }
+
       document.getElementById('joinRoomConfirmBtn').addEventListener('click', () => {
         const code = document.getElementById('joinRoomCode').value.trim().toUpperCase();
         const nickname = document.getElementById('joinNickname').value.trim();
@@ -478,7 +554,34 @@
           setTournamentFeedback(false, 'Укажите и код комнаты, и ник для входа.');
           return;
         }
-        setTournamentFeedback(true, `Запрос на вход отправлен: ${nickname} → комната ${code}.`);
+
+        const room = loadRoom(code);
+        if (!room) {
+          setTournamentFeedback(false, `Комната ${code} не найдена. Проверьте код или ссылку.`);
+          return;
+        }
+
+        if (!room.participants.includes(nickname)) {
+          room.participants.push(nickname);
+          saveRoom(room);
+        }
+
+        if (participantWatchTimer) clearInterval(participantWatchTimer);
+        participantWatchTimer = setInterval(() => {
+          const liveRoom = loadRoom(code);
+          if (!liveRoom) return;
+          if (liveRoom.started) {
+            setTournamentFeedback(true, `Игра в комнате ${code} началась! Можно играть.`);
+            clearInterval(participantWatchTimer);
+            participantWatchTimer = null;
+          }
+        }, 1200);
+
+        if (room.started) {
+          setTournamentFeedback(true, `Вы подключились к комнате ${code}. Игра уже началась.`);
+        } else {
+          setTournamentFeedback(true, `Вы подключились к комнате ${code}. Ожидание начала игры создателем…`);
+        }
       });
 
       document.getElementById('confirmCreateRoomBtn').addEventListener('click', () => {
@@ -511,8 +614,21 @@
         const roomUrl = new URL(window.location.href);
         roomUrl.searchParams.set('room', roomCode);
         const roomLink = roomUrl.toString();
-        document.getElementById('createdRoomCode').textContent = roomCode;
-        document.getElementById('createdRoomLink').value = roomLink;
+        createdRoomCodeEl.textContent = roomCode;
+        createdRoomLinkEl.value = roomLink;
+
+        const room = {
+          code: roomCode,
+          creator: sessionNickname,
+          participants: [],
+          started: false,
+          createdAt: Date.now(),
+          settings: { playersCount, wordsCount, stageTextToCodeCount, stageCodeToTextCount, timeLimit, guessedWordsLimit, errorsElimination, wordLengthMin, wordLengthMax }
+        };
+        saveRoom(room);
+        creatorRoomCode = roomCode;
+        renderConnectedPlayers(room);
+        startCreatorPolling();
         createdRoomPanel.classList.remove('bc-hidden');
 
         const totalMinutes = (timeLimit / 60).toFixed(1);
@@ -520,7 +636,7 @@
       });
 
       document.getElementById('copyRoomLinkBtn').addEventListener('click', async () => {
-        const linkField = document.getElementById('createdRoomLink');
+        const linkField = createdRoomLinkEl;
         if (!linkField.value) {
           setTournamentFeedback(false, 'Сначала создайте комнату, чтобы получить ссылку.');
           return;
@@ -533,6 +649,73 @@
           setTournamentFeedback(false, 'Не удалось скопировать автоматически. Скопируйте ссылку вручную из поля.');
         }
       });
+
+      document.getElementById('copyRoomCodeBtn').addEventListener('click', async () => {
+        if (!creatorRoomCode) {
+          setTournamentFeedback(false, 'Сначала создайте комнату, чтобы получить код.');
+          return;
+        }
+        try {
+          await navigator.clipboard.writeText(creatorRoomCode);
+          setTournamentFeedback(true, 'Код комнаты скопирован.');
+        } catch (_) {
+          setTournamentFeedback(false, 'Не удалось скопировать код автоматически.');
+        }
+      });
+
+      document.getElementById('copyRoomInviteBtn').addEventListener('click', async () => {
+        if (!creatorRoomCode || !createdRoomLinkEl.value) {
+          setTournamentFeedback(false, 'Сначала создайте комнату, чтобы отправить приглашение.');
+          return;
+        }
+        const inviteText = `Присоединяйся к Binary Battle! Код: ${creatorRoomCode}. Ссылка: ${createdRoomLinkEl.value}`;
+        try {
+          await navigator.clipboard.writeText(inviteText);
+          setTournamentFeedback(true, 'Текст-приглашение скопирован.');
+        } catch (_) {
+          setTournamentFeedback(false, 'Не удалось скопировать приглашение автоматически.');
+        }
+      });
+
+      startGameBtn.addEventListener('click', () => {
+        if (!creatorRoomCode) {
+          setTournamentFeedback(false, 'Сначала создайте комнату.');
+          return;
+        }
+        const room = loadRoom(creatorRoomCode);
+        if (!room) {
+          setTournamentFeedback(false, 'Комната не найдена. Создайте новую.');
+          return;
+        }
+        room.started = true;
+        saveRoom(room);
+        renderConnectedPlayers(room);
+        setTournamentFeedback(true, 'Игра начата. Участники видят сообщение о старте.');
+      });
+
+      joinAndStartGameBtn.addEventListener('click', () => {
+        if (!creatorRoomCode) {
+          setTournamentFeedback(false, 'Сначала создайте комнату.');
+          return;
+        }
+        const room = loadRoom(creatorRoomCode);
+        if (!room) {
+          setTournamentFeedback(false, 'Комната не найдена. Создайте новую.');
+          return;
+        }
+        if (!room.participants.includes(sessionNickname)) {
+          room.participants.push(sessionNickname);
+        }
+        room.started = true;
+        saveRoom(room);
+        renderConnectedPlayers(room);
+        setTournamentFeedback(true, 'Вы присоединились как участник и сразу начали игру.');
+      });
+
+      const presetRoomCode = new URL(window.location.href).searchParams.get('room');
+      if (presetRoomCode) {
+        document.getElementById('joinRoomCode').value = presetRoomCode.toUpperCase();
+      }
     })();
   </script>
   <script src="js/theme-network.js"></script>
