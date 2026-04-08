@@ -80,6 +80,9 @@
     html[data-theme="light"] .theme-icon-moon{display:none}
     html[data-theme="dark"] .theme-icon-sun{display:none}
     html[data-theme="dark"] .theme-icon-moon{display:inline}
+    .tournament-results { border:1px solid var(--bc-border); border-radius:14px; padding:12px; background: rgba(116,164,255,.16); display:grid; gap:8px; }
+    .tournament-results h3 { margin:0; }
+    .tournament-results ul { margin:0; padding-left:18px; display:grid; gap:4px; }
     @media (max-width:840px){ .bc-grid,.bc-hero-grid{grid-template-columns:1fr;} }
   </style>
 </head>
@@ -133,6 +136,10 @@
                 <p>Время: <strong id="resultTime"></strong> сек</p>
                 <p>Ошибки: <strong id="resultErrors"></strong></p>
                 <p>Итог: <strong id="resultScore"></strong></p>
+              </div>
+              <div id="creatorResultsPanel" class="tournament-results bc-hidden">
+                <h3>Результаты участников турнира</h3>
+                <ul id="creatorResultsList"></ul>
               </div>
             </section>
 
@@ -212,6 +219,65 @@
 
       const age = window.CyberSupabaseAuth.calculateAgeFromBirthDate(profile?.birth_date);
       const ageGroup = window.CyberSupabaseAuth.getAgeGroup(age);
+      const query = new URL(window.location.href).searchParams;
+      let tournamentRuntime = null;
+      try {
+        tournamentRuntime = JSON.parse(sessionStorage.getItem('bb_tournament_runtime') || 'null');
+      } catch (_) {
+        tournamentRuntime = null;
+      }
+      const tournamentMode = query.get('tournament') === '1';
+      const tournamentRoomCode = String(query.get('room') || tournamentRuntime?.roomCode || '').trim().toUpperCase();
+      const tournamentRole = String(query.get('role') || tournamentRuntime?.role || '').trim();
+      const isTournamentCreator = tournamentMode && (tournamentRole === 'creator' || tournamentRole === 'creator-player');
+      const creatorResultsPanel = document.getElementById('creatorResultsPanel');
+      const creatorResultsList = document.getElementById('creatorResultsList');
+      let tournamentChannel = null;
+      const creatorResultsMap = new Map();
+
+      function renderCreatorResults() {
+        creatorResultsList.innerHTML = '';
+        creatorResultsMap.forEach((entry) => {
+          const li = document.createElement('li');
+          li.textContent = `${entry.nickname}: итог ${entry.finalScore.toFixed(1)} сек (этапы ${entry.stage1.toFixed(1)} + ${entry.stage2.toFixed(1)}, ошибок ${entry.errors})`;
+          creatorResultsList.appendChild(li);
+        });
+      }
+
+      async function initTournamentChannel() {
+        if (!tournamentMode || !tournamentRoomCode) return;
+        tournamentChannel = session.sb.channel(`bb_tournament_${tournamentRoomCode}`);
+        tournamentChannel.on('broadcast', { event: 'player_finished' }, ({ payload }) => {
+          const nickname = String(payload?.nickname || 'Игрок');
+          const entry = {
+            nickname,
+            finalScore: Number(payload?.finalScore || 0),
+            stage1: Number(payload?.stage1Time || 0),
+            stage2: Number(payload?.stage2Time || 0),
+            errors: Number(payload?.errors || 0)
+          };
+          creatorResultsMap.set(nickname, entry);
+          renderCreatorResults();
+        });
+        await new Promise((resolve, reject) => {
+          const timeoutId = setTimeout(() => reject(new Error('tournament_channel_timeout')), 7000);
+          tournamentChannel.subscribe((status) => {
+            if (status === 'SUBSCRIBED') {
+              clearTimeout(timeoutId);
+              resolve();
+            }
+            if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
+              clearTimeout(timeoutId);
+              reject(new Error(status));
+            }
+          });
+        }).catch(() => null);
+      }
+
+      if (isTournamentCreator) {
+        creatorResultsPanel.classList.remove('bc-hidden');
+      }
+
       document.getElementById('usernameLabel').textContent = profile?.username || session.user.email || 'Игрок';
       document.getElementById('ageGroupLabel').textContent = ageGroup || '—';
 
@@ -225,6 +291,8 @@
         document.getElementById('startGameBtn').disabled = true;
         return;
       }
+
+      await initTournamentChannel();
 
       const wordPools = {
         '10-16': {
@@ -313,8 +381,39 @@
         document.getElementById('resultErrors').textContent = String(state.errors);
         document.getElementById('resultScore').textContent = finalScore.toFixed(1);
         document.getElementById('finalResult').classList.remove('bc-hidden');
-        setFeedback(true, 'Игра завершена. Результат сохранён в таблицу лидеров.');
 
+        if (tournamentMode) {
+          setFeedback(true, 'Игра завершена. Результат отправлен создателю турнира.');
+          const nickname = profile?.username || session.user.email || 'Игрок';
+          if (isTournamentCreator) {
+            creatorResultsMap.set(nickname, {
+              nickname,
+              finalScore,
+              stage1: state.stageTimes[0],
+              stage2: state.stageTimes[1],
+              errors: state.errors
+            });
+            renderCreatorResults();
+          }
+          if (tournamentChannel) {
+            await tournamentChannel.send({
+              type: 'broadcast',
+              event: 'player_finished',
+              payload: {
+                room: tournamentRoomCode,
+                nickname,
+                finalScore: Number(finalScore.toFixed(3)),
+                stage1Time: Number(state.stageTimes[0].toFixed(3)),
+                stage2Time: Number(state.stageTimes[1].toFixed(3)),
+                errors: state.errors,
+                finishedAt: Date.now()
+              }
+            });
+          }
+          return;
+        }
+
+        setFeedback(true, 'Игра завершена. Результат сохранён в таблицу лидеров.');
         try {
           const { error } = await session.sb.from('leaderboard').insert({
             user_id: session.user.id,
