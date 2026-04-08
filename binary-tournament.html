@@ -80,6 +80,20 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 14px;
     }
+    .role-gate__nick {
+      width: min(440px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 8px;
+      text-align: left;
+    }
+    .role-gate__status {
+      margin: 0;
+      font-weight: 700;
+      min-height: 1.3em;
+    }
+    .role-gate__status.ok { color:#16a34a; }
+    .role-gate__status.bad { color:#dc2626; }
     .role-card {
       border: 1px solid var(--bc-border);
       border-radius: 18px;
@@ -108,6 +122,15 @@
       color: color-mix(in oklab, var(--bc-text) 78%, white 22%);
       line-height: 1.35;
     }
+    .role-gate,
+    #tournamentFlow {
+      transition: opacity .3s ease, transform .3s ease;
+    }
+    .role-gate.is-hiding,
+    #tournamentFlow.is-hiding {
+      opacity: 0;
+      transform: translateY(10px);
+    }
 
     html[data-theme="light"] .theme-icon-sun{display:inline}
     html[data-theme="light"] .theme-icon-moon{display:none}
@@ -133,6 +156,13 @@
             <div class="role-gate__box">
               <h1 class="role-gate__title">Выберите роль в турнире</h1>
               <p class="role-gate__subtitle">Сначала выберите: вы участник или создатель комнаты.</p>
+              <div class="role-gate__nick">
+                <label class="bc-field" id="guestNicknameWrap">
+                  <span>Ник для этой сессии (если вы без аккаунта)</span>
+                  <input id="sessionNickname" class="bc-input" type="text" maxlength="30" placeholder="Введите ник" />
+                </label>
+                <p id="sessionNicknameStatus" class="role-gate__status" aria-live="polite"></p>
+              </div>
               <div class="role-gate__cards">
                 <button id="roleParticipantBtn" class="role-card" type="button">
                   <h3>Я участник</h3>
@@ -309,6 +339,9 @@
       const tournamentFeedback = document.getElementById('tournamentFeedback');
       const roleGate = document.getElementById('roleGate');
       const tournamentFlow = document.getElementById('tournamentFlow');
+      const guestNicknameWrap = document.getElementById('guestNicknameWrap');
+      const sessionNicknameInput = document.getElementById('sessionNickname');
+      const sessionNicknameStatus = document.getElementById('sessionNicknameStatus');
       const roleParticipantBtn = document.getElementById('roleParticipantBtn');
       const roleCreatorBtn = document.getElementById('roleCreatorBtn');
       const joinRoomBtn = document.getElementById('joinRoomBtn');
@@ -316,13 +349,23 @@
       const joinRoomPanel = document.getElementById('joinRoomPanel');
       const createRoomPanel = document.getElementById('createRoomPanel');
       const createdRoomPanel = document.getElementById('createdRoomPanel');
+      const joinNicknameInput = document.getElementById('joinNickname');
 
-      try {
-        await window.CyberSupabaseAuth.requireAuth({ message: 'Для турнирного режима нужно войти в аккаунт.' });
-      } catch (_) {
-        tournamentFeedback.textContent = 'Перенаправляем на страницу авторизации…';
-        tournamentFeedback.classList.add('bad');
-        return;
+      const sb = window.CyberSupabaseAuth.createClient(false);
+      const activeSession = await window.CyberSupabaseAuth.getCurrentSession();
+      let sessionNickname = '';
+      const authProfile = activeSession?.user
+        ? await window.CyberSupabaseAuth.getProfile(activeSession.sb, activeSession.user.id).catch(() => null)
+        : null;
+
+      if (authProfile?.username) {
+        sessionNickname = authProfile.username;
+        guestNicknameWrap.classList.add('bc-hidden');
+        sessionNicknameStatus.textContent = `Вы вошли как: ${sessionNickname}`;
+        sessionNicknameStatus.classList.add('ok');
+      } else {
+        const savedGuestNickname = sessionStorage.getItem('bb_tournament_guest_nick') || '';
+        if (savedGuestNickname) sessionNicknameInput.value = savedGuestNickname;
       }
 
       function setTournamentFeedback(ok, text) {
@@ -338,19 +381,70 @@
         createRoomBtn.classList.toggle('is-active', mode === 'create');
       }
 
-      function enterFlow(mode) {
-        roleGate.classList.add('bc-hidden');
-        tournamentFlow.classList.remove('bc-hidden');
-        toggleTournamentPanel(mode);
+      async function isNicknameUnique(nickname) {
+        const normalized = nickname.trim();
+        if (!normalized) return { ok: false, message: 'Введите ник для сессии.' };
+        const { data: profilesRows, error: profilesError } = await sb
+          .from('profiles')
+          .select('username')
+          .ilike('username', normalized)
+          .limit(1);
+        if (profilesError) return { ok: false, message: 'Ошибка проверки ника. Попробуйте ещё раз.' };
+        if (profilesRows?.length) return { ok: false, message: 'Этот ник уже используется. Выберите другой.' };
+
+        const { data: leaderboardRows, error: leaderboardError } = await sb
+          .from('leaderboard')
+          .select('username')
+          .ilike('username', normalized)
+          .limit(1);
+        if (leaderboardError) return { ok: false, message: 'Ошибка проверки ника. Попробуйте ещё раз.' };
+        if (leaderboardRows?.length) return { ok: false, message: 'Этот ник уже встречается в базе. Выберите другой.' };
+
+        return { ok: true, message: 'Ник свободен для этой сессии.' };
       }
 
-      roleParticipantBtn.addEventListener('click', () => {
-        enterFlow('join');
+      async function resolveSessionNickname() {
+        if (sessionNickname) return true;
+        const candidate = sessionNicknameInput.value.trim();
+        const check = await isNicknameUnique(candidate);
+        sessionNicknameStatus.textContent = check.message;
+        sessionNicknameStatus.classList.toggle('ok', check.ok);
+        sessionNicknameStatus.classList.toggle('bad', !check.ok);
+        if (!check.ok) return false;
+        sessionNickname = candidate;
+        sessionStorage.setItem('bb_tournament_guest_nick', candidate);
+        return true;
+      }
+
+      async function enterFlow(mode) {
+        const canContinue = await resolveSessionNickname();
+        if (!canContinue) return false;
+        roleGate.classList.add('is-hiding');
+        await new Promise((resolve) => setTimeout(resolve, 280));
+        roleGate.classList.add('bc-hidden');
+        roleGate.classList.remove('is-hiding');
+        tournamentFlow.classList.remove('bc-hidden');
+        tournamentFlow.classList.add('is-hiding');
+        requestAnimationFrame(() => tournamentFlow.classList.remove('is-hiding'));
+        toggleTournamentPanel(mode);
+        joinRoomBtn.classList.toggle('bc-hidden', mode !== 'join');
+        createRoomBtn.classList.toggle('bc-hidden', mode !== 'create');
+        if (sessionNickname) {
+          joinNicknameInput.value = sessionNickname;
+          joinNicknameInput.readOnly = true;
+        }
+        return true;
+      }
+
+      roleParticipantBtn.addEventListener('click', async () => {
+        const opened = await enterFlow('join');
+        if (!opened) return;
         setTournamentFeedback(true, 'Введите код комнаты и ник, чтобы присоединиться к турниру.');
       });
 
-      roleCreatorBtn.addEventListener('click', () => {
-        enterFlow('create');
+      roleCreatorBtn.addEventListener('click', async () => {
+        const opened = await enterFlow('create');
+        if (!opened) return;
         setTournamentFeedback(true, 'Настройте параметры турнира и создайте комнату.');
       });
 
