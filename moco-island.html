@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Кибер-Остров Моко</title>
+  <style>
+    :root {
+      --bg1: #6ee7f9;
+      --bg2: #7ddf8d;
+      --panel: rgba(255, 255, 255, 0.9);
+      --primary: #ffb703;
+      --accent: #6d5efc;
+      --good: #2ecc71;
+      --bad: #ff6f61;
+      --text: #10324d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: linear-gradient(165deg, var(--bg1), var(--bg2));
+    }
+    #app { position: fixed; inset: 0; }
+    #scene { position: absolute; inset: 0; }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 14px;
+      gap: 10px;
+    }
+    .hud, .panel, .floating {
+      background: var(--panel);
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,.15);
+      pointer-events: auto;
+    }
+    .hud {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      gap: 10px;
+    }
+    .stats { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      background: #fff;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .controls { display: flex; gap: 8px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      color: #08334f;
+      background: linear-gradient(180deg, #fff, #dff6ff);
+      box-shadow: 0 4px 12px rgba(0,0,0,.12);
+      cursor: pointer;
+    }
+    button.primary {
+      background: linear-gradient(180deg, #ffd66b, #ffb703);
+    }
+    button.cta { min-width: 180px; font-size: 18px; }
+    .panel {
+      max-width: min(95vw, 780px);
+      margin: 0 auto;
+      padding: 18px;
+    }
+    .panel h1, .panel h2, .panel h3 { margin: 0 0 10px; }
+    .panel p { margin: 0 0 12px; line-height: 1.45; }
+    .hidden { display: none !important; }
+    .row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .choice {
+      flex: 1;
+      min-width: 220px;
+      padding: 12px;
+      border-radius: 14px;
+      background: #fff;
+      border: 2px solid transparent;
+      cursor: pointer;
+      text-align: left;
+    }
+    .choice:hover { border-color: #90dfff; }
+
+    .start-screen {
+      display: grid;
+      place-items: center;
+      position: absolute;
+      inset: 0;
+      pointer-events: auto;
+      background: radial-gradient(circle at top, rgba(255,255,255,.45), rgba(255,255,255,.05));
+    }
+    .start-card {
+      width: min(92vw, 760px);
+      text-align: center;
+      padding: 26px;
+      border-radius: 26px;
+      background: rgba(255,255,255,.93);
+      box-shadow: 0 15px 45px rgba(20, 50, 60, .25);
+    }
+    .subtitle { font-size: 18px; margin-bottom: 12px; }
+    .progress-bar {
+      width: 100%;
+      height: 14px;
+      border-radius: 999px;
+      background: #dceffe;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00d2ff, #3a7bd5, #8f5eff);
+      transition: width 250ms ease;
+    }
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+    .card {
+      border-radius: 14px;
+      background: #fff;
+      padding: 10px;
+      border: 2px solid #e4f2ff;
+    }
+    .notif {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      background: rgba(13, 55, 85, .92);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 12px;
+      pointer-events: none;
+    }
+    .confetti {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: radial-gradient(circle, rgba(255,255,255,.8) 1px, transparent 1px);
+      background-size: 18px 18px;
+      opacity: 0;
+      animation: pop .7s ease;
+    }
+    @keyframes pop {
+      0% { opacity: 0; transform: scale(.95); }
+      30% { opacity: .9; }
+      100% { opacity: 0; transform: scale(1.03); }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <div id="scene"></div>
+
+  <div class="start-screen" id="startScreen">
+    <div class="start-card">
+      <h1>🏝️ Кибер-Остров Моко</h1>
+      <p class="subtitle">Доброе 3D-приключение про умные привычки в интернете.</p>
+      <div class="row" style="justify-content:center; margin-bottom:10px;">
+        <button class="cta primary" id="playBtn">Играть</button>
+        <button class="cta" id="continueBtn">Продолжить</button>
+      </div>
+      <div class="row" style="justify-content:center;">
+        <button id="toggleHintsBtn">Режим подсказок: ВКЛ</button>
+        <button id="toggleMusicBtn">Звук: ВКЛ</button>
+        <a href="index.html"><button>← На главную</button></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="overlay">
+    <div class="hud">
+      <div class="stats">
+        <div class="chip" id="chapterChip">Глава 0</div>
+        <div class="chip" id="xpChip">⭐ XP: 0</div>
+        <div class="chip" id="cocoChip">🥥 Кокосы: 0</div>
+        <div class="chip" id="leafChip">🍃 Листья: 0</div>
+      </div>
+      <div class="controls">
+        <button id="hubBtn">Хаб</button>
+        <button id="libraryBtn">Библиотека</button>
+        <button id="shopBtn">Магазин</button>
+        <button id="pauseBtn">Пауза</button>
+      </div>
+    </div>
+
+    <div class="panel" id="mainPanel"></div>
+  </div>
+  <div class="notif hidden" id="toast"></div>
+</div>
+
+<script type="module">
+import * as THREE from 'https://unpkg.com/three@0.162.0/build/three.module.js';
+import { GLTFLoader } from 'https://unpkg.com/three@0.162.0/examples/jsm/loaders/GLTFLoader.js';
+
+const SAVE_KEY = 'moco_island_save_v1';
+const KNOWLEDGE = {
+  trap_mail: { title: 'Письмо-ловушка', text: 'Проверяй отправителя и не спеши открывать вложения.' },
+  fish_phishing: { title: 'Рыбка-фишинг', text: 'Слишком щедрые подарки часто обманывают.' },
+  real_friend: { title: 'Настоящий друг', text: 'Друг не просит пароли, коды и секреты.' },
+  strong_password: { title: 'Сильный пароль', text: 'Сложный и уникальный пароль защищает аккаунт.' },
+  update_lock: { title: 'Замок обновлений', text: 'Обновления закрывают уязвимости.' },
+  antivirus_tree: { title: 'Антивирусное дерево', text: 'Проверка устройства убирает вредные файлы.' },
+  doubt_shield: { title: 'Щит сомнения', text: 'Если сомневаешься — сначала проверь.' },
+  sender_check: { title: 'Проверка отправителя', text: 'Сравни имя, адрес и стиль сообщения.' }
+};
+
+const UPGRADES = [
+  { id: 'hint_plus', title: '+1 подсказка', coco: 20, leaf: 0, effect: 'hints' },
+  { id: 'time_plus', title: '+5 секунд', coco: 30, leaf: 0, effect: 'time' },
+  { id: 'auto_mark', title: 'Подсветка угроз', coco: 40, leaf: 4, effect: 'highlight' },
+  { id: 'perfect_bonus', title: 'Бонус за идеал', coco: 55, leaf: 5, effect: 'bonus' },
+  { id: 'hat_palm', title: 'Шляпа-банан', coco: 35, leaf: 2, cosmetic: 'hat' },
+  { id: 'bag_leaf', title: 'Рюкзак', coco: 45, leaf: 3, cosmetic: 'bag' },
+  { id: 'bracelet_glow', title: 'Сияющий браслет', coco: 50, leaf: 4, cosmetic: 'bracelet' },
+  { id: 'sunset_mode', title: 'Закат в хабе', coco: 25, leaf: 1, effect: 'sunset' }
+];
+
+const CHAPTERS = [
+  { id: 0, title: 'Пролог', zone: 'Домик Моко', game: 'prologue', reward: { xp: 15, coco: 10, leaf: 1, cards: ['sender_check'] } },
+  { id: 1, title: 'Почтовая пристань', zone: 'Почтовая пристань', game: 'sorting', reward: { xp: 30, coco: 20, leaf: 3, cards: ['trap_mail'] } },
+  { id: 2, title: 'Фруктовый сад', zone: 'Фруктовый сад', game: 'sorting_phish', reward: { xp: 35, coco: 24, leaf: 4, cards: ['fish_phishing', 'doubt_shield'], unlock: ['hat_palm'] } },
+  { id: 3, title: 'Парк приложений', zone: 'Парк приложений', game: 'permissions', reward: { xp: 38, coco: 28, leaf: 4, cards: ['update_lock'] } },
+  { id: 4, title: 'Чат друзей', zone: 'Чат друзей', game: 'friends', reward: { xp: 40, coco: 30, leaf: 5, cards: ['real_friend'] } },
+  { id: 5, title: 'Вирусная буря', zone: 'Башня защиты', game: 'cleanup', reward: { xp: 42, coco: 34, leaf: 6, cards: ['antivirus_tree'] } },
+  { id: 6, title: 'Серверный Камень', zone: 'Серверный камень', game: 'final_mixed', reward: { xp: 60, coco: 50, leaf: 8, cards: ['strong_password'] } }
+];
+
+const defaults = () => ({
+  chapter: 0, xp: 0, coco: 0, leaf: 0,
+  bought: [], unlockedItems: [], cards: [],
+  mocoGrowth: 0, gameFlags: {}, hints: true, sound: true,
+  zoneLevel: 0, streak: 0, finished: false
+});
+
+class SaveManager {
+  static load() { try { return { ...defaults(), ...(JSON.parse(localStorage.getItem(SAVE_KEY)) || {}) }; } catch { return defaults(); } }
+  static save(state) { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }
+  static reset() { localStorage.removeItem(SAVE_KEY); }
+}
+
+class CharacterSystem {
+  constructor(scene) {
+    this.scene = scene;
+    this.group = new THREE.Group();
+    this.group.position.set(0, 0.1, 0);
+    scene.add(this.group);
+    this.mesh = null;
+    this.clock = new THREE.Clock();
+    this.state = 'idle';
+    this.accessories = {};
+  }
+
+  async init() {
+    const loader = new GLTFLoader();
+    try {
+      const gltf = await loader.loadAsync('assets/monkey.glb');
+      this.mesh = gltf.scene;
+      this.mesh.scale.set(1.5, 1.5, 1.5);
+      this.mesh.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+      this.group.add(this.mesh);
+    } catch {
+      const body = new THREE.Mesh(new THREE.SphereGeometry(0.5, 18, 18), new THREE.MeshStandardMaterial({ color: 0xb98952 }));
+      body.position.y = 0.7;
+      this.mesh = body;
+      this.group.add(body);
+    }
+    this.createAccessories();
+  }
+
+  createAccessories() {
+    const mk = (geo, color, y = 1.25) => {
+      const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.15 }));
+      m.position.y = y;
+      m.visible = false;
+      this.group.add(m);
+      return m;
+    };
+    this.accessories.hat = mk(new THREE.ConeGeometry(0.28, 0.28, 14), 0xffcf56, 1.75);
+    this.accessories.bag = mk(new THREE.BoxGeometry(0.5, 0.4, 0.2), 0x48a868, 1.1); this.accessories.bag.position.z = -0.35;
+    this.accessories.bracelet = mk(new THREE.TorusGeometry(0.2, 0.05, 12, 20), 0x7f66ff, 0.95); this.accessories.bracelet.rotation.x = Math.PI / 2;
+    this.accessories.amulet = mk(new THREE.OctahedronGeometry(0.13), 0x76f7ff, 1.25);
+  }
+
+  setState(name) { this.state = name; }
+
+  applyUnlocks(unlocked) {
+    Object.values(this.accessories).forEach((a) => (a.visible = false));
+    if (unlocked.includes('hat_palm')) this.accessories.hat.visible = true;
+    if (unlocked.includes('bag_leaf')) this.accessories.bag.visible = true;
+    if (unlocked.includes('bracelet_glow')) this.accessories.bracelet.visible = true;
+    if (unlocked.length >= 4) this.accessories.amulet.visible = true;
+  }
+
+  tick() {
+    if (!this.mesh) return;
+    const t = this.clock.getElapsedTime();
+    this.group.position.y = 0.06 * Math.sin(t * 1.7);
+    this.group.rotation.y = 0.14 * Math.sin(t * 0.8);
+    const s = this.state;
+    const base = 1.5;
+    if (s === 'happy' || s === 'correct' || s === 'celebrate') this.group.scale.setScalar(base + 0.05 + Math.sin(t * 7) * 0.03);
+    else if (s === 'sad' || s === 'incorrect') this.group.scale.set(base * 0.95, base * 0.92, base * 0.95);
+    else if (s === 'think') this.group.rotation.z = 0.08 * Math.sin(t * 3);
+    else if (s === 'upgrade') this.group.scale.setScalar(base + 0.1 + Math.sin(t * 11) * 0.04);
+    else this.group.scale.setScalar(base);
+  }
+}
+
+class SceneWorld {
+  constructor(container) {
+    this.container = container;
+    this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0x8ee7ff);
+    this.camera = new THREE.PerspectiveCamera(58, innerWidth / innerHeight, 0.1, 200);
+    this.camera.position.set(0, 4.7, 9);
+    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer.setSize(innerWidth, innerHeight);
+    this.renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    this.renderer.shadowMap.enabled = true;
+    container.appendChild(this.renderer.domElement);
+    addEventListener('resize', () => this.onResize());
+
+    const hemi = new THREE.HemisphereLight(0xfff7d0, 0x5cb4ff, 0.9);
+    const sun = new THREE.DirectionalLight(0xfff3cf, 1.1);
+    sun.position.set(5, 8, 4);
+    sun.castShadow = true;
+    this.scene.add(hemi, sun);
+
+    const water = new THREE.Mesh(new THREE.CircleGeometry(14, 64), new THREE.MeshStandardMaterial({ color: 0x57c8ff }));
+    water.rotation.x = -Math.PI / 2;
+    water.position.y = -0.28;
+    this.scene.add(water);
+
+    const island = new THREE.Mesh(new THREE.CylinderGeometry(5.5, 6.2, 1.2, 40), new THREE.MeshStandardMaterial({ color: 0x7adf7f }));
+    island.receiveShadow = true;
+    this.scene.add(island);
+
+    this.zones = [];
+    this.makeZones();
+    this.character = new CharacterSystem(this.scene);
+    this.sparkles = this.createSparkles();
+  }
+
+  async init() { await this.character.init(); }
+
+  makeZones() {
+    const zoneData = ['Домик', 'Пристань', 'Сад', 'Парк', 'Башня', 'Библиотека', 'Магазин', 'Дерево', 'Камень'];
+    zoneData.forEach((z, i) => {
+      const a = (i / zoneData.length) * Math.PI * 2;
+      const marker = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.4, 0.5, 0.25, 16),
+        new THREE.MeshStandardMaterial({ color: new THREE.Color(`hsl(${i * 42}, 80%, 62%)`) })
+      );
+      marker.position.set(Math.cos(a) * 3.7, 0.65, Math.sin(a) * 3.7);
+      marker.castShadow = true;
+      this.scene.add(marker);
+      this.zones.push(marker);
+    });
+  }
+
+  createSparkles() {
+    const group = new THREE.Group();
+    for (let i = 0; i < 60; i++) {
+      const p = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 6), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+      p.position.set((Math.random() - .5) * 8, 0.4 + Math.random() * 2.2, (Math.random() - .5) * 8);
+      group.add(p);
+    }
+    this.scene.add(group);
+    return group;
+  }
+
+  setZoneLevel(level) {
+    this.zones.forEach((z, i) => {
+      z.material.emissive = new THREE.Color(0x000000);
+      z.scale.setScalar(1 + Math.min(level, i + 1) * 0.03);
+      if (i <= level) z.material.emissive = new THREE.Color(0x1d7c3b);
+    });
+  }
+
+  setSunset(enabled) {
+    this.scene.background = new THREE.Color(enabled ? 0xf6b56d : 0x8ee7ff);
+  }
+
+  tick() {
+    const t = performance.now() * 0.001;
+    this.sparkles.children.forEach((p, i) => { p.position.y += Math.sin(t + i) * 0.0008; });
+    this.character.tick();
+    this.renderer.render(this.scene, this.camera);
+  }
+
+  onResize() {
+    this.camera.aspect = innerWidth / innerHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(innerWidth, innerHeight);
+  }
+}
+
+class Game {
+  constructor() {
+    this.state = SaveManager.load();
+    this.world = new SceneWorld(document.getElementById('scene'));
+    this.overlay = document.getElementById('overlay');
+    this.mainPanel = document.getElementById('mainPanel');
+    this.toastEl = document.getElementById('toast');
+    this.running = false;
+    this.paused = false;
+    this.audio = new (window.AudioContext || window.webkitAudioContext)();
+    this.bindStartScreen();
+  }
+
+  async init() {
+    await this.world.init();
+    this.world.character.applyUnlocks(this.state.unlockedItems);
+    this.refreshHUD();
+    this.animate();
+  }
+
+  bindStartScreen() {
+    const start = document.getElementById('startScreen');
+    const play = document.getElementById('playBtn');
+    const cont = document.getElementById('continueBtn');
+    const hintsBtn = document.getElementById('toggleHintsBtn');
+    const musicBtn = document.getElementById('toggleMusicBtn');
+
+    hintsBtn.onclick = () => { this.state.hints = !this.state.hints; hintsBtn.textContent = `Режим подсказок: ${this.state.hints ? 'ВКЛ' : 'ВЫКЛ'}`; SaveManager.save(this.state); };
+    musicBtn.onclick = () => { this.state.sound = !this.state.sound; musicBtn.textContent = `Звук: ${this.state.sound ? 'ВКЛ' : 'ВЫКЛ'}`; SaveManager.save(this.state); };
+
+    play.onclick = () => {
+      this.state = defaults();
+      SaveManager.save(this.state);
+      start.classList.add('hidden');
+      this.startFlow(0);
+    };
+    cont.onclick = () => {
+      start.classList.add('hidden');
+      this.startFlow(this.state.chapter || 0);
+    };
+
+    document.getElementById('hubBtn').onclick = () => this.showHub();
+    document.getElementById('libraryBtn').onclick = () => this.showLibrary();
+    document.getElementById('shopBtn').onclick = () => this.showShop();
+    document.getElementById('pauseBtn').onclick = () => { this.paused = !this.paused; this.notify(this.paused ? 'Пауза' : 'Продолжаем!'); };
+  }
+
+  startFlow(chapter) {
+    this.running = true;
+    this.overlay.classList.remove('hidden');
+    this.runChapter(chapter);
+  }
+
+  refreshHUD() {
+    document.getElementById('chapterChip').textContent = `Глава ${this.state.chapter}`;
+    document.getElementById('xpChip').textContent = `⭐ XP: ${this.state.xp}`;
+    document.getElementById('cocoChip').textContent = `🥥 Кокосы: ${this.state.coco}`;
+    document.getElementById('leafChip').textContent = `🍃 Листья: ${this.state.leaf}`;
+    this.world.setZoneLevel(this.state.zoneLevel);
+    this.world.setSunset(this.state.bought.includes('sunset_mode'));
+    this.world.character.applyUnlocks(this.state.unlockedItems);
+  }
+
+  playTone(freq, dur = 0.1) {
+    if (!this.state.sound) return;
+    const osc = this.audio.createOscillator();
+    const gain = this.audio.createGain();
+    osc.frequency.value = freq;
+    gain.gain.value = 0.03;
+    osc.connect(gain).connect(this.audio.destination);
+    osc.start();
+    osc.stop(this.audio.currentTime + dur);
+  }
+
+  notify(text) {
+    this.toastEl.textContent = text;
+    this.toastEl.classList.remove('hidden');
+    setTimeout(() => this.toastEl.classList.add('hidden'), 1600);
+  }
+
+  async runChapter(id) {
+    const chapter = CHAPTERS[id];
+    if (!chapter) return this.finalCeremony();
+    this.state.chapter = id;
+    this.refreshHUD();
+
+    this.world.character.setState('think');
+    this.mainPanel.innerHTML = `
+      <h2>📖 ${chapter.title}</h2>
+      <p><b>Локация:</b> ${chapter.zone}</p>
+      <p>Моко готовится к заданию. ${this.state.hints ? 'Подсказки включены.' : 'Подсказки скрыты.'}</p>
+      <div class="progress-bar"><div class="progress-fill" style="width:${(id / CHAPTERS.length) * 100}%"></div></div>
+      <div class="row">
+        <button class="primary" id="startChapterBtn">Начать задание</button>
+        <button id="backHubBtn">В хаб</button>
+      </div>`;
+    document.getElementById('backHubBtn').onclick = () => this.showHub();
+    document.getElementById('startChapterBtn').onclick = async () => {
+      const result = await this.launchMiniGame(chapter.game);
+      this.applyReward(chapter, result.perfect);
+      if (id >= CHAPTERS.length - 1) this.finalCeremony();
+      else this.runChapter(id + 1);
+    };
+  }
+
+  showHub() {
+    const next = CHAPTERS[this.state.chapter];
+    this.mainPanel.innerHTML = `
+      <h2>🏝️ Остров Моко</h2>
+      <p>Места: Домик, Почтовая пристань, Фруктовый сад, Парк приложений, Башня защиты, Библиотека знаний, Рынок улучшений, Дерево доверия, Серверный камень.</p>
+      <p>Следующая миссия: <b>${next ? next.title : 'Финальная церемония'}</b></p>
+      <div class="row">
+        <button class="primary" id="continueStory">Продолжить сюжет</button>
+        <button id="goShop">Улучшения</button>
+        <button id="goLib">Карточки знаний</button>
+      </div>`;
+    document.getElementById('continueStory').onclick = () => this.runChapter(this.state.chapter);
+    document.getElementById('goShop').onclick = () => this.showShop();
+    document.getElementById('goLib').onclick = () => this.showLibrary();
+  }
+
+  showLibrary() {
+    const cards = Object.entries(KNOWLEDGE).map(([id, c]) => {
+      const open = this.state.cards.includes(id);
+      return `<div class="card"><h3>${open ? '📘 ' + c.title : '🔒 ???'}</h3><p>${open ? c.text : 'Откроется после приключений Моко.'}</p></div>`;
+    }).join('');
+    this.mainPanel.innerHTML = `
+      <h2>📚 Библиотека знаний</h2>
+      <div class="mini-grid">${cards}</div>
+      <div class="row" style="margin-top:10px;"><button id="hubReturn">Вернуться</button></div>`;
+    document.getElementById('hubReturn').onclick = () => this.showHub();
+  }
+
+  showShop() {
+    const items = UPGRADES.map((u) => {
+      const bought = this.state.bought.includes(u.id);
+      return `<div class="card"><h3>${bought ? '✅' : '🛍️'} ${u.title}</h3><p>Цена: ${u.coco} 🥥 / ${u.leaf} 🍃</p><button data-buy="${u.id}" ${bought ? 'disabled' : ''}>${bought ? 'Куплено' : 'Купить'}</button></div>`;
+    }).join('');
+    this.mainPanel.innerHTML = `<h2>🛒 Рынок улучшений</h2><div class="mini-grid">${items}</div><div class="row" style="margin-top:10px;"><button id="shopBack">В хаб</button></div>`;
+    this.mainPanel.querySelectorAll('[data-buy]').forEach((b) => {
+      b.onclick = () => {
+        const id = b.dataset.buy;
+        const item = UPGRADES.find((u) => u.id === id);
+        if (this.state.coco < item.coco || this.state.leaf < item.leaf) return this.notify('Нужно больше валюты!');
+        this.state.coco -= item.coco; this.state.leaf -= item.leaf;
+        this.state.bought.push(id);
+        if (item.cosmetic && !this.state.unlockedItems.includes(item.id)) this.state.unlockedItems.push(item.id);
+        this.world.character.setState('upgrade');
+        this.playTone(700, 0.12);
+        SaveManager.save(this.state);
+        this.refreshHUD();
+        this.showShop();
+      };
+    });
+    document.getElementById('shopBack').onclick = () => this.showHub();
+  }
+
+  applyReward(chapter, perfect) {
+    const rw = chapter.reward;
+    this.state.xp += rw.xp;
+    this.state.coco += rw.coco + (perfect && this.state.bought.includes('perfect_bonus') ? 6 : 0);
+    this.state.leaf += rw.leaf + (perfect ? 1 : 0);
+    this.state.zoneLevel = Math.max(this.state.zoneLevel, chapter.id + 1);
+    rw.cards?.forEach((c) => !this.state.cards.includes(c) && this.state.cards.push(c));
+    rw.unlock?.forEach((u) => !this.state.unlockedItems.includes(u) && this.state.unlockedItems.push(u));
+    this.state.mocoGrowth += 1;
+    this.state.gameFlags[chapter.game] = true;
+    this.world.character.setState(perfect ? 'celebrate' : 'happy');
+    this.playTone(perfect ? 880 : 660, 0.14);
+    SaveManager.save(this.state);
+    this.refreshHUD();
+    this.mainPanel.innerHTML = `
+      <div class="confetti"></div>
+      <h2>🎁 Награда получена!</h2>
+      <p>+${rw.xp} XP, +${rw.coco} кокосов, +${rw.leaf}${perfect ? ' + бонус за идеал!' : ''}</p>
+      <p>Моко становится опытнее и украшает остров новыми огнями и декором.</p>
+      <button class="primary" id="afterReward">Дальше</button>`;
+    document.getElementById('afterReward').onclick = () => {};
+  }
+
+  async launchMiniGame(type) {
+    if (type === 'prologue') return this.gamePrologue();
+    if (type === 'sorting' || type === 'sorting_phish') return this.gameSorting(type);
+    if (type === 'permissions') return this.gamePermissions();
+    if (type === 'friends') return this.gameFriends();
+    if (type === 'cleanup') return this.gameCleanup();
+    return this.gameFinalMix();
+  }
+
+  gamePrologue() {
+    return new Promise((resolve) => {
+      this.mainPanel.innerHTML = `<h2>👋 Приветствие</h2><p>Тико: «Если сообщение просит пароль — это ловушка?»</p>
+      <div class="row"><button class="choice" data-ok="1">Да, нужно остановиться и проверить</button><button class="choice" data-ok="0">Нет, надо быстро отправить пароль</button></div>`;
+      this.mainPanel.querySelectorAll('.choice').forEach((c) => c.onclick = () => {
+        const ok = c.dataset.ok === '1';
+        this.world.character.setState(ok ? 'correct' : 'incorrect');
+        this.notify(ok ? 'Отличный старт!' : 'Не беда, учимся вместе.');
+        resolve({ perfect: ok });
+      });
+    });
+  }
+
+  gameSorting(mode) {
+    const tasks = mode === 'sorting' ? [
+      { text: '«Срочно! Пришли пароль для проверки»', safe: false },
+      { text: '«Письмо от учителя о расписании»', safe: true },
+      { text: '«Ты выиграл 1000 подарков, жми!»', safe: false },
+      { text: '«Подтверди домашку в школьном чате»', safe: true }
+    ] : [
+      { text: '«Бесплатный редкий фрукт, только сегодня!»', safe: false },
+      { text: '«Рецепт смузи от мамы»', safe: true },
+      { text: '«Кликни для супер-скина без проверки»', safe: false },
+      { text: '«Сообщение от класса с фото похода»', safe: true }
+    ];
+    return this.quizLoop(tasks, (t) => `Выбери: доверять или проверить.\n${t.text}`);
+  }
+
+  gamePermissions() {
+    return new Promise((resolve) => {
+      const list = [
+        { id: 'cam', text: 'Камера для фото профиля', need: true },
+        { id: 'mic', text: 'Микрофон для голосовых', need: true },
+        { id: 'sms', text: 'Чтение всех SMS', need: false },
+        { id: 'files', text: 'Удаление системных файлов', need: false }
+      ];
+      const render = () => {
+        const rows = list.map((i) => `<label class="card"><input type="checkbox" data-id="${i.id}" ${i.sel ? 'checked' : ''}/> ${i.text}</label>`).join('');
+        this.mainPanel.innerHTML = `<h2>🧩 Разрешения приложения</h2><p>Оставь только нужные разрешения.</p><div class="mini-grid">${rows}</div><button class="primary" id="checkPerm">Проверить</button>`;
+        this.mainPanel.querySelectorAll('input').forEach((el) => el.onchange = () => { list.find((x) => x.id === el.dataset.id).sel = el.checked; });
+        document.getElementById('checkPerm').onclick = () => {
+          const ok = list.every((i) => Boolean(i.sel) === i.need);
+          this.world.character.setState(ok ? 'correct' : 'incorrect');
+          resolve({ perfect: ok });
+        };
+      };
+      render();
+    });
+  }
+
+  gameFriends() {
+    const profiles = [
+      { text: 'Друг Лёша: обычный стиль, без срочности, без просьб кода.', real: true },
+      { text: 'L0sha_new: «СРОЧНО пришли код из SMS!»', real: false },
+      { text: 'Leha.support: «подтверди пароль, иначе удалим чат»', real: false }
+    ];
+    return this.quizLoop(profiles, (p) => `Кто настоящий друг?\n${p.text}`, true);
+  }
+
+  gameCleanup() {
+    return new Promise((resolve) => {
+      let score = 0;
+      const target = 8;
+      const render = () => {
+        const dots = Array.from({ length: 12 }, (_, i) => `<button class="card" data-bug="${i}" style="height:52px;">${Math.random() > .5 ? '🐞 Вирус' : '✨ Чисто'}</button>`).join('');
+        this.mainPanel.innerHTML = `<h2>🧹 Вирусная буря</h2><p>Очисти минимум ${target} заражённых точек. Сейчас: ${score}</p><div class="mini-grid">${dots}</div>`;
+        this.mainPanel.querySelectorAll('[data-bug]').forEach((b) => b.onclick = () => {
+          if (b.textContent.includes('🐞')) { score++; b.textContent = '✅'; this.playTone(720, .05); }
+          if (score >= target) { this.world.character.setState('celebrate'); resolve({ perfect: true }); }
+        });
+      };
+      render();
+      setTimeout(() => resolve({ perfect: score >= target }), 30000);
+    });
+  }
+
+  async gameFinalMix() {
+    const tasks = [
+      { text: 'Письмо с просьбой пароля', safe: false },
+      { text: 'Ссылка на супер-подарок без проверки', safe: false },
+      { text: 'Приложение просит удалить системные файлы', safe: false },
+      { text: 'Друг пишет спокойно и не просит коды', safe: true },
+      { text: 'Включить обновления безопасности', safe: true }
+    ];
+    return this.quizLoop(tasks, (t) => `Финальное испытание:\n${t.text}`);
+  }
+
+  quizLoop(tasks, promptBuilder, chooseReal = false) {
+    return new Promise((resolve) => {
+      let i = 0, good = 0;
+      const next = () => {
+        const t = tasks[i];
+        if (!t) {
+          const perfect = good >= tasks.length - 1;
+          this.world.character.setState(perfect ? 'celebrate' : 'happy');
+          return resolve({ perfect });
+        }
+        this.mainPanel.innerHTML = `<h2>🎮 Мини-игра</h2><p>${promptBuilder(t).replace('\n', '<br>')}</p>
+        <div class="row">
+          <button class="choice" id="okBtn">${chooseReal ? 'Это настоящий' : 'Можно доверять'}</button>
+          <button class="choice" id="checkBtn">${chooseReal ? 'Похоже подделка' : 'Нужно проверить'}</button>
+        </div>`;
+        document.getElementById('okBtn').onclick = () => pick(true);
+        document.getElementById('checkBtn').onclick = () => pick(false);
+      };
+      const pick = (trust) => {
+        const t = tasks[i];
+        const right = chooseReal ? t.real === trust : t.safe === trust;
+        if (right) {
+          good++;
+          this.playTone(820, .08);
+          this.world.character.setState('correct');
+          this.notify('Верно!');
+        } else {
+          this.playTone(220, .1);
+          this.world.character.setState('incorrect');
+          this.notify('Почти! Сперва проверяем.');
+        }
+        i++;
+        setTimeout(next, 250);
+      };
+      next();
+    });
+  }
+
+  finalCeremony() {
+    this.state.finished = true;
+    this.state.unlockedItems.push('legendary_totem');
+    SaveManager.save(this.state);
+    this.world.character.setState('celebrate');
+    this.mainPanel.innerHTML = `
+      <div class="confetti"></div>
+      <h2>🌟 Большая церемония Серверного Камня</h2>
+      <p>Моко вырос в настоящего Защитника Острова! Остров сияет, дерево доверия расцвело, и открыт легендарный амулет.</p>
+      <h3>Что выучили:</h3>
+      <div class="mini-grid">${this.state.cards.map((c) => `<div class="card"><b>${KNOWLEDGE[c]?.title || c}</b><p>${KNOWLEDGE[c]?.text || ''}</p></div>`).join('')}</div>
+      <div class="row" style="margin-top:12px;"><button class="primary" id="restart">Играть заново</button><button id="hubFinal">Свободный режим в хабе</button></div>`;
+    document.getElementById('restart').onclick = () => {
+      this.state = defaults(); SaveManager.save(this.state); this.runChapter(0);
+    };
+    document.getElementById('hubFinal').onclick = () => this.showHub();
+  }
+
+  animate() {
+    requestAnimationFrame(() => this.animate());
+    if (this.paused) return;
+    this.world.tick();
+  }
+}
+
+const game = new Game();
+game.init();
+</script>
+</body>
+</html>
