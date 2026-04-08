@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Binary Battle — турнирный режим</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root {
+      --bc-bg: rgba(15, 28, 56, .84);
+      --bc-border: rgba(126, 173, 255, .35);
+      --bc-muted:#9fb5e2;
+      --bc-text: #eaf2ff;
+      --bc-input-bg: rgba(17,35,72,.2);
+    }
+    html[data-theme="light"] {
+      --bc-bg: rgba(255,255,255,.95);
+      --bc-muted:#496088;
+      --bc-text: #102247;
+      --bc-input-bg: rgba(255,255,255,.82);
+    }
+    .bc-wrap { display:grid; gap:18px; }
+    body[data-page="binary-tournament"] { color: var(--bc-text); }
+    .bc-shell { border:1px solid var(--bc-border); border-radius:24px; padding:22px; display:grid; gap:16px; background: var(--bc-bg); }
+    .bc-btn { border:1px solid var(--bc-border); border-radius:12px; padding:10px 14px; cursor:pointer; background:transparent; color:inherit; font-weight:700; }
+    .bc-btn.is-active { background: linear-gradient(120deg, #74a4ff, #4de2ff); color:#03142c; border-color:transparent; }
+    .bc-hidden { display:none; }
+    .bc-field { display:grid; gap:8px; }
+    .bc-input { width:100%; padding:11px 12px; border-radius:12px; border:1px solid var(--bc-border); background:var(--bc-input-bg); color:inherit; }
+    .bc-status { min-height:1.4em; font-weight:700; }
+    .bc-status.ok { color:#16a34a; }
+    .bc-status.bad { color:#dc2626; }
+    .theme-toggle { min-width: 176px; display:inline-flex; align-items:center; gap:8px; justify-content:center; }
+    .theme-icon-sun{display:none}
+    .theme-toggle-label{white-space:nowrap}
+
+    .bt-layout { display:grid; gap:14px; }
+    .bt-choice { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .bt-choice .bc-btn { min-height:48px; }
+    .bt-panel { border:1px solid var(--bc-border); border-radius:16px; padding:14px; background: rgba(116,164,255,.16); display:grid; gap:12px; }
+    .bt-panel h3 { margin:0; }
+    .bt-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .bt-subgrid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    .bt-actions { display:flex; flex-wrap:wrap; gap:10px; }
+    .bt-code-box { font-size: clamp(24px, 4vw, 36px); font-weight: 900; letter-spacing: .1em; padding: 10px 14px; border-radius: 12px; border: 1px dashed var(--bc-border); width: fit-content; }
+    .bt-link-wrap { display:grid; gap:8px; }
+    .bt-muted { color: var(--bc-muted); margin:0; }
+
+    html[data-theme="light"] .theme-icon-sun{display:inline}
+    html[data-theme="light"] .theme-icon-moon{display:none}
+    html[data-theme="dark"] .theme-icon-sun{display:none}
+    html[data-theme="dark"] .theme-icon-moon{display:inline}
+    @media (max-width:840px){ .bt-choice,.bt-grid,.bt-subgrid{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body class="page" data-page="binary-tournament">
+  <div class="theme-backdrop" aria-hidden="true">
+    <div class="theme-orb theme-orb-one"></div>
+    <div class="theme-orb theme-orb-two"></div>
+    <div class="theme-grid"></div>
+    <canvas class="theme-network" id="theme-network"></canvas>
+  </div>
+
+  <div class="site">
+    <main class="main">
+      <section class="section">
+        <div class="container bc-wrap">
+          <a class="btn ghost" href="binary-battle.html">← К режимам игры</a>
+          <div class="bc-shell">
+            <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;">
+              <h1 style="margin:0;">Binary Battle — Турнир</h1>
+              <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
+                <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
+                <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
+                <span class="theme-toggle-label">Тёмная тема</span>
+              </button>
+            </div>
+
+            <section id="tournamentMode">
+              <div class="bt-layout">
+                <p class="bt-muted">Выберите действие: вступить в существующую комнату или создать свою турнирную комнату.</p>
+                <div class="bt-choice">
+                  <button id="joinRoomBtn" class="bc-btn" type="button">Присоединиться к комнате</button>
+                  <button id="createRoomBtn" class="bc-btn" type="button">Создать комнату</button>
+                </div>
+
+                <div id="joinRoomPanel" class="bt-panel bc-hidden">
+                  <h3>Вход в комнату</h3>
+                  <div class="bt-grid">
+                    <label class="bc-field">
+                      <span>Код комнаты</span>
+                      <input id="joinRoomCode" class="bc-input" type="text" maxlength="8" placeholder="Например, Q7M9KP2" />
+                    </label>
+                    <label class="bc-field">
+                      <span>Ваш ник</span>
+                      <input id="joinNickname" class="bc-input" type="text" maxlength="30" placeholder="Введите ник" />
+                    </label>
+                  </div>
+                  <div class="bt-actions">
+                    <button id="joinRoomConfirmBtn" class="bc-btn" type="button">Войти в турнир</button>
+                  </div>
+                </div>
+
+                <div id="createRoomPanel" class="bt-panel bc-hidden">
+                  <h3>Создание турнирной комнаты</h3>
+                  <div class="bt-grid">
+                    <label class="bc-field">
+                      <span>Количество игроков (2–40)</span>
+                      <input id="playersCount" class="bc-input" type="number" min="2" max="40" value="8" />
+                    </label>
+                    <label class="bc-field">
+                      <span>Количество слов (от 1)</span>
+                      <input id="wordsCount" class="bc-input" type="number" min="1" value="10" />
+                    </label>
+                    <fieldset class="bc-field" style="border:1px solid var(--bc-border); border-radius:12px; padding:10px 12px;">
+                      <legend>Слова по этапам</legend>
+                      <div class="bt-subgrid">
+                        <label class="bc-field">
+                          <span>Текст → код</span>
+                          <input id="stageTextToCodeCount" class="bc-input" type="number" min="0" value="5" />
+                        </label>
+                        <label class="bc-field">
+                          <span>Код → текст</span>
+                          <input id="stageCodeToTextCount" class="bc-input" type="number" min="0" value="5" />
+                        </label>
+                      </div>
+                    </fieldset>
+                    <label class="bc-field">
+                      <span>Время (секунды, 20–3600)</span>
+                      <input id="timeLimit" class="bc-input" type="number" min="20" max="3600" value="300" />
+                    </label>
+                    <label class="bc-field">
+                      <span>Лимит отгаданных слов (от 2)</span>
+                      <input id="guessedWordsLimit" class="bc-input" type="number" min="2" value="12" />
+                    </label>
+                    <label class="bc-field">
+                      <span>Выбывание по ошибкам (от 1)</span>
+                      <input id="errorsElimination" class="bc-input" type="number" min="1" value="3" />
+                    </label>
+                    <fieldset class="bc-field" style="border:1px solid var(--bc-border); border-radius:12px; padding:10px 12px;">
+                      <legend>Диапазон длины слова (3–15)</legend>
+                      <div class="bt-subgrid">
+                        <label class="bc-field">
+                          <span>От</span>
+                          <input id="wordLengthMin" class="bc-input" type="number" min="3" max="15" value="3" />
+                        </label>
+                        <label class="bc-field">
+                          <span>До</span>
+                          <input id="wordLengthMax" class="bc-input" type="number" min="3" max="15" value="8" />
+                        </label>
+                      </div>
+                    </fieldset>
+                  </div>
+                  <div class="bt-actions">
+                    <button id="confirmCreateRoomBtn" class="bc-btn is-active" type="button">Создать комнату</button>
+                  </div>
+                </div>
+
+                <div id="createdRoomPanel" class="bt-panel bc-hidden">
+                  <h3>Комната создана</h3>
+                  <p class="bt-muted">Введите ники участников, затем отправьте им код или ссылку для входа.</p>
+                  <div class="bt-grid">
+                    <div>
+                      <div>Код игры</div>
+                      <div id="createdRoomCode" class="bt-code-box">—</div>
+                    </div>
+                    <div class="bt-link-wrap">
+                      <label class="bc-field">
+                        <span>Ссылка для входа</span>
+                        <input id="createdRoomLink" class="bc-input" type="text" readonly />
+                      </label>
+                      <button id="copyRoomLinkBtn" class="bc-btn" type="button">Скопировать ссылку</button>
+                    </div>
+                  </div>
+                  <label class="bc-field">
+                    <span>Ники участников (по одному на строку)</span>
+                    <textarea id="participantsNicknames" class="bc-input" rows="6" placeholder="Player_1&#10;Player_2"></textarea>
+                  </label>
+                </div>
+
+                <p id="tournamentFeedback" class="bc-status" aria-live="polite"></p>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-auth.js"></script>
+  <script>
+    (function initBackgroundAnimationPreference() {
+      const root = document.documentElement;
+      const saved = localStorage.getItem('cyber_bg_anim');
+      const enabled = saved !== '0';
+      root.classList.toggle('bg-anim-on', enabled);
+      root.classList.toggle('bg-anim-off', !enabled);
+    })();
+  </script>
+  <script>
+    (function initTheme() {
+      const key = 'cyber_theme';
+      const root = document.documentElement;
+      const toggle = document.getElementById('themeToggle');
+      if (!toggle) return;
+      const preferredDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const saved = localStorage.getItem(key);
+      const initial = saved || (preferredDark ? 'dark' : 'light');
+      root.setAttribute('data-theme', initial);
+
+      function syncLabel(theme) {
+        const label = toggle.querySelector('.theme-toggle-label');
+        if (label) label.textContent = theme === 'dark' ? 'Светлая тема' : 'Тёмная тема';
+        toggle.setAttribute('aria-pressed', String(theme === 'dark'));
+      }
+
+      syncLabel(initial);
+      toggle.addEventListener('click', () => {
+        const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+        const next = current === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        localStorage.setItem(key, next);
+        syncLabel(next);
+      });
+    })();
+
+    (async function () {
+      const tournamentFeedback = document.getElementById('tournamentFeedback');
+      const joinRoomBtn = document.getElementById('joinRoomBtn');
+      const createRoomBtn = document.getElementById('createRoomBtn');
+      const joinRoomPanel = document.getElementById('joinRoomPanel');
+      const createRoomPanel = document.getElementById('createRoomPanel');
+      const createdRoomPanel = document.getElementById('createdRoomPanel');
+
+      try {
+        await window.CyberSupabaseAuth.requireAuth({ message: 'Для турнирного режима нужно войти в аккаунт.' });
+      } catch (_) {
+        tournamentFeedback.textContent = 'Перенаправляем на страницу авторизации…';
+        tournamentFeedback.classList.add('bad');
+        return;
+      }
+
+      function setTournamentFeedback(ok, text) {
+        tournamentFeedback.textContent = text;
+        tournamentFeedback.classList.toggle('ok', ok);
+        tournamentFeedback.classList.toggle('bad', !ok);
+      }
+
+      function toggleTournamentPanel(mode) {
+        joinRoomPanel.classList.toggle('bc-hidden', mode !== 'join');
+        createRoomPanel.classList.toggle('bc-hidden', mode !== 'create');
+        joinRoomBtn.classList.toggle('is-active', mode === 'join');
+        createRoomBtn.classList.toggle('is-active', mode === 'create');
+      }
+
+      joinRoomBtn.addEventListener('click', () => {
+        toggleTournamentPanel('join');
+        setTournamentFeedback(true, 'Введите код комнаты и ник, чтобы присоединиться к турниру.');
+      });
+
+      createRoomBtn.addEventListener('click', () => {
+        toggleTournamentPanel('create');
+        setTournamentFeedback(true, 'Настройте параметры турнира и создайте комнату.');
+      });
+
+      function readPositiveInt(id, min = 1, max = Number.POSITIVE_INFINITY) {
+        const field = document.getElementById(id);
+        const value = Number.parseInt(field.value, 10);
+        if (!Number.isInteger(value) || value < min || value > max) return null;
+        return value;
+      }
+
+      function generateRoomCode() {
+        return Math.random().toString(36).slice(2, 9).toUpperCase();
+      }
+
+      document.getElementById('joinRoomConfirmBtn').addEventListener('click', () => {
+        const code = document.getElementById('joinRoomCode').value.trim().toUpperCase();
+        const nickname = document.getElementById('joinNickname').value.trim();
+        if (!code || !nickname) {
+          setTournamentFeedback(false, 'Укажите и код комнаты, и ник для входа.');
+          return;
+        }
+        setTournamentFeedback(true, `Запрос на вход отправлен: ${nickname} → комната ${code}.`);
+      });
+
+      document.getElementById('confirmCreateRoomBtn').addEventListener('click', () => {
+        const playersCount = readPositiveInt('playersCount', 2, 40);
+        const wordsCount = readPositiveInt('wordsCount', 1);
+        const stageTextToCodeCount = readPositiveInt('stageTextToCodeCount', 0);
+        const stageCodeToTextCount = readPositiveInt('stageCodeToTextCount', 0);
+        const timeLimit = readPositiveInt('timeLimit', 20, 3600);
+        const guessedWordsLimit = readPositiveInt('guessedWordsLimit', 2);
+        const errorsElimination = readPositiveInt('errorsElimination', 1);
+        const wordLengthMin = readPositiveInt('wordLengthMin', 3, 15);
+        const wordLengthMax = readPositiveInt('wordLengthMax', 3, 15);
+
+        if ([playersCount, wordsCount, stageTextToCodeCount, stageCodeToTextCount, timeLimit, guessedWordsLimit, errorsElimination, wordLengthMin, wordLengthMax].some((v) => v === null)) {
+          setTournamentFeedback(false, 'Проверьте ограничения параметров. Одно или несколько полей заполнены неверно.');
+          return;
+        }
+
+        if (wordLengthMin > wordLengthMax) {
+          setTournamentFeedback(false, 'Диапазон длины слов неверный: минимальное значение больше максимального.');
+          return;
+        }
+
+        if (stageTextToCodeCount + stageCodeToTextCount !== wordsCount) {
+          setTournamentFeedback(false, 'Сумма слов по этапам должна быть равна общему количеству слов.');
+          return;
+        }
+
+        const roomCode = generateRoomCode();
+        const roomUrl = new URL(window.location.href);
+        roomUrl.searchParams.set('room', roomCode);
+        const roomLink = roomUrl.toString();
+        document.getElementById('createdRoomCode').textContent = roomCode;
+        document.getElementById('createdRoomLink').value = roomLink;
+        createdRoomPanel.classList.remove('bc-hidden');
+
+        const totalMinutes = (timeLimit / 60).toFixed(1);
+        setTournamentFeedback(true, `Комната создана: ${playersCount} игроков, ${wordsCount} слов, время ${timeLimit} сек (${totalMinutes} мин).`);
+      });
+
+      document.getElementById('copyRoomLinkBtn').addEventListener('click', async () => {
+        const linkField = document.getElementById('createdRoomLink');
+        if (!linkField.value) {
+          setTournamentFeedback(false, 'Сначала создайте комнату, чтобы получить ссылку.');
+          return;
+        }
+        try {
+          await navigator.clipboard.writeText(linkField.value);
+          setTournamentFeedback(true, 'Ссылка скопирована в буфер обмена.');
+        } catch (_) {
+          linkField.select();
+          setTournamentFeedback(false, 'Не удалось скопировать автоматически. Скопируйте ссылку вручную из поля.');
+        }
+      });
+    })();
+  </script>
+  <script src="js/theme-network.js"></script>
+</body>
+</html>
