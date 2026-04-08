@@ -369,8 +369,12 @@
         ? await window.CyberSupabaseAuth.getProfile(activeSession.sb, activeSession.user.id).catch(() => null)
         : null;
 
-      if (authProfile?.username) {
-        sessionNickname = authProfile.username;
+      if (activeSession?.user) {
+        sessionNickname = authProfile?.username
+          || activeSession.user?.user_metadata?.username
+          || activeSession.user?.email?.split('@')[0]
+          || 'Игрок';
+        guestNicknameWrap.classList.add('bc-hidden');
         authNicknameLabel.textContent = `Вы вошли как: ${sessionNickname}`;
         authNicknameLabel.classList.remove('bc-hidden');
         authNicknameLabel.classList.add('ok');
