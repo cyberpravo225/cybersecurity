@@ -46,9 +46,10 @@
     .bt-link-wrap { display:grid; gap:8px; }
     .bt-muted { color: var(--bc-muted); margin:0; }
     .role-gate {
-      min-height: calc(100vh - 180px);
+      min-height: calc(100vh - 280px);
       display: grid;
-      place-items: center;
+      align-content: start;
+      justify-items: center;
       padding: 10px 0;
     }
     .role-gate__box {
@@ -68,12 +69,6 @@
       letter-spacing: .01em;
       color: var(--bc-text);
       line-height: 1.1;
-    }
-    .role-gate__subtitle {
-      margin: 0;
-      font-size: clamp(17px, 2.2vw, 22px);
-      font-weight: 700;
-      color: color-mix(in oklab, var(--bc-text) 82%, white 18%);
     }
     .role-gate__cards {
       display: grid;
@@ -124,7 +119,7 @@
     }
     .role-stage {
       display: grid;
-      min-height: calc(100vh - 180px);
+      min-height: calc(100vh - 280px);
     }
     .role-stage > section,
     .role-stage > div {
@@ -175,7 +170,6 @@
             <section id="roleGate" class="role-gate">
               <div class="role-gate__box">
                 <h1 class="role-gate__title">Выберите роль в турнире</h1>
-                <p class="role-gate__subtitle">Сначала выберите: вы участник или создатель комнаты.</p>
                 <div class="role-gate__nick">
                   <label class="bc-field" id="guestNicknameWrap">
                     <span>Ник для этой сессии (если вы без аккаунта)</span>
@@ -209,12 +203,6 @@
 
             <section id="tournamentMode">
               <div class="bt-layout">
-                <p class="bt-muted">Выберите действие: вступить в существующую комнату или создать свою турнирную комнату.</p>
-                <div class="bt-choice">
-                  <button id="joinRoomBtn" class="bc-btn" type="button">Присоединиться к комнате</button>
-                  <button id="createRoomBtn" class="bc-btn" type="button">Создать комнату</button>
-                </div>
-
                 <div id="joinRoomPanel" class="bt-panel bc-hidden">
                   <h3>Вход в комнату</h3>
                   <div class="bt-grid">
@@ -222,13 +210,13 @@
                       <span>Код комнаты</span>
                       <input id="joinRoomCode" class="bc-input" type="text" maxlength="8" placeholder="Например, Q7M9KP2" />
                     </label>
-                    <label class="bc-field">
+                    <label class="bc-field" id="joinNicknameWrap">
                       <span>Ваш ник</span>
                       <input id="joinNickname" class="bc-input" type="text" maxlength="30" placeholder="Введите ник" />
                     </label>
                   </div>
                   <div class="bt-actions">
-                    <button id="joinRoomConfirmBtn" class="bc-btn" type="button">Войти в турнир</button>
+                    <button id="joinRoomConfirmBtn" class="bc-btn" type="button">Войти</button>
                   </div>
                 </div>
 
@@ -368,12 +356,11 @@
       const sessionNicknameStatus = document.getElementById('sessionNicknameStatus');
       const roleParticipantBtn = document.getElementById('roleParticipantBtn');
       const roleCreatorBtn = document.getElementById('roleCreatorBtn');
-      const joinRoomBtn = document.getElementById('joinRoomBtn');
-      const createRoomBtn = document.getElementById('createRoomBtn');
       const joinRoomPanel = document.getElementById('joinRoomPanel');
       const createRoomPanel = document.getElementById('createRoomPanel');
       const createdRoomPanel = document.getElementById('createdRoomPanel');
       const joinNicknameInput = document.getElementById('joinNickname');
+      const joinNicknameWrap = document.getElementById('joinNicknameWrap');
 
       const sb = window.CyberSupabaseAuth.createClient(false);
       const activeSession = await window.CyberSupabaseAuth.getCurrentSession();
@@ -402,8 +389,6 @@
       function toggleTournamentPanel(mode) {
         joinRoomPanel.classList.toggle('bc-hidden', mode !== 'join');
         createRoomPanel.classList.toggle('bc-hidden', mode !== 'create');
-        joinRoomBtn.classList.toggle('is-active', mode === 'join');
-        createRoomBtn.classList.toggle('is-active', mode === 'create');
       }
 
       async function isNicknameUnique(nickname) {
@@ -446,11 +431,12 @@
         if (!canContinue) return false;
         roleStage.classList.add('is-flow');
         toggleTournamentPanel(mode);
-        joinRoomBtn.classList.toggle('bc-hidden', mode !== 'join');
-        createRoomBtn.classList.toggle('bc-hidden', mode !== 'create');
         if (sessionNickname) {
           joinNicknameInput.value = sessionNickname;
           joinNicknameInput.readOnly = true;
+          joinNicknameWrap.classList.add('bc-hidden');
+        } else {
+          joinNicknameWrap.classList.remove('bc-hidden');
         }
         return true;
       }
@@ -464,16 +450,6 @@
       roleCreatorBtn.addEventListener('click', async () => {
         const opened = await enterFlow('create');
         if (!opened) return;
-        setTournamentFeedback(true, 'Настройте параметры турнира и создайте комнату.');
-      });
-
-      joinRoomBtn.addEventListener('click', () => {
-        toggleTournamentPanel('join');
-        setTournamentFeedback(true, 'Введите код комнаты и ник, чтобы присоединиться к турниру.');
-      });
-
-      createRoomBtn.addEventListener('click', () => {
-        toggleTournamentPanel('create');
         setTournamentFeedback(true, 'Настройте параметры турнира и создайте комнату.');
       });
 
