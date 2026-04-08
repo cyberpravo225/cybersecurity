@@ -171,7 +171,7 @@
               <div class="role-gate__box">
                 <h1 class="role-gate__title">Выберите роль в турнире</h1>
                 <div class="role-gate__nick">
-                  <label class="bc-field" id="guestNicknameWrap">
+                  <label class="bc-field bc-hidden" id="guestNicknameWrap">
                     <span>Ник для этой сессии (если вы без аккаунта)</span>
                     <input id="sessionNickname" class="bc-input" type="text" maxlength="30" placeholder="Введите ник" />
                   </label>
@@ -371,11 +371,11 @@
 
       if (authProfile?.username) {
         sessionNickname = authProfile.username;
-        guestNicknameWrap.classList.add('bc-hidden');
         authNicknameLabel.textContent = `Вы вошли как: ${sessionNickname}`;
         authNicknameLabel.classList.remove('bc-hidden');
         authNicknameLabel.classList.add('ok');
       } else {
+        guestNicknameWrap.classList.remove('bc-hidden');
         const savedGuestNickname = sessionStorage.getItem('bb_tournament_guest_nick') || '';
         if (savedGuestNickname) sessionNicknameInput.value = savedGuestNickname;
       }
