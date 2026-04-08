@@ -206,8 +206,18 @@
 </div>
 
 <script type="module">
-import * as THREE from 'https://unpkg.com/three@0.162.0/build/three.module.js';
-import { GLTFLoader } from 'https://unpkg.com/three@0.162.0/examples/jsm/loaders/GLTFLoader.js';
+let THREE_LIB = null;
+let GLTFLoaderLib = null;
+
+async function loadThreeDeps() {
+  if (THREE_LIB && GLTFLoaderLib) return;
+  const [threeMod, gltfMod] = await Promise.all([
+    import('https://unpkg.com/three@0.162.0/build/three.module.js'),
+    import('https://unpkg.com/three@0.162.0/examples/jsm/loaders/GLTFLoader.js')
+  ]);
+  THREE_LIB = threeMod;
+  GLTFLoaderLib = gltfMod.GLTFLoader;
+}
 
 const SAVE_KEY = 'moco_island_save_v1';
 const KNOWLEDGE = {
@@ -257,6 +267,7 @@ class SaveManager {
 
 class CharacterSystem {
   constructor(scene) {
+    const THREE = THREE_LIB;
     this.scene = scene;
     this.group = new THREE.Group();
     this.group.position.set(0, 0.1, 0);
@@ -268,7 +279,8 @@ class CharacterSystem {
   }
 
   async init() {
-    const loader = new GLTFLoader();
+    const THREE = THREE_LIB;
+    const loader = new GLTFLoaderLib();
     try {
       const gltf = await loader.loadAsync('assets/monkey.glb');
       this.mesh = gltf.scene;
@@ -285,6 +297,7 @@ class CharacterSystem {
   }
 
   createAccessories() {
+    const THREE = THREE_LIB;
     const mk = (geo, color, y = 1.25) => {
       const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.15 }));
       m.position.y = y;
@@ -325,6 +338,7 @@ class CharacterSystem {
 
 class SceneWorld {
   constructor(container) {
+    const THREE = THREE_LIB;
     this.container = container;
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x8ee7ff);
@@ -412,10 +426,34 @@ class SceneWorld {
   }
 }
 
+class NullWorld {
+  constructor(container) {
+    this.container = container;
+    container.innerHTML = '<div style="position:absolute;inset:0;display:grid;place-items:center;color:#08334f;font-weight:700;background:linear-gradient(180deg,#a6f2ff,#8de6a5);">Загружаем 3D-остров…</div>';
+    this.character = { applyUnlocks() {}, setState() {} };
+  }
+  async init() {}
+  setZoneLevel() {}
+  setSunset() {}
+  tick() {}
+}
+
+async function createWorld(container) {
+  try {
+    await loadThreeDeps();
+    container.innerHTML = '';
+    const world = new SceneWorld(container);
+    await world.init();
+    return world;
+  } catch {
+    return new NullWorld(container);
+  }
+}
+
 class Game {
   constructor() {
     this.state = SaveManager.load();
-    this.world = new SceneWorld(document.getElementById('scene'));
+    this.world = new NullWorld(document.getElementById('scene'));
     this.overlay = document.getElementById('overlay');
     this.mainPanel = document.getElementById('mainPanel');
     this.toastEl = document.getElementById('toast');
@@ -424,14 +462,20 @@ class Game {
     this.audio = null;
     this.themeBtn = null;
     this.bindStartScreen();
-    this.applyTheme(this.state.theme || 'light');
+    this.applyTheme(this.resolveInitialTheme());
   }
 
   async init() {
-    await this.world.init();
+    this.world = await createWorld(document.getElementById('scene'));
     this.world.character.applyUnlocks(this.state.unlockedItems);
     this.refreshHUD();
     this.animate();
+  }
+
+  resolveInitialTheme() {
+    const siteTheme = localStorage.getItem('cyber_theme');
+    if (siteTheme === 'dark' || siteTheme === 'light') return siteTheme;
+    return this.state.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   }
 
   bindStartScreen() {
@@ -490,6 +534,7 @@ class Game {
   applyTheme(theme) {
     this.state.theme = theme;
     document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('cyber_theme', theme);
     if (theme === 'dark') {
       document.body.style.background = 'linear-gradient(165deg, #20395e, #1b2743)';
     } else {
