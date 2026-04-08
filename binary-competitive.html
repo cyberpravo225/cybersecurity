@@ -26,7 +26,6 @@
     .bc-wrap { display:grid; gap:18px; }
     body[data-page="binary-competitive"] { color: var(--bc-text); }
     .bc-shell { border:1px solid var(--bc-border); border-radius:24px; padding:22px; display:grid; gap:16px; background: var(--bc-bg); }
-    .bc-nav { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
     .bc-btn { border:1px solid var(--bc-border); border-radius:12px; padding:10px 14px; cursor:pointer; background:transparent; color:inherit; font-weight:700; }
     .bc-btn.is-active { background: linear-gradient(120deg, #74a4ff, #4de2ff); color:#03142c; border-color:transparent; }
     .bc-hidden { display:none; }
@@ -81,7 +80,7 @@
     html[data-theme="light"] .theme-icon-moon{display:none}
     html[data-theme="dark"] .theme-icon-sun{display:none}
     html[data-theme="dark"] .theme-icon-moon{display:inline}
-    @media (max-width:840px){ .bc-grid,.bc-nav,.bc-hero-grid{grid-template-columns:1fr;} }
+    @media (max-width:840px){ .bc-grid,.bc-hero-grid{grid-template-columns:1fr;} }
   </style>
 </head>
 <body class="page" data-page="binary-competitive">
@@ -107,11 +106,6 @@
               </button>
             </div>
             <p style="margin:0;color:var(--bc-muted)">2 этапа: двоичный код → текст и текст → двоичный код, по 2 слова в каждом этапе. Финал: меньше итог — лучше.</p>
-
-            <div class="bc-nav">
-              <button class="bc-btn" type="button" data-tab="competitive">⚡ Игра</button>
-              <button class="bc-btn" type="button" data-tab="tournament">🏆 Турнир</button>
-            </div>
 
             <section id="competitiveMode">
               <div class="bc-hero-grid">
@@ -142,9 +136,6 @@
               </div>
             </section>
 
-            <section id="tournamentMode" class="bc-hidden">
-              <p>Турнирный режим оставлен без изменений.</p>
-            </section>
           </div>
         </div>
       </section>
@@ -200,17 +191,6 @@
     })();
 
     (async function () {
-      const tabs = document.querySelectorAll('[data-tab]');
-      const competitiveMode = document.getElementById('competitiveMode');
-      const tournamentMode = document.getElementById('tournamentMode');
-      tabs.forEach((btn) => btn.addEventListener('click', () => {
-        const t = btn.dataset.tab;
-        competitiveMode.classList.toggle('bc-hidden', t !== 'competitive');
-        tournamentMode.classList.toggle('bc-hidden', t !== 'tournament');
-        tabs.forEach((i) => i.classList.toggle('is-active', i === btn));
-      }));
-      tabs[0]?.classList.add('is-active');
-
       const WORDS_PER_STAGE = 2;
 
       const setFeedback = (ok, text) => {
@@ -438,6 +418,7 @@
       document.addEventListener('keyup', (event) => {
         if (event.key === 'Tab') toggleModal(false);
       });
+
     })();
   </script>
   <script src="js/theme-network.js"></script>
