@@ -227,6 +227,11 @@
                   <div class="bt-actions">
                     <button id="joinRoomConfirmBtn" class="bc-btn" type="button">Войти</button>
                   </div>
+                  <p class="bt-waiting" id="participantWaitingStatus">Ожидание подключения к комнате…</p>
+                  <div class="bc-field">
+                    <span>Участники в комнате</span>
+                    <ul id="participantPlayersList" class="bt-players-list"></ul>
+                  </div>
                 </div>
 
                 <div id="createRoomPanel" class="bt-panel bc-hidden">
@@ -388,6 +393,8 @@
       const createdRoomPanel = document.getElementById('createdRoomPanel');
       const joinNicknameInput = document.getElementById('joinNickname');
       const joinNicknameWrap = document.getElementById('joinNicknameWrap');
+      const participantPlayersList = document.getElementById('participantPlayersList');
+      const participantWaitingStatus = document.getElementById('participantWaitingStatus');
       const createdRoomCodeEl = document.getElementById('createdRoomCode');
       const createdRoomLinkEl = document.getElementById('createdRoomLink');
       const connectedPlayersList = document.getElementById('connectedPlayersList');
@@ -526,6 +533,15 @@
         }
       }
 
+      function renderParticipantPlayers(participants = []) {
+        participantPlayersList.innerHTML = '';
+        participants.forEach((nickname) => {
+          const li = document.createElement('li');
+          li.textContent = nickname;
+          participantPlayersList.appendChild(li);
+        });
+      }
+
       function clearParticipantWatcher() {
         if (participantWatchTimer) {
           clearInterval(participantWatchTimer);
@@ -559,7 +575,15 @@
           currentRoomChannel = null;
         }
 
-        const channel = sb.channel(`bb_tournament_${normalizedCode}`);
+        const channel = sb.channel(`bb_tournament_${normalizedCode}`, { config: { presence: { key: `${normalizedCode}:${sessionNickname}` } } });
+
+        channel.on('presence', { event: 'sync' }, () => {
+          const state = channel.presenceState();
+          const fromPresence = Object.values(state).flat().map((entry) => String(entry?.nickname || '').trim()).filter(Boolean);
+          connectedPlayers = Array.from(new Set(fromPresence));
+          renderConnectedPlayers({ participants: connectedPlayers, started: creatorStartStatus.classList.contains('ok') });
+          renderParticipantPlayers(connectedPlayers);
+        });
 
         channel.on('broadcast', { event: 'participant_joined' }, ({ payload }) => {
           const nickname = String(payload?.nickname || '').trim();
@@ -567,13 +591,16 @@
           if (!connectedPlayers.includes(nickname)) {
             connectedPlayers.push(nickname);
             renderConnectedPlayers({ participants: connectedPlayers, started: creatorStartStatus.classList.contains('ok') });
+            renderParticipantPlayers(connectedPlayers);
           }
         });
 
         channel.on('broadcast', { event: 'game_started' }, () => {
           renderConnectedPlayers({ participants: connectedPlayers, started: true });
+          renderParticipantPlayers(connectedPlayers);
           if (role === 'participant') {
             clearParticipantWatcher();
+            participantWaitingStatus.textContent = 'Игра началась. Переходим в матч…';
             setTournamentFeedback(true, `Игра в комнате ${normalizedCode} началась. Переходим в матч…`);
             setTimeout(() => launchTournamentGame(normalizedCode, joinNicknameInput.value || sessionNickname, 'participant'), 350);
           }
@@ -593,6 +620,7 @@
           });
         });
 
+        await channel.track({ nickname: sessionNickname, joinedAt: Date.now(), role });
         currentRoomChannel = channel;
         return channel;
       }
@@ -624,6 +652,7 @@
         }
 
         clearParticipantWatcher();
+        participantWaitingStatus.textContent = 'Ожидание начала игры создателем…';
         participantWatchTimer = setInterval(() => {
           setTournamentFeedback(true, `Вы подключены к комнате ${code}. Ожидание начала игры создателем…`);
         }, 4000);
@@ -730,6 +759,7 @@
         try {
           await currentRoomChannel.send({ type: 'broadcast', event: 'game_started', payload: { code: creatorRoomCode, startedAt: Date.now() } });
           renderConnectedPlayers({ participants: connectedPlayers, started: true });
+          renderParticipantPlayers(connectedPlayers);
           setTournamentFeedback(true, 'Матч запущен. Переходим в игру…');
           setTimeout(() => launchTournamentGame(creatorRoomCode, sessionNickname, 'creator'), 250);
         } catch (_) {
@@ -749,6 +779,7 @@
           await currentRoomChannel.send({ type: 'broadcast', event: 'participant_joined', payload: { code: creatorRoomCode, nickname: sessionNickname, joinedAt: Date.now() } });
           await currentRoomChannel.send({ type: 'broadcast', event: 'game_started', payload: { code: creatorRoomCode, startedAt: Date.now() } });
           renderConnectedPlayers({ participants: connectedPlayers, started: true });
+          renderParticipantPlayers(connectedPlayers);
           setTournamentFeedback(true, 'Вы присоединились и матч запускается…');
           setTimeout(() => launchTournamentGame(creatorRoomCode, sessionNickname, 'creator-player'), 250);
         } catch (_) {
