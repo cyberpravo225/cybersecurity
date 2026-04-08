@@ -210,7 +210,7 @@ let THREE_LIB = null;
 let FBXLoaderLib = null;
 const DEP_LOAD_TIMEOUT_MS = 5000;
 const MODEL_LOAD_TIMEOUT_MS = 7000;
-const FBX_PATHS = ['assets/Idlematerial.fbx', './assets/Idlematerial.fbx', '/assets/Idlematerial.fbx'];
+const FBX_MODEL_PATH = 'assets/Idlematerial.fbx';
 
 function withTimeout(promise, ms, label) {
   return Promise.race([
@@ -219,15 +219,6 @@ function withTimeout(promise, ms, label) {
   ]);
 }
 
-async function detectAssetPath(candidates) {
-  for (const path of candidates) {
-    try {
-      const res = await fetch(path, { method: 'HEAD' });
-      if (res.ok) return path;
-    } catch {}
-  }
-  return candidates[0];
-}
 
 async function loadThreeDeps() {
   if (THREE_LIB && FBXLoaderLib) return;
@@ -302,9 +293,8 @@ class CharacterSystem {
   async init() {
     const THREE = THREE_LIB;
     try {
-      const assetPath = await detectAssetPath(FBX_PATHS);
       const fbxLoader = new FBXLoaderLib();
-      const fbx = await withTimeout(fbxLoader.loadAsync(assetPath), MODEL_LOAD_TIMEOUT_MS, 'fbx monkey model');
+      const fbx = await withTimeout(fbxLoader.loadAsync(FBX_MODEL_PATH), MODEL_LOAD_TIMEOUT_MS, 'fbx moco breathing model');
       this.mesh = fbx;
       this.normalizeMesh(this.mesh, 2.2);
       this.mesh.rotation.y = -Math.PI / 2;
@@ -498,8 +488,7 @@ class NullWorld {
   async init() {}
   async checkFbxAvailability() {
     try {
-      const assetPath = await detectAssetPath(FBX_PATHS);
-      const resp = await fetch(assetPath, { method: 'HEAD' });
+      const resp = await fetch(FBX_MODEL_PATH, { method: 'HEAD' });
       this.hasFbxHint = resp.ok;
     } catch {}
   }
