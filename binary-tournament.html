@@ -45,12 +45,49 @@
     .bt-code-box { font-size: clamp(24px, 4vw, 36px); font-weight: 900; letter-spacing: .1em; padding: 10px 14px; border-radius: 12px; border: 1px dashed var(--bc-border); width: fit-content; }
     .bt-link-wrap { display:grid; gap:8px; }
     .bt-muted { color: var(--bc-muted); margin:0; }
+    .role-gate {
+      min-height: calc(100vh - 180px);
+      display: grid;
+      place-items: center;
+      padding: 10px 0;
+    }
+    .role-gate__box {
+      width: min(760px, 100%);
+      border: 1px solid var(--bc-border);
+      border-radius: 24px;
+      background: var(--bc-bg);
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+      text-align: center;
+    }
+    .role-gate__cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .role-card {
+      border: 1px solid var(--bc-border);
+      border-radius: 18px;
+      padding: 18px 14px;
+      background: rgba(116,164,255,.16);
+      display: grid;
+      gap: 10px;
+      cursor: pointer;
+      transition: transform .2s ease, border-color .2s ease;
+    }
+    .role-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(126, 173, 255, .7);
+    }
+    .role-card h3,
+    .role-card p { margin: 0; }
 
     html[data-theme="light"] .theme-icon-sun{display:inline}
     html[data-theme="light"] .theme-icon-moon{display:none}
     html[data-theme="dark"] .theme-icon-sun{display:none}
     html[data-theme="dark"] .theme-icon-moon{display:inline}
-    @media (max-width:840px){ .bt-choice,.bt-grid,.bt-subgrid{grid-template-columns:1fr;} }
+    @media (max-width:840px){ .bt-choice,.bt-grid,.bt-subgrid,.role-gate__cards{grid-template-columns:1fr;} }
   </style>
 </head>
 <body class="page" data-page="binary-tournament">
@@ -66,7 +103,24 @@
       <section class="section">
         <div class="container bc-wrap">
           <a class="btn ghost" href="binary-battle.html">← К режимам игры</a>
-          <div class="bc-shell">
+          <section id="roleGate" class="role-gate">
+            <div class="role-gate__box">
+              <h1 style="margin:0;">Выберите роль в турнире</h1>
+              <p class="bt-muted">Сначала выберите: вы участник или создатель комнаты.</p>
+              <div class="role-gate__cards">
+                <button id="roleParticipantBtn" class="role-card" type="button">
+                  <h3>Я участник</h3>
+                  <p>Войти в уже созданную комнату по коду.</p>
+                </button>
+                <button id="roleCreatorBtn" class="role-card" type="button">
+                  <h3>Я создатель</h3>
+                  <p>Настроить параметры турнира и создать комнату.</p>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <div id="tournamentFlow" class="bc-shell bc-hidden">
             <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;">
               <h1 style="margin:0;">Binary Battle — Турнир</h1>
               <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
@@ -227,6 +281,10 @@
 
     (async function () {
       const tournamentFeedback = document.getElementById('tournamentFeedback');
+      const roleGate = document.getElementById('roleGate');
+      const tournamentFlow = document.getElementById('tournamentFlow');
+      const roleParticipantBtn = document.getElementById('roleParticipantBtn');
+      const roleCreatorBtn = document.getElementById('roleCreatorBtn');
       const joinRoomBtn = document.getElementById('joinRoomBtn');
       const createRoomBtn = document.getElementById('createRoomBtn');
       const joinRoomPanel = document.getElementById('joinRoomPanel');
@@ -253,6 +311,22 @@
         joinRoomBtn.classList.toggle('is-active', mode === 'join');
         createRoomBtn.classList.toggle('is-active', mode === 'create');
       }
+
+      function enterFlow(mode) {
+        roleGate.classList.add('bc-hidden');
+        tournamentFlow.classList.remove('bc-hidden');
+        toggleTournamentPanel(mode);
+      }
+
+      roleParticipantBtn.addEventListener('click', () => {
+        enterFlow('join');
+        setTournamentFeedback(true, 'Введите код комнаты и ник, чтобы присоединиться к турниру.');
+      });
+
+      roleCreatorBtn.addEventListener('click', () => {
+        enterFlow('create');
+        setTournamentFeedback(true, 'Настройте параметры турнира и создайте комнату.');
+      });
 
       joinRoomBtn.addEventListener('click', () => {
         toggleTournamentPanel('join');
