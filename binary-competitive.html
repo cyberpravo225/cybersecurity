@@ -198,7 +198,7 @@
     })();
 
     (async function () {
-      const WORDS_PER_STAGE = 2;
+      const DEFAULT_STAGE_WORDS = 2;
 
       const setFeedback = (ok, text) => {
         const el = document.getElementById('compFeedback');
@@ -230,6 +230,23 @@
       const tournamentRoomCode = String(query.get('room') || tournamentRuntime?.roomCode || '').trim().toUpperCase();
       const tournamentRole = String(query.get('role') || tournamentRuntime?.role || '').trim();
       const isTournamentCreator = tournamentMode && (tournamentRole === 'creator' || tournamentRole === 'creator-player');
+      const tournamentSettings = (tournamentMode && tournamentRuntime?.settings && typeof tournamentRuntime.settings === 'object')
+        ? tournamentRuntime.settings
+        : null;
+      const stage1WordsCount = tournamentMode
+        ? Math.max(1, Number.parseInt(tournamentSettings?.stageTextToCodeCount, 10) || DEFAULT_STAGE_WORDS)
+        : DEFAULT_STAGE_WORDS;
+      const stage2WordsCount = tournamentMode
+        ? Math.max(1, Number.parseInt(tournamentSettings?.stageCodeToTextCount, 10) || DEFAULT_STAGE_WORDS)
+        : DEFAULT_STAGE_WORDS;
+      const tournamentTimeLimit = tournamentMode
+        ? Math.max(20, Number.parseInt(tournamentSettings?.timeLimit, 10) || 300)
+        : 0;
+      const eliminationErrorsLimit = tournamentMode
+        ? Math.max(1, Number.parseInt(tournamentSettings?.errorsElimination, 10) || 3)
+        : 0;
+      const minWordLen = tournamentMode ? Math.max(1, Number.parseInt(tournamentSettings?.wordLengthMin, 10) || 1) : 1;
+      const maxWordLen = tournamentMode ? Math.max(minWordLen, Number.parseInt(tournamentSettings?.wordLengthMax, 10) || 99) : 99;
       const creatorResultsPanel = document.getElementById('creatorResultsPanel');
       const creatorResultsList = document.getElementById('creatorResultsList');
       let tournamentChannel = null;
@@ -323,7 +340,11 @@
 
       const toBinaryWord = (word) => word.toUpperCase().split('').map(ch => ch.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
       const normalizeText = (v) => String(v || '').trim().toUpperCase();
-      const pickRandomWords = (arr, count = WORDS_PER_STAGE) => [...arr].sort(() => Math.random() - 0.5).slice(0, count);
+      const pickRandomWords = (arr, count = DEFAULT_STAGE_WORDS) => {
+        const filtered = (arr || []).filter((w) => w.length >= minWordLen && w.length <= maxWordLen);
+        const source = filtered.length >= count ? filtered : arr;
+        return [...source].sort(() => Math.random() - 0.5).slice(0, count);
+      };
 
       const state = {
         stage: 0,
@@ -336,7 +357,8 @@
         timerId: null,
         errors: 0,
         penaltySeconds: 0,
-        finished: false
+        finished: false,
+        timeLimitTriggered: false
       };
 
       function renderPrompt() {
@@ -364,6 +386,10 @@
         state.timerId = setInterval(() => {
           const sec = ((performance.now() - state.gameStart) / 1000) + state.penaltySeconds;
           document.getElementById('stageTimer').textContent = sec.toFixed(1);
+          if (tournamentMode && tournamentTimeLimit > 0 && sec >= tournamentTimeLimit && !state.timeLimitTriggered && !state.finished) {
+            state.timeLimitTriggered = true;
+            finishGame();
+          }
         }, 100);
       }
 
@@ -438,20 +464,26 @@
         state.penaltySeconds = 0;
         state.gameStart = performance.now();
         state.finished = false;
-        state.words1 = pickRandomWords(wordPools[ageGroup].stage1, WORDS_PER_STAGE);
-        state.words2 = pickRandomWords(wordPools[ageGroup].stage2, WORDS_PER_STAGE);
+        state.timeLimitTriggered = false;
+        state.words1 = pickRandomWords(wordPools[ageGroup].stage1, stage1WordsCount);
+        state.words2 = pickRandomWords(wordPools[ageGroup].stage2, stage2WordsCount);
         document.getElementById('errorsCount').textContent = '0';
         document.getElementById('finalResult').classList.add('bc-hidden');
         document.getElementById('startGameBtn').classList.add('bc-hidden');
         document.getElementById('submitAnswerBtn').classList.remove('bc-hidden');
         renderPrompt();
         startStageTimer();
-        setFeedback(true, 'Этап 1 начался. Переводи двоичный код в текст.');
+        if (tournamentMode) {
+          setFeedback(true, `Этап 1 начался. Настройки турнира: ${stage1WordsCount}+${stage2WordsCount} слов, лимит ${tournamentTimeLimit}с, выбывание после ${eliminationErrorsLimit} ошибок.`);
+        } else {
+          setFeedback(true, 'Этап 1 начался. Переводи двоичный код в текст.');
+        }
       });
 
       async function goNextTask(message, ok) {
         state.index += 1;
-        if (state.index >= WORDS_PER_STAGE) {
+        const stageTarget = state.stage === 1 ? stage1WordsCount : stage2WordsCount;
+        if (state.index >= stageTarget) {
           const stageTime = stopStageTimer();
           state.stageTimes[state.stage - 1] = stageTime;
           if (state.stage === 1) {
@@ -481,6 +513,11 @@
           state.errors += 1;
           state.penaltySeconds += 20;
           document.getElementById('errorsCount').textContent = String(state.errors);
+          if (tournamentMode && eliminationErrorsLimit > 0 && state.errors >= eliminationErrorsLimit) {
+            setFeedback(false, `Достигнут лимит ошибок (${eliminationErrorsLimit}). Игра завершена.`);
+            await finishGame();
+            return;
+          }
           await goNextTask(`Неверно: +20 сек. Правильный ответ: ${expected}. Следующее задание.`, false);
           return;
         }
