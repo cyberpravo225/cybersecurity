@@ -208,6 +208,7 @@
 <script type="module">
 let THREE_LIB = null;
 let GLTFLoaderLib = null;
+let FBXLoaderLib = null;
 const DEP_LOAD_TIMEOUT_MS = 5000;
 const MODEL_LOAD_TIMEOUT_MS = 7000;
 
@@ -285,13 +286,15 @@ function extractFirstMeshData(glb) {
 }
 
 async function loadThreeDeps() {
-  if (THREE_LIB && GLTFLoaderLib) return;
-  const [threeMod, gltfMod] = await withTimeout(Promise.all([
+  if (THREE_LIB && GLTFLoaderLib && FBXLoaderLib) return;
+  const [threeMod, gltfMod, fbxMod] = await withTimeout(Promise.all([
     import('https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js'),
-    import('https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/loaders/GLTFLoader.js')
+    import('https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/loaders/GLTFLoader.js'),
+    import('https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/loaders/FBXLoader.js')
   ]), DEP_LOAD_TIMEOUT_MS, '3D deps');
   THREE_LIB = threeMod;
   GLTFLoaderLib = gltfMod.GLTFLoader;
+  FBXLoaderLib = fbxMod.FBXLoader;
 }
 
 const SAVE_KEY = 'moco_island_save_v1';
@@ -351,23 +354,39 @@ class CharacterSystem {
     this.clock = new THREE.Clock();
     this.state = 'idle';
     this.accessories = {};
+    this.mixer = null;
   }
 
   async init() {
     const THREE = THREE_LIB;
-    const loader = new GLTFLoaderLib();
     try {
-      const gltf = await withTimeout(loader.loadAsync('assets/monkey.glb'), MODEL_LOAD_TIMEOUT_MS, 'monkey model');
-      this.mesh = gltf.scene;
+      const fbxLoader = new FBXLoaderLib();
+      const fbx = await withTimeout(fbxLoader.loadAsync('assets/Idlematerial.fbx'), MODEL_LOAD_TIMEOUT_MS, 'fbx monkey model');
+      this.mesh = fbx;
       this.mesh.scale.set(1.5, 1.5, 1.5);
       this.mesh.rotation.y = -Math.PI / 2;
       this.mesh.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+      if (fbx.animations?.length) {
+        this.mixer = new THREE.AnimationMixer(this.mesh);
+        const idle = this.mixer.clipAction(fbx.animations[0]);
+        idle.play();
+      }
       this.group.add(this.mesh);
     } catch {
-      const body = new THREE.Mesh(new THREE.SphereGeometry(0.5, 18, 18), new THREE.MeshStandardMaterial({ color: 0xb98952 }));
-      body.position.y = 0.7;
-      this.mesh = body;
-      this.group.add(body);
+      try {
+        const loader = new GLTFLoaderLib();
+        const gltf = await withTimeout(loader.loadAsync('assets/monkey.glb'), MODEL_LOAD_TIMEOUT_MS, 'monkey model');
+        this.mesh = gltf.scene;
+        this.mesh.scale.set(1.5, 1.5, 1.5);
+        this.mesh.rotation.y = -Math.PI / 2;
+        this.mesh.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+        this.group.add(this.mesh);
+      } catch {
+        const body = new THREE.Mesh(new THREE.SphereGeometry(0.5, 18, 18), new THREE.MeshStandardMaterial({ color: 0xb98952 }));
+        body.position.y = 0.7;
+        this.mesh = body;
+        this.group.add(body);
+      }
     }
     this.createAccessories();
   }
@@ -400,6 +419,7 @@ class CharacterSystem {
   tick() {
     if (!this.mesh) return;
     const t = this.clock.getElapsedTime();
+    if (this.mixer) this.mixer.update(this.clock.getDelta());
     this.group.position.y = 0.06 * Math.sin(t * 1.7);
     this.group.rotation.y = 0.14 * Math.sin(t * 0.8);
     const s = this.state;
