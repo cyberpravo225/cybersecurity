@@ -208,13 +208,22 @@
 <script type="module">
 let THREE_LIB = null;
 let GLTFLoaderLib = null;
+const DEP_LOAD_TIMEOUT_MS = 5000;
+const MODEL_LOAD_TIMEOUT_MS = 7000;
+
+function withTimeout(promise, ms, label) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error(`${label} timeout`)), ms))
+  ]);
+}
 
 async function loadThreeDeps() {
   if (THREE_LIB && GLTFLoaderLib) return;
-  const [threeMod, gltfMod] = await Promise.all([
-    import('https://unpkg.com/three@0.162.0/build/three.module.js'),
-    import('https://unpkg.com/three@0.162.0/examples/jsm/loaders/GLTFLoader.js')
-  ]);
+  const [threeMod, gltfMod] = await withTimeout(Promise.all([
+    import('https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js'),
+    import('https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/loaders/GLTFLoader.js')
+  ]), DEP_LOAD_TIMEOUT_MS, '3D deps');
   THREE_LIB = threeMod;
   GLTFLoaderLib = gltfMod.GLTFLoader;
 }
@@ -282,7 +291,7 @@ class CharacterSystem {
     const THREE = THREE_LIB;
     const loader = new GLTFLoaderLib();
     try {
-      const gltf = await loader.loadAsync('assets/monkey.glb');
+      const gltf = await withTimeout(loader.loadAsync('assets/monkey.glb'), MODEL_LOAD_TIMEOUT_MS, 'monkey model');
       this.mesh = gltf.scene;
       this.mesh.scale.set(1.5, 1.5, 1.5);
       this.mesh.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
@@ -429,7 +438,7 @@ class SceneWorld {
 class NullWorld {
   constructor(container) {
     this.container = container;
-    container.innerHTML = '<div style="position:absolute;inset:0;display:grid;place-items:center;color:#08334f;font-weight:700;background:linear-gradient(180deg,#a6f2ff,#8de6a5);">Загружаем 3D-остров…</div>';
+    container.innerHTML = '<div style="position:absolute;inset:0;display:grid;place-items:center;color:#08334f;font-weight:700;background:linear-gradient(180deg,#a6f2ff,#8de6a5);text-align:center;padding:20px;">Загружаем 3D-остров…<br><small>Если сеть медленная, игра продолжит работу без задержки.</small></div>';
     this.character = { applyUnlocks() {}, setState() {} };
   }
   async init() {}
@@ -466,10 +475,13 @@ class Game {
   }
 
   async init() {
-    this.world = await createWorld(document.getElementById('scene'));
-    this.world.character.applyUnlocks(this.state.unlockedItems);
     this.refreshHUD();
     this.animate();
+    createWorld(document.getElementById('scene')).then((world) => {
+      this.world = world;
+      this.world.character.applyUnlocks(this.state.unlockedItems);
+      this.refreshHUD();
+    });
   }
 
   resolveInitialTheme() {
