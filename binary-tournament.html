@@ -56,10 +56,24 @@
       border: 1px solid var(--bc-border);
       border-radius: 24px;
       background: var(--bc-bg);
-      padding: 24px;
+      padding: 30px;
       display: grid;
-      gap: 16px;
+      gap: 20px;
       text-align: center;
+    }
+    .role-gate__title {
+      margin: 0;
+      font-size: clamp(32px, 4.8vw, 50px);
+      font-weight: 900;
+      letter-spacing: .01em;
+      color: var(--bc-text);
+      line-height: 1.1;
+    }
+    .role-gate__subtitle {
+      margin: 0;
+      font-size: clamp(17px, 2.2vw, 22px);
+      font-weight: 700;
+      color: color-mix(in oklab, var(--bc-text) 82%, white 18%);
     }
     .role-gate__cards {
       display: grid;
@@ -69,19 +83,31 @@
     .role-card {
       border: 1px solid var(--bc-border);
       border-radius: 18px;
-      padding: 18px 14px;
-      background: rgba(116,164,255,.16);
+      padding: 24px 18px;
+      background: linear-gradient(140deg, rgba(116,164,255,.3), rgba(77,226,255,.22));
       display: grid;
-      gap: 10px;
+      gap: 14px;
       cursor: pointer;
-      transition: transform .2s ease, border-color .2s ease;
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
     }
     .role-card:hover {
-      transform: translateY(-2px);
+      transform: translateY(-3px);
       border-color: rgba(126, 173, 255, .7);
+      box-shadow: 0 14px 34px rgba(77, 226, 255, .22);
     }
     .role-card h3,
     .role-card p { margin: 0; }
+    .role-card h3 {
+      font-size: clamp(24px, 3vw, 34px);
+      font-weight: 900;
+      color: var(--bc-text);
+    }
+    .role-card p {
+      font-size: clamp(16px, 2vw, 20px);
+      font-weight: 700;
+      color: color-mix(in oklab, var(--bc-text) 78%, white 22%);
+      line-height: 1.35;
+    }
 
     html[data-theme="light"] .theme-icon-sun{display:inline}
     html[data-theme="light"] .theme-icon-moon{display:none}
@@ -105,8 +131,8 @@
           <a class="btn ghost" href="binary-battle.html">← К режимам игры</a>
           <section id="roleGate" class="role-gate">
             <div class="role-gate__box">
-              <h1 style="margin:0;">Выберите роль в турнире</h1>
-              <p class="bt-muted">Сначала выберите: вы участник или создатель комнаты.</p>
+              <h1 class="role-gate__title">Выберите роль в турнире</h1>
+              <p class="role-gate__subtitle">Сначала выберите: вы участник или создатель комнаты.</p>
               <div class="role-gate__cards">
                 <button id="roleParticipantBtn" class="role-card" type="button">
                   <h3>Я участник</h3>
