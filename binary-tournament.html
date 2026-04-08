@@ -406,6 +406,7 @@
       let participantWatchTimer = null;
       let currentRoomChannel = null;
       let connectedPlayers = [];
+      let tournamentSettings = null;
 
       const sb = window.CyberSupabaseAuth.createClient(false);
       const activeSession = await window.CyberSupabaseAuth.getCurrentSession();
@@ -549,12 +550,13 @@
         }
       }
 
-      function launchTournamentGame(roomCode, nickname, sourceRole = 'participant') {
+      function launchTournamentGame(roomCode, nickname, sourceRole = 'participant', settings = tournamentSettings) {
         const payload = {
           roomCode: normalizeCode(roomCode),
           nickname: String(nickname || '').trim(),
           role: sourceRole,
-          startedAt: Date.now()
+          startedAt: Date.now(),
+          settings: settings || null
         };
         sessionStorage.setItem('bb_tournament_runtime', JSON.stringify(payload));
 
@@ -595,14 +597,15 @@
           }
         });
 
-        channel.on('broadcast', { event: 'game_started' }, () => {
+        channel.on('broadcast', { event: 'game_started' }, ({ payload }) => {
           renderConnectedPlayers({ participants: connectedPlayers, started: true });
           renderParticipantPlayers(connectedPlayers);
           if (role === 'participant') {
             clearParticipantWatcher();
             participantWaitingStatus.textContent = 'Игра началась. Переходим в матч…';
             setTournamentFeedback(true, `Игра в комнате ${normalizedCode} началась. Переходим в матч…`);
-            setTimeout(() => launchTournamentGame(normalizedCode, joinNicknameInput.value || sessionNickname, 'participant'), 350);
+            const incomingSettings = payload?.settings || tournamentSettings || null;
+            setTimeout(() => launchTournamentGame(normalizedCode, joinNicknameInput.value || sessionNickname, 'participant', incomingSettings), 350);
           }
         });
 
@@ -694,11 +697,24 @@
         createdRoomCodeEl.textContent = roomCode;
         createdRoomLinkEl.value = roomLink;
 
+        tournamentSettings = {
+          playersCount,
+          wordsCount,
+          stageTextToCodeCount,
+          stageCodeToTextCount,
+          timeLimit,
+          guessedWordsLimit,
+          errorsElimination,
+          wordLengthMin,
+          wordLengthMax
+        };
+
         const room = {
           code: roomCode,
           creator: sessionNickname,
           participants: [],
-          started: false
+          started: false,
+          settings: tournamentSettings
         };
         creatorRoomCode = roomCode;
         renderConnectedPlayers(room);
@@ -757,11 +773,11 @@
           return;
         }
         try {
-          await currentRoomChannel.send({ type: 'broadcast', event: 'game_started', payload: { code: creatorRoomCode, startedAt: Date.now() } });
+          await currentRoomChannel.send({ type: 'broadcast', event: 'game_started', payload: { code: creatorRoomCode, startedAt: Date.now(), settings: tournamentSettings } });
           renderConnectedPlayers({ participants: connectedPlayers, started: true });
           renderParticipantPlayers(connectedPlayers);
           setTournamentFeedback(true, 'Матч запущен. Переходим в игру…');
-          setTimeout(() => launchTournamentGame(creatorRoomCode, sessionNickname, 'creator'), 250);
+          setTimeout(() => launchTournamentGame(creatorRoomCode, sessionNickname, 'creator', tournamentSettings), 250);
         } catch (_) {
           setTournamentFeedback(false, 'Не удалось запустить игру. Проверьте соединение и повторите.');
         }
@@ -777,11 +793,11 @@
         }
         try {
           await currentRoomChannel.send({ type: 'broadcast', event: 'participant_joined', payload: { code: creatorRoomCode, nickname: sessionNickname, joinedAt: Date.now() } });
-          await currentRoomChannel.send({ type: 'broadcast', event: 'game_started', payload: { code: creatorRoomCode, startedAt: Date.now() } });
+          await currentRoomChannel.send({ type: 'broadcast', event: 'game_started', payload: { code: creatorRoomCode, startedAt: Date.now(), settings: tournamentSettings } });
           renderConnectedPlayers({ participants: connectedPlayers, started: true });
           renderParticipantPlayers(connectedPlayers);
           setTournamentFeedback(true, 'Вы присоединились и матч запускается…');
-          setTimeout(() => launchTournamentGame(creatorRoomCode, sessionNickname, 'creator-player'), 250);
+          setTimeout(() => launchTournamentGame(creatorRoomCode, sessionNickname, 'creator-player', tournamentSettings), 250);
         } catch (_) {
           setTournamentFeedback(false, 'Не удалось отправить команды старта. Проверьте соединение.');
         }
