@@ -881,6 +881,50 @@
       box-shadow: 0 0 10px rgba(88, 229, 255, 0.26);
     }
 
+
+
+    body[data-page="home"] .bb-home-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 16px;
+    }
+
+    body[data-page="home"] .bb-home-card,
+    body[data-page="home"] .bb-home-leaderboard {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid color-mix(in oklab, var(--card-border) 60%, #74a4ff 40%);
+      background: linear-gradient(145deg, rgba(116,164,255,.16), rgba(77,226,255,.1) 42%, transparent 72%), var(--card-bg);
+      box-shadow: var(--shadow-soft);
+    }
+
+    body[data-page="home"] .bb-home-card h3,
+    body[data-page="home"] .bb-home-leaderboard h3 { margin: 0; }
+
+    body[data-page="home"] .bb-chip-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+    body[data-page="home"] .bb-chip {
+      display:inline-flex; align-items:center; gap:6px; border-radius:999px; padding:6px 10px;
+      border:1px solid color-mix(in oklab, var(--card-border) 55%, #4de2ff 45%); font-size:.82rem; color:var(--text-muted);
+      background: rgba(116,164,255,.12);
+    }
+    body[data-page="home"] .bb-mini-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:8px; }
+    body[data-page="home"] .bb-mini-stat { border:1px solid var(--card-border); border-radius:12px; padding:10px; background:rgba(116,164,255,.12); text-align:center; }
+    body[data-page="home"] .bb-mini-stat b { display:block; font-size:1.15rem; }
+
+    body[data-page="home"] .bb-lb-head { display:flex; justify-content:space-between; gap:8px; align-items:center; flex-wrap:wrap; }
+    body[data-page="home"] .bb-lb-tabs { display:flex; gap:8px; flex-wrap:wrap; }
+    body[data-page="home"] .bb-lb-tab { border:1px solid var(--card-border); border-radius:999px; padding:6px 10px; background:transparent; color:var(--text-muted); cursor:pointer; }
+    body[data-page="home"] .bb-lb-tab.is-active { background:linear-gradient(125deg,#79a3ff,#4dd9ff); color:#03142c; border-color:transparent; font-weight:700; }
+    body[data-page="home"] .bb-lb-table { width:100%; border-collapse:collapse; font-size:.9rem; }
+    body[data-page="home"] .bb-lb-table th, body[data-page="home"] .bb-lb-table td { padding:8px 6px; border-bottom:1px solid var(--card-border); text-align:left; }
+    body[data-page="home"] .bb-lb-note { margin:8px 0 0; color:var(--text-muted); font-size:.83rem; }
+
+
+    @media (max-width: 980px) {
+      body[data-page="home"] .bb-home-layout { grid-template-columns: 1fr; }
+      body[data-page="home"] .bb-mini-stats { grid-template-columns: 1fr; }
+    }
+
     @media (max-width: 768px) {
       body[data-page="home"] .hero .title {
         font-size: clamp(2rem, 9vw, 4rem) !important;
@@ -1208,35 +1252,45 @@
 <section class="section">
 <div class="container">
 
-<div class="card-grid">
+<div class="bb-home-layout">
+  <article class="card bb-home-card reveal">
+    <span class="game-feature-cyberly-ribbon" style="position:static; transform:none; width:max-content;">Binary Battle</span>
+    <h3 style="margin-top:10px;">⚔️ Legit / Fake Challenge</h3>
+    <p>Проверь, умеешь ли отличать настоящие цифровые сущности от фейковых: домены, Telegram-ники, email и ссылки. Игра подстраивает сложность, учитывает скорость, серии и точность.</p>
+    <div class="bb-chip-row" aria-label="Типы заданий">
+      <span class="bb-chip">🌐 Domain</span>
+      <span class="bb-chip">✈️ Telegram</span>
+      <span class="bb-chip">📧 Email</span>
+      <span class="bb-chip">🔗 URL</span>
+    </div>
+    <p class="muted" style="margin:8px 0 0;">Режимы: <b>Соревновательный</b> (личный рекорд и лидерборд) и <b>Турнир</b> (лобби, матч, финальная таблица).</p>
+    <div class="bb-mini-stats" aria-hidden="true">
+      <div class="bb-mini-stat"><b>12</b><span>раундов в соло</span></div>
+      <div class="bb-mini-stat"><b>+скорость</b><span>бонус очков</span></div>
+      <div class="bb-mini-stat"><b>RLS</b><span>безопасные данные</span></div>
+    </div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+      <a href="binary-competitive.html" class="btn primary">Запустить игру</a>
+      <a href="binary-tournament.html" class="btn ghost">Открыть турнир</a>
+    </div>
+  </article>
 
-<a href="binary-battle.html" class="card game-feature game-feature-split game-feature-binary reveal" aria-label="Binary Battle — перейти к игре">
-
-<span class="game-feature-cyberly-ribbon" aria-hidden="true">Новое!</span>
-
-<div class="game-feature-copy">
-<h3><span class="cyberly-emoji" aria-hidden="true">⚔️</span> Binary Battle</h3>
-
-<p>
-Соревнуйся с другими пользователями: переводи слова в двоичный код на скорость, набирай серии побед и поднимайся в рейтинге.
-</p>
-</div>
-
-<div class="binary-preview" aria-hidden="true">
-<span class="binary-chip">PASSWORD</span>
-<span class="binary-code">01010000 01000001 01010011 01010011 01010111 01001111 01010010 01000100</span>
-</div>
-
-</a>
-
-<a href="binary-leaderboard.html" class="card game-feature game-feature-split reveal delay" aria-label="Таблица лидеров Binary Battle">
-<div class="game-feature-copy">
-<h3>🏆 Таблица лидеров</h3>
-<p>Смотри топ-10 игроков отдельно для групп 10–16 и 16+, сравнивай время, ошибки и итоговый score.</p>
-</div>
-<span class="card-arrow" aria-hidden="true">›</span>
-</a>
-
+  <article class="card bb-home-leaderboard reveal delay" aria-live="polite">
+    <div class="bb-lb-head">
+      <h3>🏆 Лидерборд Binary Battle</h3>
+      <div class="bb-lb-tabs" role="tablist" aria-label="Возрастные группы">
+        <button class="bb-lb-tab is-active" type="button" data-age-group="10-16">10–16</button>
+        <button class="bb-lb-tab" type="button" data-age-group="16+">16+</button>
+      </div>
+    </div>
+    <div style="overflow:auto;">
+      <table class="bb-lb-table">
+        <thead><tr><th>#</th><th>Ник</th><th>Очки</th><th>Точность</th><th>Дата</th></tr></thead>
+        <tbody id="homeBinaryLeaderboard"><tr><td colspan="5" class="muted">Загрузка…</td></tr></tbody>
+      </table>
+    </div>
+    <p class="bb-lb-note">Публично отображаются только ник, возрастная группа, результат и дата прохождения.</p>
+  </article>
 </div>
 
 </div>
@@ -1379,6 +1433,73 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-auth.js"></script>
+<script>
+(function initHomeBinaryLeaderboard(){
+  const body = document.body;
+  if (!body || body.dataset.page !== 'home') return;
+  const tabs = Array.from(document.querySelectorAll('.bb-lb-tab'));
+  const tbody = document.getElementById('homeBinaryLeaderboard');
+  if (!tabs.length || !tbody || !window.CyberSupabaseAuth) return;
+
+  const fmtDate = (iso) => {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return '—';
+    return d.toLocaleDateString('ru-RU', { year:'numeric', month:'2-digit', day:'2-digit' });
+  };
+
+  async function load(ageGroup) {
+    tbody.innerHTML = '<tr><td colspan="5" class="muted">Обновляем данные…</td></tr>';
+    const sb = window.CyberSupabaseAuth.createClient(true);
+
+    const modern = await sb
+      .from('leaderboard_entries')
+      .select('score,created_at,age_group,solo_runs!inner(accuracy),profiles!inner(nickname)')
+      .eq('age_group', ageGroup)
+      .order('score', { ascending: false })
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    let rows = [];
+    if (!modern.error && modern.data?.length) {
+      rows = modern.data.map((item) => ({
+        nickname: item.profiles?.nickname || 'Игрок',
+        score: item.score,
+        accuracy: item.solo_runs?.accuracy ?? 0,
+        created_at: item.created_at
+      }));
+    } else {
+      const legacy = await sb
+        .from('leaderboard')
+        .select('username,final_score,created_at,age_group')
+        .eq('age_group', ageGroup)
+        .order('final_score', { ascending: false })
+        .order('created_at', { ascending: false })
+        .limit(10);
+      if (!legacy.error) {
+        rows = legacy.data.map((item) => ({ nickname: item.username || 'Игрок', score: item.final_score, accuracy: 0, created_at: item.created_at }));
+      }
+    }
+
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="5" class="muted">Пока нет результатов.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = rows.map((row, index) => `<tr><td>${index + 1}</td><td>${row.nickname}</td><td>${row.score}</td><td>${Number(row.accuracy || 0).toFixed(1)}%</td><td>${fmtDate(row.created_at)}</td></tr>`).join('');
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      tabs.forEach((x) => x.classList.toggle('is-active', x === tab));
+      load(tab.dataset.ageGroup || '10-16');
+    });
+  });
+
+  load('10-16');
+})();
+</script>
+
 <script src="js/main.js"></script>
 <script src="js/theme-network.js"></script>
 
