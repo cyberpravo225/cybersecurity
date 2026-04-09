@@ -32,7 +32,7 @@
   async function getProfile(sb, userId) {
     const { data, error } = await sb
       .from('profiles')
-      .select('username,birth_date')
+      .select('username,nickname,birth_date,age_group,avatar_url,country')
       .eq('id', userId)
       .maybeSingle();
     if (error) throw error;
