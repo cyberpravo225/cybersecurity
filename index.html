@@ -1029,6 +1029,61 @@
         justify-self: center;
       }
     }
+
+
+    .digital-trap-entry {
+      margin-top: 20px;
+    }
+
+    .digital-trap-card {
+      display: grid;
+      gap: 14px;
+      align-items: center;
+      padding: 22px;
+      border-radius: 18px;
+      border: 1px solid rgba(99, 102, 241, 0.32);
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.84), rgba(30, 41, 59, 0.68));
+      box-shadow: 0 14px 34px rgba(7, 12, 32, 0.35), 0 0 26px rgba(99, 102, 241, 0.18);
+    }
+
+    .digital-trap-title {
+      margin: 0;
+      font-size: clamp(1.2rem, 1.6vw, 1.5rem);
+      color: #e2e8f0;
+    }
+
+    .digital-trap-text {
+      margin: 0;
+      color: #cbd5e1;
+      font-size: 0.98rem;
+      line-height: 1.5;
+    }
+
+    .digital-trap-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .digital-trap-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 18px;
+      border-radius: 12px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      background: linear-gradient(90deg, #6366F1, #8B5CF6);
+      box-shadow: 0 0 24px rgba(99, 102, 241, 0.34);
+      transition: transform .18s ease, box-shadow .2s ease;
+    }
+
+    .digital-trap-btn:hover {
+      transform: translateY(-1px) scale(1.02);
+      box-shadow: 0 0 30px rgba(139, 92, 246, 0.44);
+    }
+
   </style>
 </head>
 
@@ -1119,7 +1174,7 @@
 <li><a href="cyberguessr.html">CyberGuessr</a></li>
 <li><a href="cyberly.html">Cyberly</a></li>
 <li><a href="binary-battle.html">Binary Battle</a></li>
-<li><a href="signal-or-fake.html">КиберПроверка</a></li>
+<li><a href="signal-or-fake.html">Signal or Fake</a></li>
 <li><a href="cyberpro-easy.html">CyberPro</a></li>
 <li><a href="cyberword-easy.html">CyberWord</a></li>
 </ul>
@@ -1184,6 +1239,19 @@
 </a>
 
 </div>
+</div>
+</section>
+
+
+<section class="section digital-trap-entry">
+<div class="container">
+  <article class="digital-trap-card reveal" aria-label="Вход в игру Один день: цифровая ловушка">
+    <h2 class="digital-trap-title">🎮 Новая игра: «Один день: цифровая ловушка»</h2>
+    <p class="digital-trap-text">Короткая сюжетная игра о цифровых рисках в обычной жизни. Запускается сразу в браузере.</p>
+    <div class="digital-trap-actions">
+      <a class="digital-trap-btn" href="digital-trap/index.html">Войти в игру</a>
+    </div>
+  </article>
 </div>
 </section>
 
@@ -1262,7 +1330,7 @@
 
 <div class="bb-home-layout">
   <article class="card bb-home-card reveal">
-    <span class="game-feature-cyberly-ribbon" style="position:static; transform:none; width:max-content;">КиберПроверка</span>
+    <span class="game-feature-cyberly-ribbon" style="position:static; transform:none; width:max-content;">Signal or Fake</span>
     <h3 style="margin-top:10px;">⚔️ Legit / Fake Challenge</h3>
     <p>Отдельная игра: распознавай настоящие и фейковые домены, Telegram-ники, email и URL. Награда зависит от точности, скорости и серии ответов.</p>
     <div class="bb-chip-row" aria-label="Типы заданий">
@@ -1272,14 +1340,14 @@
       <span class="bb-chip">🔗 URL</span>
     </div>
     <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
-      <a href="signal-or-fake.html" class="btn primary">Открыть КиберПроверка</a>
+      <a href="signal-or-fake.html" class="btn primary">Открыть Signal or Fake</a>
     </div>
   </article>
 
   <article class="card bb-home-leaderboard reveal delay" aria-live="polite">
     <div class="bb-lb-head">
-      <h3>🏆 Лидерборд КиберПроверка</h3>
-      <select id="signalAgeFilter" aria-label="Возрастная группа КиберПроверка">
+      <h3>🏆 Лидерборд Signal or Fake</h3>
+      <select id="signalAgeFilter" aria-label="Возрастная группа Signal or Fake">
         <option value="10-16">10–16</option>
         <option value="16+">16+</option>
       </select>
