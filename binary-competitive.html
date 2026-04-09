@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Binary Battle — legit/fake соревновательный режим</title>
+  <title>Binary Battle — режим игры по двоичному коду</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
     :root {
@@ -101,14 +101,14 @@
           <a class="btn ghost" href="binary-battle.html">← К режимам игры</a>
           <div class="bc-shell">
             <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;">
-              <h1 style="margin:0;">Binary Battle: распознай legit / fake</h1>
+              <h1 style="margin:0;">Режим игры по двоичному коду</h1>
               <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
                 <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
                 <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
                 <span class="theme-toggle-label">Тёмная тема</span>
               </button>
             </div>
-            <p style="margin:0;color:var(--bc-muted)">Серия раундов по проверке доменов, Telegram, email и ссылок. Очки: точность + скорость + серия + сложность.</p>
+            <p style="margin:0;color:var(--bc-muted)">2 этапа: двоичный код → текст и текст → двоичный код, по 2 слова в каждом этапе. Финал: меньше итог — лучше.</p>
 
             <section id="competitiveMode">
               <div class="bc-hero-grid">
@@ -118,23 +118,23 @@
               <div class="bc-stats">
                 <span class="bc-stat-pill">Этап: <strong id="stageLabel">—</strong></span>
                 <span class="bc-stat-pill">Таймер: <strong id="stageTimer">0.0</strong>с</span>
-                <span class="bc-stat-pill">Ошибки: <strong id="errorsCount">0</strong></span><span class="bc-stat-pill">Серия: <strong id="streakCount">0</strong></span><span class="bc-stat-pill">Очки: <strong id="scoreCount">0</strong></span>
+                <span class="bc-stat-pill">Ошибки: <strong id="errorsCount">0</strong></span>
               </div>
-              <p class="bc-task"><span class="bc-task-label">Проверяем объект</span><span class="bc-task-text" id="promptText">Нажмите «Начать игру»</span></p><p class="bb-sub" id="promptMeta" style="margin:0;color:var(--bc-muted)">Тип: — • Сложность: —</p>
+              <p class="bc-task"><span class="bc-task-label">Задание</span><span class="bc-task-text" id="promptText">Нажмите «Начать игру»</span></p>
               <div class="bc-field">
-                <label class="bc-answer-label" for="answerInput">Ваш выбор</label>
-                <select id="answerInput" class="bc-input bc-answer-input"><option value="">Выберите вариант</option><option value="legit">✅ Legit</option><option value="fake">❌ Fake</option></select>
+                <label class="bc-answer-label" for="answerInput">Ваш ответ</label>
+                <input id="answerInput" class="bc-input bc-answer-input" type="text" placeholder="Введите перевод" />
               </div>
               <div style="display:flex;gap:10px;flex-wrap:wrap;">
                 <button id="startGameBtn" class="bc-btn bc-start-btn" type="button">Начать игру</button>
-                <button id="submitAnswerBtn" class="bc-btn bc-hidden" type="button">Ответить</button>
+                <button id="submitAnswerBtn" class="bc-btn bc-hidden" type="button">Дальше</button>
+                <button id="showBinaryTableBtn" class="bc-btn bc-table-btn" type="button">Таблица двоичного кода (Tab)</button>
               </div>
               <p id="compFeedback" class="bc-status" aria-live="polite"></p>
               <div id="finalResult" class="bc-hidden">
                 <h3>Результат</h3>
                 <p>Время: <strong id="resultTime"></strong> сек</p>
                 <p>Ошибки: <strong id="resultErrors"></strong></p>
-                <p>Точность: <strong id="resultAccuracy"></strong>%</p>
                 <p>Итог: <strong id="resultScore"></strong></p>
               </div>
               <div id="creatorResultsPanel" class="tournament-results bc-hidden">
@@ -149,11 +149,18 @@
     </main>
   </div>
 
-  
+  <div id="binaryModal" class="binary-modal" aria-hidden="true">
+    <div class="binary-modal__content">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="margin:0;">Таблица двоичного кода ASCII (A-Z)</h3>
+        <button id="closeBinaryModal" class="bc-btn" type="button">Закрыть</button>
+      </div>
+      <table class="binary-table"><thead><tr><th>Буква</th><th>Двоичный код</th></tr></thead><tbody id="binaryTableBody"></tbody></table>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-auth.js"></script>
-  <script src="js/digital-entities.js"></script>
   <script>
     (function initBackgroundAnimationPreference() {
       const root = document.documentElement;
@@ -191,7 +198,8 @@
     })();
 
     (async function () {
-      const ROUNDS_DEFAULT = 12;
+      const DEFAULT_STAGE_WORDS = 2;
+
       const setFeedback = (ok, text) => {
         const el = document.getElementById('compFeedback');
         el.textContent = text;
@@ -204,206 +212,349 @@
       try {
         session = await window.CyberSupabaseAuth.requireAuth({ message: 'Для игры нужно войти в аккаунт.' });
         profile = await window.CyberSupabaseAuth.getProfile(session.sb, session.user.id);
-      } catch (_) {
+      } catch (error) {
         setFeedback(false, 'Перенаправляем на страницу авторизации…');
         return;
       }
 
       const age = window.CyberSupabaseAuth.calculateAgeFromBirthDate(profile?.birth_date);
-      const ageGroup = profile?.age_group || window.CyberSupabaseAuth.getAgeGroup(age);
-      if (ageGroup === 'blocked') {
-        setFeedback(false, 'Игра доступна только с 10 лет.');
-        return;
-      }
-
+      const ageGroup = window.CyberSupabaseAuth.getAgeGroup(age);
       const query = new URL(window.location.href).searchParams;
+      let tournamentRuntime = null;
+      try {
+        tournamentRuntime = JSON.parse(sessionStorage.getItem('bb_tournament_runtime') || 'null');
+      } catch (_) {
+        tournamentRuntime = null;
+      }
       const tournamentMode = query.get('tournament') === '1';
-      const tournamentRoomCode = String(query.get('room') || '').trim().toUpperCase();
-      const nickname = profile?.nickname || profile?.username || session.user.email || 'Игрок';
+      const tournamentRoomCode = String(query.get('room') || tournamentRuntime?.roomCode || '').trim().toUpperCase();
+      const tournamentRole = String(query.get('role') || tournamentRuntime?.role || '').trim();
+      const isTournamentCreator = tournamentMode && (tournamentRole === 'creator' || tournamentRole === 'creator-player');
+      const tournamentSettings = (tournamentMode && tournamentRuntime?.settings && typeof tournamentRuntime.settings === 'object')
+        ? tournamentRuntime.settings
+        : null;
+      const stage1WordsCount = tournamentMode
+        ? Math.max(1, Number.parseInt(tournamentSettings?.stageTextToCodeCount, 10) || DEFAULT_STAGE_WORDS)
+        : DEFAULT_STAGE_WORDS;
+      const stage2WordsCount = tournamentMode
+        ? Math.max(1, Number.parseInt(tournamentSettings?.stageCodeToTextCount, 10) || DEFAULT_STAGE_WORDS)
+        : DEFAULT_STAGE_WORDS;
+      const tournamentTimeLimit = tournamentMode
+        ? Math.max(20, Number.parseInt(tournamentSettings?.timeLimit, 10) || 300)
+        : 0;
+      const eliminationErrorsLimit = tournamentMode
+        ? Math.max(1, Number.parseInt(tournamentSettings?.errorsElimination, 10) || 3)
+        : 0;
+      const minWordLen = tournamentMode ? Math.max(1, Number.parseInt(tournamentSettings?.wordLengthMin, 10) || 1) : 1;
+      const maxWordLen = tournamentMode ? Math.max(minWordLen, Number.parseInt(tournamentSettings?.wordLengthMax, 10) || 99) : 99;
+      const creatorResultsPanel = document.getElementById('creatorResultsPanel');
+      const creatorResultsList = document.getElementById('creatorResultsList');
+      let tournamentChannel = null;
+      const creatorResultsMap = new Map();
 
-      document.getElementById('usernameLabel').textContent = nickname;
-      document.getElementById('ageGroupLabel').textContent = ageGroup || '—';
-
-      const rounds = tournamentMode ? 10 : ROUNDS_DEFAULT;
-      const questions = window.DigitalBattleCore.buildQuestionSet(rounds);
-      const state = {
-        startedAt: 0,
-        questionStartedAt: 0,
-        index: 0,
-        totalScore: 0,
-        streak: 0,
-        bestStreak: 0,
-        errors: 0,
-        answers: [],
-        finished: false,
-        timerId: 0,
-        channel: null
-      };
+      function renderCreatorResults() {
+        creatorResultsList.innerHTML = '';
+        creatorResultsMap.forEach((entry) => {
+          const li = document.createElement('li');
+          li.textContent = `${entry.nickname}: итог ${entry.finalScore.toFixed(1)} сек (этапы ${entry.stage1.toFixed(1)} + ${entry.stage2.toFixed(1)}, ошибок ${entry.errors})`;
+          creatorResultsList.appendChild(li);
+        });
+      }
 
       async function initTournamentChannel() {
         if (!tournamentMode || !tournamentRoomCode) return;
-        state.channel = session.sb.channel(`bb_tournament_${tournamentRoomCode}`);
-        await new Promise((resolve) => {
-          state.channel.subscribe((status) => {
-            if (status === 'SUBSCRIBED' || status === 'TIMED_OUT' || status === 'CHANNEL_ERROR') resolve();
-          });
-          setTimeout(resolve, 2000);
+        tournamentChannel = session.sb.channel(`bb_tournament_${tournamentRoomCode}`);
+        tournamentChannel.on('broadcast', { event: 'player_finished' }, ({ payload }) => {
+          const nickname = String(payload?.nickname || 'Игрок');
+          const entry = {
+            nickname,
+            finalScore: Number(payload?.finalScore || 0),
+            stage1: Number(payload?.stage1Time || 0),
+            stage2: Number(payload?.stage2Time || 0),
+            errors: Number(payload?.errors || 0)
+          };
+          creatorResultsMap.set(nickname, entry);
+          renderCreatorResults();
         });
+        await new Promise((resolve, reject) => {
+          const timeoutId = setTimeout(() => reject(new Error('tournament_channel_timeout')), 7000);
+          tournamentChannel.subscribe((status) => {
+            if (status === 'SUBSCRIBED') {
+              clearTimeout(timeoutId);
+              resolve();
+            }
+            if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
+              clearTimeout(timeoutId);
+              reject(new Error(status));
+            }
+          });
+        }).catch(() => null);
       }
+
+      if (isTournamentCreator) {
+        creatorResultsPanel.classList.remove('bc-hidden');
+      }
+
+      document.getElementById('usernameLabel').textContent = profile?.username || session.user.email || 'Игрок';
+      document.getElementById('ageGroupLabel').textContent = ageGroup || '—';
+
+      if (!profile?.birth_date || age === null) {
+        setFeedback(false, 'Профиль заполнен некорректно: отсутствует корректная birth_date.');
+        document.getElementById('startGameBtn').disabled = true;
+        return;
+      }
+      if (ageGroup === 'blocked') {
+        setFeedback(false, 'Вход в игру доступен только с 10 лет.');
+        document.getElementById('startGameBtn').disabled = true;
+        return;
+      }
+
       await initTournamentChannel();
 
-      function renderQuestion() {
-        const current = questions[state.index];
-        if (!current) return;
-        document.getElementById('stageLabel').textContent = `${state.index + 1}/${questions.length}`;
-        document.getElementById('promptText').textContent = current.prompt;
-        document.getElementById('promptMeta').textContent = `Тип: ${current.type} • Сложность: ${current.difficulty}/3`;
+      const wordPools = {
+        '10-16': {
+          stage1: [
+            'apple', 'beach', 'cloud', 'dream', 'eagle', 'flame', 'grape', 'heart', 'ivory', 'joker',
+            'koala', 'lemon', 'magic', 'noble', 'ocean', 'pearl', 'queen', 'river', 'smile', 'tiger',
+            'unity', 'vivid', 'whale', 'xenon', 'youth', 'zebra', 'bloom', 'candy', 'daisy', 'ember'
+          ],
+          stage2: [
+            'frost', 'glory', 'honey', 'jolly', 'karma', 'lucky', 'mango', 'ninja', 'olive', 'piano',
+            'quick', 'raven', 'sunny', 'tears', 'urban', 'vapor', 'waltz', 'xylem', 'yearn', 'zesty',
+            'adore', 'brisk', 'crisp', 'dwell', 'eclat', 'fairy', 'giant', 'haven', 'inbox', 'jazzy'
+          ]
+        },
+        '16+': {
+          stage1: [
+            'agent', 'armor', 'audit', 'cache', 'chain', 'ciphr', 'cloak', 'entry', 'epoch', 'explt',
+            'fence', 'forge', 'frame', 'guard', 'hashy', 'layer', 'latch', 'logic', 'meter', 'patch',
+            'pivot', 'probe', 'proxy', 'queue', 'radar', 'route', 'scope', 'stack', 'token', 'trace'
+          ],
+          stage2: [
+            'vault', 'watch', 'bypas', 'sniff', 'scrub', 'sieve', 'squad', 'shift', 'storm', 'thorn',
+            'thret', 'tweak', 'verge', 'widen', 'wrath', 'yield', 'zonal', 'bytey', 'crown', 'delta',
+            'drift', 'flank', 'glint', 'hertz', 'input', 'jumps', 'knock', 'macro', 'nexus', 'orbit'
+          ]
+        }
+      };
+
+      const toBinaryWord = (word) => word.toUpperCase().split('').map(ch => ch.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
+      const normalizeText = (v) => String(v || '').trim().toUpperCase();
+      const pickRandomWords = (arr, count = DEFAULT_STAGE_WORDS) => {
+        const filtered = (arr || []).filter((w) => w.length >= minWordLen && w.length <= maxWordLen);
+        const source = filtered.length >= count ? filtered : arr;
+        return [...source].sort(() => Math.random() - 0.5).slice(0, count);
+      };
+
+      const state = {
+        stage: 0,
+        index: 0,
+        words1: [],
+        words2: [],
+        stageStart: 0,
+        gameStart: 0,
+        stageTimes: [0, 0],
+        timerId: null,
+        errors: 0,
+        penaltySeconds: 0,
+        finished: false,
+        timeLimitTriggered: false
+      };
+
+      function renderPrompt() {
+        const promptEl = document.getElementById('promptText');
+        const stageLabel = document.getElementById('stageLabel');
+        const currentWords = state.stage === 1 ? state.words1 : state.words2;
+        const currentWord = currentWords[state.index];
+        if (!currentWord) return;
+        if (state.stage === 1) {
+          stageLabel.textContent = '1/2 (двоичный код → текст)';
+          promptEl.textContent = toBinaryWord(currentWord);
+        } else {
+          stageLabel.textContent = '2/2 (текст → двоичный код)';
+          promptEl.textContent = currentWord.toUpperCase();
+        }
         document.getElementById('answerInput').value = '';
-        state.questionStartedAt = performance.now();
+        document.getElementById('answerInput').placeholder = 'Введите перевод';
+        document.getElementById('answerInput').focus();
       }
 
-      function startTimer() {
-        state.startedAt = performance.now();
+      function startStageTimer() {
+        clearInterval(state.timerId);
+        if (!state.gameStart) state.gameStart = performance.now();
+        state.stageStart = performance.now();
         state.timerId = setInterval(() => {
-          const sec = (performance.now() - state.startedAt) / 1000;
+          const sec = ((performance.now() - state.gameStart) / 1000) + state.penaltySeconds;
           document.getElementById('stageTimer').textContent = sec.toFixed(1);
+          if (tournamentMode && tournamentTimeLimit > 0 && sec >= tournamentTimeLimit && !state.timeLimitTriggered && !state.finished) {
+            state.timeLimitTriggered = true;
+            finishGame();
+          }
         }, 100);
       }
 
-      async function saveRun(summary) {
-        let soloRunId = null;
-        const payload = {
-          profile_id: session.user.id,
-          score: summary.score,
-          correct_count: summary.correctCount,
-          wrong_count: summary.wrongCount,
-          accuracy: summary.accuracy,
-          avg_response_ms: summary.avgResponseMs,
-          best_streak: summary.bestStreak,
-          age_group: ageGroup,
-          mode: 'solo_competitive'
-        };
-
-        const runInsert = await session.sb.from('solo_runs').insert(payload).select('id').maybeSingle();
-        if (!runInsert.error) {
-          soloRunId = runInsert.data?.id || null;
-          if (soloRunId) {
-            const answersPayload = state.answers.map((item) => ({
-              solo_run_id: soloRunId,
-              question_id: item.questionId,
-              selected_value: item.selectedValue,
-              is_correct: item.isCorrect,
-              response_ms: item.responseMs
-            }));
-            if (answersPayload.length) {
-              await session.sb.from('solo_run_answers').insert(answersPayload);
-            }
-            await session.sb.from('leaderboard_entries').insert({
-              profile_id: session.user.id,
-              solo_run_id: soloRunId,
-              score: summary.score,
-              age_group: ageGroup
-            });
-          }
-        }
-
-        await session.sb.from('leaderboard').insert({
-          user_id: session.user.id,
-          username: nickname,
-          age_group: ageGroup,
-          total_time: Number(((performance.now() - state.startedAt) / 1000).toFixed(3)),
-          stage1_time: Number((summary.avgResponseMs / 1000).toFixed(3)),
-          stage2_time: Number((summary.avgResponseMs / 1000).toFixed(3)),
-          errors: summary.wrongCount,
-          final_score: Number(summary.score.toFixed(3))
-        });
+      function stopStageTimer() {
+        clearInterval(state.timerId);
+        const sec = (performance.now() - state.stageStart) / 1000;
+        return Math.max(0, sec);
       }
 
       async function finishGame() {
         state.finished = true;
-        clearInterval(state.timerId);
-        const totalTimeSec = (performance.now() - state.startedAt) / 1000;
-        const summary = window.DigitalBattleCore.summarizeRun({ answers: state.answers, totalScore: state.totalScore, bestStreak: state.bestStreak });
-        document.getElementById('resultTime').textContent = totalTimeSec.toFixed(1);
-        document.getElementById('resultErrors').textContent = String(summary.wrongCount);
-        document.getElementById('resultAccuracy').textContent = summary.accuracy.toFixed(2);
-        document.getElementById('resultScore').textContent = String(summary.score);
+        const totalTimeInSeconds = state.stageTimes[0] + state.stageTimes[1] + state.penaltySeconds;
+        const finalScore = totalTimeInSeconds;
+        document.getElementById('resultTime').textContent = totalTimeInSeconds.toFixed(1);
+        document.getElementById('resultErrors').textContent = String(state.errors);
+        document.getElementById('resultScore').textContent = finalScore.toFixed(1);
         document.getElementById('finalResult').classList.remove('bc-hidden');
 
-        if (tournamentMode && state.channel) {
-          await state.channel.send({ type: 'broadcast', event: 'player_finished', payload: { nickname, finalScore: summary.score, errors: summary.wrongCount } });
+        if (tournamentMode) {
+          setFeedback(true, 'Игра завершена. Результат отправлен создателю турнира.');
+          const nickname = profile?.username || session.user.email || 'Игрок';
+          if (isTournamentCreator) {
+            creatorResultsMap.set(nickname, {
+              nickname,
+              finalScore,
+              stage1: state.stageTimes[0],
+              stage2: state.stageTimes[1],
+              errors: state.errors
+            });
+            renderCreatorResults();
+          }
+          if (tournamentChannel) {
+            await tournamentChannel.send({
+              type: 'broadcast',
+              event: 'player_finished',
+              payload: {
+                room: tournamentRoomCode,
+                nickname,
+                finalScore: Number(finalScore.toFixed(3)),
+                stage1Time: Number(state.stageTimes[0].toFixed(3)),
+                stage2Time: Number(state.stageTimes[1].toFixed(3)),
+                errors: state.errors,
+                finishedAt: Date.now()
+              }
+            });
+          }
+          return;
         }
 
+        setFeedback(true, 'Игра завершена. Результат сохранён в таблицу лидеров.');
         try {
-          await saveRun(summary);
-          setFeedback(true, 'Игра завершена. Результат сохранён.');
+          const { error } = await session.sb.from('leaderboard').insert({
+            user_id: session.user.id,
+            username: profile?.username || session.user.email || 'Игрок',
+            age_group: ageGroup,
+            total_time: Number(totalTimeInSeconds.toFixed(3)),
+            stage1_time: Number(state.stageTimes[0].toFixed(3)),
+            stage2_time: Number(state.stageTimes[1].toFixed(3)),
+            errors: state.errors,
+            final_score: Number(finalScore.toFixed(3))
+          });
+          if (error) throw error;
         } catch (error) {
-          setFeedback(false, `Игра завершена, но сохранение не удалось: ${error.message}`);
+          setFeedback(false, `Игра завершена, но результат не сохранён: ${error.message}`);
         }
       }
 
       document.getElementById('startGameBtn').addEventListener('click', () => {
+        state.stage = 1;
         state.index = 0;
-        state.totalScore = 0;
-        state.streak = 0;
-        state.bestStreak = 0;
         state.errors = 0;
-        state.answers = [];
+        state.penaltySeconds = 0;
+        state.gameStart = performance.now();
         state.finished = false;
+        state.timeLimitTriggered = false;
+        state.words1 = pickRandomWords(wordPools[ageGroup].stage1, stage1WordsCount);
+        state.words2 = pickRandomWords(wordPools[ageGroup].stage2, stage2WordsCount);
         document.getElementById('errorsCount').textContent = '0';
-        document.getElementById('streakCount').textContent = '0';
-        document.getElementById('scoreCount').textContent = '0';
         document.getElementById('finalResult').classList.add('bc-hidden');
         document.getElementById('startGameBtn').classList.add('bc-hidden');
         document.getElementById('submitAnswerBtn').classList.remove('bc-hidden');
-        renderQuestion();
-        startTimer();
-        setFeedback(true, 'Выбери, legit это или fake.');
+        renderPrompt();
+        startStageTimer();
+        if (tournamentMode) {
+          setFeedback(true, `Этап 1 начался. Настройки турнира: ${stage1WordsCount}+${stage2WordsCount} слов, лимит ${tournamentTimeLimit}с, выбывание после ${eliminationErrorsLimit} ошибок.`);
+        } else {
+          setFeedback(true, 'Этап 1 начался. Переводи двоичный код в текст.');
+        }
       });
 
-      document.getElementById('submitAnswerBtn').addEventListener('click', async () => {
-        if (state.finished) return;
-        const current = questions[state.index];
-        const selected = document.getElementById('answerInput').value;
-        if (!selected) {
-          setFeedback(false, 'Выберите вариант ответа.');
-          return;
-        }
-
-        const responseMs = Math.max(120, Math.round(performance.now() - state.questionStartedAt));
-        const isCorrect = selected === current.answer;
-        state.streak = isCorrect ? state.streak + 1 : 0;
-        state.bestStreak = Math.max(state.bestStreak, state.streak);
-        if (!isCorrect) state.errors += 1;
-
-        const scoreParts = window.DigitalBattleCore.calculateRoundScore({
-          isCorrect,
-          responseMs,
-          streak: state.streak,
-          difficulty: current.difficulty
-        });
-        state.totalScore += scoreParts.delta;
-        state.answers.push({
-          questionId: current.id,
-          selectedValue: selected,
-          isCorrect,
-          responseMs
-        });
-
-        document.getElementById('errorsCount').textContent = String(state.errors);
-        document.getElementById('streakCount').textContent = String(state.streak);
-        document.getElementById('scoreCount').textContent = String(state.totalScore);
-
-        const explain = `${isCorrect ? 'Верно' : 'Неверно'}: ${current.explanation}`;
-        setFeedback(isCorrect, `${explain} (${scoreParts.delta > 0 ? '+' : ''}${scoreParts.delta})`);
-
+      async function goNextTask(message, ok) {
         state.index += 1;
-        if (state.index >= questions.length) {
+        const stageTarget = state.stage === 1 ? stage1WordsCount : stage2WordsCount;
+        if (state.index >= stageTarget) {
+          const stageTime = stopStageTimer();
+          state.stageTimes[state.stage - 1] = stageTime;
+          if (state.stage === 1) {
+            state.stage = 2;
+            state.index = 0;
+            renderPrompt();
+            startStageTimer();
+            setFeedback(true, message || 'Этап 2 начался. Переводи текст в двоичный код.');
+            return;
+          }
           await finishGame();
           return;
         }
-        renderQuestion();
+        renderPrompt();
+        setFeedback(ok, message);
+      }
+
+      document.getElementById('submitAnswerBtn').addEventListener('click', async () => {
+        if (!state.stage || state.finished) return;
+        const answer = document.getElementById('answerInput').value.trim();
+        const currentWords = state.stage === 1 ? state.words1 : state.words2;
+        const currentWord = currentWords[state.index];
+        const expected = state.stage === 1 ? normalizeText(currentWord) : toBinaryWord(currentWord);
+        const actual = state.stage === 1 ? normalizeText(answer) : answer.replace(/\s+/g, ' ').trim();
+
+        if (actual !== expected) {
+          state.errors += 1;
+          state.penaltySeconds += 20;
+          document.getElementById('errorsCount').textContent = String(state.errors);
+          if (tournamentMode && eliminationErrorsLimit > 0 && state.errors >= eliminationErrorsLimit) {
+            setFeedback(false, `Достигнут лимит ошибок (${eliminationErrorsLimit}). Игра завершена.`);
+            await finishGame();
+            return;
+          }
+          await goNextTask(`Неверно: +20 сек. Правильный ответ: ${expected}. Следующее задание.`, false);
+          return;
+        }
+
+        await goNextTask('Верно! Следующее задание.', true);
       });
+
+      const modal = document.getElementById('binaryModal');
+      const tableBody = document.getElementById('binaryTableBody');
+      const rows = Array.from({ length: 26 }, (_, i) => {
+        const ch = String.fromCharCode(65 + i);
+        return `<tr><td>${ch}</td><td>${toBinaryWord(ch)}</td></tr>`;
+      }).join('');
+      tableBody.innerHTML = rows;
+
+      function toggleModal(show) {
+        modal.classList.toggle('active', show);
+        modal.setAttribute('aria-hidden', String(!show));
+        document.getElementById('showBinaryTableBtn').classList.toggle('is-active', show);
+      }
+
+      document.getElementById('showBinaryTableBtn').addEventListener('click', () => {
+        const next = !modal.classList.contains('active');
+        toggleModal(next);
+      });
+      document.getElementById('closeBinaryModal').addEventListener('click', () => toggleModal(false));
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Tab') {
+          event.preventDefault();
+          toggleModal(true);
+        }
+        if (event.key === 'Escape') toggleModal(false);
+      });
+      document.addEventListener('keyup', (event) => {
+        if (event.key === 'Tab') toggleModal(false);
+      });
+
     })();
   </script>
   <script src="js/theme-network.js"></script>
