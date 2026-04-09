@@ -49,8 +49,47 @@
     .bc-task-text { font-size: clamp(18px, 2.2vw, 26px); font-weight: 900; }
     .bc-answer-label { font-size:18px; font-weight:900; }
     .bc-answer-input { font-size:20px; padding:14px 16px; border-radius:14px; }
-    .bc-answer-buttons { display:flex; gap:10px; flex-wrap:wrap; }
-    .bc-answer-choice { min-width: 180px; }
+    .bc-answer-buttons {
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      justify-content:center;
+      align-items:center;
+      width:100%;
+      margin: 4px auto 0;
+    }
+    .bc-answer-choice {
+      min-width: 240px;
+      font-size: clamp(20px, 2.4vw, 28px);
+      font-weight: 900;
+      padding: 16px 24px;
+      border-radius: 16px;
+      transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+    }
+    .bc-answer-choice:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+    }
+    #answerSafeBtn {
+      border-color: rgba(74, 222, 128, .8);
+      box-shadow: 0 0 18px rgba(74, 222, 128, .45), inset 0 0 12px rgba(74, 222, 128, .15);
+    }
+    #answerSuspiciousBtn {
+      border-color: rgba(248, 113, 113, .85);
+      box-shadow: 0 0 18px rgba(248, 113, 113, .45), inset 0 0 12px rgba(248, 113, 113, .15);
+    }
+    #answerSafeBtn.is-active {
+      background: linear-gradient(120deg, rgba(22, 163, 74, .92), rgba(74, 222, 128, .92));
+      color: #02120a;
+      box-shadow: 0 0 26px rgba(74, 222, 128, .8), 0 0 48px rgba(74, 222, 128, .45);
+      border-color: transparent;
+    }
+    #answerSuspiciousBtn.is-active {
+      background: linear-gradient(120deg, rgba(220, 38, 38, .92), rgba(248, 113, 113, .92));
+      color: #1b0202;
+      box-shadow: 0 0 26px rgba(248, 113, 113, .8), 0 0 48px rgba(248, 113, 113, .45);
+      border-color: transparent;
+    }
     .bc-start-btn { font-size: clamp(20px, 2.4vw, 30px); font-weight: 900; padding: 16px 28px; border-radius: 16px; background: linear-gradient(120deg, #74a4ff, #4de2ff); color:#03142c; border: none; box-shadow: 0 14px 34px rgba(77, 226, 255, .35); }
     .bc-table-btn.is-active { background: linear-gradient(120deg, #74a4ff, #4de2ff); color:#03142c; border-color:transparent; }
     #submitAnswerBtn,
@@ -85,7 +124,10 @@
     .tournament-results { border:1px solid var(--bc-border); border-radius:14px; padding:12px; background: rgba(116,164,255,.16); display:grid; gap:8px; }
     .tournament-results h3 { margin:0; }
     .tournament-results ul { margin:0; padding-left:18px; display:grid; gap:4px; }
-    @media (max-width:840px){ .bc-grid,.bc-hero-grid{grid-template-columns:1fr;} }
+    @media (max-width:840px){
+      .bc-grid,.bc-hero-grid{grid-template-columns:1fr;}
+      .bc-answer-choice { width: 100%; min-width: 0; }
+    }
   </style>
 </head>
 <body class="page" data-page="signal-or-fake-solo">
