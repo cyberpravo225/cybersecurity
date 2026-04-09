@@ -1112,6 +1112,7 @@
 <li><a href="cyberguessr.html">CyberGuessr</a></li>
 <li><a href="cyberly.html">Cyberly</a></li>
 <li><a href="binary-battle.html">Binary Battle</a></li>
+<li><a href="signal-or-fake.html">Signal or Fake</a></li>
 <li><a href="cyberpro-easy.html">CyberPro</a></li>
 <li><a href="cyberword-easy.html">CyberWord</a></li>
 </ul>
@@ -1254,7 +1255,7 @@
 
 <div class="bb-home-layout">
   <article class="card bb-home-card reveal">
-    <span class="game-feature-cyberly-ribbon" style="position:static; transform:none; width:max-content;">Binary Battle</span>
+    <span class="game-feature-cyberly-ribbon" style="position:static; transform:none; width:max-content;">Signal or Fake</span>
     <h3 style="margin-top:10px;">⚔️ Legit / Fake Challenge</h3>
     <p>Проверь, умеешь ли отличать настоящие цифровые сущности от фейковых: домены, Telegram-ники, email и ссылки. Игра подстраивает сложность, учитывает скорость, серии и точность.</p>
     <div class="bb-chip-row" aria-label="Типы заданий">
@@ -1263,21 +1264,21 @@
       <span class="bb-chip">📧 Email</span>
       <span class="bb-chip">🔗 URL</span>
     </div>
-    <p class="muted" style="margin:8px 0 0;">Режимы: <b>Соревновательный</b> (личный рекорд и лидерборд) и <b>Турнир</b> (лобби, матч, финальная таблица).</p>
+    <p class="muted" style="margin:8px 0 0;">Режимы: <b>Соревновательный</b> (личный рекорд и лидерборд) и <b>Турнир</b> (лобби, матч, финальная таблица) в отдельной игре Signal or Fake.</p>
     <div class="bb-mini-stats" aria-hidden="true">
       <div class="bb-mini-stat"><b>12</b><span>раундов в соло</span></div>
       <div class="bb-mini-stat"><b>+скорость</b><span>бонус очков</span></div>
       <div class="bb-mini-stat"><b>RLS</b><span>безопасные данные</span></div>
     </div>
     <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
-      <a href="binary-competitive.html" class="btn primary">Запустить игру</a>
-      <a href="binary-tournament.html" class="btn ghost">Открыть турнир</a>
+      <a href="signal-or-fake-solo.html" class="btn primary">Запустить игру</a>
+      <a href="signal-or-fake-tournament.html" class="btn ghost">Открыть турнир</a>
     </div>
   </article>
 
   <article class="card bb-home-leaderboard reveal delay" aria-live="polite">
     <div class="bb-lb-head">
-      <h3>🏆 Лидерборд Binary Battle</h3>
+      <h3>🏆 Лидерборд Signal or Fake</h3>
       <div class="bb-lb-tabs" role="tablist" aria-label="Возрастные группы">
         <button class="bb-lb-tab is-active" type="button" data-age-group="10-16">10–16</button>
         <button class="bb-lb-tab" type="button" data-age-group="16+">16+</button>
@@ -1454,8 +1455,9 @@
 
     const modern = await sb
       .from('leaderboard_entries')
-      .select('score,created_at,age_group,solo_runs!inner(accuracy),profiles!inner(nickname)')
+      .select('score,created_at,age_group,solo_runs!inner(accuracy,mode),profiles!inner(nickname)')
       .eq('age_group', ageGroup)
+      .eq('solo_runs.mode', 'signal_or_fake_solo')
       .order('score', { ascending: false })
       .order('created_at', { ascending: false })
       .limit(10);

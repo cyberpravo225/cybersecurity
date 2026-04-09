@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Signal or Fake — legit/fake режимы и материалы</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root {
+      --bb-card: rgba(15, 28, 56, .84);
+      --bb-border: rgba(133, 169, 255, .35);
+      --bb-text: #eaf1ff;
+      --bb-muted: #9eb2db;
+      --bb-accent: linear-gradient(125deg, #79a3ff, #4dd9ff);
+      --bb-shadow: 0 18px 40px rgba(4, 10, 28, .35);
+    }
+    html[data-theme="light"] {
+      --bb-card: rgba(255, 255, 255, .93);
+      --bb-border: rgba(53, 94, 180, .25);
+      --bb-text: #0d2249;
+      --bb-muted: #486290;
+      --bb-shadow: 0 16px 36px rgba(44, 72, 129, .16);
+    }
+    body[data-page="signal-or-fake"] { color: var(--bb-text); overflow-x: hidden; }
+    .site { position: relative; z-index: 1; }
+    .bb-wrap { display: grid; gap: 18px; }
+    .bb-header { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .bb-sub { margin: 0; color: var(--bb-muted); }
+    .bb-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 22px;
+      align-items: stretch;
+    }
+    .bb-card {
+      background:
+        linear-gradient(150deg, rgba(124, 163, 255, .14), rgba(77, 217, 255, .06) 50%, transparent 80%),
+        var(--bb-card);
+      border: 1px solid var(--bb-border);
+      border-radius: 24px;
+      padding: 26px;
+      display: grid;
+      gap: 16px;
+      min-height: 300px;
+      box-shadow: var(--bb-shadow), inset 0 1px 0 rgba(255,255,255,.12);
+      transform: translateY(12px) scale(.985);
+      opacity: 0;
+      animation: fadeUp .65s ease forwards;
+      transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease, filter .35s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .bb-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 90% 10%, rgba(126, 187, 255, .18), transparent 45%);
+      pointer-events: none;
+    }
+    .bb-card:nth-child(2) { animation-delay: .06s; }
+    .bb-card:nth-child(3) { animation-delay: .12s; }
+    .bb-card:nth-child(4) { animation-delay: .18s; }
+    .bb-card:nth-child(5) { animation-delay: .24s; }
+    .bb-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 26px 56px rgba(7, 16, 40, .45), inset 0 1px 0 rgba(255,255,255,.16);
+      border-color: rgba(104, 166, 255, .8);
+      filter: saturate(1.05);
+    }
+    .bb-card h2 { margin: 0; font-size: 1.5rem; letter-spacing: .01em; }
+    .bb-desc { margin: 0; color: var(--bb-muted); line-height: 1.7; font-size: 1.04rem; }
+    .bb-card--1, .bb-card--2, .bb-card--3 { grid-column: span 2; }
+    .bb-card--4 { grid-column: 2 / span 2; }
+    .bb-card--5 { grid-column: 4 / span 2; }
+    .bb-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      padding: 10px 14px;
+      border-radius: 11px;
+      text-decoration: none;
+      color: #03132e;
+      background: var(--bb-accent);
+      font-weight: 700;
+      transition: transform .28s ease, filter .28s ease;
+    }
+    .bb-link:hover { transform: translateY(-2px); filter: brightness(1.06); }
+    .bb-pill { display: inline-block; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--bb-border); color: var(--bb-muted); font-size: 1rem; width: fit-content; }
+    .theme-toggle { min-width: 176px; display:inline-flex; align-items:center; gap:8px; }
+    .theme-icon-sun{display:none}
+    .theme-toggle-label{white-space:nowrap}
+    html[data-theme="light"] .theme-icon-sun{display:inline}
+    html[data-theme="light"] .theme-icon-moon{display:none}
+    html[data-theme="dark"] .theme-icon-sun{display:none}
+    html[data-theme="dark"] .theme-icon-moon{display:inline}
+    .bb-header h1 { margin: 0; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .bb-card, .bb-link { animation: none; transition: none; }
+    }
+    @media (max-width: 1050px) {
+      .bb-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+      .bb-card--1, .bb-card--2, .bb-card--3, .bb-card--4, .bb-card--5 { grid-column: auto; }
+    }
+    @media (max-width: 720px) {
+      .bb-grid { grid-template-columns: 1fr; gap: 14px; }
+      .bb-card { min-height: unset; }
+    }
+  </style>
+</head>
+<body class="page" data-page="signal-or-fake">
+  <div class="theme-backdrop" aria-hidden="true">
+    <div class="theme-orb theme-orb-one"></div>
+    <div class="theme-orb theme-orb-two"></div>
+    <div class="theme-grid"></div>
+    <canvas class="theme-network" id="theme-network"></canvas>
+  </div>
+
+  <div class="site">
+    <main class="main">
+      <section class="section">
+        <div class="container bb-wrap">
+          <a class="btn ghost" href="index.html">← На главную</a>
+
+          <div class="card" style="display:grid; gap:12px;">
+            <div class="bb-header">
+              <span class="game-feature-cyberly-ribbon" style="position:static; transform:none; width:max-content;">Signal or Fake</span>
+              <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
+                <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
+                <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
+                <span class="theme-toggle-label">Тёмная тема</span>
+              </button>
+            </div>
+            <h1 style="margin:0;">Выбери режим игры Signal or Fake</h1>
+            <p class="bb-sub">Игра про распознавание реальных и фейковых цифровых сущностей: домены, Telegram, email и ссылки.</p>
+          </div>
+
+          <div class="bb-grid">
+            <article class="bb-card bb-card--1">
+              
+              <h2>🧪 Учебный режим (Legit/Fake)</h2>
+              <p class="bb-desc">Тренировка с объяснениями: учись находить признаки фейковых доменов, ссылок, email и Telegram-ников.</p>
+              <a class="bb-link" href="signal-or-fake-solo.html">Открыть тренажёр →</a>
+            </article>
+
+            <article class="bb-card bb-card--2">
+              
+              <h2>⏱️ Соревновательный режим (Solo)</h2>
+              <p class="bb-desc">Серия раундов legit/fake с мгновенным фидбеком. Очки зависят от скорости, серии правильных ответов и сложности вопроса.</p>
+              <a class="bb-link" href="signal-or-fake-solo.html#competitiveMode">Открыть Timed →</a>
+            </article>
+
+            <article class="bb-card bb-card--3">
+              
+              <h2>📘 Тестовый режим</h2>
+              <p class="bb-desc">Формат самостоятельной проверки без подсказок. Выбирай объём теста, проходи серию заданий и получай точный итог: количество правильных и процент успешности.</p>
+              <a class="bb-link" href="binary-self-test.html">Открыть Self-Test →</a>
+            </article>
+
+            <article class="bb-card bb-card--4">
+              
+              <h2>🏆 Турнирный режим (Lobby)</h2>
+              <p class="bb-desc">Создание комнаты, код для входа, настройка раундов и итоговая таблица участников после завершения матча.</p>
+              <a class="bb-link" href="signal-or-fake-tournament.html">Открыть Tournament →</a>
+            </article>
+
+            <article class="bb-card bb-card--5">
+              
+              <h2>🎓 Обучающий материал</h2>
+              <p class="bb-desc">Подробная шпаргалка: как переводить символы в ASCII, почему используется 8-битная запись и как быстро проверять корректность двоичного ответа.</p>
+              <a class="bb-link" href="binary-learning.html">Открыть материалы →</a>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-auth.js"></script>
+  <script>
+    (function initBackgroundAnimationPreference() {
+      const root = document.documentElement;
+      const saved = localStorage.getItem('cyber_bg_anim');
+      const enabled = saved !== '0';
+      root.classList.toggle('bg-anim-on', enabled);
+      root.classList.toggle('bg-anim-off', !enabled);
+    })();
+  </script>
+  <script>
+    (async function(){
+      const status = document.createElement('p');
+      status.className = 'bb-sub';
+      try {
+        await window.CyberSupabaseAuth.requireAuth({ message: 'Для доступа к Binary Battle нужно войти в аккаунт.' });
+      } catch (_) {
+        status.textContent = 'Перенаправляем на страницу авторизации…';
+        document.querySelector('.container.bb-wrap')?.prepend(status);
+      }
+    })();
+  </script>
+  <script>
+    (function initTheme() {
+      const key = "cyber_theme";
+      const root = document.documentElement;
+      const toggle = document.getElementById("themeToggle");
+      const preferredDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const saved = localStorage.getItem(key);
+      const initial = saved || (preferredDark ? "dark" : "light");
+      root.setAttribute("data-theme", initial);
+
+      function syncLabel(theme) {
+        const label = toggle.querySelector(".theme-toggle-label");
+        if (label) label.textContent = theme === "dark" ? "Светлая тема" : "Тёмная тема";
+        toggle.setAttribute("aria-pressed", String(theme === "dark"));
+      }
+
+      syncLabel(initial);
+      toggle.addEventListener("click", () => {
+        const current = root.getAttribute("data-theme") === "dark" ? "dark" : "light";
+        const next = current === "dark" ? "light" : "dark";
+        root.setAttribute("data-theme", next);
+        localStorage.setItem(key, next);
+        syncLabel(next);
+      });
+    })();
+  </script>
+  <script src="js/theme-network.js"></script>
+</body>
+</html>

@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Signal or Fake — турнирный режим</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root {
+      --bc-bg: rgba(15, 28, 56, .84);
+      --bc-border: rgba(126, 173, 255, .35);
+      --bc-muted:#9fb5e2;
+      --bc-text: #eaf2ff;
+      --bc-input-bg: rgba(17,35,72,.2);
+    }
+    html[data-theme="light"] {
+      --bc-bg: rgba(255,255,255,.95);
+      --bc-muted:#496088;
+      --bc-text: #102247;
+      --bc-input-bg: rgba(255,255,255,.82);
+    }
+    .bc-wrap { display:grid; gap:18px; }
+    body[data-page="signal-or-fake-tournament"] { color: var(--bc-text); }
+    .bc-shell { border:1px solid var(--bc-border); border-radius:24px; padding:22px; display:grid; gap:16px; background: var(--bc-bg); }
+    .bc-btn { border:1px solid var(--bc-border); border-radius:12px; padding:10px 14px; cursor:pointer; background:transparent; color:inherit; font-weight:700; }
+    .bc-btn.is-active { background: linear-gradient(120deg, #74a4ff, #4de2ff); color:#03142c; border-color:transparent; }
+    .bc-hidden { display:none !important; }
+    .bc-field { display:grid; gap:8px; }
+    .bc-input { width:100%; padding:11px 12px; border-radius:12px; border:1px solid var(--bc-border); background:var(--bc-input-bg); color:inherit; }
+    .bc-status { min-height:1.4em; font-weight:700; }
+    .bc-status.ok { color:#16a34a; }
+    .bc-status.bad { color:#dc2626; }
+    .theme-toggle { min-width: 176px; display:inline-flex; align-items:center; gap:8px; justify-content:center; }
+    .theme-icon-sun{display:none}
+    .theme-toggle-label{white-space:nowrap}
+
+    .bt-layout { display:grid; gap:14px; }
+    .bt-choice { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .bt-choice .bc-btn { min-height:48px; }
+    .bt-panel { border:1px solid var(--bc-border); border-radius:16px; padding:14px; background: rgba(116,164,255,.16); display:grid; gap:12px; }
+    .bt-panel h3 { margin:0; }
+    .bt-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .bt-subgrid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    .bt-actions { display:flex; flex-wrap:wrap; gap:10px; }
+    .bt-code-box { font-size: clamp(24px, 4vw, 36px); font-weight: 900; letter-spacing: .1em; padding: 10px 14px; border-radius: 12px; border: 1px dashed var(--bc-border); width: fit-content; }
+    .bt-link-wrap { display:grid; gap:8px; }
+    .bt-join-ways { display:grid; gap:10px; grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .bt-join-way { border:1px solid var(--bc-border); border-radius:12px; padding:10px; background:var(--bc-input-bg); display:grid; gap:8px; }
+    .bt-join-way h4 { margin:0; font-size:14px; }
+    .bt-players-list { margin:0; padding-left:18px; display:grid; gap:4px; }
+    .bt-players-list:empty::before { content:"Пока никто не подключился"; color:var(--bc-muted); margin-left:-18px; list-style:none; }
+    .bt-waiting { margin:0; font-weight:700; color:var(--bc-muted); }
+    .bt-muted { color: var(--bc-muted); margin:0; }
+    .role-gate {
+      min-height: calc(100vh - 280px);
+      display: grid;
+      align-content: start;
+      justify-items: center;
+      padding: 10px 0;
+    }
+    .role-gate__box {
+      width: min(760px, 100%);
+      border: 1px solid var(--bc-border);
+      border-radius: 24px;
+      background: var(--bc-bg);
+      padding: 30px;
+      display: grid;
+      gap: 20px;
+      text-align: center;
+    }
+    .role-gate__title {
+      margin: 0;
+      font-size: clamp(32px, 4.8vw, 50px);
+      font-weight: 900;
+      letter-spacing: .01em;
+      color: var(--bc-text);
+      line-height: 1.1;
+    }
+    .role-gate__cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .role-gate__nick {
+      width: min(440px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 8px;
+      text-align: left;
+    }
+    .role-gate__status {
+      margin: 0;
+      font-weight: 700;
+      min-height: 1.3em;
+    }
+    .role-gate__status.ok { color:#16a34a; }
+    .role-gate__status.bad { color:#dc2626; }
+    #authNicknameLabel {
+      text-align: center;
+    }
+    .role-card {
+      border: 1px solid var(--bc-border);
+      border-radius: 18px;
+      padding: 24px 18px;
+      background: linear-gradient(140deg, rgba(116,164,255,.3), rgba(77,226,255,.22));
+      display: grid;
+      gap: 14px;
+      cursor: pointer;
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .role-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(126, 173, 255, .7);
+      box-shadow: 0 14px 34px rgba(77, 226, 255, .22);
+    }
+    .role-card h3,
+    .role-card p { margin: 0; }
+    .role-card h3 {
+      font-size: clamp(24px, 3vw, 34px);
+      font-weight: 900;
+      color: var(--bc-text);
+    }
+    .role-card p {
+      font-size: clamp(16px, 2vw, 20px);
+      font-weight: 700;
+      color: color-mix(in oklab, var(--bc-text) 78%, white 22%);
+      line-height: 1.35;
+    }
+    .role-stage {
+      display: grid;
+      min-height: calc(100vh - 280px);
+    }
+    .role-stage > section,
+    .role-stage > div {
+      grid-area: 1 / 1;
+      transition: opacity .35s ease, transform .35s ease;
+    }
+    #roleGate {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #tournamentFlow {
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+    }
+    .role-stage.is-flow #roleGate {
+      opacity: 0;
+      transform: translateY(-8px);
+      pointer-events: none;
+    }
+    .role-stage.is-flow #tournamentFlow {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    html[data-theme="light"] .theme-icon-sun{display:inline}
+    html[data-theme="light"] .theme-icon-moon{display:none}
+    html[data-theme="dark"] .theme-icon-sun{display:none}
+    html[data-theme="dark"] .theme-icon-moon{display:inline}
+    @media (max-width:840px){ .bt-choice,.bt-grid,.bt-subgrid,.role-gate__cards,.bt-join-ways{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body class="page" data-page="signal-or-fake-tournament">
+  <div class="theme-backdrop" aria-hidden="true">
+    <div class="theme-orb theme-orb-one"></div>
+    <div class="theme-orb theme-orb-two"></div>
+    <div class="theme-grid"></div>
+    <canvas class="theme-network" id="theme-network"></canvas>
+  </div>
+
+  <div class="site">
+    <main class="main">
+      <section class="section">
+        <div class="container bc-wrap">
+          <a class="btn ghost" href="signal-or-fake.html">← К режимам игры</a>
+          <div id="roleStage" class="role-stage">
+            <section id="roleGate" class="role-gate">
+              <div class="role-gate__box">
+                <h1 class="role-gate__title">Выберите роль в турнире</h1>
+                <div class="role-gate__nick">
+                  <label class="bc-field bc-hidden" id="guestNicknameWrap">
+                    <span>Ник для этой сессии (если вы без аккаунта)</span>
+                    <input id="sessionNickname" class="bc-input" type="text" maxlength="30" placeholder="Введите ник" />
+                  </label>
+                  <p id="authNicknameLabel" class="role-gate__status bc-hidden"></p>
+                  <p id="sessionNicknameStatus" class="role-gate__status" aria-live="polite"></p>
+                </div>
+                <div class="role-gate__cards">
+                  <button id="roleParticipantBtn" class="role-card" type="button">
+                    <h3>Я участник</h3>
+                    <p>Войти в уже созданную комнату по коду.</p>
+                  </button>
+                  <button id="roleCreatorBtn" class="role-card" type="button">
+                    <h3>Я создатель</h3>
+                    <p>Настроить параметры турнира и создать комнату.</p>
+                  </button>
+                </div>
+              </div>
+            </section>
+
+          <div id="tournamentFlow" class="bc-shell">
+            <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;">
+              <h1 style="margin:0;">Signal or Fake — Турнир</h1>
+              <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
+                <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
+                <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
+                <span class="theme-toggle-label">Тёмная тема</span>
+              </button>
+            </div>
+
+            <section id="tournamentMode">
+              <div class="bt-layout">
+                <div id="joinRoomPanel" class="bt-panel bc-hidden">
+                  <h3>Вход в комнату</h3>
+                  <div class="bt-grid">
+                    <label class="bc-field">
+                      <span>Код комнаты</span>
+                      <input id="joinRoomCode" class="bc-input" type="text" maxlength="8" placeholder="Например, Q7M9KP2" />
+                    </label>
+                    <label class="bc-field" id="joinNicknameWrap">
+                      <span>Ваш ник</span>
+                      <input id="joinNickname" class="bc-input" type="text" maxlength="30" placeholder="Введите ник" />
+                    </label>
+                  </div>
+                  <div class="bt-actions">
+                    <button id="joinRoomConfirmBtn" class="bc-btn" type="button">Войти</button>
+                  </div>
+                  <p class="bt-waiting" id="participantWaitingStatus">Ожидание подключения к комнате…</p>
+                  <div class="bc-field">
+                    <span>Участники в комнате</span>
+                    <ul id="participantPlayersList" class="bt-players-list"></ul>
+                  </div>
+                </div>
+
+                <div id="createRoomPanel" class="bt-panel bc-hidden">
+                  <h3>Создание турнирной комнаты</h3>
+                  <div class="bt-grid">
+                    <label class="bc-field">
+                      <span>Количество игроков (2–40)</span>
+                      <input id="playersCount" class="bc-input" type="number" min="2" max="40" value="8" />
+                    </label>
+                    <label class="bc-field">
+                      <span>Количество слов (от 1)</span>
+                      <input id="wordsCount" class="bc-input" type="number" min="1" value="10" />
+                    </label>
+                    <fieldset class="bc-field" style="border:1px solid var(--bc-border); border-radius:12px; padding:10px 12px;">
+                      <legend>Слова по этапам</legend>
+                      <div class="bt-subgrid">
+                        <label class="bc-field">
+                          <span>Текст → код</span>
+                          <input id="stageTextToCodeCount" class="bc-input" type="number" min="0" value="5" />
+                        </label>
+                        <label class="bc-field">
+                          <span>Код → текст</span>
+                          <input id="stageCodeToTextCount" class="bc-input" type="number" min="0" value="5" />
+                        </label>
+                      </div>
+                    </fieldset>
+                    <label class="bc-field">
+                      <span>Время (секунды, 20–3600)</span>
+                      <input id="timeLimit" class="bc-input" type="number" min="20" max="3600" value="300" />
+                    </label>
+                    <label class="bc-field">
+                      <span>Лимит отгаданных слов (от 2)</span>
+                      <input id="guessedWordsLimit" class="bc-input" type="number" min="2" value="12" />
+                    </label>
+                    <label class="bc-field">
+                      <span>Выбывание по ошибкам (от 1)</span>
+                      <input id="errorsElimination" class="bc-input" type="number" min="1" value="3" />
+                    </label>
+                    <fieldset class="bc-field" style="border:1px solid var(--bc-border); border-radius:12px; padding:10px 12px;">
+                      <legend>Диапазон длины слова (3–15)</legend>
+                      <div class="bt-subgrid">
+                        <label class="bc-field">
+                          <span>От</span>
+                          <input id="wordLengthMin" class="bc-input" type="number" min="3" max="15" value="3" />
+                        </label>
+                        <label class="bc-field">
+                          <span>До</span>
+                          <input id="wordLengthMax" class="bc-input" type="number" min="3" max="15" value="8" />
+                        </label>
+                      </div>
+                    </fieldset>
+                  </div>
+                  <div class="bt-actions">
+                    <button id="confirmCreateRoomBtn" class="bc-btn is-active" type="button">Создать комнату</button>
+                  </div>
+                </div>
+
+                <div id="createdRoomPanel" class="bt-panel bc-hidden">
+                  <h3>Комната создана</h3>
+                  <p class="bt-muted">После создания доступны 3 независимых способа входа: по коду, по ссылке или готовым текстом-приглашением.</p>
+                  <div class="bt-grid">
+                    <div>
+                      <div>Код игры</div>
+                      <div id="createdRoomCode" class="bt-code-box">—</div>
+                    </div>
+                    <div class="bt-link-wrap">
+                      <label class="bc-field">
+                        <span>Ссылка для входа</span>
+                        <input id="createdRoomLink" class="bc-input" type="text" readonly />
+                      </label>
+                    </div>
+                  </div>
+                  <div class="bt-join-ways">
+                    <div class="bt-join-way">
+                      <h4>Способ 1: код комнаты</h4>
+                      <button id="copyRoomCodeBtn" class="bc-btn" type="button">Скопировать код</button>
+                    </div>
+                    <div class="bt-join-way">
+                      <h4>Способ 2: ссылка</h4>
+                      <button id="copyRoomLinkBtn" class="bc-btn" type="button">Скопировать ссылку</button>
+                    </div>
+                    <div class="bt-join-way">
+                      <h4>Способ 3: текст-приглашение</h4>
+                      <button id="copyRoomInviteBtn" class="bc-btn" type="button">Скопировать приглашение</button>
+                    </div>
+                  </div>
+                  <div class="bt-actions">
+                    <button id="startGameBtn" class="bc-btn" type="button">Начать игру</button>
+                    <button id="joinAndStartGameBtn" class="bc-btn is-active" type="button">Присоединиться и начать игру</button>
+                  </div>
+                  <p id="creatorStartStatus" class="bt-waiting">Игра ещё не начата.</p>
+                  <div class="bc-field">
+                    <span>Подключившиеся участники</span>
+                    <ul id="connectedPlayersList" class="bt-players-list"></ul>
+                  </div>
+                </div>
+
+                <p id="tournamentFeedback" class="bc-status" aria-live="polite"></p>
+              </div>
+            </section>
+          </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-auth.js"></script>
+  <script>
+    (function initBackgroundAnimationPreference() {
+      const root = document.documentElement;
+      const saved = localStorage.getItem('cyber_bg_anim');
+      const enabled = saved !== '0';
+      root.classList.toggle('bg-anim-on', enabled);
+      root.classList.toggle('bg-anim-off', !enabled);
+    })();
+  </script>
+  <script>
+    (function initTheme() {
+      const key = 'cyber_theme';
+      const root = document.documentElement;
+      const toggle = document.getElementById('themeToggle');
+      if (!toggle) return;
+      const preferredDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const saved = localStorage.getItem(key);
+      const initial = saved || (preferredDark ? 'dark' : 'light');
+      root.setAttribute('data-theme', initial);
+
+      function syncLabel(theme) {
+        const label = toggle.querySelector('.theme-toggle-label');
+        if (label) label.textContent = theme === 'dark' ? 'Светлая тема' : 'Тёмная тема';
+        toggle.setAttribute('aria-pressed', String(theme === 'dark'));
+      }
+
+      syncLabel(initial);
+      toggle.addEventListener('click', () => {
+        const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+        const next = current === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        localStorage.setItem(key, next);
+        syncLabel(next);
+      });
+    })();
+
+    (async function () {
+      const tournamentFeedback = document.getElementById('tournamentFeedback');
+      const roleStage = document.getElementById('roleStage');
+      const roleGate = document.getElementById('roleGate');
+      const tournamentFlow = document.getElementById('tournamentFlow');
+      const guestNicknameWrap = document.getElementById('guestNicknameWrap');
+      const authNicknameLabel = document.getElementById('authNicknameLabel');
+      const sessionNicknameInput = document.getElementById('sessionNickname');
+      const sessionNicknameStatus = document.getElementById('sessionNicknameStatus');
+      const roleParticipantBtn = document.getElementById('roleParticipantBtn');
+      const roleCreatorBtn = document.getElementById('roleCreatorBtn');
+      const joinRoomPanel = document.getElementById('joinRoomPanel');
+      const createRoomPanel = document.getElementById('createRoomPanel');
+      const createdRoomPanel = document.getElementById('createdRoomPanel');
+      const joinNicknameInput = document.getElementById('joinNickname');
+      const joinNicknameWrap = document.getElementById('joinNicknameWrap');
+      const participantPlayersList = document.getElementById('participantPlayersList');
+      const participantWaitingStatus = document.getElementById('participantWaitingStatus');
+      const createdRoomCodeEl = document.getElementById('createdRoomCode');
+      const createdRoomLinkEl = document.getElementById('createdRoomLink');
+      const connectedPlayersList = document.getElementById('connectedPlayersList');
+      const creatorStartStatus = document.getElementById('creatorStartStatus');
+      const startGameBtn = document.getElementById('startGameBtn');
+      const joinAndStartGameBtn = document.getElementById('joinAndStartGameBtn');
+
+      let creatorRoomCode = '';
+      let participantWatchTimer = null;
+      let currentRoomChannel = null;
+      let connectedPlayers = [];
+      let tournamentSettings = null;
+
+      const sb = window.CyberSupabaseAuth.createClient(false);
+      const activeSession = await window.CyberSupabaseAuth.getCurrentSession();
+      let sessionNickname = '';
+      const authProfile = activeSession?.user
+        ? await window.CyberSupabaseAuth.getProfile(activeSession.sb, activeSession.user.id).catch(() => null)
+        : null;
+
+      if (activeSession?.user) {
+        sessionNickname = authProfile?.username
+          || activeSession.user?.user_metadata?.username
+          || activeSession.user?.email?.split('@')[0]
+          || 'Игрок';
+        guestNicknameWrap.classList.add('bc-hidden');
+        authNicknameLabel.textContent = `Вы вошли как: ${sessionNickname}`;
+        authNicknameLabel.classList.remove('bc-hidden');
+        authNicknameLabel.classList.add('ok');
+      } else {
+        guestNicknameWrap.classList.remove('bc-hidden');
+        const savedGuestNickname = sessionStorage.getItem('bb_tournament_guest_nick') || '';
+        if (savedGuestNickname) sessionNicknameInput.value = savedGuestNickname;
+      }
+
+      function setTournamentFeedback(ok, text) {
+        tournamentFeedback.textContent = text;
+        tournamentFeedback.classList.toggle('ok', ok);
+        tournamentFeedback.classList.toggle('bad', !ok);
+      }
+
+      function toggleTournamentPanel(mode) {
+        joinRoomPanel.classList.toggle('bc-hidden', mode !== 'join');
+        createRoomPanel.classList.toggle('bc-hidden', mode !== 'create');
+      }
+
+      async function isNicknameUnique(nickname) {
+        const normalized = nickname.trim();
+        if (!normalized) return { ok: false, message: 'Введите ник для сессии.' };
+        const { data: profilesRows, error: profilesError } = await sb
+          .from('profiles')
+          .select('username')
+          .ilike('username', normalized)
+          .limit(1);
+        if (profilesError) return { ok: false, message: 'Ошибка проверки ника. Попробуйте ещё раз.' };
+        if (profilesRows?.length) return { ok: false, message: 'Этот ник уже используется. Выберите другой.' };
+
+        const { data: leaderboardRows, error: leaderboardError } = await sb
+          .from('leaderboard')
+          .select('username')
+          .ilike('username', normalized)
+          .limit(1);
+        if (leaderboardError) return { ok: false, message: 'Ошибка проверки ника. Попробуйте ещё раз.' };
+        if (leaderboardRows?.length) return { ok: false, message: 'Этот ник уже встречается в базе. Выберите другой.' };
+
+        return { ok: true, message: 'Ник свободен для этой сессии.' };
+      }
+
+      async function resolveSessionNickname() {
+        if (sessionNickname) return true;
+        const candidate = sessionNicknameInput.value.trim();
+        const check = await isNicknameUnique(candidate);
+        sessionNicknameStatus.textContent = check.message;
+        sessionNicknameStatus.classList.toggle('ok', check.ok);
+        sessionNicknameStatus.classList.toggle('bad', !check.ok);
+        if (!check.ok) return false;
+        sessionNickname = candidate;
+        sessionStorage.setItem('bb_tournament_guest_nick', candidate);
+        return true;
+      }
+
+      async function enterFlow(mode) {
+        const canContinue = await resolveSessionNickname();
+        if (!canContinue) return false;
+        roleStage.classList.add('is-flow');
+        toggleTournamentPanel(mode);
+        if (sessionNickname) {
+          joinNicknameInput.value = sessionNickname;
+          joinNicknameInput.readOnly = true;
+          joinNicknameWrap.classList.add('bc-hidden');
+        } else {
+          joinNicknameWrap.classList.remove('bc-hidden');
+        }
+        return true;
+      }
+
+      roleParticipantBtn.addEventListener('click', async () => {
+        const opened = await enterFlow('join');
+        if (!opened) return;
+        setTournamentFeedback(true, 'Введите код комнаты и ник, чтобы присоединиться к турниру.');
+      });
+
+      roleCreatorBtn.addEventListener('click', async () => {
+        const opened = await enterFlow('create');
+        if (!opened) return;
+        setTournamentFeedback(true, 'Настройте параметры турнира и создайте комнату.');
+      });
+
+      function readPositiveInt(id, min = 1, max = Number.POSITIVE_INFINITY) {
+        const field = document.getElementById(id);
+        const value = Number.parseInt(field.value, 10);
+        if (!Number.isInteger(value) || value < min || value > max) return null;
+        return value;
+      }
+
+      function generateRoomCode() {
+        return Math.random().toString(36).slice(2, 9).toUpperCase();
+      }
+
+      function normalizeCode(rawCode) {
+        return String(rawCode || '').trim().toUpperCase();
+      }
+
+      function renderConnectedPlayers(room = {}) {
+        connectedPlayersList.innerHTML = '';
+        (room.participants || []).forEach((nickname) => {
+          const li = document.createElement('li');
+          li.textContent = nickname;
+          connectedPlayersList.appendChild(li);
+        });
+        if (room.started) {
+          creatorStartStatus.textContent = 'Игра запущена. Участники уже могут начинать.';
+          creatorStartStatus.classList.add('ok');
+        } else {
+          creatorStartStatus.textContent = 'Игра ещё не начата.';
+          creatorStartStatus.classList.remove('ok');
+        }
+      }
+
+      function renderParticipantPlayers(participants = []) {
+        participantPlayersList.innerHTML = '';
+        participants.forEach((nickname) => {
+          const li = document.createElement('li');
+          li.textContent = nickname;
+          participantPlayersList.appendChild(li);
+        });
+      }
+
+      function clearParticipantWatcher() {
+        if (participantWatchTimer) {
+          clearInterval(participantWatchTimer);
+          participantWatchTimer = null;
+        }
+      }
+
+      function launchTournamentGame(roomCode, nickname, sourceRole = 'participant', settings = tournamentSettings) {
+        const payload = {
+          roomCode: normalizeCode(roomCode),
+          nickname: String(nickname || '').trim(),
+          role: sourceRole,
+          startedAt: Date.now(),
+          settings: settings || null
+        };
+        sessionStorage.setItem('bb_tournament_runtime', JSON.stringify(payload));
+
+        const gameUrl = new URL('signal-or-fake-solo.html', window.location.href);
+        gameUrl.searchParams.set('tournament', '1');
+        gameUrl.searchParams.set('room', payload.roomCode);
+        if (payload.nickname) gameUrl.searchParams.set('nick', payload.nickname);
+        gameUrl.searchParams.set('role', sourceRole);
+        window.location.href = gameUrl.toString();
+      }
+
+      async function openRoomChannel(code, role) {
+        const normalizedCode = normalizeCode(code);
+        if (!normalizedCode) return null;
+
+        if (currentRoomChannel) {
+          try { await currentRoomChannel.unsubscribe(); } catch (_) {}
+          currentRoomChannel = null;
+        }
+
+        const channel = sb.channel(`bb_tournament_${normalizedCode}`, { config: { presence: { key: `${normalizedCode}:${sessionNickname}` } } });
+
+        channel.on('presence', { event: 'sync' }, () => {
+          const state = channel.presenceState();
+          const fromPresence = Object.values(state).flat().map((entry) => String(entry?.nickname || '').trim()).filter(Boolean);
+          connectedPlayers = Array.from(new Set(fromPresence));
+          renderConnectedPlayers({ participants: connectedPlayers, started: creatorStartStatus.classList.contains('ok') });
+          renderParticipantPlayers(connectedPlayers);
+        });
+
+        channel.on('broadcast', { event: 'participant_joined' }, ({ payload }) => {
+          const nickname = String(payload?.nickname || '').trim();
+          if (!nickname) return;
+          if (!connectedPlayers.includes(nickname)) {
+            connectedPlayers.push(nickname);
+            renderConnectedPlayers({ participants: connectedPlayers, started: creatorStartStatus.classList.contains('ok') });
+            renderParticipantPlayers(connectedPlayers);
+          }
+        });
+
+        channel.on('broadcast', { event: 'game_started' }, ({ payload }) => {
+          renderConnectedPlayers({ participants: connectedPlayers, started: true });
+          renderParticipantPlayers(connectedPlayers);
+          if (role === 'participant') {
+            clearParticipantWatcher();
+            participantWaitingStatus.textContent = 'Игра началась. Переходим в матч…';
+            setTournamentFeedback(true, `Игра в комнате ${normalizedCode} началась. Переходим в матч…`);
+            const incomingSettings = payload?.settings || tournamentSettings || null;
+            setTimeout(() => launchTournamentGame(normalizedCode, joinNicknameInput.value || sessionNickname, 'participant', incomingSettings), 350);
+          }
+        });
+
+        await new Promise((resolve, reject) => {
+          const timeoutId = setTimeout(() => reject(new Error('timeout')), 7000);
+          channel.subscribe((status) => {
+            if (status === 'SUBSCRIBED') {
+              clearTimeout(timeoutId);
+              resolve();
+            }
+            if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
+              clearTimeout(timeoutId);
+              reject(new Error(status));
+            }
+          });
+        });
+
+        await channel.track({ nickname: sessionNickname, joinedAt: Date.now(), role });
+        currentRoomChannel = channel;
+        return channel;
+      }
+
+      document.getElementById('joinRoomConfirmBtn').addEventListener('click', async () => {
+        const code = normalizeCode(document.getElementById('joinRoomCode').value);
+        const nickname = document.getElementById('joinNickname').value.trim();
+        if (!code || !nickname) {
+          setTournamentFeedback(false, 'Укажите и код комнаты, и ник для входа.');
+          return;
+        }
+
+        try {
+          await openRoomChannel(code, 'participant');
+        } catch (_) {
+          setTournamentFeedback(false, 'Не удалось подключиться к комнате. Проверьте интернет и попробуйте ещё раз.');
+          return;
+        }
+
+        try {
+          await currentRoomChannel.send({
+            type: 'broadcast',
+            event: 'participant_joined',
+            payload: { code, nickname, joinedAt: Date.now() }
+          });
+        } catch (_) {
+          setTournamentFeedback(false, 'Не удалось отправить запрос на вход. Попробуйте ещё раз.');
+          return;
+        }
+
+        clearParticipantWatcher();
+        participantWaitingStatus.textContent = 'Ожидание начала игры создателем…';
+        participantWatchTimer = setInterval(() => {
+          setTournamentFeedback(true, `Вы подключены к комнате ${code}. Ожидание начала игры создателем…`);
+        }, 4000);
+
+        setTournamentFeedback(true, `Вы подключены к комнате ${code}. Ожидание начала игры создателем…`);
+      });
+
+      document.getElementById('confirmCreateRoomBtn').addEventListener('click', () => {
+        const playersCount = readPositiveInt('playersCount', 2, 40);
+        const wordsCount = readPositiveInt('wordsCount', 1);
+        const stageTextToCodeCount = readPositiveInt('stageTextToCodeCount', 0);
+        const stageCodeToTextCount = readPositiveInt('stageCodeToTextCount', 0);
+        const timeLimit = readPositiveInt('timeLimit', 20, 3600);
+        const guessedWordsLimit = readPositiveInt('guessedWordsLimit', 2);
+        const errorsElimination = readPositiveInt('errorsElimination', 1);
+        const wordLengthMin = readPositiveInt('wordLengthMin', 3, 15);
+        const wordLengthMax = readPositiveInt('wordLengthMax', 3, 15);
+
+        if ([playersCount, wordsCount, stageTextToCodeCount, stageCodeToTextCount, timeLimit, guessedWordsLimit, errorsElimination, wordLengthMin, wordLengthMax].some((v) => v === null)) {
+          setTournamentFeedback(false, 'Проверьте ограничения параметров. Одно или несколько полей заполнены неверно.');
+          return;
+        }
+
+        if (wordLengthMin > wordLengthMax) {
+          setTournamentFeedback(false, 'Диапазон длины слов неверный: минимальное значение больше максимального.');
+          return;
+        }
+
+        if (stageTextToCodeCount + stageCodeToTextCount !== wordsCount) {
+          setTournamentFeedback(false, 'Сумма слов по этапам должна быть равна общему количеству слов.');
+          return;
+        }
+
+        const roomCode = generateRoomCode();
+        connectedPlayers = [];
+        const roomUrl = new URL(window.location.href);
+        roomUrl.searchParams.set('room', roomCode);
+        const roomLink = roomUrl.toString();
+        createdRoomCodeEl.textContent = roomCode;
+        createdRoomLinkEl.value = roomLink;
+
+        tournamentSettings = {
+          playersCount,
+          wordsCount,
+          stageTextToCodeCount,
+          stageCodeToTextCount,
+          timeLimit,
+          guessedWordsLimit,
+          errorsElimination,
+          wordLengthMin,
+          wordLengthMax
+        };
+
+        const room = {
+          code: roomCode,
+          creator: sessionNickname,
+          participants: [],
+          started: false,
+          settings: tournamentSettings
+        };
+        creatorRoomCode = roomCode;
+        renderConnectedPlayers(room);
+        createdRoomPanel.classList.remove('bc-hidden');
+
+        openRoomChannel(roomCode, 'creator')
+          .then(() => setTournamentFeedback(true, `Комната создана: ${playersCount} игроков, ${wordsCount} слов, время ${timeLimit} сек (${(timeLimit / 60).toFixed(1)} мин). Ожидайте подключения участников.`))
+          .catch(() => setTournamentFeedback(false, 'Комната создана, но подключение к каналу не удалось. Проверьте интернет и попробуйте создать заново.'));
+      });
+
+      document.getElementById('copyRoomLinkBtn').addEventListener('click', async () => {
+        const linkField = createdRoomLinkEl;
+        if (!linkField.value) {
+          setTournamentFeedback(false, 'Сначала создайте комнату, чтобы получить ссылку.');
+          return;
+        }
+        try {
+          await navigator.clipboard.writeText(linkField.value);
+          setTournamentFeedback(true, 'Ссылка скопирована в буфер обмена.');
+        } catch (_) {
+          linkField.select();
+          setTournamentFeedback(false, 'Не удалось скопировать автоматически. Скопируйте ссылку вручную из поля.');
+        }
+      });
+
+      document.getElementById('copyRoomCodeBtn').addEventListener('click', async () => {
+        if (!creatorRoomCode) {
+          setTournamentFeedback(false, 'Сначала создайте комнату, чтобы получить код.');
+          return;
+        }
+        try {
+          await navigator.clipboard.writeText(creatorRoomCode);
+          setTournamentFeedback(true, 'Код комнаты скопирован.');
+        } catch (_) {
+          setTournamentFeedback(false, 'Не удалось скопировать код автоматически.');
+        }
+      });
+
+      document.getElementById('copyRoomInviteBtn').addEventListener('click', async () => {
+        if (!creatorRoomCode || !createdRoomLinkEl.value) {
+          setTournamentFeedback(false, 'Сначала создайте комнату, чтобы отправить приглашение.');
+          return;
+        }
+        const inviteText = `Присоединяйся к Binary Battle! Код: ${creatorRoomCode}. Ссылка: ${createdRoomLinkEl.value}`;
+        try {
+          await navigator.clipboard.writeText(inviteText);
+          setTournamentFeedback(true, 'Текст-приглашение скопирован.');
+        } catch (_) {
+          setTournamentFeedback(false, 'Не удалось скопировать приглашение автоматически.');
+        }
+      });
+
+      startGameBtn.addEventListener('click', async () => {
+        if (!creatorRoomCode || !currentRoomChannel) {
+          setTournamentFeedback(false, 'Сначала создайте комнату.');
+          return;
+        }
+        try {
+          await currentRoomChannel.send({ type: 'broadcast', event: 'game_started', payload: { code: creatorRoomCode, startedAt: Date.now(), settings: tournamentSettings } });
+          renderConnectedPlayers({ participants: connectedPlayers, started: true });
+          renderParticipantPlayers(connectedPlayers);
+          setTournamentFeedback(true, 'Матч запущен. Переходим в игру…');
+          setTimeout(() => launchTournamentGame(creatorRoomCode, sessionNickname, 'creator', tournamentSettings), 250);
+        } catch (_) {
+          setTournamentFeedback(false, 'Не удалось запустить игру. Проверьте соединение и повторите.');
+        }
+      });
+
+      joinAndStartGameBtn.addEventListener('click', async () => {
+        if (!creatorRoomCode || !currentRoomChannel) {
+          setTournamentFeedback(false, 'Сначала создайте комнату.');
+          return;
+        }
+        if (!connectedPlayers.includes(sessionNickname)) {
+          connectedPlayers.push(sessionNickname);
+        }
+        try {
+          await currentRoomChannel.send({ type: 'broadcast', event: 'participant_joined', payload: { code: creatorRoomCode, nickname: sessionNickname, joinedAt: Date.now() } });
+          await currentRoomChannel.send({ type: 'broadcast', event: 'game_started', payload: { code: creatorRoomCode, startedAt: Date.now(), settings: tournamentSettings } });
+          renderConnectedPlayers({ participants: connectedPlayers, started: true });
+          renderParticipantPlayers(connectedPlayers);
+          setTournamentFeedback(true, 'Вы присоединились и матч запускается…');
+          setTimeout(() => launchTournamentGame(creatorRoomCode, sessionNickname, 'creator-player', tournamentSettings), 250);
+        } catch (_) {
+          setTournamentFeedback(false, 'Не удалось отправить команды старта. Проверьте соединение.');
+        }
+      });
+
+      const presetRoomCode = normalizeCode(new URL(window.location.href).searchParams.get('room'));
+      if (presetRoomCode) {
+        document.getElementById('joinRoomCode').value = presetRoomCode;
+        const opened = await enterFlow('join');
+        if (opened) {
+          setTournamentFeedback(true, 'Ссылка открыта. Введите ник и нажмите «Войти».');
+        }
+      }
+    })();
+  </script>
+  <script src="js/theme-network.js"></script>
+</body>
+</html>

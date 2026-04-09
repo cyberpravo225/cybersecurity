@@ -1,20 +1,20 @@
-# Binary Battle (legit/fake edition)
+# Signal or Fake (new standalone game)
 
-Этот репозиторий содержит веб-проект по кибербезопасности с обновлённой игрой **Binary Battle**:
+Этот репозиторий содержит веб-проект по кибербезопасности с новой отдельной игрой **Signal or Fake** (не как часть Binary Battle):
 
-- одиночный соревновательный режим (`binary-competitive.html`);
-- турнирный режим через лобби (`binary-tournament.html`);
+- одиночный соревновательный режим (`signal-or-fake-solo.html`);
+- турнирный режим через лобби (`signal-or-fake-tournament.html`);
 - лидерборд на главной (`index.html`) с разделением по `age_group`;
 - сохранение результатов в Supabase (новые таблицы + обратная совместимость со старой `leaderboard`).
 
 ## Что обновлено
 
 1. Главная страница (`index.html`)
-   - добавлена большая карточка Binary Battle;
+   - добавлена большая карточка Signal or Fake;
    - добавлен встроенный leaderboard блок с табами `10-16` / `16+`;
    - загрузка топа сначала из `leaderboard_entries + solo_runs + profiles`, fallback на legacy `leaderboard`.
 
-2. Соревновательный режим (`binary-competitive.html`)
+2. Соревновательный режим (`signal-or-fake-solo.html`)
    - механика изменена на legit/fake для доменов, Telegram, email, URL;
    - scoring учитывает правильность, скорость, серию и сложность;
    - после завершения сохраняются:
@@ -101,7 +101,7 @@
 ### 6) Проверить турнирный режим вживую (минимум 2 клиента)
 
 1. Откройте два браузера/профиля (или браузер + инкогнито).
-2. Создайте комнату в `binary-tournament.html`.
+2. Создайте комнату в `signal-or-fake-tournament.html`.
 3. Зайдите вторым клиентом по коду комнаты.
 4. Запустите матч и убедитесь, что:
    - игроки видят прогресс;
@@ -111,7 +111,7 @@
 ### 7) Проверить главную страницу и leaderboard-виджет
 
 1. На `index.html` убедитесь, что:
-   - есть карточка Binary Battle;
+   - есть карточка Signal or Fake;
    - есть блок лидерборда;
    - переключение `10-16` / `16+` обновляет таблицу.
 2. Убедитесь, что при пустых данных показывается корректное empty-state сообщение.
@@ -121,12 +121,12 @@
 
 1. Убедитесь, что URL и anon key Supabase актуальны для окружения (dev/stage/prod).
 2. Проверьте CORS и allowed redirect URLs для `auth.html`.
-3. Если есть CDN/кеш, сбросьте кеш для `index.html`, `binary-competitive.html`, `js/digital-entities.js`.
+3. Если есть CDN/кеш, сбросьте кеш для `index.html`, `signal-or-fake-solo.html`, `signal-or-fake-tournament.html`, `js/digital-entities.js`.
 
 ### 9) Финальная smoke-проверка перед релизом
 
 1. Войти в аккаунт.
-2. Запустить solo-режим и завершить раунд.
+2. Запустить solo-режим (`signal-or-fake-solo.html`) и завершить раунд.
 3. Убедиться в записи в:
    - `solo_runs`
    - `solo_run_answers`
