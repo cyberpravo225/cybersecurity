@@ -1,206 +1,205 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-theme="light">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Полное обучение ASCII и двоичному коду</title>
-<link rel="stylesheet" href="css/style.css">
-<style>
-:root[data-theme="light"] body.page[data-page="binary-learning"] .method-card{
-background:rgba(255,250,243,0.72);
-backdrop-filter:blur(8px);
--webkit-backdrop-filter:blur(8px);
-}
-
-:root[data-theme="dark"] body.page[data-page="binary-learning"] .method-card{
-background:rgba(31,39,88,0.64);
-backdrop-filter:blur(8px);
--webkit-backdrop-filter:blur(8px);
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Binary Learning — Бинарная лаборатория</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root {
+      --bb-text: #eaf1ff;
+      --bb-muted: #9eb2db;
+      --bb-border: rgba(133, 169, 255, .35);
+      --bb-surface: rgba(14, 30, 60, .72);
+      --bb-shadow: 0 18px 40px rgba(4, 10, 28, .35);
+      --bb-accent: linear-gradient(125deg, #79a3ff, #4dd9ff);
+      --bb-ok: #61d6a3;
+      --bb-warn: #ffc766;
+      --bb-danger: #ff7a94;
+    }
+    html[data-theme="light"] {
+      --bb-text: #0d2249;
+      --bb-muted: #486290;
+      --bb-border: rgba(53, 94, 180, .25);
+      --bb-surface: rgba(241, 247, 255, .96);
+      --bb-shadow: 0 16px 36px rgba(44, 72, 129, .16);
+      --bb-ok: #0a8d5f;
+      --bb-warn: #a96500;
+      --bb-danger: #ba2648;
+    }
+    body[data-page="binary-learning"] { color: var(--bb-text); }
+    .bb-wrap { display:grid; gap:16px; }
+    .bb-panel {
+      border: 1px solid var(--bb-border);
+      border-radius: 24px;
+      background: linear-gradient(165deg, rgba(117, 165, 255, .11), rgba(60, 111, 208, .08), transparent 70%), var(--bb-surface);
+      box-shadow: var(--bb-shadow);
+      padding: clamp(18px, 2vw, 30px);
+      display: grid;
+      gap: 16px;
+    }
+    .bb-grid { display:grid; grid-template-columns: repeat(12, minmax(0,1fr)); gap: 16px; }
+    .bb-box { border:1px solid var(--bb-border); border-radius:16px; padding:16px; background: color-mix(in srgb, var(--bb-surface) 84%, transparent); display:grid; gap:12px; }
+    .bb-grid .bb-box:nth-child(1){grid-column:span 5}
+    .bb-grid .bb-box:nth-child(2){grid-column:span 7}
+    .bb-grid .bb-box:nth-child(3){grid-column:span 12}
+    .bb-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    .bb-input{border-radius:10px;border:1px solid var(--bb-border);background:transparent;color:var(--bb-text);padding:8px 10px;min-width:120px}
+    .bb-btn{border:1px solid var(--bb-border);background:transparent;color:var(--bb-text);border-radius:10px;padding:8px 12px;font-weight:700;cursor:pointer}
+    .bb-btn--accent{background:var(--bb-accent);color:#03132e;border:none}
+    .bb-chip-list{display:flex;flex-wrap:wrap;gap:8px}
+    .bb-chip{border:1px solid var(--bb-border);border-radius:999px;padding:6px 10px;color:var(--bb-muted)}
+    .bb-byte-grid{display:grid;grid-template-columns:repeat(8,minmax(24px,1fr));gap:8px}
+    .bb-bit{border-radius:8px;border:1px solid var(--bb-border);padding:8px 0;text-align:center;font-weight:800;cursor:pointer}
+    .bb-bit[data-on="1"]{background:rgba(98,208,255,.2);border-color:rgba(98,208,255,.7)}
+    .bb-table-wrap{overflow:auto;max-height:320px}
+    .bb-table{width:100%;border-collapse:collapse}
+    .bb-table th,.bb-table td{border:1px solid var(--bb-border);padding:8px;text-align:center;white-space:nowrap}
+    .bb-table th{position:sticky;top:0;background:color-mix(in srgb,var(--bb-surface) 90%, transparent)}
+    .bb-status{font-weight:700}
+    .bb-status--ok{color:var(--bb-ok)}
+    .bb-status--warn{color:var(--bb-warn)}
+    .bb-status--danger{color:var(--bb-danger)}
+    .bb-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    .theme-toggle{min-width:176px;display:inline-flex;align-items:center;gap:8px}
+    .theme-icon-sun{display:none}
+    html[data-theme="light"] .theme-icon-sun{display:inline}
+    html[data-theme="light"] .theme-icon-moon{display:none}
+    @media (max-width:1050px){.bb-grid{grid-template-columns:repeat(6,minmax(0,1fr))}.bb-grid .bb-box{grid-column:span 6 !important;}}
+  </style>
 </head>
-
 <body class="page" data-page="binary-learning">
+  <div class="theme-backdrop" aria-hidden="true">
+    <div class="theme-orb theme-orb-one"></div>
+    <div class="theme-orb theme-orb-two"></div>
+    <div class="theme-grid"></div>
+    <canvas class="theme-network" id="theme-network"></canvas>
+  </div>
+  <div class="site">
+    <main class="main">
+      <section class="section">
+        <div class="container bb-wrap">
+          <div class="card" style="display:grid;gap:12px;">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center;">
+              <a class="btn ghost" href="binary-battle.html">← Назад к режимам</a>
+              <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
+                <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
+                <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
+                <span class="theme-toggle-label">Тёмная тема</span>
+              </button>
+            </div>
+            <h1 style="margin:0;">🎓 Учебный режим: Бинарная лаборатория</h1>
+            <p style="margin:0;color:var(--bb-muted);">Теория + практика в одном месте: конвертер, визуализатор, ASCII-таблица и челленджи.</p>
+          </div>
 
-<div class="theme-backdrop" aria-hidden="true">
-  <div class="theme-orb theme-orb-one"></div>
-  <div class="theme-orb theme-orb-two"></div>
-  <div class="theme-grid"></div>
-  <canvas class="theme-network" id="theme-network"></canvas>
-</div>
+          <section class="bb-panel">
+            <div class="bb-grid">
+              <article class="bb-box">
+                <h3>1) Конвертер символ ↔ байт</h3>
+                <div class="bb-controls">
+                  <input id="learnChar" class="bb-input bb-mono" maxlength="1" value="A" />
+                  <button id="charToBinBtn" class="bb-btn bb-btn--accent" type="button">Символ → Бинарный</button>
+                  <input id="learnBinary" class="bb-input bb-mono" maxlength="8" value="01000001" />
+                  <button id="binToCharBtn" class="bb-btn" type="button">Бинарный → Символ</button>
+                </div>
+                <p id="learnConverterStatus" class="bb-status bb-status--warn">Введите символ или 8-битный код.</p>
+                <div class="bb-chip-list">
+                  <span class="bb-chip">Dec: <strong id="learnDec">65</strong></span>
+                  <span class="bb-chip">Hex: <strong id="learnHex">0x41</strong></span>
+                  <span class="bb-chip">Oct: <strong id="learnOct">101</strong></span>
+                </div>
+              </article>
 
-<div class="site">
-<header class="topbar glass">
-<a class="back-btn" href="binary-battle.html">← НАЗАД</a>
-<nav class="nav">
-<button id="theme-toggle" class="btn icon-btn" aria-label="Переключить тему">
-<svg class="icon-theme" width="22" height="22" viewBox="0 0 24 24" fill="none">
-<path class="icon-moon" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>
-<g class="icon-sun">
-<circle cx="12" cy="12" r="4"/>
-<line x1="12" y1="1" x2="12" y2="4"/>
-<line x1="12" y1="20" x2="12" y2="23"/>
-<line x1="4.2" y1="4.2" x2="6.3" y2="6.3"/>
-<line x1="17.7" y1="17.7" x2="19.8" y2="19.8"/>
-<line x1="1" y1="12" x2="4" y2="12"/>
-<line x1="20" y1="12" x2="23" y2="12"/>
-<line x1="4.2" y1="19.8" x2="6.3" y2="17.7"/>
-<line x1="17.7" y1="6.3" x2="19.8" y2="4.2"/>
-</g>
-</svg>
-</button>
-</nav>
-</header>
+              <article class="bb-box">
+                <h3>2) Визуализатор битов</h3>
+                <p style="margin:0;color:var(--bb-muted);">Кликай по битам и смотри изменения ASCII-кода.</p>
+                <div id="bitGrid" class="bb-byte-grid"></div>
+                <div class="bb-chip-list">
+                  <span class="bb-chip">Byte: <strong id="bitByte" class="bb-mono">00000000</strong></span>
+                  <span class="bb-chip">Dec: <strong id="bitDec">0</strong></span>
+                  <span class="bb-chip">Char: <strong id="bitChar" class="bb-mono">NUL</strong></span>
+                </div>
+              </article>
 
-<main class="main">
-<section class="section container reveal">
-<h1>Полный гайд: ASCII и двоичный код</h1>
-<p class="lead">Пошаговое обучение: что такое ASCII, когда он появился, как им пользоваться при переводе слов в двоичный код и обратно, и таблица ASCII только для букв и цифр в конце.</p>
-
-<div class="method-materials">
-<div class="method-card">
-<div class="method-icon">📚</div>
-<div class="method-info">
-<h3>Шаг 1. Что такое ASCII и когда он появился</h3>
-<p><strong>ASCII</strong> (American Standard Code for Information Interchange) — это стандарт кодирования символов, принятый в 1963 году и обновлённый в 1967 году. Он связывает каждый символ (букву, цифру, знак, управляющую команду) с числом от 0 до 127.</p>
-<p>Идея простая: компьютер хранит не буквы напрямую, а числа. Таблица ASCII говорит, какое число соответствует каждому символу.</p>
-</div>
-</div>
-
-<div class="method-card">
-<div class="method-icon">8️⃣</div>
-<div class="method-info">
-<h3>Шаг 2. Почему используется 8-битная запись</h3>
-<p>В классическом ASCII достаточно 7 бит (0–127), но на практике символ обычно хранится в <strong>1 байте = 8 бит</strong>. Поэтому числа ASCII записывают двоично с ведущим нулём, например: 65 → <code>01000001</code>.</p>
-<p>Это упрощает хранение и обработку данных, потому что почти все системы работают с байтами.</p>
-</div>
-</div>
-
-<div class="method-card">
-<div class="method-icon">🔤</div>
-<div class="method-info">
-<h3>Шаг 3. Как переводить текст в двоичный код</h3>
-<p>Алгоритм:</p>
-<p>1) Возьми символ.<br>
-2) Найди его десятичный код в ASCII.<br>
-3) Переведи число в двоичный вид и запиши 8 бит.</p>
-<p>Пример для слова <strong>CAT</strong>:<br>
-C = 67 = <code>01000011</code><br>
-A = 65 = <code>01000001</code><br>
-T = 84 = <code>01010100</code><br>
-Итог: <code>01000011 01000001 01010100</code>.</p>
-</div>
-</div>
-
-<div class="method-card">
-<div class="method-icon">🔁</div>
-<div class="method-info">
-<h3>Шаг 4. Как переводить двоичный код обратно в текст</h3>
-<p>Алгоритм:</p>
-<p>1) Раздели строку на блоки по 8 бит.<br>
-2) Каждый блок переведи в десятичное число.<br>
-3) По таблице ASCII найди символ.</p>
-<p><strong>Формула перевода:</strong><br>
-Для 8 бит <code>b7 b6 b5 b4 b3 b2 b1 b0</code> десятичное значение считается так:<br>
-<code>Dec = b7·2⁷ + b6·2⁶ + b5·2⁵ + b4·2⁴ + b3·2³ + b2·2² + b1·2¹ + b0·2⁰</code>.<br>
-Обратный перевод (Dec → Bin): последовательно дели число на 2, записывай остатки и читай их снизу вверх.</p>
-<p>Пример: <code>01001000 01101001</code> → 72 и 105 → <strong>H</strong> и <strong>i</strong> → <strong>Hi</strong>.</p>
-</div>
-</div>
-
-<div class="method-card">
-<div class="method-icon">✅</div>
-<div class="method-info">
-<h3>Шаг 5. Быстрая проверка корректности</h3>
-<p>• Каждый символ должен занимать ровно 8 бит.<br>
-• В записи допускаются только 0 и 1.<br>
-• Количество байтов должно равняться количеству символов.<br>
-• Сделай обратный перевод — если получился исходный текст, ответ верный.</p>
-</div>
-</div>
-</div>
-
-<div class="method-card" style="margin-top:20px;">
-<div class="method-icon">📋</div>
-<div class="method-info" style="width:100%; overflow:auto;">
-<h3>Шаг 6. Таблица ASCII: только буквы и цифры</h3>
-<table>
-<thead>
-<tr><th>Dec</th><th>Hex</th><th>Binary (8 bit)</th><th>Обозначение</th><th>Символ</th><th>Описание</th></tr>
-</thead>
-<tbody>
-<tr><td>48</td><td>0x30</td><td><code>00110000</code></td><td>'0'</td><td>0</td><td>Печатный символ</td></tr>
-<tr><td>49</td><td>0x31</td><td><code>00110001</code></td><td>'1'</td><td>1</td><td>Печатный символ</td></tr>
-<tr><td>50</td><td>0x32</td><td><code>00110010</code></td><td>'2'</td><td>2</td><td>Печатный символ</td></tr>
-<tr><td>51</td><td>0x33</td><td><code>00110011</code></td><td>'3'</td><td>3</td><td>Печатный символ</td></tr>
-<tr><td>52</td><td>0x34</td><td><code>00110100</code></td><td>'4'</td><td>4</td><td>Печатный символ</td></tr>
-<tr><td>53</td><td>0x35</td><td><code>00110101</code></td><td>'5'</td><td>5</td><td>Печатный символ</td></tr>
-<tr><td>54</td><td>0x36</td><td><code>00110110</code></td><td>'6'</td><td>6</td><td>Печатный символ</td></tr>
-<tr><td>55</td><td>0x37</td><td><code>00110111</code></td><td>'7'</td><td>7</td><td>Печатный символ</td></tr>
-<tr><td>56</td><td>0x38</td><td><code>00111000</code></td><td>'8'</td><td>8</td><td>Печатный символ</td></tr>
-<tr><td>57</td><td>0x39</td><td><code>00111001</code></td><td>'9'</td><td>9</td><td>Печатный символ</td></tr>
-<tr><td>65</td><td>0x41</td><td><code>01000001</code></td><td>'A'</td><td>A</td><td>Печатный символ</td></tr>
-<tr><td>66</td><td>0x42</td><td><code>01000010</code></td><td>'B'</td><td>B</td><td>Печатный символ</td></tr>
-<tr><td>67</td><td>0x43</td><td><code>01000011</code></td><td>'C'</td><td>C</td><td>Печатный символ</td></tr>
-<tr><td>68</td><td>0x44</td><td><code>01000100</code></td><td>'D'</td><td>D</td><td>Печатный символ</td></tr>
-<tr><td>69</td><td>0x45</td><td><code>01000101</code></td><td>'E'</td><td>E</td><td>Печатный символ</td></tr>
-<tr><td>70</td><td>0x46</td><td><code>01000110</code></td><td>'F'</td><td>F</td><td>Печатный символ</td></tr>
-<tr><td>71</td><td>0x47</td><td><code>01000111</code></td><td>'G'</td><td>G</td><td>Печатный символ</td></tr>
-<tr><td>72</td><td>0x48</td><td><code>01001000</code></td><td>'H'</td><td>H</td><td>Печатный символ</td></tr>
-<tr><td>73</td><td>0x49</td><td><code>01001001</code></td><td>'I'</td><td>I</td><td>Печатный символ</td></tr>
-<tr><td>74</td><td>0x4A</td><td><code>01001010</code></td><td>'J'</td><td>J</td><td>Печатный символ</td></tr>
-<tr><td>75</td><td>0x4B</td><td><code>01001011</code></td><td>'K'</td><td>K</td><td>Печатный символ</td></tr>
-<tr><td>76</td><td>0x4C</td><td><code>01001100</code></td><td>'L'</td><td>L</td><td>Печатный символ</td></tr>
-<tr><td>77</td><td>0x4D</td><td><code>01001101</code></td><td>'M'</td><td>M</td><td>Печатный символ</td></tr>
-<tr><td>78</td><td>0x4E</td><td><code>01001110</code></td><td>'N'</td><td>N</td><td>Печатный символ</td></tr>
-<tr><td>79</td><td>0x4F</td><td><code>01001111</code></td><td>'O'</td><td>O</td><td>Печатный символ</td></tr>
-<tr><td>80</td><td>0x50</td><td><code>01010000</code></td><td>'P'</td><td>P</td><td>Печатный символ</td></tr>
-<tr><td>81</td><td>0x51</td><td><code>01010001</code></td><td>'Q'</td><td>Q</td><td>Печатный символ</td></tr>
-<tr><td>82</td><td>0x52</td><td><code>01010010</code></td><td>'R'</td><td>R</td><td>Печатный символ</td></tr>
-<tr><td>83</td><td>0x53</td><td><code>01010011</code></td><td>'S'</td><td>S</td><td>Печатный символ</td></tr>
-<tr><td>84</td><td>0x54</td><td><code>01010100</code></td><td>'T'</td><td>T</td><td>Печатный символ</td></tr>
-<tr><td>85</td><td>0x55</td><td><code>01010101</code></td><td>'U'</td><td>U</td><td>Печатный символ</td></tr>
-<tr><td>86</td><td>0x56</td><td><code>01010110</code></td><td>'V'</td><td>V</td><td>Печатный символ</td></tr>
-<tr><td>87</td><td>0x57</td><td><code>01010111</code></td><td>'W'</td><td>W</td><td>Печатный символ</td></tr>
-<tr><td>88</td><td>0x58</td><td><code>01011000</code></td><td>'X'</td><td>X</td><td>Печатный символ</td></tr>
-<tr><td>89</td><td>0x59</td><td><code>01011001</code></td><td>'Y'</td><td>Y</td><td>Печатный символ</td></tr>
-<tr><td>90</td><td>0x5A</td><td><code>01011010</code></td><td>'Z'</td><td>Z</td><td>Печатный символ</td></tr>
-<tr><td>97</td><td>0x61</td><td><code>01100001</code></td><td>'a'</td><td>a</td><td>Печатный символ</td></tr>
-<tr><td>98</td><td>0x62</td><td><code>01100010</code></td><td>'b'</td><td>b</td><td>Печатный символ</td></tr>
-<tr><td>99</td><td>0x63</td><td><code>01100011</code></td><td>'c'</td><td>c</td><td>Печатный символ</td></tr>
-<tr><td>100</td><td>0x64</td><td><code>01100100</code></td><td>'d'</td><td>d</td><td>Печатный символ</td></tr>
-<tr><td>101</td><td>0x65</td><td><code>01100101</code></td><td>'e'</td><td>e</td><td>Печатный символ</td></tr>
-<tr><td>102</td><td>0x66</td><td><code>01100110</code></td><td>'f'</td><td>f</td><td>Печатный символ</td></tr>
-<tr><td>103</td><td>0x67</td><td><code>01100111</code></td><td>'g'</td><td>g</td><td>Печатный символ</td></tr>
-<tr><td>104</td><td>0x68</td><td><code>01101000</code></td><td>'h'</td><td>h</td><td>Печатный символ</td></tr>
-<tr><td>105</td><td>0x69</td><td><code>01101001</code></td><td>'i'</td><td>i</td><td>Печатный символ</td></tr>
-<tr><td>106</td><td>0x6A</td><td><code>01101010</code></td><td>'j'</td><td>j</td><td>Печатный символ</td></tr>
-<tr><td>107</td><td>0x6B</td><td><code>01101011</code></td><td>'k'</td><td>k</td><td>Печатный символ</td></tr>
-<tr><td>108</td><td>0x6C</td><td><code>01101100</code></td><td>'l'</td><td>l</td><td>Печатный символ</td></tr>
-<tr><td>109</td><td>0x6D</td><td><code>01101101</code></td><td>'m'</td><td>m</td><td>Печатный символ</td></tr>
-<tr><td>110</td><td>0x6E</td><td><code>01101110</code></td><td>'n'</td><td>n</td><td>Печатный символ</td></tr>
-<tr><td>111</td><td>0x6F</td><td><code>01101111</code></td><td>'o'</td><td>o</td><td>Печатный символ</td></tr>
-<tr><td>112</td><td>0x70</td><td><code>01110000</code></td><td>'p'</td><td>p</td><td>Печатный символ</td></tr>
-<tr><td>113</td><td>0x71</td><td><code>01110001</code></td><td>'q'</td><td>q</td><td>Печатный символ</td></tr>
-<tr><td>114</td><td>0x72</td><td><code>01110010</code></td><td>'r'</td><td>r</td><td>Печатный символ</td></tr>
-<tr><td>115</td><td>0x73</td><td><code>01110011</code></td><td>'s'</td><td>s</td><td>Печатный символ</td></tr>
-<tr><td>116</td><td>0x74</td><td><code>01110100</code></td><td>'t'</td><td>t</td><td>Печатный символ</td></tr>
-<tr><td>117</td><td>0x75</td><td><code>01110101</code></td><td>'u'</td><td>u</td><td>Печатный символ</td></tr>
-<tr><td>118</td><td>0x76</td><td><code>01110110</code></td><td>'v'</td><td>v</td><td>Печатный символ</td></tr>
-<tr><td>119</td><td>0x77</td><td><code>01110111</code></td><td>'w'</td><td>w</td><td>Печатный символ</td></tr>
-<tr><td>120</td><td>0x78</td><td><code>01111000</code></td><td>'x'</td><td>x</td><td>Печатный символ</td></tr>
-<tr><td>121</td><td>0x79</td><td><code>01111001</code></td><td>'y'</td><td>y</td><td>Печатный символ</td></tr>
-<tr><td>122</td><td>0x7A</td><td><code>01111010</code></td><td>'z'</td><td>z</td><td>Печатный символ</td></tr>
-</tbody>
-</table>
-</div>
-</div>
-
-</section>
-</main>
-</div>
-
-<script src="js/main.js"></script>
-<script src="js/theme-network.js"></script>
+              <article class="bb-box">
+                <h3>3) ASCII-мини справочник + челлендж</h3>
+                <div class="bb-controls">
+                  <button id="challengeBtn" class="bb-btn bb-btn--accent" type="button">Сгенерировать задание</button>
+                  <input id="challengeAnswer" class="bb-input bb-mono" maxlength="8" placeholder="Ответ" />
+                  <button id="checkChallengeBtn" class="bb-btn" type="button">Проверить ответ</button>
+                </div>
+                <p id="challengeTask" class="bb-mono" style="font-size:1.2rem;font-weight:800;margin:0;">Нажмите «Сгенерировать задание»</p>
+                <p id="challengeStatus" class="bb-status bb-status--warn">Результат появится здесь.</p>
+                <div class="bb-table-wrap">
+                  <table class="bb-table" id="asciiTable"><thead><tr><th>Символ</th><th>Dec</th><th>Hex</th><th>Binary</th></tr></thead><tbody></tbody></table>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-auth.js"></script>
+  <script>
+    (async function(){ try{ await window.CyberSupabaseAuth.requireAuth({ message:'Для доступа нужно войти в аккаунт.' }); } catch(_){} })();
+  </script>
+  <script>
+    (function initTheme(){
+      const key='cyber_theme'; const root=document.documentElement; const toggle=document.getElementById('themeToggle');
+      const saved=localStorage.getItem(key); const pref=window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initial=saved || (pref ? 'dark':'light'); root.setAttribute('data-theme', initial);
+      const sync=(t)=>{ toggle.querySelector('.theme-toggle-label').textContent=t==='dark'?'Светлая тема':'Тёмная тема'; };
+      sync(initial); toggle.addEventListener('click',()=>{const c=root.getAttribute('data-theme')==='dark'?'dark':'light';const n=c==='dark'?'light':'dark';root.setAttribute('data-theme',n);localStorage.setItem(key,n);sync(n);});
+    })();
+  </script>
+  <script>
+    (function initLearningMode() {
+      const allowedChallengeChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!?@#$%&*+-=/()[]{}:;,. '.split('');
+      const learnChar = document.getElementById('learnChar');
+      const learnBinary = document.getElementById('learnBinary');
+      const learnConverterStatus = document.getElementById('learnConverterStatus');
+      const learnDec = document.getElementById('learnDec');
+      const learnHex = document.getElementById('learnHex');
+      const learnOct = document.getElementById('learnOct');
+      const bitGrid = document.getElementById('bitGrid');
+      const bitByte = document.getElementById('bitByte');
+      const bitDec = document.getElementById('bitDec');
+      const bitChar = document.getElementById('bitChar');
+      const challengeTask = document.getElementById('challengeTask');
+      const challengeStatus = document.getElementById('challengeStatus');
+      const challengeAnswer = document.getElementById('challengeAnswer');
+      const asciiTableBody = document.querySelector('#asciiTable tbody');
+      let challenge = null;
+      let bitState = Array(8).fill(0);
+      function toBinary8(n) { return n.toString(2).padStart(8, '0'); }
+      function printableChar(code) { if (code === 0) return 'NUL'; if (code < 32 || code === 127) return `CTRL(${code})`; return String.fromCharCode(code); }
+      function isBinary8(value) { return /^[01]{8}$/.test(value); }
+      function updateConverterFromCode(code, source) {
+        const char = String.fromCharCode(code); const binary = toBinary8(code);
+        learnChar.value = char; learnBinary.value = binary; learnDec.textContent = String(code);
+        learnHex.textContent = '0x' + code.toString(16).toUpperCase().padStart(2, '0'); learnOct.textContent = code.toString(8);
+        learnConverterStatus.className = 'bb-status bb-status--ok';
+        learnConverterStatus.textContent = source === 'char' ? `Символ ${char === ' ' ? '␠ (space)' : char} = ${binary} (ASCII ${code}).` : `Код ${binary} = символ ${char === ' ' ? '␠ (space)' : char} (ASCII ${code}).`;
+      }
+      document.getElementById('charToBinBtn').addEventListener('click', () => { if (!learnChar.value) { learnConverterStatus.className = 'bb-status bb-status--danger'; learnConverterStatus.textContent = 'Введите один символ.'; return; } updateConverterFromCode(learnChar.value.charCodeAt(0), 'char'); });
+      document.getElementById('binToCharBtn').addEventListener('click', () => { const value = learnBinary.value.trim(); if (!isBinary8(value)) { learnConverterStatus.className = 'bb-status bb-status--danger'; learnConverterStatus.textContent = 'Нужен бинарный код из 8 бит.'; return; } updateConverterFromCode(parseInt(value, 2), 'bin'); });
+      function renderBits() {
+        bitGrid.innerHTML = '';
+        bitState.forEach((bit, idx) => { const btn = document.createElement('button'); btn.className = 'bb-bit bb-mono'; btn.type = 'button'; btn.dataset.on = bit; btn.textContent = String(bit); btn.title = `Бит ${7 - idx}`; btn.addEventListener('click', () => { bitState[idx] = bitState[idx] ? 0 : 1; renderBits(); }); bitGrid.appendChild(btn); });
+        const value = parseInt(bitState.join(''), 2); bitByte.textContent = bitState.join(''); bitDec.textContent = String(value); bitChar.textContent = printableChar(value);
+      }
+      function fillAsciiTable() {
+        const ranges = [...Array.from({ length: 26 }, (_, i) => 65 + i), ...Array.from({ length: 26 }, (_, i) => 97 + i), ...Array.from({ length: 10 }, (_, i) => 48 + i), 32, 33, 35, 36, 37, 38, 42, 43, 45, 47, 61, 63];
+        const unique = [...new Set(ranges)].sort((a, b) => a - b);
+        asciiTableBody.innerHTML = unique.map((code) => `<tr><td class="bb-mono">${code === 32 ? '␠' : String.fromCharCode(code)}</td><td>${code}</td><td class="bb-mono">0x${code.toString(16).toUpperCase().padStart(2, '0')}</td><td class="bb-mono">${toBinary8(code)}</td></tr>`).join('');
+      }
+      document.getElementById('challengeBtn').addEventListener('click', () => { const mode = Math.random() > 0.5 ? 'char_to_bin' : 'bin_to_char'; const char = allowedChallengeChars[Math.floor(Math.random() * allowedChallengeChars.length)]; const code = char.charCodeAt(0); challenge = { mode, char, binary: toBinary8(code), code }; challengeTask.textContent = mode === 'char_to_bin' ? `Переведи символ «${char === ' ' ? '␠ (space)' : char}» в 8-битный код.` : `Какой символ у кода ${challenge.binary}?`; challengeAnswer.value = ''; challengeStatus.className = 'bb-status bb-status--warn'; challengeStatus.textContent = 'Введите ответ и нажмите «Проверить ответ». '; });
+      document.getElementById('checkChallengeBtn').addEventListener('click', () => { if (!challenge) { challengeStatus.className = 'bb-status bb-status--danger'; challengeStatus.textContent = 'Сначала сгенерируйте задание.'; return; } const answer = challengeAnswer.value.trim(); const ok = challenge.mode === 'char_to_bin' ? answer === challenge.binary : answer === challenge.char; if (ok) { challengeStatus.className = 'bb-status bb-status--ok'; challengeStatus.textContent = 'Отлично! Верно ✅'; return; } challengeStatus.className = 'bb-status bb-status--danger'; challengeStatus.textContent = challenge.mode === 'char_to_bin' ? `Пока не совпало. Верный ответ: ${challenge.binary}.` : `Пока не совпало. Верный ответ: ${challenge.char === ' ' ? '␠ (space)' : challenge.char}.`; });
+      fillAsciiTable(); renderBits(); updateConverterFromCode(65, 'char');
+    })();
+  </script>
+  <script src="js/theme-network.js"></script>
 </body>
 </html>
