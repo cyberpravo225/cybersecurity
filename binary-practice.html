@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Binary Practice — Учебный режим</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root {
+      --bb-text: #eaf1ff;
+      --bb-muted: #9eb2db;
+      --bb-border: rgba(133, 169, 255, .35);
+      --bb-surface: rgba(14, 30, 60, .72);
+      --bb-shadow: 0 18px 40px rgba(4, 10, 28, .35);
+      --bb-accent: linear-gradient(125deg, #79a3ff, #4dd9ff);
+      --bb-ok: #61d6a3;
+      --bb-warn: #ffc766;
+      --bb-danger: #ff7a94;
+    }
+    html[data-theme="light"] {
+      --bb-text: #0d2249;
+      --bb-muted: #486290;
+      --bb-border: rgba(53, 94, 180, .25);
+      --bb-surface: rgba(241, 247, 255, .96);
+      --bb-shadow: 0 16px 36px rgba(44, 72, 129, .16);
+      --bb-ok: #0a8d5f;
+      --bb-warn: #a96500;
+      --bb-danger: #ba2648;
+    }
+    body[data-page="binary-practice"] { color: var(--bb-text); }
+    .bb-wrap { display:grid; gap:16px; }
+    .bb-panel {
+      border: 1px solid var(--bb-border);
+      border-radius: 24px;
+      background: linear-gradient(165deg, rgba(117, 165, 255, .11), rgba(60, 111, 208, .08), transparent 70%), var(--bb-surface);
+      box-shadow: var(--bb-shadow);
+      padding: clamp(18px, 2vw, 30px);
+      display: grid;
+      gap: 16px;
+    }
+    .bb-grid { display:grid; grid-template-columns: repeat(12, minmax(0,1fr)); gap: 16px; }
+    .bb-box { border:1px solid var(--bb-border); border-radius:16px; padding:16px; background: color-mix(in srgb, var(--bb-surface) 84%, transparent); display:grid; gap:12px; }
+    .bb-grid .bb-box:nth-child(1){grid-column:span 5}
+    .bb-grid .bb-box:nth-child(2){grid-column:span 7}
+    .bb-grid .bb-box:nth-child(3){grid-column:span 12}
+    .bb-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    .bb-input{border-radius:10px;border:1px solid var(--bb-border);background:transparent;color:var(--bb-text);padding:8px 10px;min-width:120px}
+    .bb-btn{border:1px solid var(--bb-border);background:transparent;color:var(--bb-text);border-radius:10px;padding:8px 12px;font-weight:700;cursor:pointer}
+    .bb-btn--accent{background:var(--bb-accent);color:#03132e;border:none}
+    .bb-chip-list{display:flex;flex-wrap:wrap;gap:8px}
+    .bb-chip{border:1px solid var(--bb-border);border-radius:999px;padding:6px 10px;color:var(--bb-muted)}
+    .bb-byte-grid{display:grid;grid-template-columns:repeat(8,minmax(24px,1fr));gap:8px}
+    .bb-bit{border-radius:8px;border:1px solid var(--bb-border);padding:8px 0;text-align:center;font-weight:800;cursor:pointer}
+    .bb-bit[data-on="1"]{background:rgba(98,208,255,.2);border-color:rgba(98,208,255,.7)}
+    .bb-table-wrap{overflow:auto;max-height:320px}
+    .bb-table{width:100%;border-collapse:collapse}
+    .bb-table th,.bb-table td{border:1px solid var(--bb-border);padding:8px;text-align:center;white-space:nowrap}
+    .bb-table th{position:sticky;top:0;background:color-mix(in srgb,var(--bb-surface) 90%, transparent)}
+    .bb-status{font-weight:700}
+    .bb-status--ok{color:var(--bb-ok)}
+    .bb-status--warn{color:var(--bb-warn)}
+    .bb-status--danger{color:var(--bb-danger)}
+    .bb-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    .theme-toggle{min-width:176px;display:inline-flex;align-items:center;gap:8px}
+    .theme-icon-sun{display:none}
+    html[data-theme="light"] .theme-icon-sun{display:inline}
+    html[data-theme="light"] .theme-icon-moon{display:none}
+    @media (max-width:1050px){.bb-grid{grid-template-columns:repeat(6,minmax(0,1fr))}.bb-grid .bb-box{grid-column:span 6 !important;}}
+  </style>
+</head>
+<body class="page" data-page="binary-practice">
+  <div class="theme-backdrop" aria-hidden="true">
+    <div class="theme-orb theme-orb-one"></div>
+    <div class="theme-orb theme-orb-two"></div>
+    <div class="theme-grid"></div>
+    <canvas class="theme-network" id="theme-network"></canvas>
+  </div>
+  <div class="site">
+    <main class="main">
+      <section class="section">
+        <div class="container bb-wrap">
+          <div class="card" style="display:grid;gap:12px;">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center;">
+              <a class="btn ghost" href="binary-battle.html">← Назад к режимам</a>
+              <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
+                <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
+                <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
+                <span class="theme-toggle-label">Тёмная тема</span>
+              </button>
+            </div>
+            <h1 style="margin:0;">🧪 Учебный режим: Бинарная лаборатория</h1>
+            <p style="margin:0;color:var(--bb-muted);">Теория + практика в одном месте: конвертер, визуализатор, ASCII-таблица и челленджи.</p>
+          </div>
+
+          <section class="bb-panel">
+            <div class="bb-grid">
+              <article class="bb-box">
+                <h3>1) Конвертер символ ↔ байт</h3>
+                <div class="bb-controls">
+                  <input id="learnChar" class="bb-input bb-mono" maxlength="1" value="A" />
+                  <button id="charToBinBtn" class="bb-btn bb-btn--accent" type="button">Символ → Бинарный</button>
+                  <input id="learnBinary" class="bb-input bb-mono" maxlength="8" value="01000001" />
+                  <button id="binToCharBtn" class="bb-btn" type="button">Бинарный → Символ</button>
+                </div>
+                <p id="learnConverterStatus" class="bb-status bb-status--warn">Введите символ или 8-битный код.</p>
+                <div class="bb-chip-list">
+                  <span class="bb-chip">Dec: <strong id="learnDec">65</strong></span>
+                  <span class="bb-chip">Hex: <strong id="learnHex">0x41</strong></span>
+                  <span class="bb-chip">Oct: <strong id="learnOct">101</strong></span>
+                </div>
+              </article>
+
+              <article class="bb-box">
+                <h3>2) Визуализатор битов</h3>
+                <p style="margin:0;color:var(--bb-muted);">Кликай по битам и смотри изменения ASCII-кода.</p>
+                <div id="bitGrid" class="bb-byte-grid"></div>
+                <div class="bb-chip-list">
+                  <span class="bb-chip">Byte: <strong id="bitByte" class="bb-mono">00000000</strong></span>
+                  <span class="bb-chip">Dec: <strong id="bitDec">0</strong></span>
+                  <span class="bb-chip">Char: <strong id="bitChar" class="bb-mono">NUL</strong></span>
+                </div>
+              </article>
+
+              <article class="bb-box">
+                <h3>3) ASCII-мини справочник + челлендж</h3>
+                <div class="bb-controls">
+                  <button id="challengeBtn" class="bb-btn bb-btn--accent" type="button">Сгенерировать задание</button>
+                  <input id="challengeAnswer" class="bb-input bb-mono" maxlength="8" placeholder="Ответ" />
+                  <button id="checkChallengeBtn" class="bb-btn" type="button">Проверить ответ</button>
+                </div>
+                <p id="challengeTask" class="bb-mono" style="font-size:1.2rem;font-weight:800;margin:0;">Нажмите «Сгенерировать задание»</p>
+                <p id="challengeStatus" class="bb-status bb-status--warn">Результат появится здесь.</p>
+                <div class="bb-table-wrap">
+                  <table class="bb-table" id="asciiTable"><thead><tr><th>Символ</th><th>Dec</th><th>Hex</th><th>Binary</th></tr></thead><tbody></tbody></table>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-auth.js"></script>
+  <script>
+    (async function(){ try{ await window.CyberSupabaseAuth.requireAuth({ message:'Для доступа к учебному режиму нужно войти в аккаунт.' }); } catch(_){} })();
+  </script>
+  <script>
+    (function initTheme(){
+      const key='cyber_theme'; const root=document.documentElement; const toggle=document.getElementById('themeToggle');
+      const saved=localStorage.getItem(key); const pref=window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initial=saved || (pref ? 'dark':'light'); root.setAttribute('data-theme', initial);
+      const sync=(t)=>{ toggle.querySelector('.theme-toggle-label').textContent=t==='dark'?'Светлая тема':'Тёмная тема'; };
+      sync(initial); toggle.addEventListener('click',()=>{const c=root.getAttribute('data-theme')==='dark'?'dark':'light';const n=c==='dark'?'light':'dark';root.setAttribute('data-theme',n);localStorage.setItem(key,n);sync(n);});
+    })();
+  </script>
+  <script>
+    (function initLearningMode() {
+      const allowedChallengeChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!?@#$%&*+-=/()[]{}:;,. '.split('');
+      const learnChar = document.getElementById('learnChar');
+      const learnBinary = document.getElementById('learnBinary');
+      const learnConverterStatus = document.getElementById('learnConverterStatus');
+      const learnDec = document.getElementById('learnDec');
+      const learnHex = document.getElementById('learnHex');
+      const learnOct = document.getElementById('learnOct');
+      const bitGrid = document.getElementById('bitGrid');
+      const bitByte = document.getElementById('bitByte');
+      const bitDec = document.getElementById('bitDec');
+      const bitChar = document.getElementById('bitChar');
+      const challengeTask = document.getElementById('challengeTask');
+      const challengeStatus = document.getElementById('challengeStatus');
+      const challengeAnswer = document.getElementById('challengeAnswer');
+      const asciiTableBody = document.querySelector('#asciiTable tbody');
+      let challenge = null;
+      let bitState = Array(8).fill(0);
+      function toBinary8(n) { return n.toString(2).padStart(8, '0'); }
+      function printableChar(code) { if (code === 0) return 'NUL'; if (code < 32 || code === 127) return `CTRL(${code})`; return String.fromCharCode(code); }
+      function isBinary8(value) { return /^[01]{8}$/.test(value); }
+      function updateConverterFromCode(code, source) {
+        const char = String.fromCharCode(code); const binary = toBinary8(code);
+        learnChar.value = char; learnBinary.value = binary; learnDec.textContent = String(code);
+        learnHex.textContent = '0x' + code.toString(16).toUpperCase().padStart(2, '0'); learnOct.textContent = code.toString(8);
+        learnConverterStatus.className = 'bb-status bb-status--ok';
+        learnConverterStatus.textContent = source === 'char' ? `Символ ${char === ' ' ? '␠ (space)' : char} = ${binary} (ASCII ${code}).` : `Код ${binary} = символ ${char === ' ' ? '␠ (space)' : char} (ASCII ${code}).`;
+      }
+      document.getElementById('charToBinBtn').addEventListener('click', () => { if (!learnChar.value) { learnConverterStatus.className = 'bb-status bb-status--danger'; learnConverterStatus.textContent = 'Введите один символ.'; return; } updateConverterFromCode(learnChar.value.charCodeAt(0), 'char'); });
+      document.getElementById('binToCharBtn').addEventListener('click', () => { const value = learnBinary.value.trim(); if (!isBinary8(value)) { learnConverterStatus.className = 'bb-status bb-status--danger'; learnConverterStatus.textContent = 'Нужен бинарный код из 8 бит.'; return; } updateConverterFromCode(parseInt(value, 2), 'bin'); });
+      function renderBits() {
+        bitGrid.innerHTML = '';
+        bitState.forEach((bit, idx) => { const btn = document.createElement('button'); btn.className = 'bb-bit bb-mono'; btn.type = 'button'; btn.dataset.on = bit; btn.textContent = String(bit); btn.title = `Бит ${7 - idx}`; btn.addEventListener('click', () => { bitState[idx] = bitState[idx] ? 0 : 1; renderBits(); }); bitGrid.appendChild(btn); });
+        const value = parseInt(bitState.join(''), 2); bitByte.textContent = bitState.join(''); bitDec.textContent = String(value); bitChar.textContent = printableChar(value);
+      }
+      function fillAsciiTable() {
+        const ranges = [...Array.from({ length: 26 }, (_, i) => 65 + i), ...Array.from({ length: 26 }, (_, i) => 97 + i), ...Array.from({ length: 10 }, (_, i) => 48 + i), 32, 33, 35, 36, 37, 38, 42, 43, 45, 47, 61, 63];
+        const unique = [...new Set(ranges)].sort((a, b) => a - b);
+        asciiTableBody.innerHTML = unique.map((code) => `<tr><td class="bb-mono">${code === 32 ? '␠' : String.fromCharCode(code)}</td><td>${code}</td><td class="bb-mono">0x${code.toString(16).toUpperCase().padStart(2, '0')}</td><td class="bb-mono">${toBinary8(code)}</td></tr>`).join('');
+      }
+      document.getElementById('challengeBtn').addEventListener('click', () => { const mode = Math.random() > 0.5 ? 'char_to_bin' : 'bin_to_char'; const char = allowedChallengeChars[Math.floor(Math.random() * allowedChallengeChars.length)]; const code = char.charCodeAt(0); challenge = { mode, char, binary: toBinary8(code), code }; challengeTask.textContent = mode === 'char_to_bin' ? `Переведи символ «${char === ' ' ? '␠ (space)' : char}» в 8-битный код.` : `Какой символ у кода ${challenge.binary}?`; challengeAnswer.value = ''; challengeStatus.className = 'bb-status bb-status--warn'; challengeStatus.textContent = 'Введите ответ и нажмите «Проверить ответ». '; });
+      document.getElementById('checkChallengeBtn').addEventListener('click', () => { if (!challenge) { challengeStatus.className = 'bb-status bb-status--danger'; challengeStatus.textContent = 'Сначала сгенерируйте задание.'; return; } const answer = challengeAnswer.value.trim(); const ok = challenge.mode === 'char_to_bin' ? answer === challenge.binary : answer === challenge.char; if (ok) { challengeStatus.className = 'bb-status bb-status--ok'; challengeStatus.textContent = 'Отлично! Верно ✅'; return; } challengeStatus.className = 'bb-status bb-status--danger'; challengeStatus.textContent = challenge.mode === 'char_to_bin' ? `Пока не совпало. Верный ответ: ${challenge.binary}.` : `Пока не совпало. Верный ответ: ${challenge.char === ' ' ? '␠ (space)' : challenge.char}.`; });
+      fillAsciiTable(); renderBits(); updateConverterFromCode(65, 'char');
+    })();
+  </script>
+  <script src="js/theme-network.js"></script>
+</body>
+</html>
