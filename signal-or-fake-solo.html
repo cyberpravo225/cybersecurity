@@ -164,7 +164,7 @@
                 <span class="bc-stat-pill">Таймер: <strong id="stageTimer">0.0</strong>с</span>
                 <span class="bc-stat-pill">Ошибки: <strong id="errorsCount">0</strong></span><span class="bc-stat-pill">Серия: <strong id="streakCount">0</strong></span><span class="bc-stat-pill">Очки: <strong id="scoreCount">0</strong></span>
               </div>
-              <p class="bc-task"><span class="bc-task-label">Проверяем объект</span><span class="bc-task-text" id="promptText">Нажмите «Начать игру»</span></p><p class="bb-sub" id="promptMeta" style="margin:0;color:var(--bc-muted)">Тип: — • Сложность: —</p>
+              <p class="bc-task"><span class="bc-task-label">Проверяем объект</span><span class="bc-task-text" id="promptText">Нажмите «Начать игру»</span></p>
               <div class="bc-field">
                 <span class="bc-answer-label">Ваш выбор</span>
                 <div id="answerButtons" class="bc-answer-buttons bc-hidden">
@@ -304,7 +304,6 @@
         if (!current) return;
         document.getElementById('stageLabel').textContent = `${state.index + 1}/${questions.length}`;
         document.getElementById('promptText').textContent = current.prompt;
-        document.getElementById('promptMeta').textContent = `Тип: ${current.type} • Сложность: ${current.difficulty}/3`;
         state.selectedAnswer = '';
         document.getElementById('answerSafeBtn').classList.remove('is-active');
         document.getElementById('answerSuspiciousBtn').classList.remove('is-active');
