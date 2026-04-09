@@ -13,10 +13,6 @@
       --bb-muted: #9eb2db;
       --bb-accent: linear-gradient(125deg, #79a3ff, #4dd9ff);
       --bb-shadow: 0 18px 40px rgba(4, 10, 28, .35);
-      --bb-surface: rgba(14, 30, 60, .72);
-      --bb-ok: #61d6a3;
-      --bb-warn: #ffc766;
-      --bb-danger: #ff7a94;
     }
     html[data-theme="light"] {
       --bb-card: rgba(255, 255, 255, .93);
@@ -24,18 +20,12 @@
       --bb-text: #0d2249;
       --bb-muted: #486290;
       --bb-shadow: 0 16px 36px rgba(44, 72, 129, .16);
-      --bb-surface: rgba(241, 247, 255, .96);
-      --bb-ok: #0a8d5f;
-      --bb-warn: #a96500;
-      --bb-danger: #ba2648;
     }
-
     body[data-page="binary-battle"] { color: var(--bb-text); overflow-x: hidden; }
     .site { position: relative; z-index: 1; }
     .bb-wrap { display: grid; gap: 18px; }
     .bb-header { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; }
     .bb-sub { margin: 0; color: var(--bb-muted); }
-
     .bb-grid {
       display: grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -96,140 +86,6 @@
       transition: transform .28s ease, filter .28s ease;
     }
     .bb-link:hover { transform: translateY(-2px); filter: brightness(1.06); }
-
-    .bb-panel {
-      border: 1px solid var(--bb-border);
-      border-radius: 24px;
-      background: linear-gradient(165deg, rgba(117, 165, 255, .11), rgba(60, 111, 208, .08), transparent 70%), var(--bb-surface);
-      box-shadow: var(--bb-shadow);
-      padding: clamp(18px, 2vw, 30px);
-      display: grid;
-      gap: 16px;
-    }
-    .bb-panel h2 { margin: 0; }
-
-    .bb-learning-grid,
-    .bb-test-grid {
-      display: grid;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      gap: 16px;
-    }
-    .bb-box {
-      border: 1px solid var(--bb-border);
-      border-radius: 16px;
-      padding: 16px;
-      background: color-mix(in srgb, var(--bb-surface) 84%, transparent);
-      display: grid;
-      gap: 12px;
-      align-content: start;
-    }
-    .bb-box h3 { margin: 0; font-size: 1.08rem; }
-    .bb-box p { margin: 0; color: var(--bb-muted); }
-
-    .bb-learning-grid .bb-box:nth-child(1) { grid-column: span 5; }
-    .bb-learning-grid .bb-box:nth-child(2) { grid-column: span 7; }
-    .bb-learning-grid .bb-box:nth-child(3) { grid-column: span 12; }
-
-    .bb-test-grid .bb-box:nth-child(1) { grid-column: span 4; }
-    .bb-test-grid .bb-box:nth-child(2) { grid-column: span 8; }
-    .bb-test-grid .bb-box:nth-child(3) { grid-column: span 12; }
-
-    .bb-controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
-    .bb-field,
-    .bb-select,
-    .bb-input {
-      border-radius: 10px;
-      border: 1px solid var(--bb-border);
-      background: transparent;
-      color: var(--bb-text);
-      padding: 8px 10px;
-      min-width: 120px;
-    }
-
-    .bb-btn {
-      border: 1px solid var(--bb-border);
-      background: transparent;
-      color: var(--bb-text);
-      border-radius: 10px;
-      padding: 8px 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .bb-btn--accent {
-      background: var(--bb-accent);
-      color: #03132e;
-      border: none;
-    }
-
-    .bb-chip-list { display: flex; flex-wrap: wrap; gap: 8px; }
-    .bb-chip {
-      border: 1px solid var(--bb-border);
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: .92rem;
-      color: var(--bb-muted);
-    }
-
-    .bb-byte-grid {
-      display: grid;
-      grid-template-columns: repeat(8, minmax(24px, 1fr));
-      gap: 8px;
-    }
-    .bb-bit {
-      border-radius: 8px;
-      border: 1px solid var(--bb-border);
-      padding: 8px 0;
-      text-align: center;
-      font-weight: 800;
-      cursor: pointer;
-      user-select: none;
-    }
-    .bb-bit[data-on="1"] {
-      background: rgba(98, 208, 255, .2);
-      border-color: rgba(98, 208, 255, .7);
-    }
-
-    .bb-table-wrap { overflow: auto; max-height: 300px; }
-    .bb-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: .94rem;
-    }
-    .bb-table th,
-    .bb-table td {
-      border: 1px solid var(--bb-border);
-      padding: 8px;
-      text-align: center;
-      white-space: nowrap;
-    }
-    .bb-table th { position: sticky; top: 0; background: color-mix(in srgb, var(--bb-surface) 90%, transparent); }
-
-    .bb-status { font-weight: 700; }
-    .bb-status--ok { color: var(--bb-ok); }
-    .bb-status--warn { color: var(--bb-warn); }
-    .bb-status--danger { color: var(--bb-danger); }
-
-    .bb-question {
-      font-size: clamp(1.1rem, 2.2vw, 1.5rem);
-      font-weight: 800;
-      letter-spacing: .02em;
-      margin: 0;
-    }
-    .bb-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
-
-    .bb-summary {
-      display: grid;
-      gap: 8px;
-      border: 1px dashed var(--bb-border);
-      border-radius: 12px;
-      padding: 10px;
-    }
-
     .theme-toggle { min-width: 176px; display:inline-flex; align-items:center; gap:8px; }
     .theme-icon-sun{display:none}
     .theme-toggle-label{white-space:nowrap}
@@ -238,22 +94,16 @@
     html[data-theme="dark"] .theme-icon-sun{display:none}
     html[data-theme="dark"] .theme-icon-moon{display:inline}
     .bb-header h1 { margin: 0; }
-
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
     @media (prefers-reduced-motion: reduce) {
       .bb-card, .bb-link { animation: none; transition: none; }
     }
     @media (max-width: 1050px) {
       .bb-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
       .bb-card--1, .bb-card--2, .bb-card--3, .bb-card--4, .bb-card--5 { grid-column: auto; }
-      .bb-learning-grid,
-      .bb-test-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-      .bb-learning-grid .bb-box,
-      .bb-test-grid .bb-box { grid-column: span 6 !important; }
     }
     @media (max-width: 720px) {
       .bb-grid { grid-template-columns: 1fr; gap: 14px; }
@@ -285,14 +135,14 @@
               </button>
             </div>
             <h1 style="margin:0;">Выбери раздел «Кодовый Поединок»</h1>
-            <p class="bb-sub">Теперь здесь доступны расширенные in-page режимы: масштабный учебный режим и полноценный тестовый тренажёр с аналитикой.</p>
+            <p class="bb-sub">Учебный и тестовый режимы вынесены на отдельные страницы для полноценного большого опыта.</p>
           </div>
 
           <div class="bb-grid">
             <article class="bb-card bb-card--1">
               <h2>🧪 Учебный режим</h2>
               <p class="bb-desc">Интерактивная лаборатория: пошаговый перевод, битовый визуализатор, таблица ASCII, авто-подсказки и микро-челленджи.</p>
-              <a class="bb-link" href="#learningMode">Открыть Учебный блок →</a>
+              <a class="bb-link" href="binary-learning.html">Открыть Учебный режим →</a>
             </article>
 
             <article class="bb-card bb-card--2">
@@ -304,7 +154,7 @@
             <article class="bb-card bb-card--3">
               <h2>📘 Тестовый режим</h2>
               <p class="bb-desc">Адаптивный self-test: настройка длины, сложности, таймера и типов вопросов, проверка в реальном времени и разбор ошибок.</p>
-              <a class="bb-link" href="#testMode">Открыть Self-Test →</a>
+              <a class="bb-link" href="binary-test.html">Открыть Self-Test →</a>
             </article>
 
             <article class="bb-card bb-card--4">
@@ -316,146 +166,9 @@
             <article class="bb-card bb-card--5">
               <h2>🎓 Обучающий материал</h2>
               <p class="bb-desc">Встроенные материалы и практика: перевод между системами счисления, ASCII-паттерны и автоматическое объяснение каждого шага.</p>
-              <a class="bb-link" href="#learningMode">Открыть материалы →</a>
+              <a class="bb-link" href="binary-learning.html">Открыть материалы →</a>
             </article>
           </div>
-
-          <section class="bb-panel" id="learningMode">
-            <h2>🎓 Учебный режим: Бинарная лаборатория</h2>
-            <p class="bb-sub">Раздел сочетает теорию + практику: можно вручную собирать байт, конвертировать символы и тренироваться на генераторе задач.</p>
-
-            <div class="bb-learning-grid">
-              <article class="bb-box">
-                <h3>1) Конвертер символ ↔ байт</h3>
-                <div class="bb-controls">
-                  <input id="learnChar" class="bb-input bb-mono" maxlength="1" value="A" aria-label="Символ" />
-                  <button id="charToBinBtn" class="bb-btn bb-btn--accent" type="button">Символ → Бинарный</button>
-                  <input id="learnBinary" class="bb-input bb-mono" maxlength="8" value="01000001" aria-label="Бинарный код" />
-                  <button id="binToCharBtn" class="bb-btn" type="button">Бинарный → Символ</button>
-                </div>
-                <p id="learnConverterStatus" class="bb-status bb-status--warn">Введите символ (A-Z, a-z, цифры, знаки) или 8-битный код.</p>
-                <div class="bb-chip-list">
-                  <span class="bb-chip">Десятичный: <strong id="learnDec">65</strong></span>
-                  <span class="bb-chip">Hex: <strong id="learnHex">0x41</strong></span>
-                  <span class="bb-chip">Oct: <strong id="learnOct">101</strong></span>
-                </div>
-              </article>
-
-              <article class="bb-box">
-                <h3>2) Визуализатор битов (ручная сборка байта)</h3>
-                <p>Кликай по битам, чтобы видеть как меняется ASCII-символ и числовые представления.</p>
-                <div id="bitGrid" class="bb-byte-grid" aria-label="Визуализатор битов"></div>
-                <div class="bb-chip-list">
-                  <span class="bb-chip">Byte: <strong id="bitByte" class="bb-mono">00000000</strong></span>
-                  <span class="bb-chip">Dec: <strong id="bitDec">0</strong></span>
-                  <span class="bb-chip">Char: <strong id="bitChar" class="bb-mono">NUL</strong></span>
-                </div>
-              </article>
-
-              <article class="bb-box">
-                <h3>3) ASCII-мини справочник + челлендж</h3>
-                <div class="bb-controls">
-                  <button id="challengeBtn" class="bb-btn bb-btn--accent" type="button">Сгенерировать задание</button>
-                  <input id="challengeAnswer" class="bb-input bb-mono" maxlength="8" placeholder="Например: 01001010" />
-                  <button id="checkChallengeBtn" class="bb-btn" type="button">Проверить ответ</button>
-                </div>
-                <p id="challengeTask" class="bb-question bb-mono">Нажмите «Сгенерировать задание»</p>
-                <p id="challengeStatus" class="bb-status bb-status--warn">Результат появится здесь.</p>
-                <div class="bb-table-wrap">
-                  <table class="bb-table" id="asciiTable">
-                    <thead>
-                      <tr>
-                        <th>Символ</th>
-                        <th>Dec</th>
-                        <th>Hex</th>
-                        <th>Binary</th>
-                      </tr>
-                    </thead>
-                    <tbody></tbody>
-                  </table>
-                </div>
-              </article>
-            </div>
-          </section>
-
-          <section class="bb-panel" id="testMode">
-            <h2>📘 Тестовый режим: Адаптивный Self-Test</h2>
-            <p class="bb-sub">Сконфигурируй тест под себя: число вопросов, сложность, время и формат задач. Система считает точность и показывает детальный отчёт.</p>
-
-            <div class="bb-test-grid">
-              <article class="bb-box">
-                <h3>Настройки теста</h3>
-                <div class="bb-controls">
-                  <label>Вопросов
-                    <select id="testQuestionCount" class="bb-select">
-                      <option>5</option><option selected>10</option><option>15</option><option>20</option>
-                    </select>
-                  </label>
-                  <label>Сложность
-                    <select id="testDifficulty" class="bb-select">
-                      <option value="easy">Easy (A-Z, 0-9)</option>
-                      <option value="medium" selected>Medium (ASCII 32-90)</option>
-                      <option value="hard">Hard (ASCII 32-126)</option>
-                    </select>
-                  </label>
-                  <label>Таймер
-                    <select id="testTimer" class="bb-select">
-                      <option value="0" selected>Без таймера</option>
-                      <option value="20">20 сек / вопрос</option>
-                      <option value="30">30 сек / вопрос</option>
-                      <option value="45">45 сек / вопрос</option>
-                    </select>
-                  </label>
-                  <label>Тип
-                    <select id="testType" class="bb-select">
-                      <option value="char_to_bin" selected>Символ → бинарный</option>
-                      <option value="bin_to_char">Бинарный → символ</option>
-                      <option value="mixed">Смешанный</option>
-                    </select>
-                  </label>
-                </div>
-                <button id="startTestBtn" class="bb-btn bb-btn--accent" type="button">Начать тест</button>
-                <p id="testMeta" class="bb-status bb-status--warn">Тест ещё не запущен.</p>
-              </article>
-
-              <article class="bb-box">
-                <h3>Рабочая область</h3>
-                <p id="testQuestion" class="bb-question bb-mono">Нажмите «Начать тест»</p>
-                <div class="bb-controls">
-                  <input id="testAnswer" class="bb-input bb-mono" placeholder="Ваш ответ" />
-                  <button id="submitTestAnswer" class="bb-btn" type="button">Ответить</button>
-                  <button id="skipTestAnswer" class="bb-btn" type="button">Пропустить</button>
-                </div>
-                <div class="bb-chip-list">
-                  <span class="bb-chip">Прогресс: <strong id="testProgress">0/0</strong></span>
-                  <span class="bb-chip">Верно: <strong id="testCorrect">0</strong></span>
-                  <span class="bb-chip">Ошибки: <strong id="testWrong">0</strong></span>
-                  <span class="bb-chip">Таймер: <strong id="testTimerLeft">—</strong></span>
-                </div>
-                <p id="testStatus" class="bb-status bb-status--warn">Ожидание старта.</p>
-              </article>
-
-              <article class="bb-box">
-                <h3>Итоги и разбор</h3>
-                <div class="bb-summary" id="testSummary">
-                  <span>После завершения теста здесь появится процент, оценка и список ошибок.</span>
-                </div>
-                <div class="bb-table-wrap">
-                  <table class="bb-table" id="mistakesTable">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Вопрос</th>
-                        <th>Ваш ответ</th>
-                        <th>Правильный ответ</th>
-                      </tr>
-                    </thead>
-                    <tbody></tbody>
-                  </table>
-                </div>
-              </article>
-            </div>
-          </section>
         </div>
       </section>
     </main>
@@ -507,373 +220,6 @@
         root.setAttribute('data-theme', next);
         localStorage.setItem(key, next);
         syncLabel(next);
-      });
-    })();
-  </script>
-  <script>
-    (function initLearningMode() {
-      const allowedChallengeChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!?@#$%&*+-=/()[]{}:;,. '.split('');
-      const learnChar = document.getElementById('learnChar');
-      const learnBinary = document.getElementById('learnBinary');
-      const learnConverterStatus = document.getElementById('learnConverterStatus');
-      const learnDec = document.getElementById('learnDec');
-      const learnHex = document.getElementById('learnHex');
-      const learnOct = document.getElementById('learnOct');
-      const bitGrid = document.getElementById('bitGrid');
-      const bitByte = document.getElementById('bitByte');
-      const bitDec = document.getElementById('bitDec');
-      const bitChar = document.getElementById('bitChar');
-      const challengeTask = document.getElementById('challengeTask');
-      const challengeStatus = document.getElementById('challengeStatus');
-      const challengeAnswer = document.getElementById('challengeAnswer');
-      const asciiTableBody = document.querySelector('#asciiTable tbody');
-
-      let challenge = null;
-      let bitState = Array(8).fill(0);
-
-      function toBinary8(n) { return n.toString(2).padStart(8, '0'); }
-      function printableChar(code) {
-        if (code === 0) return 'NUL';
-        if (code < 32 || code === 127) return `CTRL(${code})`;
-        return String.fromCharCode(code);
-      }
-      function isBinary8(value) { return /^[01]{8}$/.test(value); }
-
-      function updateConverterFromCode(code, source) {
-        const char = String.fromCharCode(code);
-        const binary = toBinary8(code);
-        learnChar.value = char;
-        learnBinary.value = binary;
-        learnDec.textContent = String(code);
-        learnHex.textContent = '0x' + code.toString(16).toUpperCase().padStart(2, '0');
-        learnOct.textContent = code.toString(8);
-
-        const hint = source === 'char'
-          ? `Символ ${char === ' ' ? '␠ (space)' : char} = ${binary} (ASCII ${code}).`
-          : `Код ${binary} = символ ${char === ' ' ? '␠ (space)' : char} (ASCII ${code}).`;
-        learnConverterStatus.className = 'bb-status bb-status--ok';
-        learnConverterStatus.textContent = hint;
-      }
-
-      document.getElementById('charToBinBtn').addEventListener('click', () => {
-        if (!learnChar.value) {
-          learnConverterStatus.className = 'bb-status bb-status--danger';
-          learnConverterStatus.textContent = 'Введите один символ.';
-          return;
-        }
-        updateConverterFromCode(learnChar.value.charCodeAt(0), 'char');
-      });
-
-      document.getElementById('binToCharBtn').addEventListener('click', () => {
-        const value = learnBinary.value.trim();
-        if (!isBinary8(value)) {
-          learnConverterStatus.className = 'bb-status bb-status--danger';
-          learnConverterStatus.textContent = 'Нужен бинарный код из 8 бит (пример: 01000001).';
-          return;
-        }
-        updateConverterFromCode(parseInt(value, 2), 'bin');
-      });
-
-      function renderBits() {
-        bitGrid.innerHTML = '';
-        bitState.forEach((bit, idx) => {
-          const btn = document.createElement('button');
-          btn.className = 'bb-bit bb-mono';
-          btn.type = 'button';
-          btn.dataset.on = bit;
-          btn.textContent = String(bit);
-          btn.title = `Бит ${7 - idx}`;
-          btn.addEventListener('click', () => {
-            bitState[idx] = bitState[idx] ? 0 : 1;
-            renderBits();
-          });
-          bitGrid.appendChild(btn);
-        });
-
-        const value = parseInt(bitState.join(''), 2);
-        bitByte.textContent = bitState.join('');
-        bitDec.textContent = String(value);
-        bitChar.textContent = printableChar(value);
-      }
-
-      function fillAsciiTable() {
-        const ranges = [
-          ...Array.from({ length: 26 }, (_, i) => 65 + i),
-          ...Array.from({ length: 26 }, (_, i) => 97 + i),
-          ...Array.from({ length: 10 }, (_, i) => 48 + i),
-          32, 33, 35, 36, 37, 38, 42, 43, 45, 47, 61, 63
-        ];
-        const unique = [...new Set(ranges)].sort((a, b) => a - b);
-        asciiTableBody.innerHTML = unique.map((code) => `
-          <tr>
-            <td class="bb-mono">${code === 32 ? '␠' : String.fromCharCode(code)}</td>
-            <td>${code}</td>
-            <td class="bb-mono">0x${code.toString(16).toUpperCase().padStart(2, '0')}</td>
-            <td class="bb-mono">${toBinary8(code)}</td>
-          </tr>
-        `).join('');
-      }
-
-      document.getElementById('challengeBtn').addEventListener('click', () => {
-        const mode = Math.random() > 0.5 ? 'char_to_bin' : 'bin_to_char';
-        const char = allowedChallengeChars[Math.floor(Math.random() * allowedChallengeChars.length)];
-        const code = char.charCodeAt(0);
-        challenge = { mode, char, binary: toBinary8(code), code };
-
-        challengeTask.textContent = mode === 'char_to_bin'
-          ? `Переведи символ «${char === ' ' ? '␠ (space)' : char}» в 8-битный код.`
-          : `Какой символ у кода ${challenge.binary}?`;
-
-        challengeAnswer.value = '';
-        challengeStatus.className = 'bb-status bb-status--warn';
-        challengeStatus.textContent = 'Введите ответ и нажмите «Проверить ответ». ';
-      });
-
-      document.getElementById('checkChallengeBtn').addEventListener('click', () => {
-        if (!challenge) {
-          challengeStatus.className = 'bb-status bb-status--danger';
-          challengeStatus.textContent = 'Сначала сгенерируйте задание.';
-          return;
-        }
-
-        const answer = challengeAnswer.value.trim();
-        const ok = challenge.mode === 'char_to_bin'
-          ? answer === challenge.binary
-          : answer === challenge.char;
-
-        if (ok) {
-          challengeStatus.className = 'bb-status bb-status--ok';
-          challengeStatus.textContent = 'Отлично! Верно ✅';
-          return;
-        }
-
-        challengeStatus.className = 'bb-status bb-status--danger';
-        challengeStatus.textContent = challenge.mode === 'char_to_bin'
-          ? `Пока не совпало. Верный ответ: ${challenge.binary}.`
-          : `Пока не совпало. Верный ответ: ${challenge.char === ' ' ? '␠ (space)' : challenge.char}.`;
-      });
-
-      fillAsciiTable();
-      renderBits();
-      updateConverterFromCode(65, 'char');
-    })();
-  </script>
-  <script>
-    (function initTestMode() {
-      const testQuestionCount = document.getElementById('testQuestionCount');
-      const testDifficulty = document.getElementById('testDifficulty');
-      const testTimer = document.getElementById('testTimer');
-      const testType = document.getElementById('testType');
-      const startBtn = document.getElementById('startTestBtn');
-      const submitBtn = document.getElementById('submitTestAnswer');
-      const skipBtn = document.getElementById('skipTestAnswer');
-      const testQuestion = document.getElementById('testQuestion');
-      const testAnswer = document.getElementById('testAnswer');
-      const testMeta = document.getElementById('testMeta');
-      const testStatus = document.getElementById('testStatus');
-      const testProgress = document.getElementById('testProgress');
-      const testCorrect = document.getElementById('testCorrect');
-      const testWrong = document.getElementById('testWrong');
-      const testTimerLeft = document.getElementById('testTimerLeft');
-      const testSummary = document.getElementById('testSummary');
-      const mistakesBody = document.querySelector('#mistakesTable tbody');
-
-      let testState = null;
-
-      function toBinary8(n) { return n.toString(2).padStart(8, '0'); }
-      function pickCode(difficulty) {
-        if (difficulty === 'easy') {
-          const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-          return chars.charCodeAt(Math.floor(Math.random() * chars.length));
-        }
-        if (difficulty === 'medium') {
-          return 32 + Math.floor(Math.random() * (90 - 32 + 1));
-        }
-        return 32 + Math.floor(Math.random() * (126 - 32 + 1));
-      }
-
-      function buildQuestion(cfg) {
-        const code = pickCode(cfg.difficulty);
-        const char = String.fromCharCode(code);
-        const binary = toBinary8(code);
-
-        let mode = cfg.type;
-        if (mode === 'mixed') mode = Math.random() > 0.5 ? 'char_to_bin' : 'bin_to_char';
-
-        if (mode === 'char_to_bin') {
-          return {
-            prompt: `Переведи символ «${char === ' ' ? '␠ (space)' : char}» в 8-битный бинарный код`,
-            answer: binary,
-            mode
-          };
-        }
-
-        return {
-          prompt: `Какой символ соответствует коду ${binary}?`,
-          answer: char,
-          mode
-        };
-      }
-
-      function updateHud() {
-        if (!testState) return;
-        testProgress.textContent = `${testState.index}/${testState.total}`;
-        testCorrect.textContent = String(testState.correct);
-        testWrong.textContent = String(testState.wrong);
-      }
-
-      function stopTimer() {
-        if (testState?.timerId) {
-          clearInterval(testState.timerId);
-          testState.timerId = null;
-        }
-      }
-
-      function startTimerForQuestion() {
-        stopTimer();
-        if (!testState || !testState.secondsPerQuestion) {
-          testTimerLeft.textContent = '—';
-          return;
-        }
-
-        testState.left = testState.secondsPerQuestion;
-        testTimerLeft.textContent = `${testState.left} сек`;
-        testState.timerId = setInterval(() => {
-          if (!testState) return;
-          testState.left -= 1;
-          testTimerLeft.textContent = `${Math.max(0, testState.left)} сек`;
-          if (testState.left <= 0) {
-            handleAnswer('__timeout__', true);
-          }
-        }, 1000);
-      }
-
-      function renderQuestion() {
-        if (!testState) return;
-        if (testState.index >= testState.total) {
-          finishTest();
-          return;
-        }
-
-        testState.current = buildQuestion(testState.config);
-        testQuestion.textContent = testState.current.prompt;
-        testAnswer.value = '';
-        testAnswer.focus();
-        updateHud();
-        startTimerForQuestion();
-        testStatus.className = 'bb-status bb-status--warn';
-        testStatus.textContent = 'Вопрос загружен. Введите ответ.';
-      }
-
-      function handleAnswer(raw, auto = false) {
-        if (!testState || !testState.current) return;
-        stopTimer();
-
-        const userAnswer = raw.trim();
-        const correctAnswer = testState.current.answer;
-        const ok = !auto && userAnswer === correctAnswer;
-
-        if (ok) {
-          testState.correct += 1;
-          testStatus.className = 'bb-status bb-status--ok';
-          testStatus.textContent = 'Верно ✅';
-        } else {
-          testState.wrong += 1;
-          const presented = auto ? 'Время вышло' : (userAnswer || 'Пусто');
-          testState.mistakes.push({
-            index: testState.index + 1,
-            prompt: testState.current.prompt,
-            user: presented,
-            correct: correctAnswer
-          });
-          testStatus.className = 'bb-status bb-status--danger';
-          testStatus.textContent = auto
-            ? `Время вышло ⌛ Верно: ${correctAnswer}`
-            : `Неверно. Верно: ${correctAnswer}`;
-        }
-
-        testState.index += 1;
-        updateHud();
-
-        setTimeout(() => {
-          if (!testState) return;
-          renderQuestion();
-        }, 550);
-      }
-
-      function finishTest() {
-        stopTimer();
-        const percent = Math.round((testState.correct / testState.total) * 100);
-        const grade = percent >= 90 ? 'Отлично' : percent >= 75 ? 'Хорошо' : percent >= 55 ? 'Нормально' : 'Нужно повторить';
-        testQuestion.textContent = 'Тест завершён';
-        testTimerLeft.textContent = '—';
-
-        testSummary.innerHTML = `
-          <span><strong>Результат:</strong> ${testState.correct}/${testState.total}</span>
-          <span><strong>Точность:</strong> ${percent}%</span>
-          <span><strong>Оценка:</strong> ${grade}</span>
-          <span><strong>Режим:</strong> ${testState.config.type}, сложность ${testState.config.difficulty}</span>
-        `;
-
-        mistakesBody.innerHTML = testState.mistakes.length
-          ? testState.mistakes.map((m) => `
-            <tr>
-              <td>${m.index}</td>
-              <td class="bb-mono">${m.prompt}</td>
-              <td class="bb-mono">${m.user}</td>
-              <td class="bb-mono">${m.correct}</td>
-            </tr>
-          `).join('')
-          : '<tr><td colspan="4">Ошибок нет. Идеальное прохождение 🚀</td></tr>';
-
-        testMeta.className = 'bb-status bb-status--ok';
-        testMeta.textContent = 'Тест завершён. Можно перезапустить с новыми параметрами.';
-        testState = null;
-      }
-
-      startBtn.addEventListener('click', () => {
-        const config = {
-          total: Number(testQuestionCount.value),
-          difficulty: testDifficulty.value,
-          secondsPerQuestion: Number(testTimer.value),
-          type: testType.value
-        };
-
-        testState = {
-          config,
-          total: config.total,
-          index: 0,
-          correct: 0,
-          wrong: 0,
-          mistakes: [],
-          current: null,
-          left: 0,
-          timerId: null,
-          secondsPerQuestion: config.secondsPerQuestion
-        };
-
-        testMeta.className = 'bb-status bb-status--warn';
-        testMeta.textContent = `Запущен тест: ${config.total} вопросов, ${config.difficulty}, ${config.type}, таймер ${config.secondsPerQuestion || 'off'}.`;
-        testSummary.innerHTML = '<span>Тест выполняется… Итоги появятся после последнего вопроса.</span>';
-        mistakesBody.innerHTML = '';
-        renderQuestion();
-      });
-
-      submitBtn.addEventListener('click', () => {
-        if (!testState) return;
-        handleAnswer(testAnswer.value);
-      });
-
-      skipBtn.addEventListener('click', () => {
-        if (!testState) return;
-        handleAnswer('__skipped__', false);
-      });
-
-      testAnswer.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-          event.preventDefault();
-          submitBtn.click();
-        }
       });
     })();
   </script>
