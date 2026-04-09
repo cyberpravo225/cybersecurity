@@ -49,6 +49,8 @@
     .bc-task-text { font-size: clamp(18px, 2.2vw, 26px); font-weight: 900; }
     .bc-answer-label { font-size:18px; font-weight:900; }
     .bc-answer-input { font-size:20px; padding:14px 16px; border-radius:14px; }
+    .bc-answer-buttons { display:flex; gap:10px; flex-wrap:wrap; }
+    .bc-answer-choice { min-width: 180px; }
     .bc-start-btn { font-size: clamp(20px, 2.4vw, 30px); font-weight: 900; padding: 16px 28px; border-radius: 16px; background: linear-gradient(120deg, #74a4ff, #4de2ff); color:#03142c; border: none; box-shadow: 0 14px 34px rgba(77, 226, 255, .35); }
     .bc-table-btn.is-active { background: linear-gradient(120deg, #74a4ff, #4de2ff); color:#03142c; border-color:transparent; }
     #submitAnswerBtn,
@@ -122,8 +124,11 @@
               </div>
               <p class="bc-task"><span class="bc-task-label">Проверяем объект</span><span class="bc-task-text" id="promptText">Нажмите «Начать игру»</span></p><p class="bb-sub" id="promptMeta" style="margin:0;color:var(--bc-muted)">Тип: — • Сложность: —</p>
               <div class="bc-field">
-                <label class="bc-answer-label" for="answerInput">Ваш выбор</label>
-                <select id="answerInput" class="bc-input bc-answer-input"><option value="">Выберите вариант</option><option value="legit">✅ Legit</option><option value="fake">❌ Fake</option></select>
+                <span class="bc-answer-label">Ваш выбор</span>
+                <div id="answerButtons" class="bc-answer-buttons bc-hidden">
+                  <button id="answerSafeBtn" class="bc-btn bc-answer-choice" type="button">Безопасно</button>
+                  <button id="answerSuspiciousBtn" class="bc-btn bc-answer-choice" type="button">Подозрительно</button>
+                </div>
               </div>
               <div style="display:flex;gap:10px;flex-wrap:wrap;">
                 <button id="startGameBtn" class="bc-btn bc-start-btn" type="button">Начать игру</button>
@@ -138,7 +143,6 @@
                 <p>Итог: <strong id="resultScore"></strong></p>
               </div>
               <div id="creatorResultsPanel" class="tournament-results bc-hidden">
-                <h3>Результаты участников турнира</h3>
                 <ul id="creatorResultsList"></ul>
               </div>
             </section>
@@ -230,6 +234,7 @@
         startedAt: 0,
         questionStartedAt: 0,
         index: 0,
+        selectedAnswer: '',
         totalScore: 0,
         streak: 0,
         bestStreak: 0,
@@ -258,7 +263,9 @@
         document.getElementById('stageLabel').textContent = `${state.index + 1}/${questions.length}`;
         document.getElementById('promptText').textContent = current.prompt;
         document.getElementById('promptMeta').textContent = `Тип: ${current.type} • Сложность: ${current.difficulty}/3`;
-        document.getElementById('answerInput').value = '';
+        state.selectedAnswer = '';
+        document.getElementById('answerSafeBtn').classList.remove('is-active');
+        document.getElementById('answerSuspiciousBtn').classList.remove('is-active');
         state.questionStartedAt = performance.now();
       }
 
@@ -355,18 +362,28 @@
         document.getElementById('scoreCount').textContent = '0';
         document.getElementById('finalResult').classList.add('bc-hidden');
         document.getElementById('startGameBtn').classList.add('bc-hidden');
+        document.getElementById('answerButtons').classList.remove('bc-hidden');
         document.getElementById('submitAnswerBtn').classList.remove('bc-hidden');
         renderQuestion();
         startTimer();
         setFeedback(true, 'Выбери, legit это или fake.');
       });
 
+      function selectAnswer(value) {
+        state.selectedAnswer = value;
+        document.getElementById('answerSafeBtn').classList.toggle('is-active', value === 'legit');
+        document.getElementById('answerSuspiciousBtn').classList.toggle('is-active', value === 'fake');
+      }
+
+      document.getElementById('answerSafeBtn').addEventListener('click', () => selectAnswer('legit'));
+      document.getElementById('answerSuspiciousBtn').addEventListener('click', () => selectAnswer('fake'));
+
       document.getElementById('submitAnswerBtn').addEventListener('click', async () => {
         if (state.finished) return;
         const current = questions[state.index];
-        const selected = document.getElementById('answerInput').value;
+        const selected = state.selectedAnswer;
         if (!selected) {
-          setFeedback(false, 'Выберите вариант ответа.');
+          setFeedback(false, 'Выберите «Безопасно» или «Подозрительно».');
           return;
         }
 
