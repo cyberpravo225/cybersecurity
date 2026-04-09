@@ -3,69 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Binary Learning — Бинарная лаборатория</title>
+  <title>Binary Learning — Теория ASCII и двоичного кода</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
     :root {
-      --bb-text: #eaf1ff;
-      --bb-muted: #9eb2db;
-      --bb-border: rgba(133, 169, 255, .35);
-      --bb-surface: rgba(14, 30, 60, .72);
-      --bb-shadow: 0 18px 40px rgba(4, 10, 28, .35);
-      --bb-accent: linear-gradient(125deg, #79a3ff, #4dd9ff);
-      --bb-ok: #61d6a3;
-      --bb-warn: #ffc766;
-      --bb-danger: #ff7a94;
+      --bl-text: #eaf1ff;
+      --bl-muted: #9eb2db;
+      --bl-border: rgba(133, 169, 255, .35);
+      --bl-surface: rgba(14, 30, 60, .72);
+      --bl-shadow: 0 18px 40px rgba(4, 10, 28, .35);
     }
     html[data-theme="light"] {
-      --bb-text: #0d2249;
-      --bb-muted: #486290;
-      --bb-border: rgba(53, 94, 180, .25);
-      --bb-surface: rgba(241, 247, 255, .96);
-      --bb-shadow: 0 16px 36px rgba(44, 72, 129, .16);
-      --bb-ok: #0a8d5f;
-      --bb-warn: #a96500;
-      --bb-danger: #ba2648;
+      --bl-text: #0d2249;
+      --bl-muted: #486290;
+      --bl-border: rgba(53, 94, 180, .25);
+      --bl-surface: rgba(241, 247, 255, .96);
+      --bl-shadow: 0 16px 36px rgba(44, 72, 129, .16);
     }
-    body[data-page="binary-learning"] { color: var(--bb-text); }
-    .bb-wrap { display:grid; gap:16px; }
-    .bb-panel {
-      border: 1px solid var(--bb-border);
-      border-radius: 24px;
-      background: linear-gradient(165deg, rgba(117, 165, 255, .11), rgba(60, 111, 208, .08), transparent 70%), var(--bb-surface);
-      box-shadow: var(--bb-shadow);
-      padding: clamp(18px, 2vw, 30px);
-      display: grid;
-      gap: 16px;
+    body[data-page="binary-learning"] { color: var(--bl-text); }
+    .bl-wrap { display:grid; gap:16px; }
+    .bl-card {
+      border:1px solid var(--bl-border);
+      border-radius:20px;
+      background:linear-gradient(160deg, rgba(122,167,255,.12), rgba(89,201,255,.08), transparent 75%), var(--bl-surface);
+      box-shadow: var(--bl-shadow);
+      padding:18px;
+      display:grid;
+      gap:12px;
     }
-    .bb-grid { display:grid; grid-template-columns: repeat(12, minmax(0,1fr)); gap: 16px; }
-    .bb-box { border:1px solid var(--bb-border); border-radius:16px; padding:16px; background: color-mix(in srgb, var(--bb-surface) 84%, transparent); display:grid; gap:12px; }
-    .bb-grid .bb-box:nth-child(1){grid-column:span 5}
-    .bb-grid .bb-box:nth-child(2){grid-column:span 7}
-    .bb-grid .bb-box:nth-child(3){grid-column:span 12}
-    .bb-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-    .bb-input{border-radius:10px;border:1px solid var(--bb-border);background:transparent;color:var(--bb-text);padding:8px 10px;min-width:120px}
-    .bb-btn{border:1px solid var(--bb-border);background:transparent;color:var(--bb-text);border-radius:10px;padding:8px 12px;font-weight:700;cursor:pointer}
-    .bb-btn--accent{background:var(--bb-accent);color:#03132e;border:none}
-    .bb-chip-list{display:flex;flex-wrap:wrap;gap:8px}
-    .bb-chip{border:1px solid var(--bb-border);border-radius:999px;padding:6px 10px;color:var(--bb-muted)}
-    .bb-byte-grid{display:grid;grid-template-columns:repeat(8,minmax(24px,1fr));gap:8px}
-    .bb-bit{border-radius:8px;border:1px solid var(--bb-border);padding:8px 0;text-align:center;font-weight:800;cursor:pointer}
-    .bb-bit[data-on="1"]{background:rgba(98,208,255,.2);border-color:rgba(98,208,255,.7)}
-    .bb-table-wrap{overflow:auto;max-height:320px}
-    .bb-table{width:100%;border-collapse:collapse}
-    .bb-table th,.bb-table td{border:1px solid var(--bb-border);padding:8px;text-align:center;white-space:nowrap}
-    .bb-table th{position:sticky;top:0;background:color-mix(in srgb,var(--bb-surface) 90%, transparent)}
-    .bb-status{font-weight:700}
-    .bb-status--ok{color:var(--bb-ok)}
-    .bb-status--warn{color:var(--bb-warn)}
-    .bb-status--danger{color:var(--bb-danger)}
-    .bb-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    .bl-sub{color:var(--bl-muted);margin:0}
+    .bl-grid{display:grid;gap:14px}
+    .bl-table-wrap{overflow:auto}
+    .bl-table{width:100%;border-collapse:collapse}
+    .bl-table th,.bl-table td{border:1px solid var(--bl-border);padding:8px;white-space:nowrap;text-align:center}
+    .bl-table th{background:color-mix(in srgb, var(--bl-surface) 90%, transparent)}
     .theme-toggle{min-width:176px;display:inline-flex;align-items:center;gap:8px}
     .theme-icon-sun{display:none}
     html[data-theme="light"] .theme-icon-sun{display:inline}
     html[data-theme="light"] .theme-icon-moon{display:none}
-    @media (max-width:1050px){.bb-grid{grid-template-columns:repeat(6,minmax(0,1fr))}.bb-grid .bb-box{grid-column:span 6 !important;}}
   </style>
 </head>
 <body class="page" data-page="binary-learning">
@@ -75,10 +50,11 @@
     <div class="theme-grid"></div>
     <canvas class="theme-network" id="theme-network"></canvas>
   </div>
+
   <div class="site">
     <main class="main">
       <section class="section">
-        <div class="container bb-wrap">
+        <div class="container bl-wrap">
           <div class="card" style="display:grid;gap:12px;">
             <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center;">
               <a class="btn ghost" href="binary-battle.html">← Назад к режимам</a>
@@ -88,58 +64,49 @@
                 <span class="theme-toggle-label">Тёмная тема</span>
               </button>
             </div>
-            <h1 style="margin:0;">🎓 Учебный режим: Бинарная лаборатория</h1>
-            <p style="margin:0;color:var(--bb-muted);">Теория + практика в одном месте: конвертер, визуализатор, ASCII-таблица и челленджи.</p>
+            <h1 style="margin:0;">🎓 Теория: ASCII и двоичный код</h1>
+            <p class="bl-sub">На этой странице только теория. Практика вынесена в отдельный «Учебный режим».</p>
+            <div>
+              <a class="btn" href="binary-practice.html">Перейти в учебный режим (практика) →</a>
+            </div>
           </div>
 
-          <section class="bb-panel">
-            <div class="bb-grid">
-              <article class="bb-box">
-                <h3>1) Конвертер символ ↔ байт</h3>
-                <div class="bb-controls">
-                  <input id="learnChar" class="bb-input bb-mono" maxlength="1" value="A" />
-                  <button id="charToBinBtn" class="bb-btn bb-btn--accent" type="button">Символ → Бинарный</button>
-                  <input id="learnBinary" class="bb-input bb-mono" maxlength="8" value="01000001" />
-                  <button id="binToCharBtn" class="bb-btn" type="button">Бинарный → Символ</button>
-                </div>
-                <p id="learnConverterStatus" class="bb-status bb-status--warn">Введите символ или 8-битный код.</p>
-                <div class="bb-chip-list">
-                  <span class="bb-chip">Dec: <strong id="learnDec">65</strong></span>
-                  <span class="bb-chip">Hex: <strong id="learnHex">0x41</strong></span>
-                  <span class="bb-chip">Oct: <strong id="learnOct">101</strong></span>
-                </div>
-              </article>
+          <article class="bl-card">
+            <h2 style="margin:0;">1) Что такое ASCII</h2>
+            <p class="bl-sub">ASCII — стандарт кодирования символов: каждому символу соответствует число (0–127). Компьютер хранит символы именно как числа.</p>
+          </article>
 
-              <article class="bb-box">
-                <h3>2) Визуализатор битов</h3>
-                <p style="margin:0;color:var(--bb-muted);">Кликай по битам и смотри изменения ASCII-кода.</p>
-                <div id="bitGrid" class="bb-byte-grid"></div>
-                <div class="bb-chip-list">
-                  <span class="bb-chip">Byte: <strong id="bitByte" class="bb-mono">00000000</strong></span>
-                  <span class="bb-chip">Dec: <strong id="bitDec">0</strong></span>
-                  <span class="bb-chip">Char: <strong id="bitChar" class="bb-mono">NUL</strong></span>
-                </div>
-              </article>
+          <article class="bl-card">
+            <h2 style="margin:0;">2) Почему 8 бит</h2>
+            <p class="bl-sub">Исторически ASCII 7-битный, но на практике используют 1 байт (8 бит), поэтому код записывают с ведущим нулём: например, <code>65 = 01000001</code>.</p>
+          </article>
 
-              <article class="bb-box">
-                <h3>3) ASCII-мини справочник + челлендж</h3>
-                <div class="bb-controls">
-                  <button id="challengeBtn" class="bb-btn bb-btn--accent" type="button">Сгенерировать задание</button>
-                  <input id="challengeAnswer" class="bb-input bb-mono" maxlength="8" placeholder="Ответ" />
-                  <button id="checkChallengeBtn" class="bb-btn" type="button">Проверить ответ</button>
-                </div>
-                <p id="challengeTask" class="bb-mono" style="font-size:1.2rem;font-weight:800;margin:0;">Нажмите «Сгенерировать задание»</p>
-                <p id="challengeStatus" class="bb-status bb-status--warn">Результат появится здесь.</p>
-                <div class="bb-table-wrap">
-                  <table class="bb-table" id="asciiTable"><thead><tr><th>Символ</th><th>Dec</th><th>Hex</th><th>Binary</th></tr></thead><tbody></tbody></table>
-                </div>
-              </article>
+          <article class="bl-card">
+            <h2 style="margin:0;">3) Алгоритм перевода текста в бинарный код</h2>
+            <p class="bl-sub">Берёшь символ → находишь его десятичный ASCII-код → переводишь в двоичную систему и дополняешь до 8 бит.</p>
+            <p class="bl-sub"><strong>CAT</strong> → C=67=01000011, A=65=01000001, T=84=01010100.</p>
+          </article>
+
+          <article class="bl-card">
+            <h2 style="margin:0;">4) Обратный перевод</h2>
+            <p class="bl-sub">Разбиваешь строку на блоки по 8 бит → каждый блок переводишь в десятичное число → находишь символ в ASCII.</p>
+            <p class="bl-sub"><code>01001000 01101001</code> → 72 и 105 → <strong>Hi</strong>.</p>
+          </article>
+
+          <article class="bl-card">
+            <h2 style="margin:0;">5) Краткая таблица ASCII (буквы и цифры)</h2>
+            <div class="bl-table-wrap">
+              <table class="bl-table">
+                <thead><tr><th>Символ</th><th>Dec</th><th>Hex</th><th>Binary (8-bit)</th></tr></thead>
+                <tbody id="theoryTableBody"></tbody>
+              </table>
             </div>
-          </section>
+          </article>
         </div>
       </section>
     </main>
   </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-auth.js"></script>
   <script>
@@ -155,49 +122,13 @@
     })();
   </script>
   <script>
-    (function initLearningMode() {
-      const allowedChallengeChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!?@#$%&*+-=/()[]{}:;,. '.split('');
-      const learnChar = document.getElementById('learnChar');
-      const learnBinary = document.getElementById('learnBinary');
-      const learnConverterStatus = document.getElementById('learnConverterStatus');
-      const learnDec = document.getElementById('learnDec');
-      const learnHex = document.getElementById('learnHex');
-      const learnOct = document.getElementById('learnOct');
-      const bitGrid = document.getElementById('bitGrid');
-      const bitByte = document.getElementById('bitByte');
-      const bitDec = document.getElementById('bitDec');
-      const bitChar = document.getElementById('bitChar');
-      const challengeTask = document.getElementById('challengeTask');
-      const challengeStatus = document.getElementById('challengeStatus');
-      const challengeAnswer = document.getElementById('challengeAnswer');
-      const asciiTableBody = document.querySelector('#asciiTable tbody');
-      let challenge = null;
-      let bitState = Array(8).fill(0);
-      function toBinary8(n) { return n.toString(2).padStart(8, '0'); }
-      function printableChar(code) { if (code === 0) return 'NUL'; if (code < 32 || code === 127) return `CTRL(${code})`; return String.fromCharCode(code); }
-      function isBinary8(value) { return /^[01]{8}$/.test(value); }
-      function updateConverterFromCode(code, source) {
-        const char = String.fromCharCode(code); const binary = toBinary8(code);
-        learnChar.value = char; learnBinary.value = binary; learnDec.textContent = String(code);
-        learnHex.textContent = '0x' + code.toString(16).toUpperCase().padStart(2, '0'); learnOct.textContent = code.toString(8);
-        learnConverterStatus.className = 'bb-status bb-status--ok';
-        learnConverterStatus.textContent = source === 'char' ? `Символ ${char === ' ' ? '␠ (space)' : char} = ${binary} (ASCII ${code}).` : `Код ${binary} = символ ${char === ' ' ? '␠ (space)' : char} (ASCII ${code}).`;
-      }
-      document.getElementById('charToBinBtn').addEventListener('click', () => { if (!learnChar.value) { learnConverterStatus.className = 'bb-status bb-status--danger'; learnConverterStatus.textContent = 'Введите один символ.'; return; } updateConverterFromCode(learnChar.value.charCodeAt(0), 'char'); });
-      document.getElementById('binToCharBtn').addEventListener('click', () => { const value = learnBinary.value.trim(); if (!isBinary8(value)) { learnConverterStatus.className = 'bb-status bb-status--danger'; learnConverterStatus.textContent = 'Нужен бинарный код из 8 бит.'; return; } updateConverterFromCode(parseInt(value, 2), 'bin'); });
-      function renderBits() {
-        bitGrid.innerHTML = '';
-        bitState.forEach((bit, idx) => { const btn = document.createElement('button'); btn.className = 'bb-bit bb-mono'; btn.type = 'button'; btn.dataset.on = bit; btn.textContent = String(bit); btn.title = `Бит ${7 - idx}`; btn.addEventListener('click', () => { bitState[idx] = bitState[idx] ? 0 : 1; renderBits(); }); bitGrid.appendChild(btn); });
-        const value = parseInt(bitState.join(''), 2); bitByte.textContent = bitState.join(''); bitDec.textContent = String(value); bitChar.textContent = printableChar(value);
-      }
-      function fillAsciiTable() {
-        const ranges = [...Array.from({ length: 26 }, (_, i) => 65 + i), ...Array.from({ length: 26 }, (_, i) => 97 + i), ...Array.from({ length: 10 }, (_, i) => 48 + i), 32, 33, 35, 36, 37, 38, 42, 43, 45, 47, 61, 63];
-        const unique = [...new Set(ranges)].sort((a, b) => a - b);
-        asciiTableBody.innerHTML = unique.map((code) => `<tr><td class="bb-mono">${code === 32 ? '␠' : String.fromCharCode(code)}</td><td>${code}</td><td class="bb-mono">0x${code.toString(16).toUpperCase().padStart(2, '0')}</td><td class="bb-mono">${toBinary8(code)}</td></tr>`).join('');
-      }
-      document.getElementById('challengeBtn').addEventListener('click', () => { const mode = Math.random() > 0.5 ? 'char_to_bin' : 'bin_to_char'; const char = allowedChallengeChars[Math.floor(Math.random() * allowedChallengeChars.length)]; const code = char.charCodeAt(0); challenge = { mode, char, binary: toBinary8(code), code }; challengeTask.textContent = mode === 'char_to_bin' ? `Переведи символ «${char === ' ' ? '␠ (space)' : char}» в 8-битный код.` : `Какой символ у кода ${challenge.binary}?`; challengeAnswer.value = ''; challengeStatus.className = 'bb-status bb-status--warn'; challengeStatus.textContent = 'Введите ответ и нажмите «Проверить ответ». '; });
-      document.getElementById('checkChallengeBtn').addEventListener('click', () => { if (!challenge) { challengeStatus.className = 'bb-status bb-status--danger'; challengeStatus.textContent = 'Сначала сгенерируйте задание.'; return; } const answer = challengeAnswer.value.trim(); const ok = challenge.mode === 'char_to_bin' ? answer === challenge.binary : answer === challenge.char; if (ok) { challengeStatus.className = 'bb-status bb-status--ok'; challengeStatus.textContent = 'Отлично! Верно ✅'; return; } challengeStatus.className = 'bb-status bb-status--danger'; challengeStatus.textContent = challenge.mode === 'char_to_bin' ? `Пока не совпало. Верный ответ: ${challenge.binary}.` : `Пока не совпало. Верный ответ: ${challenge.char === ' ' ? '␠ (space)' : challenge.char}.`; });
-      fillAsciiTable(); renderBits(); updateConverterFromCode(65, 'char');
+    (function initTheoryTable(){
+      const rows=[];
+      const push=(code)=>rows.push(`<tr><td>${String.fromCharCode(code)}</td><td>${code}</td><td>0x${code.toString(16).toUpperCase().padStart(2,'0')}</td><td><code>${code.toString(2).padStart(8,'0')}</code></td></tr>`);
+      for(let c=48;c<=57;c++) push(c);
+      for(let c=65;c<=90;c++) push(c);
+      for(let c=97;c<=122;c++) push(c);
+      document.getElementById('theoryTableBody').innerHTML=rows.join('');
     })();
   </script>
   <script src="js/theme-network.js"></script>
