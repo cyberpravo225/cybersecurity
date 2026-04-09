@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Binary Test — Self-Test</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root { --bb-text:#eaf1ff; --bb-muted:#9eb2db; --bb-border:rgba(133,169,255,.35); --bb-surface:rgba(14,30,60,.72); --bb-shadow:0 18px 40px rgba(4,10,28,.35); --bb-accent:linear-gradient(125deg,#79a3ff,#4dd9ff); --bb-ok:#61d6a3; --bb-warn:#ffc766; --bb-danger:#ff7a94; }
+    html[data-theme="light"] { --bb-text:#0d2249; --bb-muted:#486290; --bb-border:rgba(53,94,180,.25); --bb-surface:rgba(241,247,255,.96); --bb-shadow:0 16px 36px rgba(44,72,129,.16); --bb-ok:#0a8d5f; --bb-warn:#a96500; --bb-danger:#ba2648; }
+    body[data-page="binary-test"]{color:var(--bb-text)} .bb-wrap{display:grid;gap:16px}
+    .bb-panel{border:1px solid var(--bb-border);border-radius:24px;background:linear-gradient(165deg, rgba(117,165,255,.11), rgba(60,111,208,.08), transparent 70%), var(--bb-surface);box-shadow:var(--bb-shadow);padding:clamp(18px,2vw,30px);display:grid;gap:16px}
+    .bb-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+    .bb-box{border:1px solid var(--bb-border);border-radius:16px;padding:16px;background:color-mix(in srgb,var(--bb-surface) 84%, transparent);display:grid;gap:12px}
+    .bb-grid .bb-box:nth-child(1){grid-column:span 4}.bb-grid .bb-box:nth-child(2){grid-column:span 8}.bb-grid .bb-box:nth-child(3){grid-column:span 12}
+    .bb-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    .bb-input,.bb-select{border-radius:10px;border:1px solid var(--bb-border);background:transparent;color:var(--bb-text);padding:8px 10px;min-width:120px}
+    .bb-btn{border:1px solid var(--bb-border);background:transparent;color:var(--bb-text);border-radius:10px;padding:8px 12px;font-weight:700;cursor:pointer}
+    .bb-btn--accent{background:var(--bb-accent);color:#03132e;border:none}
+    .bb-chip-list{display:flex;flex-wrap:wrap;gap:8px}.bb-chip{border:1px solid var(--bb-border);border-radius:999px;padding:6px 10px;color:var(--bb-muted)}
+    .bb-table-wrap{overflow:auto;max-height:300px}.bb-table{width:100%;border-collapse:collapse}.bb-table th,.bb-table td{border:1px solid var(--bb-border);padding:8px;text-align:center;white-space:nowrap}
+    .bb-table th{position:sticky;top:0;background:color-mix(in srgb,var(--bb-surface) 90%, transparent)}
+    .bb-status{font-weight:700}.bb-status--ok{color:var(--bb-ok)}.bb-status--warn{color:var(--bb-warn)}.bb-status--danger{color:var(--bb-danger)}
+    .bb-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}.bb-summary{display:grid;gap:8px;border:1px dashed var(--bb-border);border-radius:12px;padding:10px}
+    .theme-toggle{min-width:176px;display:inline-flex;align-items:center;gap:8px}.theme-icon-sun{display:none}html[data-theme="light"] .theme-icon-sun{display:inline}html[data-theme="light"] .theme-icon-moon{display:none}
+    @media (max-width:1050px){.bb-grid{grid-template-columns:repeat(6,minmax(0,1fr))}.bb-grid .bb-box{grid-column:span 6 !important;}}
+  </style>
+</head>
+<body class="page" data-page="binary-test">
+<div class="theme-backdrop" aria-hidden="true"><div class="theme-orb theme-orb-one"></div><div class="theme-orb theme-orb-two"></div><div class="theme-grid"></div><canvas class="theme-network" id="theme-network"></canvas></div>
+<div class="site"><main class="main"><section class="section"><div class="container bb-wrap">
+  <div class="card" style="display:grid;gap:12px;">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center;">
+      <a class="btn ghost" href="binary-battle.html">← Назад к режимам</a>
+      <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему"><span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span><span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span><span class="theme-toggle-label">Тёмная тема</span></button>
+    </div>
+    <h1 style="margin:0;">📘 Тестовый режим: Адаптивный Self-Test</h1>
+    <p style="margin:0;color:var(--bb-muted);">Сконфигурируй тест под себя и получи полный разбор результата.</p>
+  </div>
+
+  <section class="bb-panel">
+    <div class="bb-grid">
+      <article class="bb-box">
+        <h3>Настройки теста</h3>
+        <div class="bb-controls">
+          <label>Вопросов <select id="testQuestionCount" class="bb-select"><option>5</option><option selected>10</option><option>15</option><option>20</option></select></label>
+          <label>Сложность <select id="testDifficulty" class="bb-select"><option value="easy">Easy (A-Z, 0-9)</option><option value="medium" selected>Medium (ASCII 32-90)</option><option value="hard">Hard (ASCII 32-126)</option></select></label>
+          <label>Таймер <select id="testTimer" class="bb-select"><option value="0" selected>Без таймера</option><option value="20">20 сек / вопрос</option><option value="30">30 сек / вопрос</option><option value="45">45 сек / вопрос</option></select></label>
+          <label>Тип <select id="testType" class="bb-select"><option value="char_to_bin" selected>Символ → бинарный</option><option value="bin_to_char">Бинарный → символ</option><option value="mixed">Смешанный</option></select></label>
+        </div>
+        <button id="startTestBtn" class="bb-btn bb-btn--accent" type="button">Начать тест</button>
+        <p id="testMeta" class="bb-status bb-status--warn">Тест ещё не запущен.</p>
+      </article>
+      <article class="bb-box">
+        <h3>Рабочая область</h3>
+        <p id="testQuestion" class="bb-mono" style="font-size:1.2rem;font-weight:800;margin:0;">Нажмите «Начать тест»</p>
+        <div class="bb-controls"><input id="testAnswer" class="bb-input bb-mono" placeholder="Ваш ответ" /><button id="submitTestAnswer" class="bb-btn" type="button">Ответить</button><button id="skipTestAnswer" class="bb-btn" type="button">Пропустить</button></div>
+        <div class="bb-chip-list"><span class="bb-chip">Прогресс: <strong id="testProgress">0/0</strong></span><span class="bb-chip">Верно: <strong id="testCorrect">0</strong></span><span class="bb-chip">Ошибки: <strong id="testWrong">0</strong></span><span class="bb-chip">Таймер: <strong id="testTimerLeft">—</strong></span></div>
+        <p id="testStatus" class="bb-status bb-status--warn">Ожидание старта.</p>
+      </article>
+      <article class="bb-box">
+        <h3>Итоги и разбор</h3>
+        <div class="bb-summary" id="testSummary"><span>После завершения теста здесь появится процент, оценка и список ошибок.</span></div>
+        <div class="bb-table-wrap"><table class="bb-table" id="mistakesTable"><thead><tr><th>#</th><th>Вопрос</th><th>Ваш ответ</th><th>Правильный ответ</th></tr></thead><tbody></tbody></table></div>
+      </article>
+    </div>
+  </section>
+</div></section></main></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/supabase-auth.js"></script>
+<script>(async function(){ try{ await window.CyberSupabaseAuth.requireAuth({ message:'Для доступа нужно войти в аккаунт.' }); } catch(_){} })();</script>
+<script>(function initTheme(){const key='cyber_theme';const root=document.documentElement;const toggle=document.getElementById('themeToggle');const saved=localStorage.getItem(key);const pref=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;const initial=saved||(pref?'dark':'light');root.setAttribute('data-theme',initial);const sync=(t)=>{toggle.querySelector('.theme-toggle-label').textContent=t==='dark'?'Светлая тема':'Тёмная тема';};sync(initial);toggle.addEventListener('click',()=>{const c=root.getAttribute('data-theme')==='dark'?'dark':'light';const n=c==='dark'?'light':'dark';root.setAttribute('data-theme',n);localStorage.setItem(key,n);sync(n);});})();</script>
+<script>
+(function initTestMode(){
+const testQuestionCount=document.getElementById('testQuestionCount');const testDifficulty=document.getElementById('testDifficulty');const testTimer=document.getElementById('testTimer');const testType=document.getElementById('testType');const startBtn=document.getElementById('startTestBtn');const submitBtn=document.getElementById('submitTestAnswer');const skipBtn=document.getElementById('skipTestAnswer');const testQuestion=document.getElementById('testQuestion');const testAnswer=document.getElementById('testAnswer');const testMeta=document.getElementById('testMeta');const testStatus=document.getElementById('testStatus');const testProgress=document.getElementById('testProgress');const testCorrect=document.getElementById('testCorrect');const testWrong=document.getElementById('testWrong');const testTimerLeft=document.getElementById('testTimerLeft');const testSummary=document.getElementById('testSummary');const mistakesBody=document.querySelector('#mistakesTable tbody');
+let testState=null; const toBinary8=(n)=>n.toString(2).padStart(8,'0');
+function pickCode(d){if(d==='easy'){const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';return chars.charCodeAt(Math.floor(Math.random()*chars.length));} if(d==='medium'){return 32+Math.floor(Math.random()*(90-32+1));} return 32+Math.floor(Math.random()*(126-32+1));}
+function buildQuestion(cfg){const code=pickCode(cfg.difficulty);const char=String.fromCharCode(code);const binary=toBinary8(code);let mode=cfg.type;if(mode==='mixed') mode=Math.random()>0.5?'char_to_bin':'bin_to_char';if(mode==='char_to_bin'){return {prompt:`Переведи символ «${char===' ' ? '␠ (space)' : char}» в 8-битный бинарный код`,answer:binary,mode};}return {prompt:`Какой символ соответствует коду ${binary}?`,answer:char,mode};}
+function updateHud(){if(!testState) return;testProgress.textContent=`${testState.index}/${testState.total}`;testCorrect.textContent=String(testState.correct);testWrong.textContent=String(testState.wrong);} function stopTimer(){if(testState?.timerId){clearInterval(testState.timerId);testState.timerId=null;}}
+function startTimerForQuestion(){stopTimer();if(!testState||!testState.secondsPerQuestion){testTimerLeft.textContent='—';return;}testState.left=testState.secondsPerQuestion;testTimerLeft.textContent=`${testState.left} сек`;testState.timerId=setInterval(()=>{if(!testState) return;testState.left-=1;testTimerLeft.textContent=`${Math.max(0,testState.left)} сек`;if(testState.left<=0){handleAnswer('__timeout__',true);}},1000);}
+function renderQuestion(){if(!testState) return;if(testState.index>=testState.total){finishTest();return;}testState.current=buildQuestion(testState.config);testQuestion.textContent=testState.current.prompt;testAnswer.value='';testAnswer.focus();updateHud();startTimerForQuestion();testStatus.className='bb-status bb-status--warn';testStatus.textContent='Вопрос загружен. Введите ответ.';}
+function handleAnswer(raw,auto=false){if(!testState||!testState.current) return;stopTimer();const userAnswer=raw.trim();const correctAnswer=testState.current.answer;const ok=!auto&&userAnswer===correctAnswer;if(ok){testState.correct+=1;testStatus.className='bb-status bb-status--ok';testStatus.textContent='Верно ✅';}else{testState.wrong+=1;const presented=auto?'Время вышло':(userAnswer||'Пусто');testState.mistakes.push({index:testState.index+1,prompt:testState.current.prompt,user:presented,correct:correctAnswer});testStatus.className='bb-status bb-status--danger';testStatus.textContent=auto?`Время вышло ⌛ Верно: ${correctAnswer}`:`Неверно. Верно: ${correctAnswer}`;}testState.index+=1;updateHud();setTimeout(()=>{if(!testState) return;renderQuestion();},550);}
+function finishTest(){stopTimer();const percent=Math.round((testState.correct/testState.total)*100);const grade=percent>=90?'Отлично':percent>=75?'Хорошо':percent>=55?'Нормально':'Нужно повторить';testQuestion.textContent='Тест завершён';testTimerLeft.textContent='—';testSummary.innerHTML=`<span><strong>Результат:</strong> ${testState.correct}/${testState.total}</span><span><strong>Точность:</strong> ${percent}%</span><span><strong>Оценка:</strong> ${grade}</span><span><strong>Режим:</strong> ${testState.config.type}, сложность ${testState.config.difficulty}</span>`;mistakesBody.innerHTML=testState.mistakes.length?testState.mistakes.map((m)=>`<tr><td>${m.index}</td><td class="bb-mono">${m.prompt}</td><td class="bb-mono">${m.user}</td><td class="bb-mono">${m.correct}</td></tr>`).join(''):'<tr><td colspan="4">Ошибок нет. Идеальное прохождение 🚀</td></tr>';testMeta.className='bb-status bb-status--ok';testMeta.textContent='Тест завершён. Можно перезапустить с новыми параметрами.';testState=null;}
+startBtn.addEventListener('click',()=>{const config={total:Number(testQuestionCount.value),difficulty:testDifficulty.value,secondsPerQuestion:Number(testTimer.value),type:testType.value};testState={config,total:config.total,index:0,correct:0,wrong:0,mistakes:[],current:null,left:0,timerId:null,secondsPerQuestion:config.secondsPerQuestion};testMeta.className='bb-status bb-status--warn';testMeta.textContent=`Запущен тест: ${config.total} вопросов, ${config.difficulty}, ${config.type}, таймер ${config.secondsPerQuestion||'off'}.`;testSummary.innerHTML='<span>Тест выполняется… Итоги появятся после последнего вопроса.</span>';mistakesBody.innerHTML='';renderQuestion();});
+submitBtn.addEventListener('click',()=>{if(!testState) return;handleAnswer(testAnswer.value);});skipBtn.addEventListener('click',()=>{if(!testState) return;handleAnswer('__skipped__',false);});testAnswer.addEventListener('keydown',(e)=>{if(e.key==='Enter'){e.preventDefault();submitBtn.click();}});
+})();
+</script>
+<script src="js/theme-network.js"></script>
+</body>
+</html>
