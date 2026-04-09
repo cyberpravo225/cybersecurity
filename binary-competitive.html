@@ -252,6 +252,14 @@
       let tournamentChannel = null;
       const creatorResultsMap = new Map();
 
+      function getTournamentEntryKey(payload = {}) {
+        const userId = String(payload?.userId || '').trim();
+        if (userId) return userId;
+        const nickname = String(payload?.nickname || '').trim() || 'Игрок';
+        const finishedAt = Number(payload?.finishedAt || 0);
+        return `${nickname}_${Number.isFinite(finishedAt) ? finishedAt : Date.now()}`;
+      }
+
       function renderCreatorResults() {
         creatorResultsList.innerHTML = '';
         creatorResultsMap.forEach((entry) => {
@@ -273,7 +281,7 @@
             stage2: Number(payload?.stage2Time || 0),
             errors: Number(payload?.errors || 0)
           };
-          creatorResultsMap.set(nickname, entry);
+          creatorResultsMap.set(getTournamentEntryKey(payload), entry);
           renderCreatorResults();
         });
         await new Promise((resolve, reject) => {
@@ -293,6 +301,8 @@
 
       if (isTournamentCreator) {
         creatorResultsPanel.classList.remove('bc-hidden');
+      } else if (!tournamentMode) {
+        creatorResultsPanel.remove();
       }
 
       document.getElementById('usernameLabel').textContent = profile?.username || session.user.email || 'Игрок';
@@ -400,7 +410,14 @@
       }
 
       async function finishGame() {
+        if (state.finished) return;
         state.finished = true;
+        clearInterval(state.timerId);
+        const activeStageIndex = state.stage - 1;
+        if (activeStageIndex >= 0 && activeStageIndex < state.stageTimes.length && state.stageTimes[activeStageIndex] === 0 && state.stageStart) {
+          const elapsedActiveStage = Math.max(0, (performance.now() - state.stageStart) / 1000);
+          state.stageTimes[activeStageIndex] = elapsedActiveStage;
+        }
         const totalTimeInSeconds = state.stageTimes[0] + state.stageTimes[1] + state.penaltySeconds;
         const finalScore = totalTimeInSeconds;
         document.getElementById('resultTime').textContent = totalTimeInSeconds.toFixed(1);
@@ -412,7 +429,7 @@
           setFeedback(true, 'Игра завершена. Результат отправлен создателю турнира.');
           const nickname = profile?.username || session.user.email || 'Игрок';
           if (isTournamentCreator) {
-            creatorResultsMap.set(nickname, {
+            creatorResultsMap.set(session.user.id, {
               nickname,
               finalScore,
               stage1: state.stageTimes[0],
@@ -427,6 +444,7 @@
               event: 'player_finished',
               payload: {
                 room: tournamentRoomCode,
+                userId: session.user.id,
                 nickname,
                 finalScore: Number(finalScore.toFixed(3)),
                 stage1Time: Number(state.stageTimes[0].toFixed(3)),
@@ -501,7 +519,9 @@
         setFeedback(ok, message);
       }
 
-      document.getElementById('submitAnswerBtn').addEventListener('click', async () => {
+      const submitAnswerBtn = document.getElementById('submitAnswerBtn');
+
+      submitAnswerBtn.addEventListener('click', async () => {
         if (!state.stage || state.finished) return;
         const answer = document.getElementById('answerInput').value.trim();
         const currentWords = state.stage === 1 ? state.words1 : state.words2;
@@ -550,6 +570,13 @@
           toggleModal(true);
         }
         if (event.key === 'Escape') toggleModal(false);
+        if (event.key === 'Enter' && !modal.classList.contains('active')) {
+          const submitVisible = !submitAnswerBtn.classList.contains('bc-hidden') && !submitAnswerBtn.disabled;
+          if (submitVisible && state.stage && !state.finished) {
+            event.preventDefault();
+            submitAnswerBtn.click();
+          }
+        }
       });
       document.addEventListener('keyup', (event) => {
         if (event.key === 'Tab') toggleModal(false);
