@@ -1028,60 +1028,54 @@
         margin-inline: auto;
         justify-self: center;
       }
-    }
 
+      body[data-page="home"] .card-grid > a.card.game-feature-digital-trap {
+        position: relative;
+        overflow: hidden;
+      }
 
-    .digital-trap-entry {
-      margin-top: 20px;
-    }
+      body[data-page="home"] .card-grid > a.card.game-feature-digital-trap .digital-trap-badge {
+        display: inline-flex;
+        width: fit-content;
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid color-mix(in oklab, var(--card-border) 56%, #8b5cf6 44%);
+        background: color-mix(in oklab, var(--card-bg) 68%, #8b5cf6 32%);
+        font-size: .76rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+      }
 
-    .digital-trap-card {
-      display: grid;
-      gap: 14px;
-      align-items: center;
-      padding: 22px;
-      border-radius: 18px;
-      border: 1px solid rgba(99, 102, 241, 0.32);
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.84), rgba(30, 41, 59, 0.68));
-      box-shadow: 0 14px 34px rgba(7, 12, 32, 0.35), 0 0 26px rgba(99, 102, 241, 0.18);
-    }
+      body[data-page="home"] .card-grid > a.card.game-feature-digital-trap .digital-trap-preview {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        width: 100%;
+        max-width: 230px;
+      }
 
-    .digital-trap-title {
-      margin: 0;
-      font-size: clamp(1.2rem, 1.6vw, 1.5rem);
-      color: #e2e8f0;
-    }
+      body[data-page="home"] .card-grid > a.card.game-feature-digital-trap .digital-trap-preview span {
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        min-height: 44px;
+        border: 1px solid color-mix(in oklab, var(--card-border) 56%, #4de2ff 44%);
+        background: color-mix(in oklab, var(--card-bg) 72%, #4de2ff 28%);
+        font-size: 1.2rem;
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,.1);
+      }
 
-    .digital-trap-text {
-      margin: 0;
-      color: #cbd5e1;
-      font-size: 0.98rem;
-      line-height: 1.5;
-    }
-
-    .digital-trap-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .digital-trap-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 11px 18px;
-      border-radius: 12px;
-      color: #fff;
-      text-decoration: none;
-      font-weight: 700;
-      background: linear-gradient(90deg, #6366F1, #8B5CF6);
-      box-shadow: 0 0 24px rgba(99, 102, 241, 0.34);
-      transition: transform .18s ease, box-shadow .2s ease;
-    }
-
-    .digital-trap-btn:hover {
-      transform: translateY(-1px) scale(1.02);
-      box-shadow: 0 0 30px rgba(139, 92, 246, 0.44);
+      body[data-page="home"] .card-grid > a.card.game-feature-digital-trap::after {
+        content: "";
+        position: absolute;
+        inset: auto -35% -35% auto;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(139,92,246,.22) 0%, rgba(139,92,246,0) 68%);
+        pointer-events: none;
+      }
     }
 
   </style>
@@ -1242,18 +1236,6 @@
 </div>
 </section>
 
-
-<section class="section digital-trap-entry">
-<div class="container">
-  <article class="digital-trap-card reveal" aria-label="Вход в игру Один день: цифровая ловушка">
-    <h2 class="digital-trap-title">🎮 Новая игра: «Один день: цифровая ловушка»</h2>
-    <p class="digital-trap-text">Короткая сюжетная игра о цифровых рисках в обычной жизни. Запускается сразу в браузере.</p>
-    <div class="digital-trap-actions">
-      <a class="digital-trap-btn" href="digital-trap/index.html">Войти в игру</a>
-    </div>
-  </article>
-</div>
-</section>
 
 <!-- КИБЕРИНЦИДЕНТЫ -->
 <section class="section tests-cta-section">
@@ -1416,6 +1398,22 @@
   <img class="moon-dark" src="assets/moon-dark.png" alt="">
 </div>
 
+</a>
+
+<a href="digital-trap/index.html" class="card game-feature game-feature-split game-feature-digital-trap reveal delay" aria-label="Один день: цифровая ловушка — перейти к игре">
+  <div class="game-feature-copy">
+    <span class="digital-trap-badge" aria-hidden="true">Новая сюжетная игра</span>
+    <h3>Один день: цифровая ловушка</h3>
+    <p>
+      Пройди день из 10+ ситуаций: фишинг, звонки «из банка», сомнительный Wi‑Fi и другие реальные риски.
+    </p>
+  </div>
+
+  <div class="digital-trap-preview" aria-hidden="true">
+    <span>📩</span>
+    <span>📞</span>
+    <span>🛡️</span>
+  </div>
 </a>
 
 <a href="cyberly.html" class="card game-feature game-feature-split game-feature-cyberly reveal delay" aria-label="Cyberly — перейти к игре">
