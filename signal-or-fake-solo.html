@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Signal or Fake — legit/fake соревновательный режим</title>
+  <title>КиберПроверка — legit/fake соревновательный режим</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
     :root {
@@ -49,30 +49,59 @@
     .bc-task-text { font-size: clamp(18px, 2.2vw, 26px); font-weight: 900; }
     .bc-answer-label { font-size:18px; font-weight:900; }
     .bc-answer-input { font-size:20px; padding:14px 16px; border-radius:14px; }
+    .bc-answer-buttons {
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      justify-content:center;
+      align-items:center;
+      width:100%;
+      margin: 4px auto 0;
+    }
+    .bc-answer-choice {
+      min-width: 240px;
+      font-size: clamp(20px, 2.4vw, 28px);
+      font-weight: 900;
+      padding: 16px 24px;
+      border-radius: 16px;
+      transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+    }
+    .bc-answer-choice:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+    }
+    #answerSafeBtn {
+      border-color: rgba(74, 222, 128, .8);
+      box-shadow: 0 0 18px rgba(74, 222, 128, .45), inset 0 0 12px rgba(74, 222, 128, .15);
+    }
+    #answerSuspiciousBtn {
+      border-color: rgba(248, 113, 113, .85);
+      box-shadow: 0 0 18px rgba(248, 113, 113, .45), inset 0 0 12px rgba(248, 113, 113, .15);
+    }
+    #answerSafeBtn.is-active {
+      background: linear-gradient(120deg, rgba(22, 163, 74, .92), rgba(74, 222, 128, .92));
+      color: #02120a;
+      box-shadow: 0 0 26px rgba(74, 222, 128, .8), 0 0 48px rgba(74, 222, 128, .45);
+      border-color: transparent;
+    }
+    #answerSuspiciousBtn.is-active {
+      background: linear-gradient(120deg, rgba(220, 38, 38, .92), rgba(248, 113, 113, .92));
+      color: #1b0202;
+      box-shadow: 0 0 26px rgba(248, 113, 113, .8), 0 0 48px rgba(248, 113, 113, .45);
+      border-color: transparent;
+    }
     .bc-start-btn { font-size: clamp(20px, 2.4vw, 30px); font-weight: 900; padding: 16px 28px; border-radius: 16px; background: linear-gradient(120deg, #74a4ff, #4de2ff); color:#03142c; border: none; box-shadow: 0 14px 34px rgba(77, 226, 255, .35); }
     .bc-table-btn.is-active { background: linear-gradient(120deg, #74a4ff, #4de2ff); color:#03142c; border-color:transparent; }
-    #submitAnswerBtn,
     #showBinaryTableBtn {
       background: linear-gradient(120deg, rgba(116,164,255,.45), rgba(77,226,255,.35));
       border-color: rgba(126, 173, 255, .55);
       box-shadow: 0 10px 24px rgba(77, 226, 255, .2);
       font-weight: 800;
     }
-    #submitAnswerBtn:hover,
     #showBinaryTableBtn:hover {
       transform: translateY(-1px);
       filter: brightness(1.06);
     }
-    .binary-modal { position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; z-index:50; }
-    .binary-modal.active { display:flex; }
-    .binary-modal__content { width:min(760px,94vw); max-height:84vh; overflow:auto; background:linear-gradient(180deg, var(--bc-bg), color-mix(in oklab, var(--bc-bg) 80%, #4de2ff 20%)); color:var(--bc-text); border-radius:18px; padding:18px; border:1px solid var(--bc-border); box-shadow:0 20px 40px rgba(0,0,0,.28); scrollbar-width: thin; scrollbar-color: #6ac9ff rgba(116,164,255,.2); }
-    .binary-table { width:100%; border-collapse:collapse; }
-    .binary-table th,.binary-table td { border-bottom:1px solid var(--bc-border); padding:8px; }
-    .binary-table th { text-align:left; color:var(--bc-muted); }
-    .binary-modal__content::-webkit-scrollbar { width: 10px; }
-    .binary-modal__content::-webkit-scrollbar-track { background: rgba(116,164,255,.18); border-radius: 999px; }
-    .binary-modal__content::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #74a4ff, #4de2ff); border-radius: 999px; border: 2px solid rgba(15, 28, 56, .2); }
-    .binary-modal__content::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #8ab3ff, #7decff); }
     .theme-toggle { min-width: 176px; display:inline-flex; align-items:center; gap:8px; justify-content:center; }
     .theme-icon-sun{display:none}
     .theme-toggle-label{white-space:nowrap}
@@ -83,7 +112,10 @@
     .tournament-results { border:1px solid var(--bc-border); border-radius:14px; padding:12px; background: rgba(116,164,255,.16); display:grid; gap:8px; }
     .tournament-results h3 { margin:0; }
     .tournament-results ul { margin:0; padding-left:18px; display:grid; gap:4px; }
-    @media (max-width:840px){ .bc-grid,.bc-hero-grid{grid-template-columns:1fr;} }
+    @media (max-width:840px){
+      .bc-grid,.bc-hero-grid{grid-template-columns:1fr;}
+      .bc-answer-choice { width: 100%; min-width: 0; }
+    }
   </style>
 </head>
 <body class="page" data-page="signal-or-fake-solo">
@@ -101,7 +133,7 @@
           <a class="btn ghost" href="signal-or-fake.html">← К режимам игры</a>
           <div class="bc-shell">
             <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;">
-              <h1 style="margin:0;">Signal or Fake: распознай legit / fake</h1>
+              <h1 style="margin:0;">КиберПроверка: распознай legit / fake</h1>
               <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
                 <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
                 <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
@@ -120,14 +152,16 @@
                 <span class="bc-stat-pill">Таймер: <strong id="stageTimer">0.0</strong>с</span>
                 <span class="bc-stat-pill">Ошибки: <strong id="errorsCount">0</strong></span><span class="bc-stat-pill">Серия: <strong id="streakCount">0</strong></span><span class="bc-stat-pill">Очки: <strong id="scoreCount">0</strong></span>
               </div>
-              <p class="bc-task"><span class="bc-task-label">Проверяем объект</span><span class="bc-task-text" id="promptText">Нажмите «Начать игру»</span></p><p class="bb-sub" id="promptMeta" style="margin:0;color:var(--bc-muted)">Тип: — • Сложность: —</p>
+              <p class="bc-task"><span class="bc-task-label">Проверяем объект</span><span class="bc-task-text" id="promptText">Нажмите «Начать игру»</span></p>
               <div class="bc-field">
-                <label class="bc-answer-label" for="answerInput">Ваш выбор</label>
-                <select id="answerInput" class="bc-input bc-answer-input"><option value="">Выберите вариант</option><option value="legit">✅ Legit</option><option value="fake">❌ Fake</option></select>
+                <span class="bc-answer-label">Ваш выбор</span>
+                <div id="answerButtons" class="bc-answer-buttons bc-hidden">
+                  <button id="answerSafeBtn" class="bc-btn bc-answer-choice" type="button">Безопасно</button>
+                  <button id="answerSuspiciousBtn" class="bc-btn bc-answer-choice" type="button">Подозрительно</button>
+                </div>
               </div>
               <div style="display:flex;gap:10px;flex-wrap:wrap;">
                 <button id="startGameBtn" class="bc-btn bc-start-btn" type="button">Начать игру</button>
-                <button id="submitAnswerBtn" class="bc-btn bc-hidden" type="button">Ответить</button>
               </div>
               <p id="compFeedback" class="bc-status" aria-live="polite"></p>
               <div id="finalResult" class="bc-hidden">
@@ -138,7 +172,6 @@
                 <p>Итог: <strong id="resultScore"></strong></p>
               </div>
               <div id="creatorResultsPanel" class="tournament-results bc-hidden">
-                <h3>Результаты участников турнира</h3>
                 <ul id="creatorResultsList"></ul>
               </div>
             </section>
@@ -217,32 +250,50 @@
       }
 
       const query = new URL(window.location.href).searchParams;
+      let tournamentRuntime = null;
+      try {
+        tournamentRuntime = JSON.parse(sessionStorage.getItem('sof_tournament_runtime') || 'null');
+      } catch (_) {
+        tournamentRuntime = null;
+      }
       const tournamentMode = query.get('tournament') === '1';
-      const tournamentRoomCode = String(query.get('room') || '').trim().toUpperCase();
+      const tournamentRoomCode = String(query.get('room') || tournamentRuntime?.roomCode || '').trim().toUpperCase();
       const nickname = profile?.nickname || profile?.username || session.user.email || 'Игрок';
+      const tournamentSettings = (tournamentMode && tournamentRuntime?.settings && typeof tournamentRuntime.settings === 'object')
+        ? tournamentRuntime.settings
+        : null;
 
       document.getElementById('usernameLabel').textContent = nickname;
       document.getElementById('ageGroupLabel').textContent = ageGroup || '—';
 
-      const rounds = tournamentMode ? 10 : ROUNDS_DEFAULT;
-      const questions = window.DigitalBattleCore.buildQuestionSet(rounds);
+      const rounds = tournamentMode
+        ? Math.max(5, Math.min(40, Number.parseInt(tournamentSettings?.roundsCount, 10) || 10))
+        : ROUNDS_DEFAULT;
+      const allowedTypes = (tournamentMode && Array.isArray(tournamentSettings?.allowedTypes) && tournamentSettings.allowedTypes.length)
+        ? tournamentSettings.allowedTypes
+        : window.DigitalBattleCore.QUESTION_TYPES;
+      const questions = window.DigitalBattleCore.buildQuestionSet(rounds, allowedTypes);
+      const tournamentTimeLimitSec = tournamentMode ? Math.max(20, Number.parseInt(tournamentSettings?.timeLimit, 10) || 300) : null;
+      const tournamentErrorsLimit = tournamentMode ? Math.max(1, Number.parseInt(tournamentSettings?.errorsElimination, 10) || 4) : null;
       const state = {
         startedAt: 0,
         questionStartedAt: 0,
         index: 0,
+        selectedAnswer: '',
         totalScore: 0,
         streak: 0,
         bestStreak: 0,
         errors: 0,
         answers: [],
         finished: false,
+        resolvingAnswer: false,
         timerId: 0,
         channel: null
       };
 
       async function initTournamentChannel() {
         if (!tournamentMode || !tournamentRoomCode) return;
-        state.channel = session.sb.channel(`bb_tournament_${tournamentRoomCode}`);
+        state.channel = session.sb.channel(`sof_tournament_${tournamentRoomCode}`);
         await new Promise((resolve) => {
           state.channel.subscribe((status) => {
             if (status === 'SUBSCRIBED' || status === 'TIMED_OUT' || status === 'CHANNEL_ERROR') resolve();
@@ -257,8 +308,9 @@
         if (!current) return;
         document.getElementById('stageLabel').textContent = `${state.index + 1}/${questions.length}`;
         document.getElementById('promptText').textContent = current.prompt;
-        document.getElementById('promptMeta').textContent = `Тип: ${current.type} • Сложность: ${current.difficulty}/3`;
-        document.getElementById('answerInput').value = '';
+        state.selectedAnswer = '';
+        document.getElementById('answerSafeBtn').classList.remove('is-active');
+        document.getElementById('answerSuspiciousBtn').classList.remove('is-active');
         state.questionStartedAt = performance.now();
       }
 
@@ -267,6 +319,10 @@
         state.timerId = setInterval(() => {
           const sec = (performance.now() - state.startedAt) / 1000;
           document.getElementById('stageTimer').textContent = sec.toFixed(1);
+          if (tournamentMode && tournamentTimeLimitSec && sec >= tournamentTimeLimitSec && !state.finished) {
+            setFeedback(false, `Время турнира вышло (${tournamentTimeLimitSec} сек). Подводим итоги…`);
+            void finishGame();
+          }
         }, 100);
       }
 
@@ -355,20 +411,21 @@
         document.getElementById('scoreCount').textContent = '0';
         document.getElementById('finalResult').classList.add('bc-hidden');
         document.getElementById('startGameBtn').classList.add('bc-hidden');
-        document.getElementById('submitAnswerBtn').classList.remove('bc-hidden');
+        document.getElementById('answerButtons').classList.remove('bc-hidden');
         renderQuestion();
         startTimer();
         setFeedback(true, 'Выбери, legit это или fake.');
       });
 
-      document.getElementById('submitAnswerBtn').addEventListener('click', async () => {
-        if (state.finished) return;
+      async function selectAnswer(value) {
+        if (state.finished || state.resolvingAnswer) return;
         const current = questions[state.index];
-        const selected = document.getElementById('answerInput').value;
-        if (!selected) {
-          setFeedback(false, 'Выберите вариант ответа.');
-          return;
-        }
+        if (!current) return;
+        state.resolvingAnswer = true;
+        state.selectedAnswer = value;
+        document.getElementById('answerSafeBtn').classList.toggle('is-active', value === 'legit');
+        document.getElementById('answerSuspiciousBtn').classList.toggle('is-active', value === 'fake');
+        const selected = state.selectedAnswer;
 
         const responseMs = Math.max(120, Math.round(performance.now() - state.questionStartedAt));
         const isCorrect = selected === current.answer;
@@ -397,13 +454,25 @@
         const explain = `${isCorrect ? 'Верно' : 'Неверно'}: ${current.explanation}`;
         setFeedback(isCorrect, `${explain} (${scoreParts.delta > 0 ? '+' : ''}${scoreParts.delta})`);
 
+        if (tournamentMode && tournamentErrorsLimit && state.errors >= tournamentErrorsLimit) {
+          setFeedback(false, `Достигнут лимит ошибок (${tournamentErrorsLimit}). Матч завершён.`);
+          await finishGame();
+          state.resolvingAnswer = false;
+          return;
+        }
+
         state.index += 1;
         if (state.index >= questions.length) {
           await finishGame();
+          state.resolvingAnswer = false;
           return;
         }
         renderQuestion();
-      });
+        state.resolvingAnswer = false;
+      }
+
+      document.getElementById('answerSafeBtn').addEventListener('click', () => { void selectAnswer('legit'); });
+      document.getElementById('answerSuspiciousBtn').addEventListener('click', () => { void selectAnswer('fake'); });
     })();
   </script>
   <script src="js/theme-network.js"></script>
