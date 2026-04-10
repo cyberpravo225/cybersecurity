@@ -157,6 +157,16 @@ const uiLabels = {
   sms: 'SMS', email: 'Email', chat: 'Мессенджер', call: 'Звонок', app: 'Приложение', social: 'Соцсеть', system: 'Система',
 }
 
+const SCENE_VISUALS = {
+  sms: { emoji: '📩', title: 'Подозрительное сообщение', chips: ['Short URL', 'Срочно', 'Подтвердить'] },
+  email: { emoji: '📧', title: 'Почтовая тревога', chips: ['Fake domain', 'Кнопка-выманка', 'Lock notice'] },
+  chat: { emoji: '💬', title: 'Давление в чате', chips: ['Друг?', 'Срочно', 'Деньги'] },
+  call: { emoji: '📞', title: 'Манипуляция голосом', chips: ['Поддержка?', 'Код из SMS', 'Секрет'] },
+  app: { emoji: '📱', title: 'Риск в приложении', chips: ['APK', 'Подделка', 'Лишние права'] },
+  social: { emoji: '🌐', title: 'Публичность и следы', chips: ['Геометка', 'Фото билета', 'Аудитория'] },
+  system: { emoji: '🛡️', title: 'Системная защита', chips: ['Alert', '2FA', 'Сессии'] },
+}
+
 const state = {
   screen: 'intro',
   sceneIndex: 0,
@@ -332,10 +342,23 @@ function startScreen() {
 
 function sceneScreen() {
   const scene = sceneByIndex(state.sceneIndex)
+  const visual = SCENE_VISUALS[scene.ui] || SCENE_VISUALS.system
   el.screen.innerHTML = `
     <div class="scene-head"><span class="badge">${scene.chapter} · ${uiLabels[scene.ui]}</span></div>
     <h2>${scene.title}</h2>
     <p>${scene.text}</p>
+    <figure class="scene-visual scene-visual--${scene.ui}" aria-label="Тематическая визуализация сцены">
+      <div class="visual-noise" aria-hidden="true"></div>
+      <div class="visual-core" aria-hidden="true">
+        <span class="visual-emoji">${visual.emoji}</span>
+      </div>
+      <figcaption>
+        <b>${visual.title}</b>
+        <div class="visual-chips">
+          ${visual.chips.map((chip) => `<span>${chip}</span>`).join('')}
+        </div>
+      </figcaption>
+    </figure>
     ${state.help ? `<p class="hint"><b>Подсказка:</b> ${scene.hint}</p>` : ''}
     <div class="choices">
       ${scene.choices.map((c, i) => `<button class="choice" data-i="${i}">${c[0]}</button>`).join('')}
