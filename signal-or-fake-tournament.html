@@ -238,8 +238,8 @@
                   <h3>Создание турнирной комнаты</h3>
                   <div class="bt-grid">
                     <label class="bc-field">
-                      <span>Количество игроков (2–40)</span>
-                      <input id="playersCount" class="bc-input" type="number" min="2" max="40" value="8" />
+                      <span>Лимит участников в комнате (2–40)</span>
+                      <input id="participantsLimit" class="bc-input" type="number" min="2" max="40" value="8" />
                     </label>
                     <label class="bc-field">
                       <span>Количество раундов (5–40)</span>
@@ -260,6 +260,14 @@
                         <label class="bc-field"><span><input id="typeTelegram" type="checkbox" checked /> Telegram</span></label>
                         <label class="bc-field"><span><input id="typeEmail" type="checkbox" checked /> Email</span></label>
                         <label class="bc-field"><span><input id="typeUrl" type="checkbox" checked /> URL</span></label>
+                      </div>
+                    </fieldset>
+                    <fieldset class="bc-field" style="border:1px solid var(--bc-border); border-radius:12px; padding:10px 12px;">
+                      <legend>Сложность раундов</legend>
+                      <div class="bt-subgrid">
+                        <label class="bc-field"><span><input id="difficultyEasy" type="checkbox" checked /> Базовая</span></label>
+                        <label class="bc-field"><span><input id="difficultyMedium" type="checkbox" checked /> Продвинутая</span></label>
+                        <label class="bc-field"><span><input id="difficultyHard" type="checkbox" checked /> Экспертная</span></label>
                       </div>
                     </fieldset>
                   </div>
@@ -643,7 +651,7 @@
       });
 
       document.getElementById('confirmCreateRoomBtn').addEventListener('click', () => {
-        const playersCount = readPositiveInt('playersCount', 2, 40);
+        const participantsLimit = readPositiveInt('participantsLimit', 2, 40);
         const roundsCount = readPositiveInt('roundsCount', 5, 40);
         const timeLimit = readPositiveInt('timeLimit', 20, 3600);
         const errorsElimination = readPositiveInt('errorsElimination', 1, 20);
@@ -653,14 +661,23 @@
           document.getElementById('typeEmail')?.checked ? 'email' : null,
           document.getElementById('typeUrl')?.checked ? 'url' : null
         ].filter(Boolean);
+        const allowedDifficulties = [
+          document.getElementById('difficultyEasy')?.checked ? 1 : null,
+          document.getElementById('difficultyMedium')?.checked ? 2 : null,
+          document.getElementById('difficultyHard')?.checked ? 3 : null
+        ].filter((value) => value !== null);
 
-        if ([playersCount, roundsCount, timeLimit, errorsElimination].some((v) => v === null)) {
+        if ([participantsLimit, roundsCount, timeLimit, errorsElimination].some((v) => v === null)) {
           setTournamentFeedback(false, 'Проверьте ограничения параметров. Одно или несколько полей заполнены неверно.');
           return;
         }
 
         if (!allowedTypes.length) {
           setTournamentFeedback(false, 'Выберите хотя бы один тип задания для раундов.');
+          return;
+        }
+        if (!allowedDifficulties.length) {
+          setTournamentFeedback(false, 'Выберите хотя бы один уровень сложности для раундов.');
           return;
         }
 
@@ -673,11 +690,12 @@
         createdRoomLinkEl.value = roomLink;
 
         tournamentSettings = {
-          playersCount,
+          participantsLimit,
           roundsCount,
           timeLimit,
           errorsElimination,
-          allowedTypes
+          allowedTypes,
+          allowedDifficulties
         };
 
         const room = {
@@ -692,7 +710,7 @@
         createdRoomPanel.classList.remove('bc-hidden');
 
         openRoomChannel(roomCode, 'creator')
-          .then(() => setTournamentFeedback(true, `Комната создана: ${playersCount} игроков, ${roundsCount} раундов, время ${timeLimit} сек (${(timeLimit / 60).toFixed(1)} мин). Ожидайте подключения участников.`))
+          .then(() => setTournamentFeedback(true, `Комната создана: лимит ${participantsLimit} участников, ${roundsCount} раундов, время ${timeLimit} сек (${(timeLimit / 60).toFixed(1)} мин). Ожидайте подключения участников.`))
           .catch(() => setTournamentFeedback(false, 'Комната создана, но подключение к каналу не удалось. Проверьте интернет и попробуйте создать заново.'));
       });
 
