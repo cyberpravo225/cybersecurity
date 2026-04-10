@@ -40,8 +40,28 @@
     return [...list].sort(() => Math.random() - 0.5);
   }
 
-  function buildQuestionSet(rounds, allowedTypes = QUESTION_TYPES) {
-    const filtered = QUESTION_BANK.filter((q) => allowedTypes.includes(q.type));
+  function resolveQuestionFilters(config) {
+    if (Array.isArray(config)) {
+      return {
+        allowedTypes: config.length ? config : QUESTION_TYPES,
+        allowedDifficulties: [1, 2, 3]
+      };
+    }
+    const cfg = (config && typeof config === 'object') ? config : {};
+    const allowedTypes = Array.isArray(cfg.allowedTypes) && cfg.allowedTypes.length ? cfg.allowedTypes : QUESTION_TYPES;
+    const allowedDifficulties = Array.isArray(cfg.allowedDifficulties) && cfg.allowedDifficulties.length
+      ? cfg.allowedDifficulties.map((value) => Number.parseInt(value, 10)).filter((value) => [1, 2, 3].includes(value))
+      : [1, 2, 3];
+
+    return {
+      allowedTypes,
+      allowedDifficulties: allowedDifficulties.length ? allowedDifficulties : [1, 2, 3]
+    };
+  }
+
+  function buildQuestionSet(rounds, config = QUESTION_TYPES) {
+    const { allowedTypes, allowedDifficulties } = resolveQuestionFilters(config);
+    const filtered = QUESTION_BANK.filter((q) => allowedTypes.includes(q.type) && allowedDifficulties.includes(q.difficulty));
     const pool = shuffle(filtered);
     if (pool.length >= rounds) return pool.slice(0, rounds).map((item, index) => ({ ...item, id: `${item.type}-${index}-${Date.now()}` }));
 
