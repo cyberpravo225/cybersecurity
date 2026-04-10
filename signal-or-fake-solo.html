@@ -172,6 +172,7 @@
                 <p>Итог: <strong id="resultScore"></strong></p>
               </div>
               <div id="creatorResultsPanel" class="tournament-results bc-hidden">
+                <h3>Результаты участников турнира</h3>
                 <ul id="creatorResultsList"></ul>
               </div>
             </section>
@@ -278,6 +279,9 @@
       const questions = window.DigitalBattleCore.buildQuestionSet(rounds, { allowedTypes, allowedDifficulties });
       const tournamentTimeLimitSec = tournamentMode ? Math.max(20, Number.parseInt(tournamentSettings?.timeLimit, 10) || 300) : null;
       const tournamentErrorsLimit = tournamentMode ? Math.max(1, Number.parseInt(tournamentSettings?.errorsElimination, 10) || 4) : null;
+      const tournamentResultsPanel = document.getElementById('creatorResultsPanel');
+      const tournamentResultsList = document.getElementById('creatorResultsList');
+      const tournamentResultsMap = new Map();
       const state = {
         startedAt: 0,
         questionStartedAt: 0,
@@ -297,6 +301,14 @@
       async function initTournamentChannel() {
         if (!tournamentMode || !tournamentRoomCode) return;
         state.channel = session.sb.channel(`sof_tournament_${tournamentRoomCode}`);
+        state.channel.on('broadcast', { event: 'player_finished' }, ({ payload }) => {
+          const playerName = String(payload?.nickname || 'Игрок').trim() || 'Игрок';
+          const finalScore = Number(payload?.finalScore || 0);
+          const errors = Number(payload?.errors || 0);
+          const finishedAt = Number(payload?.finishedAt || Date.now());
+          tournamentResultsMap.set(playerName, { playerName, finalScore, errors, finishedAt });
+          renderTournamentResults();
+        });
         await new Promise((resolve) => {
           state.channel.subscribe((status) => {
             if (status === 'SUBSCRIBED' || status === 'TIMED_OUT' || status === 'CHANNEL_ERROR') resolve();
@@ -327,6 +339,24 @@
             void finishGame();
           }
         }, 100);
+      }
+
+      function renderTournamentResults() {
+        if (!tournamentMode) return;
+        const entries = Array.from(tournamentResultsMap.values()).sort((a, b) => {
+          if (b.finalScore !== a.finalScore) return b.finalScore - a.finalScore;
+          if (a.errors !== b.errors) return a.errors - b.errors;
+          return a.finishedAt - b.finishedAt;
+        });
+
+        tournamentResultsList.innerHTML = '';
+        entries.forEach((entry, index) => {
+          const li = document.createElement('li');
+          li.textContent = `${index + 1}. ${entry.playerName} — очки: ${entry.finalScore}, ошибок: ${entry.errors}`;
+          tournamentResultsList.appendChild(li);
+        });
+
+        tournamentResultsPanel.classList.toggle('bc-hidden', entries.length === 0);
       }
 
       async function saveRun(summary) {
@@ -390,7 +420,9 @@
         document.getElementById('finalResult').classList.remove('bc-hidden');
 
         if (tournamentMode && state.channel) {
-          await state.channel.send({ type: 'broadcast', event: 'player_finished', payload: { nickname, finalScore: summary.score, errors: summary.wrongCount } });
+          tournamentResultsMap.set(nickname, { playerName: nickname, finalScore: summary.score, errors: summary.wrongCount, finishedAt: Date.now() });
+          renderTournamentResults();
+          await state.channel.send({ type: 'broadcast', event: 'player_finished', payload: { nickname, finalScore: summary.score, errors: summary.wrongCount, finishedAt: Date.now() } });
         }
 
         try {
