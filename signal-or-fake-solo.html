@@ -92,14 +92,12 @@
     }
     .bc-start-btn { font-size: clamp(20px, 2.4vw, 30px); font-weight: 900; padding: 16px 28px; border-radius: 16px; background: linear-gradient(120deg, #74a4ff, #4de2ff); color:#03142c; border: none; box-shadow: 0 14px 34px rgba(77, 226, 255, .35); }
     .bc-table-btn.is-active { background: linear-gradient(120deg, #74a4ff, #4de2ff); color:#03142c; border-color:transparent; }
-    #submitAnswerBtn,
     #showBinaryTableBtn {
       background: linear-gradient(120deg, rgba(116,164,255,.45), rgba(77,226,255,.35));
       border-color: rgba(126, 173, 255, .55);
       box-shadow: 0 10px 24px rgba(77, 226, 255, .2);
       font-weight: 800;
     }
-    #submitAnswerBtn:hover,
     #showBinaryTableBtn:hover {
       transform: translateY(-1px);
       filter: brightness(1.06);
@@ -174,7 +172,6 @@
               </div>
               <div style="display:flex;gap:10px;flex-wrap:wrap;">
                 <button id="startGameBtn" class="bc-btn bc-start-btn" type="button">Начать игру</button>
-                <button id="submitAnswerBtn" class="bc-btn bc-hidden" type="button">Ответить</button>
               </div>
               <p id="compFeedback" class="bc-status" aria-live="polite"></p>
               <div id="finalResult" class="bc-hidden">
@@ -283,6 +280,7 @@
         errors: 0,
         answers: [],
         finished: false,
+        resolvingAnswer: false,
         timerId: 0,
         channel: null
       };
@@ -404,29 +402,20 @@
         document.getElementById('finalResult').classList.add('bc-hidden');
         document.getElementById('startGameBtn').classList.add('bc-hidden');
         document.getElementById('answerButtons').classList.remove('bc-hidden');
-        document.getElementById('submitAnswerBtn').classList.remove('bc-hidden');
         renderQuestion();
         startTimer();
         setFeedback(true, 'Выбери, legit это или fake.');
       });
 
-      function selectAnswer(value) {
+      async function selectAnswer(value) {
+        if (state.finished || state.resolvingAnswer) return;
+        const current = questions[state.index];
+        if (!current) return;
+        state.resolvingAnswer = true;
         state.selectedAnswer = value;
         document.getElementById('answerSafeBtn').classList.toggle('is-active', value === 'legit');
         document.getElementById('answerSuspiciousBtn').classList.toggle('is-active', value === 'fake');
-      }
-
-      document.getElementById('answerSafeBtn').addEventListener('click', () => selectAnswer('legit'));
-      document.getElementById('answerSuspiciousBtn').addEventListener('click', () => selectAnswer('fake'));
-
-      document.getElementById('submitAnswerBtn').addEventListener('click', async () => {
-        if (state.finished) return;
-        const current = questions[state.index];
         const selected = state.selectedAnswer;
-        if (!selected) {
-          setFeedback(false, 'Выберите «Безопасно» или «Подозрительно».');
-          return;
-        }
 
         const responseMs = Math.max(120, Math.round(performance.now() - state.questionStartedAt));
         const isCorrect = selected === current.answer;
@@ -458,10 +447,15 @@
         state.index += 1;
         if (state.index >= questions.length) {
           await finishGame();
+          state.resolvingAnswer = false;
           return;
         }
         renderQuestion();
-      });
+        state.resolvingAnswer = false;
+      }
+
+      document.getElementById('answerSafeBtn').addEventListener('click', () => { void selectAnswer('legit'); });
+      document.getElementById('answerSuspiciousBtn').addEventListener('click', () => { void selectAnswer('fake'); });
     })();
   </script>
   <script src="js/theme-network.js"></script>
