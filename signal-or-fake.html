@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Signal or Fake — legit/fake режимы и материалы</title>
+  <title>КиберПроверка — legit/fake режимы и материалы</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
     :root {
@@ -128,14 +128,14 @@
 
           <div class="card" style="display:grid; gap:12px;">
             <div class="bb-header">
-              <span class="game-feature-cyberly-ribbon" style="position:static; transform:none; width:max-content;">Signal or Fake</span>
+              <span class="game-feature-cyberly-ribbon" style="position:static; transform:none; width:max-content;">КиберПроверка</span>
               <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
                 <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
                 <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
                 <span class="theme-toggle-label">Тёмная тема</span>
               </button>
             </div>
-            <h1 style="margin:0;">Выбери режим игры Signal or Fake</h1>
+            <h1 style="margin:0;">Выбери режим игры КиберПроверка</h1>
             <p class="bb-sub">Игра про распознавание реальных и фейковых цифровых сущностей: домены, Telegram, email и ссылки.</p>
           </div>
 
@@ -196,7 +196,7 @@
       const status = document.createElement('p');
       status.className = 'bb-sub';
       try {
-        await window.CyberSupabaseAuth.requireAuth({ message: 'Для доступа к Binary Battle нужно войти в аккаунт.' });
+        await window.CyberSupabaseAuth.requireAuth({ message: 'Для доступа к «КиберПроверке» нужно войти в аккаунт.' });
       } catch (_) {
         status.textContent = 'Перенаправляем на страницу авторизации…';
         document.querySelector('.container.bb-wrap')?.prepend(status);
