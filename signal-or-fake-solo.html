@@ -272,7 +272,10 @@
       const allowedTypes = (tournamentMode && Array.isArray(tournamentSettings?.allowedTypes) && tournamentSettings.allowedTypes.length)
         ? tournamentSettings.allowedTypes
         : window.DigitalBattleCore.QUESTION_TYPES;
-      const questions = window.DigitalBattleCore.buildQuestionSet(rounds, allowedTypes);
+      const allowedDifficulties = (tournamentMode && Array.isArray(tournamentSettings?.allowedDifficulties) && tournamentSettings.allowedDifficulties.length)
+        ? tournamentSettings.allowedDifficulties
+        : [1, 2, 3];
+      const questions = window.DigitalBattleCore.buildQuestionSet(rounds, { allowedTypes, allowedDifficulties });
       const tournamentTimeLimitSec = tournamentMode ? Math.max(20, Number.parseInt(tournamentSettings?.timeLimit, 10) || 300) : null;
       const tournamentErrorsLimit = tournamentMode ? Math.max(1, Number.parseInt(tournamentSettings?.errorsElimination, 10) || 4) : null;
       const state = {
