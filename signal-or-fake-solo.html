@@ -102,16 +102,6 @@
       transform: translateY(-1px);
       filter: brightness(1.06);
     }
-    .binary-modal { position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; z-index:50; }
-    .binary-modal.active { display:flex; }
-    .binary-modal__content { width:min(760px,94vw); max-height:84vh; overflow:auto; background:linear-gradient(180deg, var(--bc-bg), color-mix(in oklab, var(--bc-bg) 80%, #4de2ff 20%)); color:var(--bc-text); border-radius:18px; padding:18px; border:1px solid var(--bc-border); box-shadow:0 20px 40px rgba(0,0,0,.28); scrollbar-width: thin; scrollbar-color: #6ac9ff rgba(116,164,255,.2); }
-    .binary-table { width:100%; border-collapse:collapse; }
-    .binary-table th,.binary-table td { border-bottom:1px solid var(--bc-border); padding:8px; }
-    .binary-table th { text-align:left; color:var(--bc-muted); }
-    .binary-modal__content::-webkit-scrollbar { width: 10px; }
-    .binary-modal__content::-webkit-scrollbar-track { background: rgba(116,164,255,.18); border-radius: 999px; }
-    .binary-modal__content::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #74a4ff, #4de2ff); border-radius: 999px; border: 2px solid rgba(15, 28, 56, .2); }
-    .binary-modal__content::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #8ab3ff, #7decff); }
     .theme-toggle { min-width: 176px; display:inline-flex; align-items:center; gap:8px; justify-content:center; }
     .theme-icon-sun{display:none}
     .theme-toggle-label{white-space:nowrap}
@@ -182,6 +172,7 @@
                 <p>Итог: <strong id="resultScore"></strong></p>
               </div>
               <div id="creatorResultsPanel" class="tournament-results bc-hidden">
+                <h3>Результаты участников турнира</h3>
                 <ul id="creatorResultsList"></ul>
               </div>
             </section>
@@ -260,15 +251,37 @@
       }
 
       const query = new URL(window.location.href).searchParams;
+      let tournamentRuntime = null;
+      try {
+        tournamentRuntime = JSON.parse(sessionStorage.getItem('sof_tournament_runtime') || 'null');
+      } catch (_) {
+        tournamentRuntime = null;
+      }
       const tournamentMode = query.get('tournament') === '1';
-      const tournamentRoomCode = String(query.get('room') || '').trim().toUpperCase();
+      const tournamentRoomCode = String(query.get('room') || tournamentRuntime?.roomCode || '').trim().toUpperCase();
       const nickname = profile?.nickname || profile?.username || session.user.email || 'Игрок';
+      const tournamentSettings = (tournamentMode && tournamentRuntime?.settings && typeof tournamentRuntime.settings === 'object')
+        ? tournamentRuntime.settings
+        : null;
 
       document.getElementById('usernameLabel').textContent = nickname;
       document.getElementById('ageGroupLabel').textContent = ageGroup || '—';
 
-      const rounds = tournamentMode ? 10 : ROUNDS_DEFAULT;
-      const questions = window.DigitalBattleCore.buildQuestionSet(rounds);
+      const rounds = tournamentMode
+        ? Math.max(5, Math.min(40, Number.parseInt(tournamentSettings?.roundsCount, 10) || 10))
+        : ROUNDS_DEFAULT;
+      const allowedTypes = (tournamentMode && Array.isArray(tournamentSettings?.allowedTypes) && tournamentSettings.allowedTypes.length)
+        ? tournamentSettings.allowedTypes
+        : window.DigitalBattleCore.QUESTION_TYPES;
+      const allowedDifficulties = (tournamentMode && Array.isArray(tournamentSettings?.allowedDifficulties) && tournamentSettings.allowedDifficulties.length)
+        ? tournamentSettings.allowedDifficulties
+        : [1, 2, 3];
+      const questions = window.DigitalBattleCore.buildQuestionSet(rounds, { allowedTypes, allowedDifficulties });
+      const tournamentTimeLimitSec = tournamentMode ? Math.max(20, Number.parseInt(tournamentSettings?.timeLimit, 10) || 300) : null;
+      const tournamentErrorsLimit = tournamentMode ? Math.max(1, Number.parseInt(tournamentSettings?.errorsElimination, 10) || 4) : null;
+      const tournamentResultsPanel = document.getElementById('creatorResultsPanel');
+      const tournamentResultsList = document.getElementById('creatorResultsList');
+      const tournamentResultsMap = new Map();
       const state = {
         startedAt: 0,
         questionStartedAt: 0,
@@ -287,7 +300,15 @@
 
       async function initTournamentChannel() {
         if (!tournamentMode || !tournamentRoomCode) return;
-        state.channel = session.sb.channel(`bb_tournament_${tournamentRoomCode}`);
+        state.channel = session.sb.channel(`sof_tournament_${tournamentRoomCode}`);
+        state.channel.on('broadcast', { event: 'player_finished' }, ({ payload }) => {
+          const playerName = String(payload?.nickname || 'Игрок').trim() || 'Игрок';
+          const finalScore = Number(payload?.finalScore || 0);
+          const errors = Number(payload?.errors || 0);
+          const finishedAt = Number(payload?.finishedAt || Date.now());
+          tournamentResultsMap.set(playerName, { playerName, finalScore, errors, finishedAt });
+          renderTournamentResults();
+        });
         await new Promise((resolve) => {
           state.channel.subscribe((status) => {
             if (status === 'SUBSCRIBED' || status === 'TIMED_OUT' || status === 'CHANNEL_ERROR') resolve();
@@ -313,7 +334,29 @@
         state.timerId = setInterval(() => {
           const sec = (performance.now() - state.startedAt) / 1000;
           document.getElementById('stageTimer').textContent = sec.toFixed(1);
+          if (tournamentMode && tournamentTimeLimitSec && sec >= tournamentTimeLimitSec && !state.finished) {
+            setFeedback(false, `Время турнира вышло (${tournamentTimeLimitSec} сек). Подводим итоги…`);
+            void finishGame();
+          }
         }, 100);
+      }
+
+      function renderTournamentResults() {
+        if (!tournamentMode) return;
+        const entries = Array.from(tournamentResultsMap.values()).sort((a, b) => {
+          if (b.finalScore !== a.finalScore) return b.finalScore - a.finalScore;
+          if (a.errors !== b.errors) return a.errors - b.errors;
+          return a.finishedAt - b.finishedAt;
+        });
+
+        tournamentResultsList.innerHTML = '';
+        entries.forEach((entry, index) => {
+          const li = document.createElement('li');
+          li.textContent = `${index + 1}. ${entry.playerName} — очки: ${entry.finalScore}, ошибок: ${entry.errors}`;
+          tournamentResultsList.appendChild(li);
+        });
+
+        tournamentResultsPanel.classList.toggle('bc-hidden', entries.length === 0);
       }
 
       async function saveRun(summary) {
@@ -377,7 +420,9 @@
         document.getElementById('finalResult').classList.remove('bc-hidden');
 
         if (tournamentMode && state.channel) {
-          await state.channel.send({ type: 'broadcast', event: 'player_finished', payload: { nickname, finalScore: summary.score, errors: summary.wrongCount } });
+          tournamentResultsMap.set(nickname, { playerName: nickname, finalScore: summary.score, errors: summary.wrongCount, finishedAt: Date.now() });
+          renderTournamentResults();
+          await state.channel.send({ type: 'broadcast', event: 'player_finished', payload: { nickname, finalScore: summary.score, errors: summary.wrongCount, finishedAt: Date.now() } });
         }
 
         try {
@@ -443,6 +488,13 @@
 
         const explain = `${isCorrect ? 'Верно' : 'Неверно'}: ${current.explanation}`;
         setFeedback(isCorrect, `${explain} (${scoreParts.delta > 0 ? '+' : ''}${scoreParts.delta})`);
+
+        if (tournamentMode && tournamentErrorsLimit && state.errors >= tournamentErrorsLimit) {
+          setFeedback(false, `Достигнут лимит ошибок (${tournamentErrorsLimit}). Матч завершён.`);
+          await finishGame();
+          state.resolvingAnswer = false;
+          return;
+        }
 
         state.index += 1;
         if (state.index >= questions.length) {

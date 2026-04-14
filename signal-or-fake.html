@@ -196,7 +196,7 @@
       const status = document.createElement('p');
       status.className = 'bb-sub';
       try {
-        await window.CyberSupabaseAuth.requireAuth({ message: 'Для доступа к Binary Battle нужно войти в аккаунт.' });
+        await window.CyberSupabaseAuth.requireAuth({ message: 'Для доступа к «КиберПроверке» нужно войти в аккаунт.' });
       } catch (_) {
         status.textContent = 'Перенаправляем на страницу авторизации…';
         document.querySelector('.container.bb-wrap')?.prepend(status);

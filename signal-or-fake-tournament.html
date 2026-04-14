@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Signal or Fake — турнирный режим</title>
+  <title>КиберПроверка — турнирный режим</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
     :root {
@@ -202,7 +202,7 @@
 
           <div id="tournamentFlow" class="bc-shell">
             <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;">
-              <h1 style="margin:0;">Signal or Fake — Турнир</h1>
+              <h1 style="margin:0;">КиберПроверка — Турнир</h1>
               <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">
                 <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
                 <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
@@ -238,49 +238,36 @@
                   <h3>Создание турнирной комнаты</h3>
                   <div class="bt-grid">
                     <label class="bc-field">
-                      <span>Количество игроков (2–40)</span>
-                      <input id="playersCount" class="bc-input" type="number" min="2" max="40" value="8" />
+                      <span>Лимит участников в комнате (2–40)</span>
+                      <input id="participantsLimit" class="bc-input" type="number" min="2" max="40" value="8" />
                     </label>
                     <label class="bc-field">
-                      <span>Количество слов (от 1)</span>
-                      <input id="wordsCount" class="bc-input" type="number" min="1" value="10" />
+                      <span>Количество раундов (5–40)</span>
+                      <input id="roundsCount" class="bc-input" type="number" min="5" max="40" value="12" />
                     </label>
-                    <fieldset class="bc-field" style="border:1px solid var(--bc-border); border-radius:12px; padding:10px 12px;">
-                      <legend>Слова по этапам</legend>
-                      <div class="bt-subgrid">
-                        <label class="bc-field">
-                          <span>Текст → код</span>
-                          <input id="stageTextToCodeCount" class="bc-input" type="number" min="0" value="5" />
-                        </label>
-                        <label class="bc-field">
-                          <span>Код → текст</span>
-                          <input id="stageCodeToTextCount" class="bc-input" type="number" min="0" value="5" />
-                        </label>
-                      </div>
-                    </fieldset>
                     <label class="bc-field">
                       <span>Время (секунды, 20–3600)</span>
                       <input id="timeLimit" class="bc-input" type="number" min="20" max="3600" value="300" />
                     </label>
                     <label class="bc-field">
-                      <span>Лимит отгаданных слов (от 2)</span>
-                      <input id="guessedWordsLimit" class="bc-input" type="number" min="2" value="12" />
-                    </label>
-                    <label class="bc-field">
                       <span>Выбывание по ошибкам (от 1)</span>
-                      <input id="errorsElimination" class="bc-input" type="number" min="1" value="3" />
+                      <input id="errorsElimination" class="bc-input" type="number" min="1" max="20" value="4" />
                     </label>
                     <fieldset class="bc-field" style="border:1px solid var(--bc-border); border-radius:12px; padding:10px 12px;">
-                      <legend>Диапазон длины слова (3–15)</legend>
+                      <legend>Типы заданий</legend>
                       <div class="bt-subgrid">
-                        <label class="bc-field">
-                          <span>От</span>
-                          <input id="wordLengthMin" class="bc-input" type="number" min="3" max="15" value="3" />
-                        </label>
-                        <label class="bc-field">
-                          <span>До</span>
-                          <input id="wordLengthMax" class="bc-input" type="number" min="3" max="15" value="8" />
-                        </label>
+                        <label class="bc-field"><span><input id="typeDomain" type="checkbox" checked /> Домены</span></label>
+                        <label class="bc-field"><span><input id="typeTelegram" type="checkbox" checked /> Telegram</span></label>
+                        <label class="bc-field"><span><input id="typeEmail" type="checkbox" checked /> Email</span></label>
+                        <label class="bc-field"><span><input id="typeUrl" type="checkbox" checked /> URL</span></label>
+                      </div>
+                    </fieldset>
+                    <fieldset class="bc-field" style="border:1px solid var(--bc-border); border-radius:12px; padding:10px 12px;">
+                      <legend>Сложность раундов</legend>
+                      <div class="bt-subgrid">
+                        <label class="bc-field"><span><input id="difficultyEasy" type="checkbox" checked /> Базовая</span></label>
+                        <label class="bc-field"><span><input id="difficultyMedium" type="checkbox" checked /> Продвинутая</span></label>
+                        <label class="bc-field"><span><input id="difficultyHard" type="checkbox" checked /> Экспертная</span></label>
                       </div>
                     </fieldset>
                   </div>
@@ -426,7 +413,7 @@
         authNicknameLabel.classList.add('ok');
       } else {
         guestNicknameWrap.classList.remove('bc-hidden');
-        const savedGuestNickname = sessionStorage.getItem('bb_tournament_guest_nick') || '';
+        const savedGuestNickname = sessionStorage.getItem('sof_tournament_guest_nick') || '';
         if (savedGuestNickname) sessionNicknameInput.value = savedGuestNickname;
       }
 
@@ -472,7 +459,7 @@
         sessionNicknameStatus.classList.toggle('bad', !check.ok);
         if (!check.ok) return false;
         sessionNickname = candidate;
-        sessionStorage.setItem('bb_tournament_guest_nick', candidate);
+        sessionStorage.setItem('sof_tournament_guest_nick', candidate);
         return true;
       }
 
@@ -558,7 +545,7 @@
           startedAt: Date.now(),
           settings: settings || null
         };
-        sessionStorage.setItem('bb_tournament_runtime', JSON.stringify(payload));
+        sessionStorage.setItem('sof_tournament_runtime', JSON.stringify(payload));
 
         const gameUrl = new URL('signal-or-fake-solo.html', window.location.href);
         gameUrl.searchParams.set('tournament', '1');
@@ -577,7 +564,7 @@
           currentRoomChannel = null;
         }
 
-        const channel = sb.channel(`bb_tournament_${normalizedCode}`, { config: { presence: { key: `${normalizedCode}:${sessionNickname}` } } });
+        const channel = sb.channel(`sof_tournament_${normalizedCode}`, { config: { presence: { key: `${normalizedCode}:${sessionNickname}` } } });
 
         channel.on('presence', { event: 'sync' }, () => {
           const state = channel.presenceState();
@@ -664,28 +651,33 @@
       });
 
       document.getElementById('confirmCreateRoomBtn').addEventListener('click', () => {
-        const playersCount = readPositiveInt('playersCount', 2, 40);
-        const wordsCount = readPositiveInt('wordsCount', 1);
-        const stageTextToCodeCount = readPositiveInt('stageTextToCodeCount', 0);
-        const stageCodeToTextCount = readPositiveInt('stageCodeToTextCount', 0);
+        const participantsLimit = readPositiveInt('participantsLimit', 2, 40);
+        const roundsCount = readPositiveInt('roundsCount', 5, 40);
         const timeLimit = readPositiveInt('timeLimit', 20, 3600);
-        const guessedWordsLimit = readPositiveInt('guessedWordsLimit', 2);
-        const errorsElimination = readPositiveInt('errorsElimination', 1);
-        const wordLengthMin = readPositiveInt('wordLengthMin', 3, 15);
-        const wordLengthMax = readPositiveInt('wordLengthMax', 3, 15);
+        const errorsElimination = readPositiveInt('errorsElimination', 1, 20);
+        const allowedTypes = [
+          document.getElementById('typeDomain')?.checked ? 'domain' : null,
+          document.getElementById('typeTelegram')?.checked ? 'telegram' : null,
+          document.getElementById('typeEmail')?.checked ? 'email' : null,
+          document.getElementById('typeUrl')?.checked ? 'url' : null
+        ].filter(Boolean);
+        const allowedDifficulties = [
+          document.getElementById('difficultyEasy')?.checked ? 1 : null,
+          document.getElementById('difficultyMedium')?.checked ? 2 : null,
+          document.getElementById('difficultyHard')?.checked ? 3 : null
+        ].filter((value) => value !== null);
 
-        if ([playersCount, wordsCount, stageTextToCodeCount, stageCodeToTextCount, timeLimit, guessedWordsLimit, errorsElimination, wordLengthMin, wordLengthMax].some((v) => v === null)) {
+        if ([participantsLimit, roundsCount, timeLimit, errorsElimination].some((v) => v === null)) {
           setTournamentFeedback(false, 'Проверьте ограничения параметров. Одно или несколько полей заполнены неверно.');
           return;
         }
 
-        if (wordLengthMin > wordLengthMax) {
-          setTournamentFeedback(false, 'Диапазон длины слов неверный: минимальное значение больше максимального.');
+        if (!allowedTypes.length) {
+          setTournamentFeedback(false, 'Выберите хотя бы один тип задания для раундов.');
           return;
         }
-
-        if (stageTextToCodeCount + stageCodeToTextCount !== wordsCount) {
-          setTournamentFeedback(false, 'Сумма слов по этапам должна быть равна общему количеству слов.');
+        if (!allowedDifficulties.length) {
+          setTournamentFeedback(false, 'Выберите хотя бы один уровень сложности для раундов.');
           return;
         }
 
@@ -698,15 +690,12 @@
         createdRoomLinkEl.value = roomLink;
 
         tournamentSettings = {
-          playersCount,
-          wordsCount,
-          stageTextToCodeCount,
-          stageCodeToTextCount,
+          participantsLimit,
+          roundsCount,
           timeLimit,
-          guessedWordsLimit,
           errorsElimination,
-          wordLengthMin,
-          wordLengthMax
+          allowedTypes,
+          allowedDifficulties
         };
 
         const room = {
@@ -721,7 +710,7 @@
         createdRoomPanel.classList.remove('bc-hidden');
 
         openRoomChannel(roomCode, 'creator')
-          .then(() => setTournamentFeedback(true, `Комната создана: ${playersCount} игроков, ${wordsCount} слов, время ${timeLimit} сек (${(timeLimit / 60).toFixed(1)} мин). Ожидайте подключения участников.`))
+          .then(() => setTournamentFeedback(true, `Комната создана: лимит ${participantsLimit} участников, ${roundsCount} раундов, время ${timeLimit} сек (${(timeLimit / 60).toFixed(1)} мин). Ожидайте подключения участников.`))
           .catch(() => setTournamentFeedback(false, 'Комната создана, но подключение к каналу не удалось. Проверьте интернет и попробуйте создать заново.'));
       });
 
@@ -758,7 +747,7 @@
           setTournamentFeedback(false, 'Сначала создайте комнату, чтобы отправить приглашение.');
           return;
         }
-        const inviteText = `Присоединяйся к Binary Battle! Код: ${creatorRoomCode}. Ссылка: ${createdRoomLinkEl.value}`;
+        const inviteText = `Присоединяйся к турниру «КиберПроверка»! Код: ${creatorRoomCode}. Ссылка: ${createdRoomLinkEl.value}`;
         try {
           await navigator.clipboard.writeText(inviteText);
           setTournamentFeedback(true, 'Текст-приглашение скопирован.');
