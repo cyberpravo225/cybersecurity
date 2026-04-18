@@ -1554,7 +1554,7 @@
 
     const modern = await sb
       .from('leaderboard_entries')
-      .select('score,created_at,age_group,solo_runs!inner(accuracy,mode),profiles!inner(nickname)')
+      .select('score,created_at,age_group,solo_runs!inner(accuracy,mode),profiles!inner(nickname,username)')
       .eq('age_group', ageGroup)
       .eq('solo_runs.mode', 'signal_or_fake_solo')
       .order('score', { ascending: false })
@@ -1564,7 +1564,7 @@
     let rows = [];
     if (!modern.error && modern.data?.length) {
       rows = modern.data.map((item) => ({
-        nickname: item.profiles?.nickname || 'Игрок',
+        nickname: item.profiles?.nickname || item.profiles?.username || 'Игрок',
         score: item.score,
         accuracy: item.solo_runs?.accuracy ?? 0,
         created_at: item.created_at
