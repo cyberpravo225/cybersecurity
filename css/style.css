@@ -3953,8 +3953,23 @@ body[data-page="home"] .hero{
 }
 
 .audience-hero-kids{
-  background:linear-gradient(135deg,#34d399 0%,#3b82f6 55%,#6366f1 100%);
-  color:#effcff;
+  background:
+    linear-gradient(145deg, rgba(52,211,153,0.72) 0%, rgba(59,130,246,0.62) 55%, rgba(99,102,241,0.68) 100%);
+  color:#f3fbff;
+  border:1px solid rgba(255,255,255,.36);
+  box-shadow:
+    0 18px 38px rgba(37,99,235,.28),
+    inset 0 1px 0 rgba(255,255,255,.28);
+}
+
+.audience-hero-kids .audience-hero-title{
+  text-shadow:0 2px 12px rgba(7,38,97,.35);
+  letter-spacing:.2px;
+}
+
+.audience-hero-kids .audience-tags span{
+  background:rgba(255,255,255,.24);
+  border-color:rgba(255,255,255,.42);
 }
 
 .audience-hero-middle{
