@@ -3904,6 +3904,77 @@ body[data-page="home"] .hero{
   color:#2d2a26;
 }
 
+/* ===== Visual upgrade for students + teachers pages ===== */
+:is([data-page^="students"],[data-page="teachers"]) .audience-hero{
+  position:relative;
+  margin:24px 0 30px;
+  padding:22px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.26);
+  box-shadow:0 16px 34px rgba(3,8,28,.18);
+  overflow:hidden;
+}
+
+:is([data-page^="students"],[data-page="teachers"]) .audience-hero::after{
+  content:"";
+  position:absolute;
+  inset:auto -60px -70px auto;
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  background:radial-gradient(circle,#ffffff88 0%,#ffffff10 65%,transparent 100%);
+  pointer-events:none;
+}
+
+.audience-hero-title{
+  margin:0 0 10px;
+  font-size:1.32rem;
+  font-weight:800;
+}
+
+.audience-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:14px;
+}
+
+.audience-tags span{
+  display:inline-flex;
+  align-items:center;
+  border-radius:999px;
+  padding:7px 12px;
+  font-size:.9rem;
+  font-weight:600;
+  backdrop-filter:blur(4px);
+}
+
+.audience-hero-kids{
+  background:linear-gradient(135deg,#34d399 0%,#3b82f6 55%,#6366f1 100%);
+  color:#effcff;
+}
+
+.audience-hero-middle{
+  background:linear-gradient(135deg,#0ea5e9 0%,#2563eb 45%,#7c3aed 100%);
+  color:#eef6ff;
+}
+
+.audience-hero-senior{
+  background:linear-gradient(135deg,#1d4ed8 0%,#4338ca 45%,#7e22ce 100%);
+  color:#eef0ff;
+}
+
+.audience-hero-teachers{
+  background:linear-gradient(135deg,#0f766e 0%,#0ea5a4 45%,#2563eb 100%);
+  color:#e8fffe;
+}
+
+:is([data-page^="students"],[data-page="teachers"]) .audience-tags span{
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.25);
+  color:inherit;
+}
+
 /* =================================
    Cyberly + game feature cards
 ================================= */
