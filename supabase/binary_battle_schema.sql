@@ -189,42 +189,67 @@ alter table public.achievements enable row level security;
 alter table public.user_achievements enable row level security;
 alter table public.question_flags enable row level security;
 
-create policy if not exists profiles_read_public on public.profiles for select using (true);
-create policy if not exists profiles_insert_self on public.profiles for insert to authenticated with check (auth.uid() = id);
-create policy if not exists profiles_update_self on public.profiles for update to authenticated using (auth.uid() = id) with check (auth.uid() = id);
+drop policy if exists profiles_read_public on public.profiles;
+create policy profiles_read_public on public.profiles for select using (true);
+drop policy if exists profiles_insert_self on public.profiles;
+create policy profiles_insert_self on public.profiles for insert to authenticated with check (auth.uid() = id);
+drop policy if exists profiles_update_self on public.profiles;
+create policy profiles_update_self on public.profiles for update to authenticated using (auth.uid() = id) with check (auth.uid() = id);
 
-create policy if not exists questions_read_active on public.questions for select using (is_active = true);
-create policy if not exists question_variants_read_all on public.question_variants for select using (true);
+drop policy if exists questions_read_active on public.questions;
+create policy questions_read_active on public.questions for select using (is_active = true);
+drop policy if exists question_variants_read_all on public.question_variants;
+create policy question_variants_read_all on public.question_variants for select using (true);
 
-create policy if not exists solo_runs_read_public on public.solo_runs for select using (true);
-create policy if not exists solo_runs_insert_self on public.solo_runs for insert to authenticated with check (auth.uid() = profile_id);
+drop policy if exists solo_runs_read_public on public.solo_runs;
+create policy solo_runs_read_public on public.solo_runs for select using (true);
+drop policy if exists solo_runs_insert_self on public.solo_runs;
+create policy solo_runs_insert_self on public.solo_runs for insert to authenticated with check (auth.uid() = profile_id);
 
-create policy if not exists solo_run_answers_read_public on public.solo_run_answers for select using (true);
-create policy if not exists solo_run_answers_insert_self on public.solo_run_answers for insert to authenticated with check (
+drop policy if exists solo_run_answers_read_public on public.solo_run_answers;
+create policy solo_run_answers_read_public on public.solo_run_answers for select using (true);
+drop policy if exists solo_run_answers_insert_self on public.solo_run_answers;
+create policy solo_run_answers_insert_self on public.solo_run_answers for insert to authenticated with check (
   exists (
     select 1 from public.solo_runs sr where sr.id = solo_run_id and sr.profile_id = auth.uid()
   )
 );
 
-create policy if not exists leaderboard_entries_read_public on public.leaderboard_entries for select using (true);
-create policy if not exists leaderboard_entries_insert_self on public.leaderboard_entries for insert to authenticated with check (auth.uid() = profile_id);
+drop policy if exists leaderboard_entries_read_public on public.leaderboard_entries;
+create policy leaderboard_entries_read_public on public.leaderboard_entries for select using (true);
+drop policy if exists leaderboard_entries_insert_self on public.leaderboard_entries;
+create policy leaderboard_entries_insert_self on public.leaderboard_entries for insert to authenticated with check (auth.uid() = profile_id);
 
-create policy if not exists seasons_read_public on public.seasons for select using (true);
+drop policy if exists seasons_read_public on public.seasons;
+create policy seasons_read_public on public.seasons for select using (true);
 
-create policy if not exists lobbies_read_public on public.lobbies for select using (true);
-create policy if not exists lobbies_insert_host on public.lobbies for insert to authenticated with check (auth.uid() = host_profile_id);
+drop policy if exists lobbies_read_public on public.lobbies;
+create policy lobbies_read_public on public.lobbies for select using (true);
+drop policy if exists lobbies_insert_host on public.lobbies;
+create policy lobbies_insert_host on public.lobbies for insert to authenticated with check (auth.uid() = host_profile_id);
 
-create policy if not exists lobby_players_read_public on public.lobby_players for select using (true);
-create policy if not exists lobby_players_insert_self on public.lobby_players for insert to authenticated with check (auth.uid() = profile_id);
-create policy if not exists lobby_players_update_self on public.lobby_players for update to authenticated using (auth.uid() = profile_id);
+drop policy if exists lobby_players_read_public on public.lobby_players;
+create policy lobby_players_read_public on public.lobby_players for select using (true);
+drop policy if exists lobby_players_insert_self on public.lobby_players;
+create policy lobby_players_insert_self on public.lobby_players for insert to authenticated with check (auth.uid() = profile_id);
+drop policy if exists lobby_players_update_self on public.lobby_players;
+create policy lobby_players_update_self on public.lobby_players for update to authenticated using (auth.uid() = profile_id);
 
-create policy if not exists lobby_rounds_read_public on public.lobby_rounds for select using (true);
-create policy if not exists lobby_answers_read_public on public.lobby_answers for select using (true);
-create policy if not exists lobby_answers_insert_self on public.lobby_answers for insert to authenticated with check (auth.uid() = profile_id);
+drop policy if exists lobby_rounds_read_public on public.lobby_rounds;
+create policy lobby_rounds_read_public on public.lobby_rounds for select using (true);
+drop policy if exists lobby_answers_read_public on public.lobby_answers;
+create policy lobby_answers_read_public on public.lobby_answers for select using (true);
+drop policy if exists lobby_answers_insert_self on public.lobby_answers;
+create policy lobby_answers_insert_self on public.lobby_answers for insert to authenticated with check (auth.uid() = profile_id);
 
-create policy if not exists achievements_read_public on public.achievements for select using (true);
-create policy if not exists user_achievements_read_public on public.user_achievements for select using (true);
-create policy if not exists user_achievements_insert_self on public.user_achievements for insert to authenticated with check (auth.uid() = profile_id);
+drop policy if exists achievements_read_public on public.achievements;
+create policy achievements_read_public on public.achievements for select using (true);
+drop policy if exists user_achievements_read_public on public.user_achievements;
+create policy user_achievements_read_public on public.user_achievements for select using (true);
+drop policy if exists user_achievements_insert_self on public.user_achievements;
+create policy user_achievements_insert_self on public.user_achievements for insert to authenticated with check (auth.uid() = profile_id);
 
-create policy if not exists question_flags_insert_self on public.question_flags for insert to authenticated with check (auth.uid() = profile_id);
-create policy if not exists question_flags_read_own on public.question_flags for select to authenticated using (auth.uid() = profile_id);
+drop policy if exists question_flags_insert_self on public.question_flags;
+create policy question_flags_insert_self on public.question_flags for insert to authenticated with check (auth.uid() = profile_id);
+drop policy if exists question_flags_read_own on public.question_flags;
+create policy question_flags_read_own on public.question_flags for select to authenticated using (auth.uid() = profile_id);
