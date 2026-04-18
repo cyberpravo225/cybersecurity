@@ -32,6 +32,9 @@ create table if not exists public.questions (
   created_at timestamptz not null default now()
 );
 
+alter table public.questions
+  add column if not exists difficulty smallint not null default 1;
+
 create table if not exists public.question_variants (
   id bigserial primary key,
   question_id bigint not null references public.questions(id) on delete cascade,
