@@ -3886,26 +3886,29 @@ body[data-page="home"] .hero{
 }
 
 :root[data-theme="dark"] :is([data-page^="students"],[data-page="teachers"],[data-page="seniors"]) .resource-block{
-  background:#1f2758;
-  border:1px solid rgba(255,255,255,0.08);
-  box-shadow:0 12px 30px rgba(0,0,0,0.35);
+  background:rgba(31,39,88,0.62);
+  border:1px solid rgba(255,255,255,0.16);
+  box-shadow:0 14px 34px rgba(0,0,0,0.35);
+  backdrop-filter:blur(8px);
   padding:18px;
 }
 
 :root[data-theme="dark"] :is([data-page^="students"],[data-page="teachers"],[data-page="seniors"]) :is(.senior-rule,.senior-action,.senior-card){
-  background:#1f2758;
-  border:1px solid rgba(255,255,255,0.08);
+  background:rgba(31,39,88,0.56);
+  border:1px solid rgba(255,255,255,0.18);
   color:#e5e7eb;
+  backdrop-filter:blur(8px);
 }
 
 :root[data-theme="light"] :is([data-page^="students"],[data-page="teachers"],[data-page="seniors"]) :is(.senior-rule,.senior-action,.senior-card){
-  background:linear-gradient(180deg, #fffaf3 0%, #f4eadf 100%);
-  border:1px solid rgba(180,120,60,0.2);
+  background:linear-gradient(180deg, rgba(255,250,243,0.88) 0%, rgba(244,234,223,0.78) 100%);
+  border:1px solid rgba(180,120,60,0.26);
   color:#2d2a26;
+  backdrop-filter:blur(6px);
 }
 
 /* ===== Visual upgrade for students + teachers pages ===== */
-:is([data-page^="students"],[data-page="teachers"]) .audience-hero{
+:is([data-page^="students"],[data-page="teachers"],[data-page="seniors"]) .audience-hero{
   position:relative;
   margin:24px 0 30px;
   padding:22px;
@@ -3915,7 +3918,7 @@ body[data-page="home"] .hero{
   overflow:hidden;
 }
 
-:is([data-page^="students"],[data-page="teachers"]) .audience-hero::after{
+:is([data-page^="students"],[data-page="teachers"],[data-page="seniors"]) .audience-hero::after{
   content:"";
   position:absolute;
   inset:auto -60px -70px auto;
@@ -3969,10 +3972,25 @@ body[data-page="home"] .hero{
   color:#e8fffe;
 }
 
-:is([data-page^="students"],[data-page="teachers"]) .audience-tags span{
+.audience-hero-elder{
+  background:linear-gradient(135deg,#0f766e 0%,#2563eb 55%,#4f46e5 100%);
+  color:#ebffff;
+}
+
+:is([data-page^="students"],[data-page="teachers"],[data-page="seniors"]) .audience-tags span{
   background:rgba(255,255,255,.18);
   border:1px solid rgba(255,255,255,.25);
   color:inherit;
+}
+
+:is([data-page^="students"],[data-page="teachers"],[data-page="seniors"]) .resource-block,
+:is([data-page^="students"],[data-page="teachers"],[data-page="seniors"]) :is(.senior-rule,.senior-action,.senior-card){
+  -webkit-backdrop-filter:blur(8px);
+}
+
+:is([data-page^="students"],[data-page="teachers"],[data-page="seniors"]) :is(.senior-rule,.senior-action,.senior-card):hover{
+  transform:translateY(-4px);
+  box-shadow:0 16px 32px rgba(10,16,40,.22);
 }
 
 /* =================================
