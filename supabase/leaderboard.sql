@@ -22,10 +22,12 @@ create index if not exists leaderboard_age_group_score_idx
 
 alter table public.leaderboard enable row level security;
 
+drop policy if exists "leaderboard_select_all" on public.leaderboard;
 create policy "leaderboard_select_all"
 on public.leaderboard for select
 using (true);
 
+drop policy if exists "leaderboard_insert_owner" on public.leaderboard;
 create policy "leaderboard_insert_owner"
 on public.leaderboard for insert
 to authenticated
