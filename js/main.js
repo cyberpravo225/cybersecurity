@@ -845,6 +845,10 @@ document.addEventListener('click', (e) => {
    Page transitions: fade out on link click, then navigate
    ========================= */
 (function(){
+  const clearFadeOutState = () => document.body.classList.remove('fade-out');
+  clearFadeOutState();
+  window.addEventListener('pageshow', clearFadeOutState);
+
   const links = Array.from(document.querySelectorAll('a[href]')).filter(a => a.target !== '_blank' && !a.href.startsWith('mailto:'));
   links.forEach(a => {
     a.addEventListener('click', (e) => {
