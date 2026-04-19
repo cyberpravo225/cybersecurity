@@ -189,10 +189,11 @@
           </article>
 
           <article class="bl-card">
-            <h2 style="margin:0;">6) Краткая таблица ASCII (буквы и цифры)</h2>
+            <h2 style="margin:0;">6) Краткая таблица: символ → двоичный код</h2>
+            <p class="bl-sub">Важно: для цифр <code>0...9</code> берём именно число (например, <code>0 → 00000000</code>), а не ASCII-код символа.</p>
             <div class="bl-table-wrap">
               <table class="bl-table">
-                <thead><tr><th>ASCII-число</th><th>Binary (8-bit)</th><th>Символ</th></tr></thead>
+                <thead><tr><th>Символ</th><th>Binary (8-bit)</th></tr></thead>
                 <tbody id="theoryTableBody"></tbody>
               </table>
             </div>
@@ -219,10 +220,10 @@
   <script>
     (function initTheoryTable(){
       const rows=[];
-      const push=(code)=>rows.push(`<tr><td>${code}</td><td><code>${code.toString(2).padStart(8,'0')}</code></td><td>${String.fromCharCode(code)}</td></tr>`);
-      for(let c=48;c<=57;c++) push(c);
-      for(let c=65;c<=90;c++) push(c);
-      for(let c=97;c<=122;c++) push(c);
+      const push=(symbol, code)=>rows.push(`<tr><td>${symbol}</td><td><code>${code.toString(2).padStart(8,'0')}</code></td></tr>`);
+      for(let d=0;d<=9;d++) push(String(d), d);
+      for(let c=65;c<=90;c++) push(String.fromCharCode(c), c);
+      for(let c=97;c<=122;c++) push(String.fromCharCode(c), c);
       document.getElementById('theoryTableBody').innerHTML=rows.join('');
     })();
   </script>
