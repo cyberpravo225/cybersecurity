@@ -927,6 +927,35 @@
     }
 
 
+    body[data-page="home"] .card-grid > a.card.game-feature {
+      position: relative;
+      isolation: isolate;
+      border: 1px solid color-mix(in oklab, var(--card-border) 72%, #70beff 28%);
+      background:
+        radial-gradient(120% 120% at 8% 8%, rgba(112,190,255,.18) 0%, rgba(112,190,255,0) 58%),
+        linear-gradient(140deg, color-mix(in oklab, var(--card-bg) 80%, #12203d 20%), var(--card-bg));
+      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.16);
+      transition: transform 220ms ease, box-shadow 240ms ease, border-color 220ms ease;
+    }
+
+    body[data-page="home"] .card-grid > a.card.game-feature::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: linear-gradient(135deg, rgba(125, 211, 252, 0.08), rgba(196, 181, 253, 0.04));
+      z-index: -1;
+    }
+
+    body[data-page="home"] .card-grid > a.card.game-feature:hover {
+      transform: translateY(-4px);
+      border-color: color-mix(in oklab, var(--card-border) 56%, #4de2ff 44%);
+      box-shadow: 0 20px 42px rgba(14, 116, 255, 0.22);
+    }
+
+
+
     @media (max-width: 980px) {
       body[data-page="home"] .bb-home-layout { grid-template-columns: 1fr; }
       body[data-page="home"] .bb-mini-stats { grid-template-columns: 1fr; }
@@ -1167,7 +1196,7 @@
 <ul class="sub-menu games-menu">
 <li><a href="cyberguessr.html">CyberGuessr</a></li>
 <li><a href="cyberly.html">Cyberly</a></li>
-<li><a href="binary-battle.html">Binary Battle</a></li>
+<li><a href="binary-battle.html">Кодовый Поединок</a></li>
 <li><a href="signal-or-fake.html">Signal or Fake</a></li>
 <li><a href="cyberpro-easy.html">CyberPro</a></li>
 <li><a href="cyberword-easy.html">CyberWord</a></li>
@@ -1343,24 +1372,24 @@
   </article>
 
   <article class="card bb-home-card reveal">
-    <span class="game-feature-cyberly-ribbon" style="position:static; transform:none; width:max-content;">Binary Battle</span>
-    <h3 style="margin-top:10px;">🔢 Двоичный код</h3>
+    <span class="game-feature-cyberly-ribbon" style="position:static; transform:none; width:max-content;">Кодовый Поединок</span>
+    <h3 style="margin-top:10px;">🔢 Кодовый Поединок</h3>
     <p>Отдельная игра по переводу двоичного кода: solo-режим, тренажёр, турнирные комнаты и собственная таблица результатов.</p>
-    <div class="bb-chip-row" aria-label="Режимы Binary Battle">
+    <div class="bb-chip-row" aria-label="Режимы Кодовый Поединок">
       <span class="bb-chip">Practice</span>
       <span class="bb-chip">Timed</span>
       <span class="bb-chip">Tournament</span>
       <span class="bb-chip">Learning</span>
     </div>
     <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
-      <a href="binary-battle.html" class="btn primary">Открыть Binary Battle</a>
+      <a href="binary-battle.html" class="btn primary">Открыть Кодовый Поединок</a>
     </div>
   </article>
 
   <article class="card bb-home-leaderboard reveal delay" aria-live="polite">
     <div class="bb-lb-head">
-      <h3>🏁 Лидерборд Binary Battle</h3>
-      <select id="binaryAgeFilter" aria-label="Возрастная группа Binary Battle">
+      <h3>🏁 Лидерборд Кодовый Поединок</h3>
+      <select id="binaryAgeFilter" aria-label="Возрастная группа Кодовый Поединок">
         <option value="10-16">10–16</option>
         <option value="16+">16+</option>
       </select>
