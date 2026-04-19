@@ -33,10 +33,47 @@
     }
     .bl-sub{color:var(--bl-muted);margin:0}
     .bl-grid{display:grid;gap:14px}
+    .bl-grid-2{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
     .bl-table-wrap{overflow:auto}
     .bl-table{width:100%;border-collapse:collapse}
     .bl-table th,.bl-table td{border:1px solid var(--bl-border);padding:8px;white-space:nowrap;text-align:center}
     .bl-table th{background:color-mix(in srgb, var(--bl-surface) 90%, transparent)}
+    .bl-step-list{margin:0;padding-left:20px;display:grid;gap:8px;color:var(--bl-muted)}
+    .bl-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid var(--bl-border);
+      border-radius:999px;
+      padding:6px 12px;
+      color:var(--bl-muted);
+      font-size:14px;
+      background:color-mix(in srgb, var(--bl-surface) 80%, transparent);
+    }
+    .bl-method-card{display:grid;gap:10px}
+    .bl-method-card h3{margin:0;font-size:18px}
+    .bl-converter{display:grid;gap:12px}
+    .bl-field{display:grid;gap:8px}
+    .bl-label{font-weight:600}
+    .bl-input{
+      width:100%;
+      border:1px solid var(--bl-border);
+      border-radius:12px;
+      background:color-mix(in srgb, var(--bl-surface) 84%, transparent);
+      color:var(--bl-text);
+      padding:10px 12px;
+      font-size:16px;
+    }
+    .bl-output{
+      border:1px solid var(--bl-border);
+      border-radius:12px;
+      background:color-mix(in srgb, var(--bl-surface) 90%, transparent);
+      padding:10px 12px;
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      word-break:break-word;
+    }
+    .bl-output-label{margin:0 0 4px 0;color:var(--bl-muted);font-size:14px}
+    .bl-note{margin:0;color:var(--bl-muted);font-size:14px}
     .theme-toggle{min-width:176px;display:inline-flex;align-items:center;gap:8px}
     .theme-icon-sun{display:none}
     html[data-theme="light"] .theme-icon-sun{display:inline}
@@ -65,7 +102,7 @@
               </button>
             </div>
             <h1 style="margin:0;">🎓 Теория: ASCII и двоичный код</h1>
-            <p class="bl-sub">На этой странице только теория. Практика вынесена в отдельный «Учебный режим».</p>
+            <p class="bl-sub">Понятное объяснение, как переводить <strong>числа</strong> в двоичный код и обратно. Символы — это уже следующий шаг.</p>
             <div>
               <a class="btn" href="binary-practice.html">Перейти в учебный режим (практика) →</a>
             </div>
@@ -73,7 +110,8 @@
 
           <article class="bl-card">
             <h2 style="margin:0;">1) Что такое ASCII</h2>
-            <p class="bl-sub">ASCII — стандарт кодирования символов: каждому символу соответствует число (0–127). Компьютер хранит символы именно как числа.</p>
+            <p class="bl-sub">ASCII — стандарт кодирования символов: каждому символу соответствует число (0–127). Компьютер внутри работает именно с числами, а не с буквами.</p>
+            <div class="bl-chip">Пример: буква <strong>A</strong> это число <strong>65</strong>.</div>
           </article>
 
           <article class="bl-card">
@@ -82,19 +120,76 @@
           </article>
 
           <article class="bl-card">
-            <h2 style="margin:0;">3) Алгоритм перевода текста в бинарный код</h2>
-            <p class="bl-sub">Берёшь символ → находишь его десятичный ASCII-код → переводишь в двоичную систему и дополняешь до 8 бит.</p>
-            <p class="bl-sub"><strong>CAT</strong> → C=67=01000011, A=65=01000001, T=84=01010100.</p>
+            <h2 style="margin:0;">3) Перевод числа в двоичный код: 3 способа</h2>
+            <div class="bl-grid-2">
+              <section class="bl-method-card">
+                <h3>Способ 1: деление на 2</h3>
+                <ol class="bl-step-list">
+                  <li>Делим число на 2.</li>
+                  <li>Записываем остаток (0 или 1).</li>
+                  <li>Берём целую часть и снова делим на 2, пока не станет 0.</li>
+                  <li>Читаем остатки снизу вверх.</li>
+                </ol>
+                <p class="bl-note">Пример: 13 → остатки 1,0,1,1 → результат <code>1101</code>.</p>
+              </section>
+              <section class="bl-method-card">
+                <h3>Способ 2: по степеням двойки</h3>
+                <ol class="bl-step-list">
+                  <li>Берём степени 2: 128, 64, 32, 16, 8, 4, 2, 1.</li>
+                  <li>Если степень помещается в число — ставим 1 и вычитаем её.</li>
+                  <li>Если не помещается — ставим 0.</li>
+                </ol>
+                <p class="bl-note">Пример: 13 = 8 + 4 + 1 → <code>00001101</code>.</p>
+              </section>
+              <section class="bl-method-card">
+                <h3>Способ 3: через JavaScript</h3>
+                <ol class="bl-step-list">
+                  <li>Берём десятичное число.</li>
+                  <li>Выполняем <code>number.toString(2)</code>.</li>
+                  <li>Для байта добавляем нули слева: <code>padStart(8, '0')</code>.</li>
+                </ol>
+                <p class="bl-note">Этот же способ используется в интерактивном примере ниже.</p>
+              </section>
+            </div>
           </article>
 
           <article class="bl-card">
-            <h2 style="margin:0;">4) Обратный перевод</h2>
-            <p class="bl-sub">Разбиваешь строку на блоки по 8 бит → каждый блок переводишь в десятичное число → находишь символ в ASCII.</p>
-            <p class="bl-sub"><code>01001000 01101001</code> → 72 и 105 → <strong>Hi</strong>.</p>
+            <h2 style="margin:0;">4) Обратный перевод: binary → decimal</h2>
+            <p class="bl-sub">Каждый бит имеет «вес»: <code>128 64 32 16 8 4 2 1</code>. Складываем веса там, где стоит 1.</p>
+            <p class="bl-sub"><code>01000001</code> = 64 + 1 = <strong>65</strong>.</p>
           </article>
 
           <article class="bl-card">
-            <h2 style="margin:0;">5) Краткая таблица ASCII (буквы и цифры)</h2>
+            <h2 style="margin:0;">5) Интерактивный мини-конвертер</h2>
+            <div class="bl-converter">
+              <div class="bl-field">
+                <label class="bl-label" for="decimalInput">Введите число (0–127):</label>
+                <input class="bl-input" id="decimalInput" type="number" min="0" max="127" value="65" />
+                <p class="bl-note">Сначала работаем только с числами. Ниже покажем, какой это символ в ASCII.</p>
+              </div>
+              <div class="bl-grid-2">
+                <div class="bl-output">
+                  <p class="bl-output-label">Binary (8-bit)</p>
+                  <div id="binOut">01000001</div>
+                </div>
+                <div class="bl-output">
+                  <p class="bl-output-label">Hex</p>
+                  <div id="hexOut">0x41</div>
+                </div>
+                <div class="bl-output">
+                  <p class="bl-output-label">ASCII-символ</p>
+                  <div id="charOut">A</div>
+                </div>
+                <div class="bl-output">
+                  <p class="bl-output-label">Проверка обратно в decimal</p>
+                  <div id="decBackOut">65</div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="bl-card">
+            <h2 style="margin:0;">6) Краткая таблица ASCII (буквы и цифры)</h2>
             <div class="bl-table-wrap">
               <table class="bl-table">
                 <thead><tr><th>Символ</th><th>Dec</th><th>Hex</th><th>Binary (8-bit)</th></tr></thead>
@@ -129,6 +224,31 @@
       for(let c=65;c<=90;c++) push(c);
       for(let c=97;c<=122;c++) push(c);
       document.getElementById('theoryTableBody').innerHTML=rows.join('');
+    })();
+  </script>
+  <script>
+    (function initMiniConverter(){
+      const input=document.getElementById('decimalInput');
+      const binOut=document.getElementById('binOut');
+      const hexOut=document.getElementById('hexOut');
+      const charOut=document.getElementById('charOut');
+      const decBackOut=document.getElementById('decBackOut');
+
+      const render=()=>{
+        const raw=Number(input.value);
+        const value=Number.isFinite(raw) ? Math.min(127, Math.max(0, Math.trunc(raw))) : 0;
+        input.value=String(value);
+        const binary=value.toString(2).padStart(8,'0');
+        const hex=`0x${value.toString(16).toUpperCase().padStart(2,'0')}`;
+        const back=parseInt(binary,2);
+        binOut.textContent=binary;
+        hexOut.textContent=hex;
+        charOut.textContent=String.fromCharCode(value);
+        decBackOut.textContent=String(back);
+      };
+
+      input.addEventListener('input',render);
+      render();
     })();
   </script>
   <script src="js/theme-network.js"></script>
