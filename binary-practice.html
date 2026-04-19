@@ -99,40 +99,41 @@
               </button>
             </div>
             <h1 style="margin:0;">🧪 Учебный режим: Бинарная лаборатория</h1>
-            <p style="margin:0;color:var(--bb-muted);">Теория + практика в одном месте: конвертер, визуализатор, ASCII-таблица и челленджи.</p>
+            <p style="margin:0;color:var(--bb-muted);">Практика перевода чисел: decimal ↔ binary, визуализация битов, таблица кодов и мини-челленджи.</p>
           </div>
 
           <section class="bb-panel">
             <div class="bb-grid">
               <article class="bb-box">
-                <h3>1) Конвертер символ ↔ байт</h3>
+                <h3>1) Конвертер число ↔ байт</h3>
                 <div class="bb-controls">
-                  <input id="learnChar" class="bb-input bb-mono" maxlength="1" value="A" />
-                  <button id="charToBinBtn" class="bb-btn bb-btn--accent" type="button">Символ → Бинарный</button>
+                  <input id="learnDecimal" class="bb-input bb-mono" type="number" min="0" max="255" value="65" />
+                  <button id="decToBinBtn" class="bb-btn bb-btn--accent" type="button">Decimal → Бинарный</button>
                   <input id="learnBinary" class="bb-input bb-mono" maxlength="8" value="01000001" />
-                  <button id="binToCharBtn" class="bb-btn" type="button">Бинарный → Символ</button>
+                  <button id="binToDecBtn" class="bb-btn" type="button">Бинарный → Decimal</button>
                 </div>
-                <p id="learnConverterStatus" class="bb-status bb-status--warn">Введите символ или 8-битный код.</p>
+                <p id="learnConverterStatus" class="bb-status bb-status--warn">Введите число 0–255 или 8-битный код.</p>
                 <div class="bb-chip-list">
                   <span class="bb-chip">Dec: <strong id="learnDec">65</strong></span>
                   <span class="bb-chip">Hex: <strong id="learnHex">0x41</strong></span>
                   <span class="bb-chip">Oct: <strong id="learnOct">101</strong></span>
+                  <span class="bb-chip">ASCII: <strong id="learnAscii" class="bb-mono">A</strong></span>
                 </div>
               </article>
 
               <article class="bb-box">
                 <h3>2) Визуализатор битов</h3>
-                <p style="margin:0;color:var(--bb-muted);">Кликай по битам и смотри изменения ASCII-кода.</p>
+                <p style="margin:0;color:var(--bb-muted);">Кликай по битам и смотри, как меняется десятичное число.</p>
                 <div id="bitGrid" class="bb-byte-grid"></div>
                 <div class="bb-chip-list">
                   <span class="bb-chip">Byte: <strong id="bitByte" class="bb-mono">00000000</strong></span>
                   <span class="bb-chip">Dec: <strong id="bitDec">0</strong></span>
-                  <span class="bb-chip">Char: <strong id="bitChar" class="bb-mono">NUL</strong></span>
+                  <span class="bb-chip">ASCII: <strong id="bitChar" class="bb-mono">NUL</strong></span>
                 </div>
               </article>
 
               <article class="bb-box">
-                <h3>3) ASCII-мини справочник + челлендж</h3>
+                <h3>3) Мини справочник + челлендж по числам</h3>
                 <div class="bb-controls">
                   <button id="challengeBtn" class="bb-btn bb-btn--accent" type="button">Сгенерировать задание</button>
                   <input id="challengeAnswer" class="bb-input bb-mono" maxlength="8" placeholder="Ответ" />
@@ -141,7 +142,7 @@
                 <p id="challengeTask" class="bb-mono" style="font-size:1.2rem;font-weight:800;margin:0;">Нажмите «Сгенерировать задание»</p>
                 <p id="challengeStatus" class="bb-status bb-status--warn">Результат появится здесь.</p>
                 <div class="bb-table-wrap">
-                  <table class="bb-table" id="asciiTable"><thead><tr><th>Символ</th><th>Dec</th><th>Hex</th><th>Binary</th></tr></thead><tbody></tbody></table>
+                  <table class="bb-table" id="asciiTable"><thead><tr><th>Dec</th><th>Hex</th><th>Binary</th><th>ASCII</th></tr></thead><tbody></tbody></table>
                 </div>
               </article>
             </div>
@@ -166,13 +167,13 @@
   </script>
   <script>
     (function initLearningMode() {
-      const allowedChallengeChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!?@#$%&*+-=/()[]{}:;,. '.split('');
-      const learnChar = document.getElementById('learnChar');
+      const learnDecimal = document.getElementById('learnDecimal');
       const learnBinary = document.getElementById('learnBinary');
       const learnConverterStatus = document.getElementById('learnConverterStatus');
       const learnDec = document.getElementById('learnDec');
       const learnHex = document.getElementById('learnHex');
       const learnOct = document.getElementById('learnOct');
+      const learnAscii = document.getElementById('learnAscii');
       const bitGrid = document.getElementById('bitGrid');
       const bitByte = document.getElementById('bitByte');
       const bitDec = document.getElementById('bitDec');
@@ -187,14 +188,26 @@
       function printableChar(code) { if (code === 0) return 'NUL'; if (code < 32 || code === 127) return `CTRL(${code})`; return String.fromCharCode(code); }
       function isBinary8(value) { return /^[01]{8}$/.test(value); }
       function updateConverterFromCode(code, source) {
-        const char = String.fromCharCode(code); const binary = toBinary8(code);
-        learnChar.value = char; learnBinary.value = binary; learnDec.textContent = String(code);
-        learnHex.textContent = '0x' + code.toString(16).toUpperCase().padStart(2, '0'); learnOct.textContent = code.toString(8);
+        const normalized = Math.min(255, Math.max(0, Math.trunc(code)));
+        const binary = toBinary8(normalized);
+        learnDecimal.value = String(normalized); learnBinary.value = binary; learnDec.textContent = String(normalized);
+        learnAscii.textContent = printableChar(normalized);
+        learnHex.textContent = '0x' + normalized.toString(16).toUpperCase().padStart(2, '0'); learnOct.textContent = normalized.toString(8);
         learnConverterStatus.className = 'bb-status bb-status--ok';
-        learnConverterStatus.textContent = source === 'char' ? `Символ ${char === ' ' ? '␠ (space)' : char} = ${binary} (ASCII ${code}).` : `Код ${binary} = символ ${char === ' ' ? '␠ (space)' : char} (ASCII ${code}).`;
+        learnConverterStatus.textContent = source === 'dec'
+          ? `Decimal ${normalized} = ${binary} (hex ${learnHex.textContent}).`
+          : `Байт ${binary} = decimal ${normalized} (hex ${learnHex.textContent}).`;
       }
-      document.getElementById('charToBinBtn').addEventListener('click', () => { if (!learnChar.value) { learnConverterStatus.className = 'bb-status bb-status--danger'; learnConverterStatus.textContent = 'Введите один символ.'; return; } updateConverterFromCode(learnChar.value.charCodeAt(0), 'char'); });
-      document.getElementById('binToCharBtn').addEventListener('click', () => { const value = learnBinary.value.trim(); if (!isBinary8(value)) { learnConverterStatus.className = 'bb-status bb-status--danger'; learnConverterStatus.textContent = 'Нужен бинарный код из 8 бит.'; return; } updateConverterFromCode(parseInt(value, 2), 'bin'); });
+      document.getElementById('decToBinBtn').addEventListener('click', () => {
+        const raw = Number(learnDecimal.value);
+        if (!Number.isFinite(raw)) {
+          learnConverterStatus.className = 'bb-status bb-status--danger';
+          learnConverterStatus.textContent = 'Введите корректное число.';
+          return;
+        }
+        updateConverterFromCode(raw, 'dec');
+      });
+      document.getElementById('binToDecBtn').addEventListener('click', () => { const value = learnBinary.value.trim(); if (!isBinary8(value)) { learnConverterStatus.className = 'bb-status bb-status--danger'; learnConverterStatus.textContent = 'Нужен бинарный код из 8 бит.'; return; } updateConverterFromCode(parseInt(value, 2), 'bin'); });
       function renderBits() {
         bitGrid.innerHTML = '';
         bitState.forEach((bit, idx) => { const btn = document.createElement('button'); btn.className = 'bb-bit bb-mono'; btn.type = 'button'; btn.dataset.on = bit; btn.textContent = String(bit); btn.title = `Бит ${7 - idx}`; btn.addEventListener('click', () => { bitState[idx] = bitState[idx] ? 0 : 1; renderBits(); }); bitGrid.appendChild(btn); });
@@ -203,11 +216,30 @@
       function fillAsciiTable() {
         const ranges = [...Array.from({ length: 26 }, (_, i) => 65 + i), ...Array.from({ length: 26 }, (_, i) => 97 + i), ...Array.from({ length: 10 }, (_, i) => 48 + i), 32, 33, 35, 36, 37, 38, 42, 43, 45, 47, 61, 63];
         const unique = [...new Set(ranges)].sort((a, b) => a - b);
-        asciiTableBody.innerHTML = unique.map((code) => `<tr><td class="bb-mono">${code === 32 ? '␠' : String.fromCharCode(code)}</td><td>${code}</td><td class="bb-mono">0x${code.toString(16).toUpperCase().padStart(2, '0')}</td><td class="bb-mono">${toBinary8(code)}</td></tr>`).join('');
+        asciiTableBody.innerHTML = unique.map((code) => `<tr><td>${code}</td><td class="bb-mono">0x${code.toString(16).toUpperCase().padStart(2, '0')}</td><td class="bb-mono">${toBinary8(code)}</td><td class="bb-mono">${code === 32 ? '␠' : String.fromCharCode(code)}</td></tr>`).join('');
       }
-      document.getElementById('challengeBtn').addEventListener('click', () => { const mode = Math.random() > 0.5 ? 'char_to_bin' : 'bin_to_char'; const char = allowedChallengeChars[Math.floor(Math.random() * allowedChallengeChars.length)]; const code = char.charCodeAt(0); challenge = { mode, char, binary: toBinary8(code), code }; challengeTask.textContent = mode === 'char_to_bin' ? `Переведи символ «${char === ' ' ? '␠ (space)' : char}» в 8-битный код.` : `Какой символ у кода ${challenge.binary}?`; challengeAnswer.value = ''; challengeStatus.className = 'bb-status bb-status--warn'; challengeStatus.textContent = 'Введите ответ и нажмите «Проверить ответ». '; });
-      document.getElementById('checkChallengeBtn').addEventListener('click', () => { if (!challenge) { challengeStatus.className = 'bb-status bb-status--danger'; challengeStatus.textContent = 'Сначала сгенерируйте задание.'; return; } const answer = challengeAnswer.value.trim(); const ok = challenge.mode === 'char_to_bin' ? answer === challenge.binary : answer === challenge.char; if (ok) { challengeStatus.className = 'bb-status bb-status--ok'; challengeStatus.textContent = 'Отлично! Верно ✅'; return; } challengeStatus.className = 'bb-status bb-status--danger'; challengeStatus.textContent = challenge.mode === 'char_to_bin' ? `Пока не совпало. Верный ответ: ${challenge.binary}.` : `Пока не совпало. Верный ответ: ${challenge.char === ' ' ? '␠ (space)' : challenge.char}.`; });
-      fillAsciiTable(); renderBits(); updateConverterFromCode(65, 'char');
+      document.getElementById('challengeBtn').addEventListener('click', () => {
+        const mode = Math.random() > 0.5 ? 'dec_to_bin' : 'bin_to_dec';
+        const code = Math.floor(Math.random() * 256);
+        challenge = { mode, binary: toBinary8(code), code };
+        challengeTask.textContent = mode === 'dec_to_bin'
+          ? `Переведи число ${code} в 8-битный бинарный код.`
+          : `Какое decimal-число соответствует коду ${challenge.binary}?`;
+        challengeAnswer.value = '';
+        challengeStatus.className = 'bb-status bb-status--warn';
+        challengeStatus.textContent = 'Введите ответ и нажмите «Проверить ответ».';
+      });
+      document.getElementById('checkChallengeBtn').addEventListener('click', () => {
+        if (!challenge) { challengeStatus.className = 'bb-status bb-status--danger'; challengeStatus.textContent = 'Сначала сгенерируйте задание.'; return; }
+        const answer = challengeAnswer.value.trim();
+        const ok = challenge.mode === 'dec_to_bin' ? answer === challenge.binary : Number(answer) === challenge.code;
+        if (ok) { challengeStatus.className = 'bb-status bb-status--ok'; challengeStatus.textContent = 'Отлично! Верно ✅'; return; }
+        challengeStatus.className = 'bb-status bb-status--danger';
+        challengeStatus.textContent = challenge.mode === 'dec_to_bin'
+          ? `Пока не совпало. Верный ответ: ${challenge.binary}.`
+          : `Пока не совпало. Верный ответ: ${challenge.code}.`;
+      });
+      fillAsciiTable(); renderBits(); updateConverterFromCode(65, 'dec');
     })();
   </script>
   <script src="js/theme-network.js"></script>

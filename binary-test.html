@@ -36,7 +36,7 @@
       <button class="btn ghost theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему"><span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span><span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span><span class="theme-toggle-label">Тёмная тема</span></button>
     </div>
     <h1 style="margin:0;">📘 Тестовый режим: Адаптивный Self-Test</h1>
-    <p style="margin:0;color:var(--bb-muted);">Сконфигурируй тест под себя и получи полный разбор результата.</p>
+    <p style="margin:0;color:var(--bb-muted);">Сконфигурируй тест по переводу чисел между decimal и binary.</p>
   </div>
 
   <section class="bb-panel">
@@ -45,9 +45,9 @@
         <h3>Настройки теста</h3>
         <div class="bb-controls">
           <label>Вопросов <select id="testQuestionCount" class="bb-select"><option>5</option><option selected>10</option><option>15</option><option>20</option></select></label>
-          <label>Сложность <select id="testDifficulty" class="bb-select"><option value="easy">Лёгкий (A-Z, 0-9)</option><option value="medium" selected>Средний (ASCII 32-90)</option><option value="hard">Сложный (ASCII 32-126)</option></select></label>
+          <label>Сложность <select id="testDifficulty" class="bb-select"><option value="easy">Лёгкий (0-31)</option><option value="medium" selected>Средний (0-127)</option><option value="hard">Сложный (0-255)</option></select></label>
           <label>Таймер <select id="testTimer" class="bb-select"><option value="0" selected>Без таймера</option><option value="20">20 сек / вопрос</option><option value="30">30 сек / вопрос</option><option value="45">45 сек / вопрос</option></select></label>
-          <label>Тип <select id="testType" class="bb-select"><option value="символ_в_бинарный" selected>Символ → бинарный</option><option value="бинарный_в_символ">Бинарный → символ</option><option value="смешанный">Смешанный</option></select></label>
+          <label>Тип <select id="testType" class="bb-select"><option value="десятичный_в_бинарный" selected>Decimal → binary</option><option value="бинарный_в_десятичный">Binary → decimal</option><option value="смешанный">Смешанный</option></select></label>
         </div>
         <button id="startTestBtn" class="bb-btn bb-btn--accent" type="button">Начать тест</button>
         <p id="testMeta" class="bb-status bb-status--warn">Тест ещё не запущен.</p>
@@ -74,8 +74,8 @@
 (function initTestMode(){
 const testQuestionCount=document.getElementById('testQuestionCount');const testDifficulty=document.getElementById('testDifficulty');const testTimer=document.getElementById('testTimer');const testType=document.getElementById('testType');const startBtn=document.getElementById('startTestBtn');const submitBtn=document.getElementById('submitTestAnswer');const skipBtn=document.getElementById('skipTestAnswer');const testQuestion=document.getElementById('testQuestion');const testAnswer=document.getElementById('testAnswer');const testMeta=document.getElementById('testMeta');const testStatus=document.getElementById('testStatus');const testProgress=document.getElementById('testProgress');const testCorrect=document.getElementById('testCorrect');const testWrong=document.getElementById('testWrong');const testTimerLeft=document.getElementById('testTimerLeft');const testSummary=document.getElementById('testSummary');const mistakesBody=document.querySelector('#mistakesTable tbody');
 let testState=null; const toBinary8=(n)=>n.toString(2).padStart(8,'0');
-function pickCode(d){if(d==='easy'){const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';return chars.charCodeAt(Math.floor(Math.random()*chars.length));} if(d==='medium'){return 32+Math.floor(Math.random()*(90-32+1));} return 32+Math.floor(Math.random()*(126-32+1));}
-function buildQuestion(cfg){const code=pickCode(cfg.difficulty);const char=String.fromCharCode(code);const binary=toBinary8(code);let mode=cfg.type;if(mode==='смешанный') mode=Math.random()>0.5?'символ_в_бинарный':'бинарный_в_символ';if(mode==='символ_в_бинарный'){return {prompt:`Переведи символ «${char===' ' ? '␠ (space)' : char}» в 8-битный бинарный код`,answer:binary,mode};}return {prompt:`Какой символ соответствует коду ${binary}?`,answer:char,mode};}
+function pickCode(d){if(d==='easy') return Math.floor(Math.random()*32); if(d==='medium') return Math.floor(Math.random()*128); return Math.floor(Math.random()*256);}
+function buildQuestion(cfg){const code=pickCode(cfg.difficulty);const binary=toBinary8(code);let mode=cfg.type;if(mode==='смешанный') mode=Math.random()>0.5?'десятичный_в_бинарный':'бинарный_в_десятичный';if(mode==='десятичный_в_бинарный'){return {prompt:`Переведи число ${code} в 8-битный бинарный код`,answer:binary,mode};}return {prompt:`Какое decimal-число соответствует коду ${binary}?`,answer:String(code),mode};}
 function updateHud(){if(!testState) return;testProgress.textContent=`${testState.index}/${testState.total}`;testCorrect.textContent=String(testState.correct);testWrong.textContent=String(testState.wrong);} function stopTimer(){if(testState?.timerId){clearInterval(testState.timerId);testState.timerId=null;}}
 function startTimerForQuestion(){stopTimer();if(!testState||!testState.secondsPerQuestion){testTimerLeft.textContent='—';return;}testState.left=testState.secondsPerQuestion;testTimerLeft.textContent=`${testState.left} сек`;testState.timerId=setInterval(()=>{if(!testState) return;testState.left-=1;testTimerLeft.textContent=`${Math.max(0,testState.left)} сек`;if(testState.left<=0){handleAnswer('__timeout__',true);}},1000);}
 function renderQuestion(){if(!testState) return;if(testState.index>=testState.total){finishTest();return;}testState.current=buildQuestion(testState.config);testQuestion.textContent=testState.current.prompt;testAnswer.value='';testAnswer.focus();updateHud();startTimerForQuestion();testStatus.className='bb-status bb-status--warn';testStatus.textContent='Вопрос загружен. Введите ответ.';}
