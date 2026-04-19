@@ -192,7 +192,7 @@
             <h2 style="margin:0;">6) Краткая таблица ASCII (буквы и цифры)</h2>
             <div class="bl-table-wrap">
               <table class="bl-table">
-                <thead><tr><th>Символ</th><th>Dec</th><th>Hex</th><th>Binary (8-bit)</th></tr></thead>
+                <thead><tr><th>ASCII-число</th><th>Binary (8-bit)</th><th>Символ</th></tr></thead>
                 <tbody id="theoryTableBody"></tbody>
               </table>
             </div>
@@ -219,7 +219,7 @@
   <script>
     (function initTheoryTable(){
       const rows=[];
-      const push=(code)=>rows.push(`<tr><td>${String.fromCharCode(code)}</td><td>${code}</td><td>0x${code.toString(16).toUpperCase().padStart(2,'0')}</td><td><code>${code.toString(2).padStart(8,'0')}</code></td></tr>`);
+      const push=(code)=>rows.push(`<tr><td>${code}</td><td><code>${code.toString(2).padStart(8,'0')}</code></td><td>${String.fromCharCode(code)}</td></tr>`);
       for(let c=48;c<=57;c++) push(c);
       for(let c=65;c<=90;c++) push(c);
       for(let c=97;c<=122;c++) push(c);
