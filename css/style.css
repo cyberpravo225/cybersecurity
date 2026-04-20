@@ -7617,8 +7617,8 @@ body[data-page="home"] .contacts-banner-arrow {
 }
 
 .game-link-card.game-correct{
-  border-color:#22c55e;
-  background:color-mix(in srgb, #22c55e 18%, var(--bg));
+  border-color:color-mix(in srgb, var(--accent-2) 72%, var(--accent) 28%);
+  background:color-mix(in srgb, var(--accent-2) 20%, var(--bg));
 }
 
 .game-link-card.game-incorrect,
@@ -7737,7 +7737,7 @@ body[data-page="home"] .contacts-banner-arrow {
 
 #game-strength-fill.is-weak{background:color-mix(in srgb, #ef4444 72%, var(--accent) 28%)}
 #game-strength-fill.is-medium{background:color-mix(in srgb, #f59e0b 68%, var(--accent) 32%)}
-#game-strength-fill.is-strong{background:color-mix(in srgb, #22c55e 64%, var(--accent) 36%)}
+#game-strength-fill.is-strong{background:color-mix(in srgb, var(--accent-2) 70%, var(--accent) 30%)}
 
 .game-strength-text{margin:0}
 
@@ -7753,7 +7753,7 @@ body[data-page="home"] .contacts-banner-arrow {
 }
 
 .game-checks li.is-ok{
-  color:color-mix(in srgb, #16a34a 72%, var(--accent) 28%);
+  color:color-mix(in srgb, var(--accent-2) 74%, var(--accent) 26%);
   font-weight:600;
 }
 
