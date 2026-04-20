@@ -1,343 +1,186 @@
-/* students-1-4-games.js
-   Две мини-игры для страницы students-1-4.html
-   - Найди безопасную ссылку
-   - Создай сильный пароль
-   Код изолирован в IIFE, без глобальных переменных.
-*/
-(function () {
-  const page = document.body?.dataset?.page;
-  if (page !== 'students-1-4') return;
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Безопасность — младшие школьники</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page simple" data-page="students-1-4">
 
-  const overlay = document.getElementById('game-overlay');
-  const modal = document.getElementById('game-modal');
-  const content = document.getElementById('game-modal-content');
-  const title = document.getElementById('game-modal-title');
-  const closeBtn = document.getElementById('game-close-btn');
-  const backBtn = document.getElementById('game-back-btn');
-  const gameCards = document.querySelectorAll('.senior-card.game');
+<div class="theme-backdrop" aria-hidden="true">
+  <div class="theme-orb theme-orb-one"></div>
+  <div class="theme-orb theme-orb-two"></div>
+  <div class="theme-grid"></div>
+  <canvas class="theme-network" id="theme-network"></canvas>
+</div>
 
-  if (!overlay || !modal || !content || !title || !closeBtn || !backBtn || !gameCards.length) return;
 
-  const state = {
-    activeGame: null,
-    correctAnswers: 0,
-    currentRound: null,
-    passwordValue: ''
-  };
+  <div class="site">
+    <header class="topbar glass">
+      <a class="back-btn" href="index.html">
+  ← НАЗАД
+</a>
+      <nav class="nav">
+        <button id="theme-toggle-7" class="btn icon-btn" aria-label="Переключить тему" title="Тема">
+  <svg class="icon-theme" width="22" height="22" viewBox="0 0 24 24" fill="none">
 
-  const safeLinksRounds = [
-    {
-      links: [
-        { url: 'https://secure-school-library.edu', safe: true, reason: 'HTTPS и официальный домен образовательного учреждения.' },
-        { url: 'http://secure-school-library-login.help', safe: false, reason: 'Нет HTTPS и подозрительный адрес с похожим названием.' },
-        { url: 'https://secure-school-library.edu.verify-now.org', safe: false, reason: 'Настоящий домен скрыт внутри длинного поддомена.' },
-        { url: 'https://secure-sch00l-library.edu', safe: false, reason: 'Подмена букв и цифр — частый признак фишинга.' },
-        { url: 'https://school-library-urgent-check.com', safe: false, reason: 'Маркетинговый/тревожный домен не связан со школой.' }
-      ]
-    },
-    {
-      links: [
-        { url: 'https://kids-news.example.org', safe: true, reason: 'Корректный HTTPS-адрес без лишних символов и подмен.' },
-        { url: 'https://kids-news.example.org.secure-signin.site', safe: false, reason: 'Основной домен на самом деле secure-signin.site.' },
-        { url: 'http://kids-news-example.org', safe: false, reason: 'HTTP без шифрования и изменённое имя сайта.' },
-        { url: 'https://kids-news-examp1e.org', safe: false, reason: 'Буква l заменена цифрой 1.' },
-        { url: 'https://news-kids-bonus-click.net', safe: false, reason: 'Подозрительный призыв «bonus-click» в домене.' }
-      ]
-    },
-    {
-      links: [
-        { url: 'https://portal.classroom-online.ru', safe: true, reason: 'Нормальный защищённый адрес школьного портала.' },
-        { url: 'https://portal.classroom-online.ru.login-access.info', safe: false, reason: 'Сервис login-access.info маскируется под портал.' },
-        { url: 'http://portal.classroom-online.ru', safe: false, reason: 'Нет HTTPS — данные могут быть перехвачены.' },
-        { url: 'https://portal-classroom-online.ru-confirm.com', safe: false, reason: 'Лишние слова в домене и подмена структуры адреса.' },
-        { url: 'https://classroom-onIine.ru', safe: false, reason: 'Подмена латинской l на I делает адрес обманчивым.' }
-      ]
-    }
-  ];
+    <path class="icon-moon" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>
 
-  const passwordParts = {
-    upper: ['A', 'B', 'D', 'K', 'M', 'R'],
-    lower: ['a', 'e', 'g', 'm', 'r', 'y'],
-    digit: ['2', '4', '6', '7', '8', '9'],
-    symbol: ['!', '@', '#', '$', '%', '&', '?']
-  };
+    <g class="icon-sun">
+      <circle cx="12" cy="12" r="4"/>
+      <line x1="12" y1="1" x2="12" y2="4"/>
+      <line x1="12" y1="20" x2="12" y2="23"/>
+      <line x1="4.2" y1="4.2" x2="6.3" y2="6.3"/>
+      <line x1="17.7" y1="17.7" x2="19.8" y2="19.8"/>
+      <line x1="1" y1="12" x2="4" y2="12"/>
+      <line x1="20" y1="12" x2="23" y2="12"/>
+      <line x1="4.2" y1="19.8" x2="6.3" y2="17.7"/>
+      <line x1="17.7" y1="6.3" x2="19.8" y2="4.2"/>
+    </g>
 
-  function shuffle(array) {
-    const copy = [...array];
-    for (let i = copy.length - 1; i > 0; i -= 1) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [copy[i], copy[j]] = [copy[j], copy[i]];
-    }
-    return copy;
-  }
+  </svg>
+</button>
+      </nav>
+    </header>
 
-  function openModal(gameId) {
-    state.activeGame = gameId;
-    overlay.hidden = false;
-    modal.hidden = false;
-    requestAnimationFrame(() => {
-      overlay.classList.add('is-open');
-      modal.classList.add('is-open');
-    });
+    <main class="main">
+      <section class="section container reveal">
+        <h1>Безопасность для младших школьников</h1>
+        <p class="lead simple-text">Простые правила безопасности в интернете для учеников 1–4 классов.</p>
 
-    renderGame(gameId);
-  }
+<div class="audience-hero audience-hero-kids">
+  <p class="audience-hero-title">Интернет без страха и с умом ✨</p>
+  <p>Короткие правила, понятные примеры и игровые задания помогают детям быстро запомнить безопасное поведение онлайн.</p>
+  <div class="audience-tags">
+    <span>🧒 1–4 класс</span>
+    <span>🛡️ 5 базовых привычек</span>
+    <span>🎯 Практика на каждом уроке</span>
+  </div>
+</div>
 
-  function closeModal() {
-    overlay.classList.remove('is-open');
-    modal.classList.remove('is-open');
+<div class="senior-rules">
 
-    setTimeout(() => {
-      overlay.hidden = true;
-      modal.hidden = true;
-      resetState();
-      content.innerHTML = '';
-      title.textContent = 'Игра';
-    }, 180);
-  }
+<div class="senior-rule">
+<div class="senior-rule-icon">🔗</div>
+<h3>Не открывай незнакомые ссылки</h3>
+<p>Если ссылка пришла от незнакомого человека — лучше её не открывать.</p>
+</div>
 
-  function resetState() {
-    state.activeGame = null;
-    state.currentRound = null;
-    state.correctAnswers = 0;
-    state.passwordValue = '';
-  }
+<div class="senior-rule">
+<div class="senior-rule-icon">🧑‍🏫</div>
+<h3>Скажи взрослым</h3>
+<p>Если в интернете что-то кажется странным или пугает — расскажи родителям или учителю.</p>
+</div>
 
-  function renderGame(gameId) {
-    content.innerHTML = '';
-    if (gameId === 'safe-link') {
-      title.textContent = 'Найди безопасную ссылку';
-      state.correctAnswers = 0;
-      renderSafeLinkRound();
-      return;
-    }
+<div class="senior-rule">
+<div class="senior-rule-icon">🔒</div>
+<h3>Не делись паролем</h3>
+<p>Пароль — это секрет. Никому не говори его и не отправляй в интернете.</p>
+</div>
 
-    if (gameId === 'strong-password') {
-      title.textContent = 'Создай сильный пароль';
-      state.passwordValue = '';
-      renderPasswordGame();
-    }
-  }
+</div>
 
-  function renderSafeLinkRound() {
-    const round = safeLinksRounds[Math.floor(Math.random() * safeLinksRounds.length)];
-    state.currentRound = {
-      links: shuffle(round.links),
-      selected: null,
-      answered: false
-    };
 
-    const wrapper = document.createElement('section');
-    wrapper.className = 'game-panel';
 
-    wrapper.innerHTML = `
-      <p class="game-subtitle">Выбери ссылку, которую безопаснее всего открыть.</p>
-      <p class="game-score">Правильных ответов: <strong>${state.correctAnswers}</strong></p>
-      <div class="game-links" id="game-links"></div>
-      <div class="game-feedback" id="game-link-feedback" aria-live="polite"></div>
-      <button class="game-button" type="button" id="game-next-round" disabled>Следующий раунд</button>
-    `;
+<div class="senior-actions">
 
-    content.appendChild(wrapper);
+<div class="senior-action">
+🧑‍💻 Если сайт выглядит странно — лучше закрыть его.
+</div>
 
-    const linksEl = wrapper.querySelector('#game-links');
-    const feedbackEl = wrapper.querySelector('#game-link-feedback');
-    const nextBtn = wrapper.querySelector('#game-next-round');
+<div class="senior-action">
+👨‍👩‍👧 Если кто-то просит личные данные — скажи взрослым.
+</div>
 
-    state.currentRound.links.forEach((link) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'game-link-card';
-      btn.dataset.safe = String(link.safe);
-      btn.textContent = link.url;
+<div class="senior-action">
+⚠️ Если сообщение пугает или торопит — это может быть мошенник.
+</div>
 
-      btn.addEventListener('click', () => {
-        if (state.currentRound.answered) return;
-        state.currentRound.answered = true;
-        state.currentRound.selected = link;
+</div>
 
-        linksEl.querySelectorAll('.game-link-card').forEach((card) => {
-          const isSafe = card.dataset.safe === 'true';
-          card.disabled = true;
-          card.classList.add(isSafe ? 'game-correct' : 'game-incorrect');
+<div class="resource-block">
+<h2>Презентации</h2>
 
-          if (card.textContent === link.url && !link.safe) {
-            card.classList.add('game-picked-wrong');
-          }
-        });
+<div class="senior-cards">
 
-        if (link.safe) {
-          state.correctAnswers += 1;
-          feedbackEl.innerHTML = `<p><strong>Верно!</strong> ${link.reason}</p>`;
-        } else {
-          const safeOption = state.currentRound.links.find((item) => item.safe);
-          feedbackEl.innerHTML = `<p><strong>Почти!</strong> ${link.reason}</p><p>Безопасный вариант: <span class="game-inline-safe">${safeOption.url}</span>. ${safeOption.reason}</p>`;
-        }
+<a href="assets/безопасный интернет 1-4.pptx" class="senior-card presentation" download>
+<div class="senior-card-icon">📊</div>
+<h3>Безопасный интернет</h3>
+<p>Простая презентация о правилах безопасного поведения в интернете.</p>
+</a>
 
-        nextBtn.disabled = false;
-      });
+<a href="#" class="senior-card presentation">
+<div class="senior-card-icon">💻</div>
+<h3>Правила онлайн-безопасности</h3>
+<p>Как правильно пользоваться интернетом и избегать опасностей.</p>
+</a>
 
-      linksEl.appendChild(btn);
-    });
+</div>
 
-    nextBtn.addEventListener('click', (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      renderSafeLinkRound();
-    });
-  }
+</div>
 
-  function evaluatePassword(password) {
-    const checks = {
-      length: password.length >= 12,
-      upper: /[A-Z]/.test(password),
-      lower: /[a-z]/.test(password),
-      digit: /\d/.test(password),
-      symbol: /[^A-Za-z0-9]/.test(password)
-    };
 
-    const score = Object.values(checks).filter(Boolean).length;
-    let label = 'Слабый';
-    if (score >= 5) label = 'Сильный';
-    else if (score >= 3) label = 'Средний';
+<div class="resource-block">
+<h2>Карточки для повторения</h2>
+<div class="senior-cards">
+<article class="senior-card">
+<div class="senior-card-icon">✅</div>
+<h3>Можно / нельзя</h3>
+<p>Быстрые карточки для закрепления: что делать в безопасной ситуации и чего избегать.</p>
+</article>
+<article class="senior-card">
+<div class="senior-card-icon">🗝️</div>
+<h3>Мой секретный пароль</h3>
+<p>Шаблон-памятка, где дети учатся собирать длинный и надёжный пароль.</p>
+</article>
+</div>
+</div>
 
-    return { checks, score, label };
-  }
 
-  function randomFrom(list, count) {
-    return shuffle(list).slice(0, count);
-  }
+<div class="resource-block">
+<h2>Игры / тренажёры</h2>
 
-  function buildPool() {
-    return shuffle([
-      ...randomFrom(passwordParts.upper, 4),
-      ...randomFrom(passwordParts.lower, 4),
-      ...randomFrom(passwordParts.digit, 4),
-      ...randomFrom(passwordParts.symbol, 4)
-    ]);
-  }
+<div class="senior-cards">
 
-  function generateStrongPassword() {
-    const arr = [
-      ...randomFrom(passwordParts.upper, 3),
-      ...randomFrom(passwordParts.lower, 4),
-      ...randomFrom(passwordParts.digit, 3),
-      ...randomFrom(passwordParts.symbol, 3)
-    ];
-    return shuffle(arr).join('');
-  }
+<a href="#" class="senior-card game" aria-haspopup="dialog">
+<div class="senior-card-icon">🎮</div>
+<h3>Найди безопасную ссылку</h3>
+<p>Игра: выбери правильную ссылку среди нескольких вариантов.</p>
+</a>
 
-  function renderPasswordGame() {
-    const wrapper = document.createElement('section');
-    wrapper.className = 'game-panel';
+<a href="#" class="senior-card game" aria-haspopup="dialog">
+<div class="senior-card-icon">🧩</div>
+<h3>Создай сильный пароль</h3>
+<p>Собери безопасный пароль из разных символов.</p>
+</a>
 
-    wrapper.innerHTML = `
-      <p class="game-subtitle">Собери пароль: нажимай на символы или используй генератор.</p>
-      <div class="game-password-box" id="game-password-output" aria-live="polite">Пароль: <span>—</span></div>
+</div>
 
-      <div class="game-password-controls">
-        <button class="game-button" type="button" id="game-password-check">Проверить</button>
-        <button class="game-button game-button-secondary" type="button" id="game-password-clear">Очистить</button>
-        <button class="game-button game-button-secondary" type="button" id="game-password-generate">Сгенерировать пароль</button>
-      </div>
+</div>
 
-      <div class="game-password-pool" id="game-password-pool"></div>
 
-      <div class="game-strength-wrap">
-        <div class="game-strength-bar"><span id="game-strength-fill"></span></div>
-        <p class="game-strength-text" id="game-strength-text">Уровень: —</p>
-      </div>
+<div class="resource-block">
+<h2>Методическая информация</h2>
+<p class="simple-text">Материалы для учителей и родителей: советы по обучению детей правилам безопасного поведения в интернете.</p>
+</div>
 
-      <ul class="game-checks" id="game-checks">
-        <li data-check="length">Минимум 12 символов</li>
-        <li data-check="upper">Есть заглавные буквы</li>
-        <li data-check="lower">Есть строчные буквы</li>
-        <li data-check="digit">Есть цифры</li>
-        <li data-check="symbol">Есть спецсимволы</li>
-      </ul>
-    `;
+      </section>
+    </main>
 
-    content.appendChild(wrapper);
+<div class="game-overlay" id="game-overlay" hidden></div>
+<div class="game-modal" id="game-modal" role="dialog" aria-modal="true" aria-labelledby="game-modal-title" hidden>
+  <div class="game-modal-header">
+    <button class="game-button game-button-ghost" type="button" id="game-back-btn">← Назад</button>
+    <h2 id="game-modal-title" class="game-modal-title">Игра</h2>
+    <button class="game-button game-button-ghost" type="button" id="game-close-btn" aria-label="Закрыть игру">✕</button>
+  </div>
+  <div class="game-modal-content" id="game-modal-content"></div>
+</div>
 
-    const output = wrapper.querySelector('#game-password-output span');
-    const pool = wrapper.querySelector('#game-password-pool');
-    const checkBtn = wrapper.querySelector('#game-password-check');
-    const clearBtn = wrapper.querySelector('#game-password-clear');
-    const generateBtn = wrapper.querySelector('#game-password-generate');
-    const fill = wrapper.querySelector('#game-strength-fill');
-    const strengthText = wrapper.querySelector('#game-strength-text');
-    const checksList = wrapper.querySelector('#game-checks');
-
-    buildPool().forEach((char) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'game-char';
-      btn.dataset.char = char;
-      btn.textContent = char;
-      btn.addEventListener('click', () => {
-        state.passwordValue += char;
-        output.textContent = state.passwordValue;
-      });
-      pool.appendChild(btn);
-    });
-
-    clearBtn.addEventListener('click', () => {
-      state.passwordValue = '';
-      output.textContent = '—';
-      fill.style.width = '0%';
-      fill.className = '';
-      strengthText.textContent = 'Уровень: —';
-      checksList.querySelectorAll('li').forEach((item) => item.classList.remove('is-ok'));
-    });
-
-    generateBtn.addEventListener('click', () => {
-      state.passwordValue = generateStrongPassword();
-      output.textContent = state.passwordValue;
-    });
-
-    checkBtn.addEventListener('click', () => {
-      const result = evaluatePassword(state.passwordValue);
-      const percent = Math.round((result.score / 5) * 100);
-
-      fill.style.width = `${percent}%`;
-      fill.className = result.label === 'Сильный'
-        ? 'is-strong'
-        : result.label === 'Средний'
-          ? 'is-medium'
-          : 'is-weak';
-
-      strengthText.textContent = `Уровень: ${result.label}`;
-
-      checksList.querySelectorAll('li').forEach((item) => {
-        const checkName = item.dataset.check;
-        item.classList.toggle('is-ok', Boolean(result.checks[checkName]));
-      });
-    });
-  }
-
-  function resolveGameId(card) {
-    const heading = card.querySelector('h3')?.textContent?.trim().toLowerCase() || '';
-    if (heading.includes('безопасную ссылку')) return 'safe-link';
-    if (heading.includes('сильный пароль')) return 'strong-password';
-    return null;
-  }
-
-  gameCards.forEach((card) => {
-    card.addEventListener('click', (event) => {
-      event.preventDefault();
-      const gameId = resolveGameId(card);
-      if (!gameId) return;
-      openModal(gameId);
-    });
-  });
-
-  closeBtn.addEventListener('click', closeModal);
-  backBtn.addEventListener('click', closeModal);
-  overlay.addEventListener('click', closeModal);
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !modal.hidden) {
-      closeModal();
-    }
-  });
-})();
+  </div>
+  <script src="js/main.js"></script>
+  <script src="js/students-1-4-games.js"></script>
+<script src="js/theme-network.js"></script>
+</body>
+</html>
