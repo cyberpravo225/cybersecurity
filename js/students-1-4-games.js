@@ -180,7 +180,11 @@
       linksEl.appendChild(btn);
     });
 
-    nextBtn.addEventListener('click', renderSafeLinkRound);
+    nextBtn.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      renderSafeLinkRound();
+    });
   }
 
   function evaluatePassword(password) {
