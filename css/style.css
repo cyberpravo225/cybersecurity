@@ -7530,7 +7530,9 @@ body[data-page="home"] .contacts-banner-arrow {
 .game-overlay{
   position:fixed;
   inset:0;
-  background:rgba(10,15,30,.58);
+  background:color-mix(in srgb, #0b1220 58%, transparent);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
   opacity:0;
   transition:opacity .18s ease;
   z-index:80;
@@ -7548,10 +7550,10 @@ body[data-page="home"] .contacts-banner-arrow {
   width:min(760px, calc(100% - 24px));
   max-height:calc(100vh - 36px);
   overflow:auto;
-  background:var(--card-bg);
-  border:1px solid color-mix(in srgb, var(--accent) 22%, transparent);
-  box-shadow:0 24px 48px rgba(0,0,0,.24);
-  border-radius:18px;
+  background:linear-gradient(180deg, color-mix(in srgb, var(--bg) 92%, rgba(255,255,255,.18)), color-mix(in srgb, var(--bg) 80%, rgba(148,163,184,.1)));
+  border:1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+  box-shadow:0 24px 48px rgba(2,6,23,.24), inset 0 1px 0 rgba(255,255,255,.2);
+  border-radius:20px;
   padding:16px;
   z-index:90;
   opacity:0;
@@ -7600,10 +7602,10 @@ body[data-page="home"] .contacts-banner-arrow {
 .game-link-card{
   width:100%;
   text-align:left;
-  background:color-mix(in srgb, var(--bg) 86%, transparent);
+  background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04));
   color:var(--text);
-  border:1px solid color-mix(in srgb, var(--accent) 22%, transparent);
-  border-radius:12px;
+  border:1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+  border-radius:14px;
   padding:12px 14px;
   cursor:pointer;
   transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
@@ -7611,7 +7613,7 @@ body[data-page="home"] .contacts-banner-arrow {
 
 .game-link-card:hover{
   transform:translateY(-1px);
-  box-shadow:0 10px 20px rgba(0,0,0,.12);
+  box-shadow:0 14px 28px rgba(2,6,23,.16);
 }
 
 .game-link-card.game-correct{
@@ -7627,7 +7629,7 @@ body[data-page="home"] .contacts-banner-arrow {
 
 .game-feedback{
   min-height:54px;
-  background:color-mix(in srgb, var(--bg) 86%, transparent);
+  background:linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.03));
   border-radius:12px;
   padding:12px;
   border:1px solid color-mix(in srgb, var(--accent) 16%, transparent);
@@ -7646,10 +7648,12 @@ body[data-page="home"] .contacts-banner-arrow {
 .game-button{
   border:none;
   border-radius:12px;
-  background:linear-gradient(135deg, var(--accent), var(--accent-2));
-  color:#fff;
+  background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.06));
+  color:var(--text);
+  border:1px solid color-mix(in srgb, var(--accent) 24%, transparent);
   padding:10px 14px;
   font-weight:700;
+  box-shadow:0 10px 22px rgba(2,6,23,.12);
   cursor:pointer;
   transition:transform .18s ease, opacity .18s ease;
 }
@@ -7664,22 +7668,22 @@ body[data-page="home"] .contacts-banner-arrow {
 }
 
 .game-button-secondary{
-  background:color-mix(in srgb, var(--bg) 82%, var(--accent));
+  background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.03));
   color:var(--text);
-  border:1px solid color-mix(in srgb, var(--accent) 25%, transparent);
 }
 
 .game-button-ghost{
   background:transparent;
   color:var(--text);
   border:1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  box-shadow:none;
 }
 
 .game-password-box{
   padding:10px 12px;
   border-radius:12px;
   border:1px solid color-mix(in srgb, var(--accent) 20%, transparent);
-  background:color-mix(in srgb, var(--bg) 86%, transparent);
+  background:linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.03));
   font-weight:600;
   word-break:break-all;
 }
@@ -7701,7 +7705,7 @@ body[data-page="home"] .contacts-banner-arrow {
   padding:8px 10px;
   border-radius:10px;
   border:1px solid color-mix(in srgb, var(--accent) 28%, transparent);
-  background:color-mix(in srgb, var(--bg) 86%, transparent);
+  background:linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.03));
   color:var(--text);
   font-weight:700;
   cursor:pointer;
