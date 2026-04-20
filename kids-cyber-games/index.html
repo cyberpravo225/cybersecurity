@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Кибер-игры: ссылки и пароли</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero" role="banner">
+    <div class="container">
+      <p class="tag">Обучающий тренажёр</p>
+      <h1>Кибер-игры: ссылки и пароли</h1>
+      <p class="subtitle">Учимся распознавать безопасные ссылки и собирать надёжные пароли.</p>
+    </div>
+  </header>
+
+  <main class="container" id="main-content">
+    <section class="tip-card" aria-live="polite">
+      <h2>Совет дня по безопасности</h2>
+      <p id="daily-tip">Проверяй домен внимательно: даже одна лишняя буква может быть ловушкой.</p>
+    </section>
+
+    <nav class="game-switch" aria-label="Выбор игры">
+      <button type="button" class="game-tab active" data-game="links" aria-controls="game-links" aria-pressed="true">🎮 Найди безопасную ссылку</button>
+      <button type="button" class="game-tab" data-game="password" aria-controls="game-password" aria-pressed="false">🧩 Создай сильный пароль</button>
+    </nav>
+
+    <section id="game-links" class="game-panel active" aria-labelledby="links-title">
+      <article class="card">
+        <h2 id="links-title">Игра 1: Найди безопасную ссылку</h2>
+        <p class="instruction">Выбери безопасную ссылку среди похожих вариантов. В каждом раунде безопасен только один адрес.</p>
+        <div class="toolbar">
+          <button id="start-links" class="btn primary">Старт / Рестарт</button>
+          <button id="next-round" class="btn" disabled>Следующий раунд</button>
+          <span id="difficulty-label" class="badge" aria-live="polite">Уровень: —</span>
+        </div>
+        <p class="score" id="links-score" aria-live="polite">Правильных ответов: 0 из 0</p>
+        <div id="links-options" class="links-grid" role="group" aria-label="Варианты ссылок"></div>
+        <div id="links-result" class="result" role="status" aria-live="polite">Нажми «Старт / Рестарт», чтобы начать игру.</div>
+      </article>
+    </section>
+
+    <section id="game-password" class="game-panel" aria-labelledby="password-title">
+      <article class="card">
+        <h2 id="password-title">Игра 2: Создай сильный пароль</h2>
+        <p class="instruction">Нажимай на сегменты ниже, чтобы собрать пароль. Потом проверь его надёжность.</p>
+
+        <div class="toolbar wrap">
+          <button id="clear-password" class="btn">Очистить</button>
+          <button id="generate-password" class="btn">Сгенерировать безопасный</button>
+          <button id="copy-password" class="btn">Скопировать</button>
+        </div>
+
+        <label for="password-output" class="input-label">Твой пароль</label>
+        <div class="password-row">
+          <input id="password-output" class="password-output" type="text" readonly aria-label="Собранный пароль" />
+          <button id="check-password" class="btn primary">Проверить пароль</button>
+        </div>
+
+        <p class="score" id="password-score" aria-live="polite">Успешных проверок: 0</p>
+
+        <div id="password-pool" class="token-grid" aria-label="Сегменты для сборки пароля"></div>
+
+        <section class="strength-box" aria-live="polite">
+          <div class="meter" aria-hidden="true"><div id="meter-fill" class="meter-fill"></div></div>
+          <p id="strength-text" class="strength-text">Оценка: —</p>
+          <ul id="criteria-list" class="criteria-list"></ul>
+        </section>
+
+        <div id="password-result" class="result" role="status" aria-live="polite">Собери пароль и нажми «Проверить пароль».</div>
+      </article>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
