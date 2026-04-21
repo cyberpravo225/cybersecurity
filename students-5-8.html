@@ -159,12 +159,12 @@
 <div class="resource-block">
 <h2>Практические разборы</h2>
 <div class="senior-cards">
-<article class="senior-card">
+<article class="senior-card" data-practice="mail" role="button" tabindex="0" aria-haspopup="dialog">
 <div class="senior-card-icon">📬</div>
 <h3>Разбери письмо</h3>
 <p>Ученики получают примеры сообщений и отмечают признаки мошенничества.</p>
 </article>
-<article class="senior-card">
+<article class="senior-card" data-practice="site" role="button" tabindex="0" aria-haspopup="dialog">
 <div class="senior-card-icon">🌐</div>
 <h3>Проверь сайт за 30 секунд</h3>
 <p>Чек-лист для проверки домена, замка HTTPS и странных элементов страницы.</p>
@@ -215,7 +215,18 @@
 
 </div>
 
+<div class="game-overlay" id="practice-overlay" hidden></div>
+<div class="game-modal" id="practice-modal" role="dialog" aria-modal="true" aria-labelledby="practice-modal-title" hidden>
+  <div class="game-modal-header">
+    <button class="game-button game-button-ghost" type="button" id="practice-back-btn">← Назад</button>
+    <h2 id="practice-modal-title" class="game-modal-title">Практический разбор</h2>
+    <button class="game-button game-button-ghost" type="button" id="practice-close-btn" aria-label="Закрыть разбор">✕</button>
+  </div>
+  <div class="game-modal-content" id="practice-modal-content"></div>
+</div>
+
 <script src="js/main.js"></script>
+<script src="js/students-5-8-practice.js"></script>
 
 <script src="js/theme-network.js"></script>
 </body>
