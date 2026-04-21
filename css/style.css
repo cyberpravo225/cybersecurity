@@ -8001,27 +8001,3 @@ flex-wrap:wrap;
 gap:10px;
 margin-top:8px;
 }
-
-.presentation-viewer{
-margin-top:20px;
-padding:16px;
-border-radius:12px;
-background:var(--card-bg);
-border:2px solid var(--line);
-}
-
-.presentation-viewer-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:12px;
-margin-bottom:12px;
-}
-
-#presentation-viewer-frame{
-width:100%;
-min-height:520px;
-border:0;
-border-radius:10px;
-background:#fff;
-}
