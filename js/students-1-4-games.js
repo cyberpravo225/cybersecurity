@@ -137,6 +137,69 @@
         { url: 'https://school-caIendar.edu.ru', safe: false, reason: 'Подмена l на I в слове calendar.' },
         { url: 'https://edu-calendar-reward.ru', safe: false, reason: 'Сомнительное слово reward в адресе.' }
       ]
+    },
+    {
+      links: [
+        { url: 'https://science-kids.lab', safe: true, reason: 'Официальный HTTPS-адрес учебного ресурса.' },
+        { url: 'https://science-kids.lab.verify-login.quest', safe: false, reason: 'Настоящий домен verify-login.quest, а не lab.' },
+        { url: 'http://science-kids.lab', safe: false, reason: 'Небезопасный HTTP.' },
+        { url: 'https://sc1ence-kids.lab', safe: false, reason: 'Подмена буквы i цифрой 1.' },
+        { url: 'https://science-kids-prize.quest', safe: false, reason: 'Подозрительный домен с prize.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://planetarium-school.ru', safe: true, reason: 'Понятный школьный адрес с HTTPS.' },
+        { url: 'https://planetarium-school.ru.account-reset.email', safe: false, reason: 'Реальный домен account-reset.email.' },
+        { url: 'http://planetarium-school.ru', safe: false, reason: 'Нет шифрования HTTPS.' },
+        { url: 'https://planetarium-schooI.ru', safe: false, reason: 'Подмена буквы l на I.' },
+        { url: 'https://planetarium-bonus.ru', safe: false, reason: 'Слишком «рекламный» адрес.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://kids-code.club', safe: true, reason: 'Корректный домен клуба программирования.' },
+        { url: 'https://kids-code.club.login-guard.live', safe: false, reason: 'Домен login-guard.live маскируется под клуб.' },
+        { url: 'http://kids-code.club', safe: false, reason: 'HTTP без защиты.' },
+        { url: 'https://klds-code.club', safe: false, reason: 'Подмена i на l в kids.' },
+        { url: 'https://kids-code-gift.live', safe: false, reason: 'Подозрительная приманка gift.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://math-start.school', safe: true, reason: 'Официальный учебный сайт с HTTPS.' },
+        { url: 'https://math-start.school.secure-mail.host', safe: false, reason: 'Реальный домен secure-mail.host.' },
+        { url: 'http://math-start.school', safe: false, reason: 'Небезопасный протокол.' },
+        { url: 'https://math-start-schooI.com', safe: false, reason: 'Похожее, но другое имя домена.' },
+        { url: 'https://math-start-reward.host', safe: false, reason: 'Слово reward часто используют мошенники.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://music4kids.edu', safe: true, reason: 'Прямой и защищённый образовательный домен.' },
+        { url: 'https://music4kids.edu.auth-ticket.space', safe: false, reason: 'Настоящий домен auth-ticket.space.' },
+        { url: 'http://music4kids.edu', safe: false, reason: 'Нет HTTPS.' },
+        { url: 'https://muslc4kids.edu', safe: false, reason: 'Подмена i на l в слове music.' },
+        { url: 'https://music4kids-free.space', safe: false, reason: 'Подозрительное слово free в домене.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://school-map.online', safe: true, reason: 'Нормальный адрес школьного сервиса.' },
+        { url: 'https://school-map.online.profile-check.team', safe: false, reason: 'Реальный домен profile-check.team.' },
+        { url: 'http://school-map.online', safe: false, reason: 'HTTP — небезопасно.' },
+        { url: 'https://school-rnap.online', safe: false, reason: 'Подмена m на rn в map.' },
+        { url: 'https://school-map-gift.team', safe: false, reason: 'Подозрительный «подарочный» домен.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://young-reader.books', safe: true, reason: 'Официальный HTTPS-адрес без подмен.' },
+        { url: 'https://young-reader.books.account-verify.blue', safe: false, reason: 'Настоящий домен account-verify.blue.' },
+        { url: 'http://young-reader.books', safe: false, reason: 'Небезопасный протокол http.' },
+        { url: 'https://young-readcr.books', safe: false, reason: 'Подмена e на c.' },
+        { url: 'https://young-reader-prize.blue', safe: false, reason: 'Сомнительное слово prize.' }
+      ]
     }
   ];
 
@@ -249,15 +312,24 @@
         if (state.currentRound.answered) return;
         state.currentRound.answered = true;
         state.currentRound.selected = link;
+        const safeOption = state.currentRound.links.find((item) => item.safe);
 
         linksEl.querySelectorAll('.game-link-card').forEach((card) => {
-          const isSafe = card.dataset.safe === 'true';
           card.disabled = true;
-          if (isSafe) {
+
+          const isSelected = card.textContent === link.url;
+          const isSafeCard = safeOption && card.textContent === safeOption.url;
+
+          if (link.safe && isSelected) {
             card.classList.add('game-correct');
           }
-          if (card.textContent === link.url && !link.safe) {
+
+          if (!link.safe && isSelected) {
             card.classList.add('game-incorrect', 'game-picked-wrong');
+          }
+
+          if (!link.safe && isSafeCard) {
+            card.classList.add('game-correct');
           }
         });
 
@@ -265,7 +337,6 @@
           state.correctAnswers += 1;
           feedbackEl.innerHTML = `<p><strong>Верно!</strong> ${link.reason}</p>`;
         } else {
-          const safeOption = state.currentRound.links.find((item) => item.safe);
           feedbackEl.innerHTML = `<p><strong>Почти!</strong> ${link.reason}</p><p>Безопасный вариант: <span class="game-inline-safe">${safeOption.url}</span>. ${safeOption.reason}</p>`;
         }
 
