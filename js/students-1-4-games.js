@@ -27,9 +27,9 @@
     passwordValue: ''
   };
 
-  const SAFE_LINK_ROUNDS_TOTAL = 10;
-  const CAN_CANNOT_ROUNDS_TOTAL = 6;
-  const SECRET_PASSWORD_ROUNDS_TOTAL = 6;
+  const SAFE_LINK_ROUNDS_TOTAL = 12;
+  const CAN_CANNOT_ROUNDS_TOTAL = 10;
+  const SECRET_PASSWORD_ROUNDS_TOTAL = 10;
 
   const canCannotScenarios = [
     { text: 'Незнакомец в чате просит прислать фото и никому не говорить.', safe: false, reason: 'Так делать нельзя: нужно сразу рассказать взрослым.' },
@@ -39,7 +39,14 @@
     { text: 'Одноклассник просит твой пароль \"только на минутку\".', safe: false, reason: 'Пароль никому не передают — даже друзьям.' },
     { text: 'Ты придумал длинный пароль и сохранил его в менеджере с родителями.', safe: true, reason: 'Хорошая практика: длинный пароль и безопасное хранение.' },
     { text: 'В сообщении пишут \"СРОЧНО! Нажми за 10 секунд\".', safe: false, reason: 'Спешка и давление — частые признаки обмана.' },
-    { text: 'Перед входом на сайт ты проверил, что адрес написан без ошибок.', safe: true, reason: 'Проверка адреса помогает избежать фишинга.' }
+    { text: 'Перед входом на сайт ты проверил, что адрес написан без ошибок.', safe: true, reason: 'Проверка адреса помогает избежать фишинга.' },
+    { text: 'В игре новый знакомый просит перейти в личные сообщения и отправить пароль.', safe: false, reason: 'Никогда не отправляй пароль в сообщениях.' },
+    { text: 'Ты включил двухфакторную защиту вместе с родителями.', safe: true, reason: 'Дополнительная защита делает аккаунт безопаснее.' },
+    { text: 'Ты скачал файл с сайта, где много всплывающей рекламы «Вы выиграли!»', safe: false, reason: 'Подозрительные сайты часто распространяют вредоносные файлы.' },
+    { text: 'Перед установкой приложения ты проверил отзывы и спросил взрослого.', safe: true, reason: 'Так ты снижаешь риск установить опасное приложение.' },
+    { text: 'Тебя просят срочно назвать код из СМС для входа в аккаунт.', safe: false, reason: 'Коды подтверждения нельзя никому сообщать.' },
+    { text: 'Ты вышел из аккаунта после работы на общем школьном компьютере.', safe: true, reason: 'Это защищает аккаунт от чужого доступа.' },
+    { text: 'Ты публикуешь фото с билетом, где видно QR-код и номер.', safe: false, reason: 'На фото могут оказаться личные данные.' }
   ];
 
   const secretPasswordQuiz = [
@@ -84,6 +91,99 @@
       options: ['На бумажке в классе', 'В заметке, которую знают все', 'В менеджере паролей с помощью взрослых'],
       correct: 2,
       reason: 'Нужен безопасный способ хранения с контролем взрослых.'
+    },
+    {
+      question: 'Можно ли ставить пароль как своё имя и год рождения?',
+      options: ['Да, это удобно', 'Нет, такой пароль легко угадать', 'Можно, если добавить одну цифру'],
+      correct: 1,
+      reason: 'Личные данные часто угадываются в первую очередь.'
+    },
+    {
+      question: 'Что лучше сделать с паролем через время?',
+      options: ['Периодически обновлять', 'Никогда не менять', 'Давать друзьям для проверки'],
+      correct: 0,
+      reason: 'Регулярная смена повышает безопасность аккаунта.'
+    },
+    {
+      question: 'Как лучше хранить разные пароли для разных сайтов?',
+      options: ['Использовать один пароль везде', 'Запоминать всё без правил', 'Пользоваться менеджером паролей'],
+      correct: 2,
+      reason: 'Менеджер паролей помогает хранить сложные и разные пароли.'
+    },
+    {
+      question: 'Если друг просит твой пароль \"на минуту\", что делать?',
+      options: ['Дать, если друг хороший', 'Не давать пароль никому', 'Отправить половину пароля'],
+      correct: 1,
+      reason: 'Пароль нельзя передавать даже знакомым.'
+    },
+    {
+      question: 'Для чего нужна двухфакторная защита?',
+      options: ['Чтобы пароль был короче', 'Чтобы войти только по логину', 'Чтобы добавить второй шаг проверки'],
+      correct: 2,
+      reason: 'Второй шаг входа защищает, даже если пароль узнали.'
+    },
+    {
+      question: 'Что делать, если сайт просит пароль на подозрительной странице?',
+      options: ['Ввести быстрее', 'Закрыть и проверить адрес сайта', 'Написать пароль в комментарии'],
+      correct: 1,
+      reason: 'Сначала проверяй адрес и безопасность страницы.'
+    }
+  ];
+
+  const extraSafeLinkRounds = [
+    {
+      links: [
+        { url: 'https://kids-drawing.academy', safe: true, reason: 'Корректный HTTPS-адрес образовательного сайта.' },
+        { url: 'https://kids-drawing.academy.verify-access.page', safe: false, reason: 'Реальный домен verify-access.page, а не academy.' },
+        { url: 'http://kids-drawing.academy', safe: false, reason: 'HTTP без защиты соединения.' },
+        { url: 'https://klds-drawing.academy', safe: false, reason: 'Подмена i на l в слове kids.' },
+        { url: 'https://drawing-gift-academy.win', safe: false, reason: 'Подозрительный домен с gift/win.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://planet-kids.school', safe: true, reason: 'Официальный HTTPS-адрес без лишних вставок.' },
+        { url: 'https://planet-kids.school.account-safe.click', safe: false, reason: 'Настоящий домен account-safe.click.' },
+        { url: 'http://planet-kids.school', safe: false, reason: 'Небезопасный HTTP.' },
+        { url: 'https://planet-klds.school', safe: false, reason: 'Подмена i на l в kids.' },
+        { url: 'https://planet-kids-prize.click', safe: false, reason: 'Приманка prize в домене.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://school-labs.edu', safe: true, reason: 'Понятный защищённый школьный адрес.' },
+        { url: 'https://school-labs.edu.secure-forms.live', safe: false, reason: 'Реальный домен secure-forms.live.' },
+        { url: 'http://school-labs.edu', safe: false, reason: 'Нет HTTPS.' },
+        { url: 'https://schooI-labs.edu', safe: false, reason: 'Подмена буквы l на I в слове school.' },
+        { url: 'https://school-labs-bonus.live', safe: false, reason: 'Подозрительный bonus-домен.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://my-classroom.page', safe: true, reason: 'Нормальный HTTPS-адрес учебной страницы.' },
+        { url: 'https://my-classroom.page.login-checker.site', safe: false, reason: 'Реальный домен login-checker.site.' },
+        { url: 'http://my-classroom.page', safe: false, reason: 'HTTP без шифрования.' },
+        { url: 'https://my-cIassroom.page', safe: false, reason: 'Подмена l на I в classroom.' },
+        { url: 'https://my-classroom-reward.site', safe: false, reason: 'Слово reward в домене подозрительно.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://kids-geo.map', safe: true, reason: 'Короткий читаемый адрес с HTTPS.' },
+        { url: 'https://kids-geo.map.confirm-profile.fun', safe: false, reason: 'Настоящий домен confirm-profile.fun.' },
+        { url: 'http://kids-geo.map', safe: false, reason: 'Небезопасный протокол HTTP.' },
+        { url: 'https://klds-geo.map', safe: false, reason: 'Подмена i на l в kids.' },
+        { url: 'https://kids-geo-prize.fun', safe: false, reason: 'Подозрительная приманка prize.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://book-club.children', safe: true, reason: 'Корректный HTTPS-адрес клуба чтения.' },
+        { url: 'https://book-club.children.verify-user.help', safe: false, reason: 'Основной домен verify-user.help.' },
+        { url: 'http://book-club.children', safe: false, reason: 'HTTP без защиты.' },
+        { url: 'https://book-cIub.children', safe: false, reason: 'Подмена l на I в слове club.' },
+        { url: 'https://book-club-gift.help', safe: false, reason: 'Сомнительный gift-домен.' }
+      ]
     }
   ];
 
@@ -261,11 +361,13 @@
     }
   ];
 
+  const safeLinksPool = [...safeLinksRounds, ...extraSafeLinkRounds];
+
   const passwordParts = {
-    upper: ['A', 'B', 'D', 'K', 'M', 'R'],
-    lower: ['a', 'e', 'g', 'm', 'r', 'y'],
-    digit: ['2', '4', '6', '7', '8', '9'],
-    symbol: ['!', '@', '#', '$', '%', '&', '?']
+    upper: ['A', 'B', 'D', 'K', 'M', 'R', 'T', 'V', 'X', 'Z'],
+    lower: ['a', 'e', 'g', 'm', 'r', 'y', 'b', 'h', 'n', 't'],
+    digit: ['1', '2', '3', '4', '6', '7', '8', '9'],
+    symbol: ['!', '@', '#', '$', '%', '&', '?', '*', '+', '=']
   };
 
   function shuffle(array) {
@@ -335,7 +437,7 @@
       title.textContent = 'Найди безопасную ссылку';
       state.correctAnswers = 0;
       state.roundNumber = 0;
-      state.roundsOrder = shuffle(safeLinksRounds).slice(0, SAFE_LINK_ROUNDS_TOTAL);
+      state.roundsOrder = shuffle(safeLinksPool).slice(0, SAFE_LINK_ROUNDS_TOTAL);
       renderSafeLinkRound();
       return;
     }
@@ -612,7 +714,7 @@
       <p class="game-score">Результат: <strong>${state.correctAnswers} из ${SAFE_LINK_ROUNDS_TOTAL}</strong> (${percent}%)</p>
       <div class="game-feedback" aria-live="polite">
         <p><strong>${message}</strong></p>
-        <p>Нажми кнопку ниже, чтобы пройти 10 раундов заново.</p>
+        <p>Нажми кнопку ниже, чтобы пройти ${SAFE_LINK_ROUNDS_TOTAL} раундов заново.</p>
       </div>
       <button class="game-button" type="button" id="game-restart-rounds">Играть снова</button>
     `;
@@ -623,7 +725,7 @@
     wrapper.querySelector('#game-restart-rounds')?.addEventListener('click', () => {
       state.correctAnswers = 0;
       state.roundNumber = 0;
-      state.roundsOrder = shuffle(safeLinksRounds).slice(0, SAFE_LINK_ROUNDS_TOTAL);
+      state.roundsOrder = shuffle(safeLinksPool).slice(0, SAFE_LINK_ROUNDS_TOTAL);
       renderSafeLinkRound();
     });
   }
