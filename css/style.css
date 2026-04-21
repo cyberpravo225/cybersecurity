@@ -7857,6 +7857,26 @@ body[data-page="home"] .contacts-banner-arrow {
   font-weight:600;
 }
 
+body[data-page="students-5-8"] [data-practice]{
+  cursor:pointer;
+}
+
+body[data-page="students-5-8"] #practice-modal .game-link-card{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+}
+
+body[data-page="students-5-8"] #practice-modal .game-link-card input{
+  margin-top:2px;
+  accent-color:color-mix(in srgb, var(--accent) 74%, var(--accent-2) 26%);
+}
+
+body[data-page="students-5-8"] #practice-modal ul{
+  margin:8px 0;
+  padding-left:20px;
+}
+
 /* Students 1-4 games: match index-like light/dark palettes */
 :root[data-theme="light"] body[data-page="students-1-4"] .game-overlay{
   background:color-mix(in srgb, #0f172a 22%, transparent);
