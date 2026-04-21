@@ -7627,6 +7627,30 @@ body[data-page="home"] .contacts-banner-arrow {
   background:color-mix(in srgb, #ef4444 14%, var(--bg));
 }
 
+.game-link-card.game-answer-revealed{
+  transition:background-color .16s ease, border-color .16s ease, opacity .16s ease, transform .16s ease;
+}
+
+.game-link-card.game-answer-correct{
+  border-color:#16a34a !important;
+  background:color-mix(in srgb, #22c55e 32%, var(--bg)) !important;
+  box-shadow:0 0 0 2px color-mix(in srgb, #22c55e 45%, transparent) inset;
+}
+
+.game-link-card.game-answer-wrong{
+  border-color:#dc2626 !important;
+  background:color-mix(in srgb, #ef4444 28%, var(--bg)) !important;
+  box-shadow:0 0 0 2px color-mix(in srgb, #ef4444 45%, transparent) inset;
+}
+
+.game-link-card.game-answer-safe{
+  transform:translateY(-1px);
+}
+
+.game-link-card.game-answer-dim{
+  opacity:.55;
+}
+
 .game-feedback{
   min-height:54px;
   background:linear-gradient(180deg, color-mix(in srgb, var(--panel-bg) 76%, var(--bg) 24%), color-mix(in srgb, var(--bg) 90%, var(--accent) 10%));

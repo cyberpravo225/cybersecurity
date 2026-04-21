@@ -313,25 +313,41 @@
         state.currentRound.answered = true;
         state.currentRound.selected = link;
         const safeOption = state.currentRound.links.find((item) => item.safe);
+        const cards = [...linksEl.querySelectorAll('.game-link-card')];
 
-        linksEl.querySelectorAll('.game-link-card').forEach((card) => {
+        cards.forEach((card) => {
           card.disabled = true;
-
-          const isSelected = card.textContent === link.url;
-          const isSafeCard = safeOption && card.textContent === safeOption.url;
-
-          if (link.safe && isSelected) {
-            card.classList.add('game-correct');
-          }
-
-          if (!link.safe && isSelected) {
-            card.classList.add('game-incorrect', 'game-picked-wrong');
-          }
-
-          if (!link.safe && isSafeCard) {
-            card.classList.add('game-correct');
-          }
+          card.classList.add('game-answer-revealed');
+          card.classList.remove(
+            'game-correct',
+            'game-incorrect',
+            'game-picked-wrong',
+            'game-answer-correct',
+            'game-answer-wrong',
+            'game-answer-safe',
+            'game-answer-dim'
+          );
         });
+
+        const selectedCard = cards.find((card) => card.textContent === link.url);
+        const safeCard = safeOption ? cards.find((card) => card.textContent === safeOption.url) : null;
+
+        if (link.safe) {
+          selectedCard?.classList.add('game-answer-correct');
+          cards.forEach((card) => {
+            if (card !== selectedCard) {
+              card.classList.add('game-answer-dim');
+            }
+          });
+        } else {
+          selectedCard?.classList.add('game-answer-wrong');
+          safeCard?.classList.add('game-answer-correct', 'game-answer-safe');
+          cards.forEach((card) => {
+            if (card !== selectedCard && card !== safeCard) {
+              card.classList.add('game-answer-dim');
+            }
+          });
+        }
 
         if (link.safe) {
           state.correctAnswers += 1;
