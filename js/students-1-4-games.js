@@ -21,9 +21,13 @@
   const state = {
     activeGame: null,
     correctAnswers: 0,
+    roundNumber: 0,
+    roundsOrder: [],
     currentRound: null,
     passwordValue: ''
   };
+
+  const SAFE_LINK_ROUNDS_TOTAL = 10;
 
   const safeLinksRounds = [
     {
@@ -51,6 +55,87 @@
         { url: 'http://portal.classroom-online.ru', safe: false, reason: 'Нет HTTPS — данные могут быть перехвачены.' },
         { url: 'https://portal-classroom-online.ru-confirm.com', safe: false, reason: 'Лишние слова в домене и подмена структуры адреса.' },
         { url: 'https://classroom-onIine.ru', safe: false, reason: 'Подмена латинской l на I делает адрес обманчивым.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://kids-museum.city', safe: true, reason: 'Официальный HTTPS-адрес сайта музея без подмен.' },
+        { url: 'https://kids-museum.city.security-check.page', safe: false, reason: 'Домен security-check.page маскируется под музей.' },
+        { url: 'http://kids-museum.city', safe: false, reason: 'Нет HTTPS-защиты соединения.' },
+        { url: 'https://klds-museum.city', safe: false, reason: 'Подмена i на l в названии домена.' },
+        { url: 'https://kids-museum-city-login.com', safe: false, reason: 'Фишинговое слово login в стороннем домене.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://school-olympiad.org', safe: true, reason: 'Прямой адрес олимпиады с HTTPS.' },
+        { url: 'https://school-olympiad.org.gift-prize.site', safe: false, reason: 'Реальный домен gift-prize.site, а не olympiad.org.' },
+        { url: 'http://school-olympiad.org', safe: false, reason: 'HTTP без шифрования.' },
+        { url: 'https://school-0lympiad.org', safe: false, reason: 'Буква o заменена цифрой 0.' },
+        { url: 'https://olympiad-fast-win.net', safe: false, reason: 'Подозрительные слова fast-win в адресе.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://library.kids-reading.ru', safe: true, reason: 'Корректный поддомен библиотеки с HTTPS.' },
+        { url: 'https://library.kids-reading.ru.sign-in.help', safe: false, reason: 'Настоящий домен sign-in.help.' },
+        { url: 'http://library.kids-reading.ru', safe: false, reason: 'Небезопасный HTTP-протокол.' },
+        { url: 'https://library.kids-readlng.ru', safe: false, reason: 'Подмена буквы i на l в слове reading.' },
+        { url: 'https://kids-reading-bonus.ru', safe: false, reason: 'Сомнительный бонусный домен.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://edu-games.school', safe: true, reason: 'Нормальный адрес образовательной платформы.' },
+        { url: 'https://edu-games.school.secure-user-login.com', safe: false, reason: 'Реальный домен secure-user-login.com.' },
+        { url: 'http://edu-games.school', safe: false, reason: 'Сайт без HTTPS.' },
+        { url: 'https://edu-garnes.school', safe: false, reason: 'Буква m подменена сочетанием rn.' },
+        { url: 'https://free-edu-games-gift.fun', safe: false, reason: 'Слишком рекламный и подозрительный адрес.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://school-video.lessons.ru', safe: true, reason: 'Официальный адрес уроков со шифрованием.' },
+        { url: 'https://school-video.lessons.ru.account-safe.xyz', safe: false, reason: 'Домен xyz скрывает подделку.' },
+        { url: 'http://school-video.lessons.ru', safe: false, reason: 'Нет HTTPS.' },
+        { url: 'https://school-vldeo.lessons.ru', safe: false, reason: 'Подмена i на l в слове video.' },
+        { url: 'https://lessons-superreward.ru', safe: false, reason: 'Подозрительное слово reward в домене.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://class-chat.schoolnet.ru', safe: true, reason: 'Стандартный школьный сервис с HTTPS.' },
+        { url: 'https://class-chat.schoolnet.ru.confirm-data.page', safe: false, reason: 'Домен confirm-data.page выдаёт себя за школу.' },
+        { url: 'http://class-chat.schoolnet.ru', safe: false, reason: 'Отсутствует HTTPS.' },
+        { url: 'https://class-chat.schooInet.ru', safe: false, reason: 'Подмена l на I в слове schoolnet.' },
+        { url: 'https://chat-schoolnet-win.click', safe: false, reason: 'Сомнительный домен с click.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://kids-weather.app', safe: true, reason: 'Короткий читаемый HTTPS-адрес.' },
+        { url: 'https://kids-weather.app.check-profile.top', safe: false, reason: 'Настоящий домен check-profile.top.' },
+        { url: 'http://kids-weather.app', safe: false, reason: 'Незащищённый протокол.' },
+        { url: 'https://klds-weather.app', safe: false, reason: 'Подмена i на l в слове kids.' },
+        { url: 'https://kids-weather-prize.top', safe: false, reason: 'Слово prize в адресе часто у мошенников.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://art-for-kids.studio', safe: true, reason: 'Официальный домен без лишних вставок.' },
+        { url: 'https://art-for-kids.studio.safe-auth.space', safe: false, reason: 'Поддельный домен safe-auth.space.' },
+        { url: 'http://art-for-kids.studio', safe: false, reason: 'HTTP без шифрования.' },
+        { url: 'https://art-f0r-kids.studio', safe: false, reason: 'Буква o заменена цифрой 0.' },
+        { url: 'https://art-kids-bonus.space', safe: false, reason: 'Подозрительный «bonus» адрес.' }
+      ]
+    },
+    {
+      links: [
+        { url: 'https://school-calendar.edu.ru', safe: true, reason: 'Надёжный образовательный домен с HTTPS.' },
+        { url: 'https://school-calendar.edu.ru.login-safe.one', safe: false, reason: 'Настоящий домен login-safe.one.' },
+        { url: 'http://school-calendar.edu.ru', safe: false, reason: 'Небезопасное подключение.' },
+        { url: 'https://school-caIendar.edu.ru', safe: false, reason: 'Подмена l на I в слове calendar.' },
+        { url: 'https://edu-calendar-reward.ru', safe: false, reason: 'Сомнительное слово reward в адресе.' }
       ]
     }
   ];
@@ -100,6 +185,8 @@
     state.activeGame = null;
     state.currentRound = null;
     state.correctAnswers = 0;
+    state.roundNumber = 0;
+    state.roundsOrder = [];
     state.passwordValue = '';
   }
 
@@ -108,6 +195,8 @@
     if (gameId === 'safe-link') {
       title.textContent = 'Найди безопасную ссылку';
       state.correctAnswers = 0;
+      state.roundNumber = 0;
+      state.roundsOrder = shuffle(safeLinksRounds).slice(0, SAFE_LINK_ROUNDS_TOTAL);
       renderSafeLinkRound();
       return;
     }
@@ -120,7 +209,12 @@
   }
 
   function renderSafeLinkRound() {
-    const round = safeLinksRounds[Math.floor(Math.random() * safeLinksRounds.length)];
+    if (state.roundNumber >= SAFE_LINK_ROUNDS_TOTAL) {
+      renderSafeLinkResult();
+      return;
+    }
+
+    const round = state.roundsOrder[state.roundNumber];
     state.currentRound = {
       links: shuffle(round.links),
       selected: null,
@@ -132,10 +226,10 @@
 
     wrapper.innerHTML = `
       <p class="game-subtitle">Выбери ссылку, которую безопаснее всего открыть.</p>
-      <p class="game-score">Правильных ответов: <strong>${state.correctAnswers}</strong></p>
+      <p class="game-score">Раунд <strong>${state.roundNumber + 1}/${SAFE_LINK_ROUNDS_TOTAL}</strong> · Правильных ответов: <strong>${state.correctAnswers}</strong></p>
       <div class="game-links" id="game-links"></div>
       <div class="game-feedback" id="game-link-feedback" aria-live="polite"></div>
-      <button class="game-button" type="button" id="game-next-round" disabled>Следующий раунд</button>
+      <button class="game-button" type="button" id="game-next-round" disabled>${state.roundNumber + 1 === SAFE_LINK_ROUNDS_TOTAL ? 'Показать результат' : 'Следующий раунд'}</button>
     `;
 
     content.appendChild(wrapper);
@@ -159,10 +253,11 @@
         linksEl.querySelectorAll('.game-link-card').forEach((card) => {
           const isSafe = card.dataset.safe === 'true';
           card.disabled = true;
-          card.classList.add(isSafe ? 'game-correct' : 'game-incorrect');
-
+          if (isSafe) {
+            card.classList.add('game-correct');
+          }
           if (card.textContent === link.url && !link.safe) {
-            card.classList.add('game-picked-wrong');
+            card.classList.add('game-incorrect', 'game-picked-wrong');
           }
         });
 
@@ -183,6 +278,36 @@
     nextBtn.addEventListener('click', (event) => {
       event.preventDefault();
       event.stopPropagation();
+      state.roundNumber += 1;
+      renderSafeLinkRound();
+    });
+  }
+
+  function renderSafeLinkResult() {
+    const percent = Math.round((state.correctAnswers / SAFE_LINK_ROUNDS_TOTAL) * 100);
+    let message = 'Хорошая работа!';
+    if (percent === 100) message = 'Отлично! Ты мастер безопасных ссылок!';
+    else if (percent < 50) message = 'Неплохо для начала — потренируйся ещё немного!';
+
+    const wrapper = document.createElement('section');
+    wrapper.className = 'game-panel';
+    wrapper.innerHTML = `
+      <p class="game-subtitle">Игра завершена.</p>
+      <p class="game-score">Результат: <strong>${state.correctAnswers} из ${SAFE_LINK_ROUNDS_TOTAL}</strong> (${percent}%)</p>
+      <div class="game-feedback" aria-live="polite">
+        <p><strong>${message}</strong></p>
+        <p>Нажми кнопку ниже, чтобы пройти 10 раундов заново.</p>
+      </div>
+      <button class="game-button" type="button" id="game-restart-rounds">Играть снова</button>
+    `;
+
+    content.innerHTML = '';
+    content.appendChild(wrapper);
+
+    wrapper.querySelector('#game-restart-rounds')?.addEventListener('click', () => {
+      state.correctAnswers = 0;
+      state.roundNumber = 0;
+      state.roundsOrder = shuffle(safeLinksRounds).slice(0, SAFE_LINK_ROUNDS_TOTAL);
       renderSafeLinkRound();
     });
   }
