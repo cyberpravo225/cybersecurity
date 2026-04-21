@@ -366,11 +366,9 @@
       <div class="can-cannot-actions">
         <button class="game-button can-cannot-choice can-cannot-choice-safe" type="button" id="can-btn-safe">
           <span class="can-cannot-choice-title">Можно</span>
-          <span class="can-cannot-choice-icon">✅</span>
         </button>
         <button class="game-button can-cannot-choice can-cannot-choice-unsafe" type="button" id="can-btn-unsafe">
           <span class="can-cannot-choice-title">Нельзя</span>
-          <span class="can-cannot-choice-icon">⛔</span>
         </button>
       </div>
       <div class="game-feedback" id="can-cannot-feedback" aria-live="polite"></div>

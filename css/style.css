@@ -7751,18 +7751,14 @@ body[data-page="home"] .contacts-banner-arrow {
   border-radius:18px;
   display:grid;
   place-items:center;
-  gap:8px;
   padding:12px;
 }
 
 .can-cannot-choice-title{
-  font-size:clamp(20px, 2vw, 24px);
+  font-size:clamp(24px, 2.4vw, 30px);
   font-weight:800;
-  line-height:1;
-}
-
-.can-cannot-choice-icon{
-  font-size:30px;
+  text-transform:uppercase;
+  letter-spacing:.03em;
   line-height:1;
 }
 
