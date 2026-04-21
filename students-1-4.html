@@ -104,18 +104,35 @@
 
 <div class="senior-cards">
 
-<a href="assets/безопасный интернет 1-4.pptx" class="senior-card presentation" download>
+<article class="senior-card presentation">
 <div class="senior-card-icon">📊</div>
 <h3>Безопасный интернет</h3>
 <p>Простая презентация о правилах безопасного поведения в интернете.</p>
-</a>
+<div class="senior-card-actions">
+<button type="button" class="btn" data-preview-src="assets/безопасный интернет 1-4.pptx">Смотреть на сайте</button>
+<a href="assets/безопасный интернет 1-4.pptx" class="btn" download>Скачать</a>
+</div>
+</article>
 
-<a href="#" class="senior-card presentation">
+<article class="senior-card presentation">
 <div class="senior-card-icon">💻</div>
 <h3>Правила онлайн-безопасности</h3>
 <p>Как правильно пользоваться интернетом и избегать опасностей.</p>
-</a>
+<div class="senior-card-actions">
+<button type="button" class="btn" data-preview-src="assets/Правила онлайн-безопасности1-4.pptx">Смотреть на сайте</button>
+<a href="assets/Правила онлайн-безопасности1-4.pptx" class="btn" download>Скачать</a>
+</div>
+</article>
 
+</div>
+
+<div class="presentation-viewer" id="presentation-viewer" hidden>
+  <div class="presentation-viewer-header">
+    <h3 id="presentation-viewer-title">Просмотр презентации</h3>
+    <a href="#" class="btn" id="presentation-viewer-download" download>Скачать файл</a>
+  </div>
+  <iframe id="presentation-viewer-frame" title="Просмотр презентации" loading="lazy"></iframe>
+  <p class="simple-text">Если предпросмотр не загрузился, используйте кнопку «Скачать файл».</p>
 </div>
 
 </div>
@@ -181,6 +198,7 @@
   </div>
   <script src="js/main.js"></script>
   <script src="js/students-1-4-games.js"></script>
+  <script src="js/students-1-4-presentations.js"></script>
 <script src="js/theme-network.js"></script>
 </body>
 </html>
