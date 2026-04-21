@@ -28,6 +28,64 @@
   };
 
   const SAFE_LINK_ROUNDS_TOTAL = 10;
+  const CAN_CANNOT_ROUNDS_TOTAL = 6;
+  const SECRET_PASSWORD_ROUNDS_TOTAL = 6;
+
+  const canCannotScenarios = [
+    { text: 'Незнакомец в чате просит прислать фото и никому не говорить.', safe: false, reason: 'Так делать нельзя: нужно сразу рассказать взрослым.' },
+    { text: 'Ты спросил у учителя, можно ли открыть новую ссылку для задания.', safe: true, reason: 'Это безопасный подход — сначала спросить взрослого.' },
+    { text: 'Сайт просит ввести номер телефона, чтобы получить подарок.', safe: false, reason: 'Это риск: личные данные нельзя вводить без взрослых.' },
+    { text: 'Ты закрыл странное окно и сообщил родителям.', safe: true, reason: 'Отличное решение: закрыл и обратился за помощью.' },
+    { text: 'Одноклассник просит твой пароль \"только на минутку\".', safe: false, reason: 'Пароль никому не передают — даже друзьям.' },
+    { text: 'Ты придумал длинный пароль и сохранил его в менеджере с родителями.', safe: true, reason: 'Хорошая практика: длинный пароль и безопасное хранение.' },
+    { text: 'В сообщении пишут \"СРОЧНО! Нажми за 10 секунд\".', safe: false, reason: 'Спешка и давление — частые признаки обмана.' },
+    { text: 'Перед входом на сайт ты проверил, что адрес написан без ошибок.', safe: true, reason: 'Проверка адреса помогает избежать фишинга.' }
+  ];
+
+  const secretPasswordQuiz = [
+    {
+      question: 'Кому можно сообщать свой пароль?',
+      options: ['Никому', 'Лучшему другу', 'Однокласснику в чате'],
+      correct: 0,
+      reason: 'Пароль — это личный секрет.'
+    },
+    {
+      question: 'Какой пароль лучше?',
+      options: ['qwerty123', 'M5!pA9#zL2', '12345678'],
+      correct: 1,
+      reason: 'Сильный пароль длинный и содержит разные символы.'
+    },
+    {
+      question: 'Что делать, если пароль увидел посторонний?',
+      options: ['Ничего', 'Сразу сменить пароль и сказать взрослым', 'Удалить историю браузера'],
+      correct: 1,
+      reason: 'Пароль нужно быстро заменить и сообщить взрослым.'
+    },
+    {
+      question: 'Можно ли использовать один и тот же пароль везде?',
+      options: ['Да, так проще', 'Только для игр', 'Нет, лучше разные пароли'],
+      correct: 2,
+      reason: 'Разные сервисы должны иметь разные пароли.'
+    },
+    {
+      question: 'Если сайт просит пароль и кажется подозрительным, что делать?',
+      options: ['Ввести и проверить', 'Закрыть сайт и обратиться к взрослым', 'Отправить пароль в поддержку'],
+      correct: 1,
+      reason: 'При подозрениях нельзя вводить пароль.'
+    },
+    {
+      question: 'Что нужно добавить в пароль, чтобы сделать его сильнее?',
+      options: ['Только цифры', 'Имя и дату рождения', 'Буквы разного регистра, цифры и символы'],
+      correct: 2,
+      reason: 'Комбинация разных типов символов усиливает пароль.'
+    },
+    {
+      question: 'Где безопаснее хранить пароль?',
+      options: ['На бумажке в классе', 'В заметке, которую знают все', 'В менеджере паролей с помощью взрослых'],
+      correct: 2,
+      reason: 'Нужен безопасный способ хранения с контролем взрослых.'
+    }
+  ];
 
   const safeLinksRounds = [
     {
@@ -255,6 +313,24 @@
 
   function renderGame(gameId) {
     content.innerHTML = '';
+    if (gameId === 'can-cannot') {
+      title.textContent = 'Можно / нельзя';
+      state.correctAnswers = 0;
+      state.roundNumber = 0;
+      state.roundsOrder = shuffle(canCannotScenarios).slice(0, CAN_CANNOT_ROUNDS_TOTAL);
+      renderCanCannotRound();
+      return;
+    }
+
+    if (gameId === 'secret-password') {
+      title.textContent = 'Мой секретный пароль';
+      state.correctAnswers = 0;
+      state.roundNumber = 0;
+      state.roundsOrder = shuffle(secretPasswordQuiz).slice(0, SECRET_PASSWORD_ROUNDS_TOTAL);
+      renderSecretPasswordRound();
+      return;
+    }
+
     if (gameId === 'safe-link') {
       title.textContent = 'Найди безопасную ссылку';
       state.correctAnswers = 0;
@@ -269,6 +345,153 @@
       state.passwordValue = '';
       renderPasswordGame();
     }
+  }
+
+  function renderCanCannotRound() {
+    if (state.roundNumber >= CAN_CANNOT_ROUNDS_TOTAL) {
+      renderCanCannotResult();
+      return;
+    }
+
+    const round = state.roundsOrder[state.roundNumber];
+    const wrapper = document.createElement('section');
+    wrapper.className = 'game-panel';
+    wrapper.innerHTML = `
+      <p class="game-subtitle">Определи, безопасно ли это действие.</p>
+      <p class="game-score">Раунд <strong>${state.roundNumber + 1}/${CAN_CANNOT_ROUNDS_TOTAL}</strong> · Верных ответов: <strong>${state.correctAnswers}</strong></p>
+      <div class="game-feedback">
+        <p><strong>Ситуация:</strong> ${round.text}</p>
+      </div>
+      <div class="game-password-controls">
+        <button class="game-button" type="button" id="can-btn-safe">Можно</button>
+        <button class="game-button game-button-secondary" type="button" id="can-btn-unsafe">Нельзя</button>
+      </div>
+      <div class="game-feedback" id="can-cannot-feedback" aria-live="polite"></div>
+      <button class="game-button" type="button" id="can-cannot-next" disabled>${state.roundNumber + 1 === CAN_CANNOT_ROUNDS_TOTAL ? 'Показать результат' : 'Следующий вопрос'}</button>
+    `;
+
+    content.innerHTML = '';
+    content.appendChild(wrapper);
+
+    const feedback = wrapper.querySelector('#can-cannot-feedback');
+    const nextBtn = wrapper.querySelector('#can-cannot-next');
+    const safeBtn = wrapper.querySelector('#can-btn-safe');
+    const unsafeBtn = wrapper.querySelector('#can-btn-unsafe');
+
+    function handleAnswer(selectedSafe) {
+      safeBtn.disabled = true;
+      unsafeBtn.disabled = true;
+
+      if (selectedSafe === round.safe) {
+        state.correctAnswers += 1;
+        feedback.innerHTML = `<p><strong>Верно!</strong> ${round.reason}</p>`;
+      } else {
+        feedback.innerHTML = `<p><strong>Почти!</strong> ${round.reason}</p><p>Правильный ответ: <strong>${round.safe ? 'Можно' : 'Нельзя'}</strong>.</p>`;
+      }
+
+      nextBtn.disabled = false;
+    }
+
+    safeBtn.addEventListener('click', () => handleAnswer(true));
+    unsafeBtn.addEventListener('click', () => handleAnswer(false));
+    nextBtn.addEventListener('click', () => {
+      state.roundNumber += 1;
+      renderCanCannotRound();
+    });
+  }
+
+  function renderCanCannotResult() {
+    const percent = Math.round((state.correctAnswers / CAN_CANNOT_ROUNDS_TOTAL) * 100);
+    const wrapper = document.createElement('section');
+    wrapper.className = 'game-panel';
+    wrapper.innerHTML = `
+      <p class="game-subtitle">Тренажёр завершён.</p>
+      <p class="game-score">Результат: <strong>${state.correctAnswers} из ${CAN_CANNOT_ROUNDS_TOTAL}</strong> (${percent}%)</p>
+      <div class="game-feedback"><p><strong>${percent >= 80 ? 'Отлично!' : 'Хорошая попытка!'}</strong> Закрепляй привычку проверять подозрительные ситуации.</p></div>
+      <button class="game-button" type="button" id="can-cannot-restart">Пройти снова</button>
+    `;
+
+    content.innerHTML = '';
+    content.appendChild(wrapper);
+    wrapper.querySelector('#can-cannot-restart')?.addEventListener('click', () => {
+      state.correctAnswers = 0;
+      state.roundNumber = 0;
+      state.roundsOrder = shuffle(canCannotScenarios).slice(0, CAN_CANNOT_ROUNDS_TOTAL);
+      renderCanCannotRound();
+    });
+  }
+
+  function renderSecretPasswordRound() {
+    if (state.roundNumber >= SECRET_PASSWORD_ROUNDS_TOTAL) {
+      renderSecretPasswordResult();
+      return;
+    }
+
+    const round = state.roundsOrder[state.roundNumber];
+    const optionsHtml = round.options.map((option, index) => (
+      `<button class="game-button game-button-secondary" type="button" data-secret-option="${index}">${option}</button>`
+    )).join('');
+
+    const wrapper = document.createElement('section');
+    wrapper.className = 'game-panel';
+    wrapper.innerHTML = `
+      <p class="game-subtitle">Мини-квиз про надёжный пароль.</p>
+      <p class="game-score">Вопрос <strong>${state.roundNumber + 1}/${SECRET_PASSWORD_ROUNDS_TOTAL}</strong> · Верных ответов: <strong>${state.correctAnswers}</strong></p>
+      <div class="game-feedback"><p><strong>Вопрос:</strong> ${round.question}</p></div>
+      <div class="game-password-controls">${optionsHtml}</div>
+      <div class="game-feedback" id="secret-password-feedback" aria-live="polite"></div>
+      <button class="game-button" type="button" id="secret-password-next" disabled>${state.roundNumber + 1 === SECRET_PASSWORD_ROUNDS_TOTAL ? 'Показать результат' : 'Следующий вопрос'}</button>
+    `;
+
+    content.innerHTML = '';
+    content.appendChild(wrapper);
+
+    const feedback = wrapper.querySelector('#secret-password-feedback');
+    const nextBtn = wrapper.querySelector('#secret-password-next');
+    const optionButtons = [...wrapper.querySelectorAll('[data-secret-option]')];
+
+    optionButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        optionButtons.forEach((btn) => { btn.disabled = true; });
+        const picked = Number(button.dataset.secretOption);
+        const isCorrect = picked === round.correct;
+
+        if (isCorrect) {
+          state.correctAnswers += 1;
+          feedback.innerHTML = `<p><strong>Верно!</strong> ${round.reason}</p>`;
+        } else {
+          feedback.innerHTML = `<p><strong>Почти!</strong> ${round.reason}</p><p>Правильный вариант: <strong>${round.options[round.correct]}</strong>.</p>`;
+        }
+
+        nextBtn.disabled = false;
+      });
+    });
+
+    nextBtn.addEventListener('click', () => {
+      state.roundNumber += 1;
+      renderSecretPasswordRound();
+    });
+  }
+
+  function renderSecretPasswordResult() {
+    const percent = Math.round((state.correctAnswers / SECRET_PASSWORD_ROUNDS_TOTAL) * 100);
+    const wrapper = document.createElement('section');
+    wrapper.className = 'game-panel';
+    wrapper.innerHTML = `
+      <p class="game-subtitle">Квиз завершён.</p>
+      <p class="game-score">Результат: <strong>${state.correctAnswers} из ${SECRET_PASSWORD_ROUNDS_TOTAL}</strong> (${percent}%)</p>
+      <div class="game-feedback"><p><strong>${percent >= 80 ? 'Супер!' : 'Неплохо!'}</strong> Помни: пароль должен быть длинным и секретным.</p></div>
+      <button class="game-button" type="button" id="secret-password-restart">Пройти снова</button>
+    `;
+
+    content.innerHTML = '';
+    content.appendChild(wrapper);
+    wrapper.querySelector('#secret-password-restart')?.addEventListener('click', () => {
+      state.correctAnswers = 0;
+      state.roundNumber = 0;
+      state.roundsOrder = shuffle(secretPasswordQuiz).slice(0, SECRET_PASSWORD_ROUNDS_TOTAL);
+      renderSecretPasswordRound();
+    });
   }
 
   function renderSafeLinkRound() {
@@ -528,17 +751,10 @@
     });
   }
 
-  function resolveGameId(card) {
-    const heading = card.querySelector('h3')?.textContent?.trim().toLowerCase() || '';
-    if (heading.includes('безопасную ссылку')) return 'safe-link';
-    if (heading.includes('сильный пароль')) return 'strong-password';
-    return null;
-  }
-
   gameCards.forEach((card) => {
     card.addEventListener('click', (event) => {
       event.preventDefault();
-      const gameId = resolveGameId(card);
+      const gameId = card.dataset.game || null;
       if (!gameId) return;
       openModal(gameId);
     });
