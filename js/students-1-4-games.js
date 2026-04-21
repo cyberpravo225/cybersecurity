@@ -355,16 +355,23 @@
 
     const round = state.roundsOrder[state.roundNumber];
     const wrapper = document.createElement('section');
-    wrapper.className = 'game-panel';
+    wrapper.className = 'game-panel can-cannot-panel';
     wrapper.innerHTML = `
       <p class="game-subtitle">Определи, безопасно ли это действие.</p>
       <p class="game-score">Раунд <strong>${state.roundNumber + 1}/${CAN_CANNOT_ROUNDS_TOTAL}</strong> · Верных ответов: <strong>${state.correctAnswers}</strong></p>
-      <div class="game-feedback">
-        <p><strong>Ситуация:</strong> ${round.text}</p>
+      <div class="game-feedback can-cannot-card">
+        <p class="can-cannot-label">🧠 Ситуация</p>
+        <p class="can-cannot-text">${round.text}</p>
       </div>
-      <div class="game-password-controls">
-        <button class="game-button" type="button" id="can-btn-safe">Можно</button>
-        <button class="game-button game-button-secondary" type="button" id="can-btn-unsafe">Нельзя</button>
+      <div class="can-cannot-actions">
+        <button class="game-button can-cannot-choice can-cannot-choice-safe" type="button" id="can-btn-safe">
+          <span class="can-cannot-choice-title">Можно</span>
+          <span class="can-cannot-choice-icon">✅</span>
+        </button>
+        <button class="game-button can-cannot-choice can-cannot-choice-unsafe" type="button" id="can-btn-unsafe">
+          <span class="can-cannot-choice-title">Нельзя</span>
+          <span class="can-cannot-choice-icon">⛔</span>
+        </button>
       </div>
       <div class="game-feedback" id="can-cannot-feedback" aria-live="polite"></div>
       <button class="game-button" type="button" id="can-cannot-next" disabled>${state.roundNumber + 1 === CAN_CANNOT_ROUNDS_TOTAL ? 'Показать результат' : 'Следующий вопрос'}</button>

@@ -7718,6 +7718,74 @@ body[data-page="home"] .contacts-banner-arrow {
   gap:8px;
 }
 
+.can-cannot-card{
+  border-radius:16px;
+  padding:14px;
+}
+
+.can-cannot-label{
+  margin:0 0 8px;
+  font-size:13px;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+  color:var(--text-muted);
+}
+
+.can-cannot-text{
+  margin:0;
+  font-size:clamp(16px, 1.8vw, 20px);
+  font-weight:700;
+  line-height:1.35;
+}
+
+.can-cannot-actions{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(140px, 180px));
+  justify-content:center;
+  gap:12px;
+}
+
+.can-cannot-choice{
+  width:100%;
+  aspect-ratio:1 / 1;
+  border-radius:18px;
+  display:grid;
+  place-items:center;
+  gap:8px;
+  padding:12px;
+}
+
+.can-cannot-choice-title{
+  font-size:clamp(20px, 2vw, 24px);
+  font-weight:800;
+  line-height:1;
+}
+
+.can-cannot-choice-icon{
+  font-size:30px;
+  line-height:1;
+}
+
+.can-cannot-choice-safe{
+  background:linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+  border-color:rgba(22, 163, 74, 0.65);
+  color:#f0fdf4;
+}
+
+.can-cannot-choice-safe:hover:not(:disabled){
+  transform:translateY(-2px);
+}
+
+.can-cannot-choice-unsafe{
+  background:linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+  border-color:rgba(220, 38, 38, 0.66);
+  color:#fef2f2;
+}
+
+.can-cannot-choice-unsafe:hover:not(:disabled){
+  transform:translateY(-2px);
+}
+
 .game-password-pool{
   display:flex;
   flex-wrap:wrap;
@@ -7811,6 +7879,11 @@ body[data-page="home"] .contacts-banner-arrow {
   border-color:rgba(37, 99, 235, 0.28);
 }
 
+:root[data-theme="light"] body[data-page="students-1-4"] .can-cannot-card{
+  background:linear-gradient(180deg, #ffffff 0%, #eef6ff 100%);
+  border-color:rgba(37, 99, 235, 0.22);
+}
+
 :root[data-theme="dark"] body[data-page="students-1-4"] .game-overlay{
   background:color-mix(in srgb, #0a1028 66%, transparent);
 }
@@ -7843,6 +7916,11 @@ body[data-page="home"] .contacts-banner-arrow {
   color:#dbeafe;
 }
 
+:root[data-theme="dark"] body[data-page="students-1-4"] .can-cannot-card{
+  background:linear-gradient(180deg, #223371 0%, #1a285d 100%);
+  border-color:rgba(125, 180, 255, 0.3);
+}
+
 :root[data-theme="dark"] body[data-page="students-1-4"] .game-score,
 :root[data-theme="dark"] body[data-page="students-1-4"] .game-subtitle,
 :root[data-theme="dark"] body[data-page="students-1-4"] .game-checks li{
@@ -7861,5 +7939,14 @@ body[data-page="home"] .contacts-banner-arrow {
   .game-modal-title{
     width:100%;
     order:-1;
+  }
+
+  .can-cannot-actions{
+    grid-template-columns:1fr;
+  }
+
+  .can-cannot-choice{
+    aspect-ratio:auto;
+    min-height:112px;
   }
 }
