@@ -7892,6 +7892,24 @@ body[data-page="home"] .contacts-banner-arrow {
   border-color:rgba(37, 99, 235, 0.22);
 }
 
+:root[data-theme="light"] body[data-page="students-1-4"] .can-cannot-choice-safe{
+  background:
+    radial-gradient(130% 120% at 12% 10%, rgba(255,255,255,.32) 0%, rgba(255,255,255,0) 48%),
+    radial-gradient(140% 130% at 88% 100%, rgba(6, 95, 70, .28) 0%, rgba(6, 95, 70, 0) 52%),
+    linear-gradient(145deg, #4ade80 0%, #22c55e 42%, #16a34a 100%);
+  border-color:rgba(21, 128, 61, 0.58);
+  color:#f0fdf4;
+}
+
+:root[data-theme="light"] body[data-page="students-1-4"] .can-cannot-choice-unsafe{
+  background:
+    radial-gradient(130% 120% at 12% 10%, rgba(255,255,255,.28) 0%, rgba(255,255,255,0) 46%),
+    radial-gradient(140% 130% at 88% 100%, rgba(127, 29, 29, .26) 0%, rgba(127, 29, 29, 0) 54%),
+    linear-gradient(145deg, #f87171 0%, #ef4444 40%, #dc2626 100%);
+  border-color:rgba(185, 28, 28, 0.62);
+  color:#fef2f2;
+}
+
 :root[data-theme="dark"] body[data-page="students-1-4"] .game-overlay{
   background:color-mix(in srgb, #0a1028 66%, transparent);
 }
@@ -7927,6 +7945,24 @@ body[data-page="home"] .contacts-banner-arrow {
 :root[data-theme="dark"] body[data-page="students-1-4"] .can-cannot-card{
   background:linear-gradient(180deg, #223371 0%, #1a285d 100%);
   border-color:rgba(125, 180, 255, 0.3);
+}
+
+:root[data-theme="dark"] body[data-page="students-1-4"] .can-cannot-choice-safe{
+  background:
+    radial-gradient(130% 120% at 12% 10%, rgba(255,255,255,.32) 0%, rgba(255,255,255,0) 48%),
+    radial-gradient(140% 130% at 88% 100%, rgba(6, 95, 70, .28) 0%, rgba(6, 95, 70, 0) 52%),
+    linear-gradient(145deg, #4ade80 0%, #22c55e 42%, #16a34a 100%);
+  border-color:rgba(21, 128, 61, 0.58);
+  color:#f0fdf4;
+}
+
+:root[data-theme="dark"] body[data-page="students-1-4"] .can-cannot-choice-unsafe{
+  background:
+    radial-gradient(130% 120% at 12% 10%, rgba(255,255,255,.28) 0%, rgba(255,255,255,0) 46%),
+    radial-gradient(140% 130% at 88% 100%, rgba(127, 29, 29, .26) 0%, rgba(127, 29, 29, 0) 54%),
+    linear-gradient(145deg, #f87171 0%, #ef4444 40%, #dc2626 100%);
+  border-color:rgba(185, 28, 28, 0.62);
+  color:#fef2f2;
 }
 
 :root[data-theme="dark"] body[data-page="students-1-4"] .game-score,
