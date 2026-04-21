@@ -295,6 +295,7 @@
       <button class="game-button" type="button" id="game-next-round" disabled>${state.roundNumber + 1 === SAFE_LINK_ROUNDS_TOTAL ? 'Показать результат' : 'Следующий раунд'}</button>
     `;
 
+    content.innerHTML = '';
     content.appendChild(wrapper);
 
     const linksEl = wrapper.querySelector('#game-links');
