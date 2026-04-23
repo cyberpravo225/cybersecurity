@@ -146,6 +146,8 @@
   const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
   let activeScenario = null;
   let heightAnimTimer = null;
+  let heightAnimFrameA = null;
+  let heightAnimFrameB = null;
 
   function animateModalContentHeight(previousHeight) {
     const startHeight = typeof previousHeight === 'number' ? previousHeight : content.getBoundingClientRect().height;
@@ -154,19 +156,27 @@
     if (Math.abs(startHeight - endHeight) < 2) return;
 
     clearTimeout(heightAnimTimer);
-    content.style.overflow = 'hidden';
-    content.style.height = `${startHeight}px`;
-    content.style.transition = 'height .28s ease';
+    if (heightAnimFrameA) cancelAnimationFrame(heightAnimFrameA);
+    if (heightAnimFrameB) cancelAnimationFrame(heightAnimFrameB);
 
-    requestAnimationFrame(() => {
-      content.style.height = `${endHeight}px`;
+    content.style.willChange = 'height';
+    content.style.overflow = 'hidden';
+    content.style.transition = 'none';
+    content.style.height = `${startHeight}px`;
+
+    heightAnimFrameA = requestAnimationFrame(() => {
+      heightAnimFrameB = requestAnimationFrame(() => {
+        content.style.transition = 'height .34s cubic-bezier(.22,.61,.36,1)';
+        content.style.height = `${endHeight}px`;
+      });
     });
 
     heightAnimTimer = setTimeout(() => {
       content.style.transition = '';
       content.style.height = '';
       content.style.overflow = '';
-    }, 320);
+      content.style.willChange = '';
+    }, 380);
   }
 
   function renderWithHeightAnimation(renderFn) {
@@ -179,13 +189,13 @@
     if (!resultElement) return;
 
     resultElement.classList.remove('is-visible');
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       resultElement.innerHTML = html;
       requestAnimationFrame(() => {
         resultElement.classList.add('is-visible');
         animateModalContentHeight();
       });
-    }, 80);
+    });
   }
 
   function renderMailGame() {
