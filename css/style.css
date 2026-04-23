@@ -7922,6 +7922,24 @@ body[data-page="students-5-8"] #practice-modal ul{
   padding-left:20px;
 }
 
+body[data-page="students-5-8"] #practice-modal :is(#mail-result, #practice-result){
+  opacity:0;
+  transform:translateY(6px);
+  max-height:0;
+  overflow:hidden;
+  padding-top:0;
+  padding-bottom:0;
+  transition:opacity .24s ease, transform .24s ease, max-height .28s ease, padding .24s ease;
+}
+
+body[data-page="students-5-8"] #practice-modal :is(#mail-result, #practice-result).is-visible{
+  opacity:1;
+  transform:translateY(0);
+  max-height:380px;
+  padding-top:12px;
+  padding-bottom:12px;
+}
+
 body[data-page="students-5-8"] #practice-modal .mail-decision-grid{
   display:grid;
   grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
