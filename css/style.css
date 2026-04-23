@@ -7884,8 +7884,26 @@ body[data-page="students-5-8"] #practice-modal .mail-decision-grid{
 }
 
 body[data-page="students-5-8"] #practice-modal .is-picked{
-  box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 60%, transparent) inset;
-  transform:translateY(-1px);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--accent) 72%, transparent) inset,
+    0 8px 20px color-mix(in srgb, var(--accent) 28%, transparent);
+  transform:translateY(-2px) scale(1.01);
+}
+
+body[data-page="students-5-8"] #practice-modal .game-button.game-answer-correct,
+body[data-page="students-5-8"] #practice-modal .game-link-card.game-answer-correct{
+  border-color:#16a34a !important;
+  background:color-mix(in srgb, #22c55e 34%, var(--bg)) !important;
+  color:color-mix(in srgb, #052e16 40%, var(--text)) !important;
+  box-shadow:0 0 0 2px color-mix(in srgb, #22c55e 48%, transparent) inset;
+}
+
+body[data-page="students-5-8"] #practice-modal .game-button.game-answer-wrong,
+body[data-page="students-5-8"] #practice-modal .game-link-card.game-answer-wrong{
+  border-color:#dc2626 !important;
+  background:color-mix(in srgb, #ef4444 34%, var(--bg)) !important;
+  color:color-mix(in srgb, #450a0a 38%, var(--text)) !important;
+  box-shadow:0 0 0 2px color-mix(in srgb, #ef4444 48%, transparent) inset;
 }
 
 :root[data-theme="light"] body[data-page="students-5-8"] .game-overlay{
