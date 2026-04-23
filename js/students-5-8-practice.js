@@ -274,9 +274,10 @@
           ${current.checks
             .map(
               (check, index) => `
-                <label class="game-link-card" for="practice-check-${index}">
+                <label class="game-link-card site-option" for="practice-check-${index}">
                   <input id="practice-check-${index}" type="checkbox" data-ok="${check.ok ? 'yes' : 'no'}" data-hint="${escapeHtml(check.hint)}">
-                  <span>${escapeHtml(check.label)}</span>
+                  <span class="site-option-mark" aria-hidden="true">✓</span>
+                  <span class="site-option-text">${escapeHtml(check.label)}</span>
                 </label>
               `
             )
@@ -291,34 +292,50 @@
     const checkBtn = content.querySelector('#practice-check-btn');
     const newBtn = content.querySelector('#practice-new-btn');
     const result = content.querySelector('#practice-result');
+    const inputs = Array.from(content.querySelectorAll('input[type="checkbox"]'));
+
+    inputs.forEach((input) => {
+      input.addEventListener('change', () => {
+        const card = input.closest('.site-option');
+        card?.classList.toggle('is-picked', input.checked);
+      });
+    });
 
     checkBtn?.addEventListener('click', () => {
-      const items = Array.from(content.querySelectorAll('input[type="checkbox"]'));
       let score = 0;
       const hints = [];
 
-      items.forEach((item) => {
+      inputs.forEach((item) => {
         const isChecked = item.checked;
         const shouldCheck = item.dataset.ok === 'yes';
         const card = item.closest('.game-link-card');
 
+        card?.classList.remove('game-answer-correct', 'game-answer-wrong');
+
+        if (shouldCheck) {
+          card?.classList.add('game-answer-correct');
+        }
+
         if (isChecked === shouldCheck) {
           score += 1;
-          card?.classList.add('game-answer-correct');
-          card?.classList.remove('game-answer-wrong');
-        } else {
+        }
+
+        if (isChecked && !shouldCheck) {
           card?.classList.add('game-answer-wrong');
-          card?.classList.remove('game-answer-correct');
           hints.push(item.dataset.hint || 'Проверь этот пункт ещё раз.');
         }
+
+        item.disabled = true;
       });
+
+      checkBtn.disabled = true;
 
       if (!result) return;
 
-      if (score === items.length) {
+      if (score === inputs.length) {
         result.innerHTML = `<p><strong>Отлично!</strong> Ты заметил(а) все риски.</p><p>${escapeHtml(current.safeAction)}</p>`;
       } else {
-        result.innerHTML = `<p><strong>Результат:</strong> ${score} из ${items.length}. Подсказки:</p><ul>${hints
+        result.innerHTML = `<p><strong>Результат:</strong> ${score} из ${inputs.length}. Подсказки:</p><ul>${hints
           .map((hint) => `<li>${escapeHtml(hint)}</li>`)
           .join('')}</ul><p>${escapeHtml(current.safeAction)}</p>`;
       }
