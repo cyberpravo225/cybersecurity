@@ -452,3 +452,312 @@
     }
   });
 })();
+
+(function initStudents58Presentation() {
+  const presentationCards = Array.from(document.querySelectorAll('.senior-card.presentation'));
+  if (!presentationCards.length) return;
+
+  const targetCard = presentationCards.find((card) => {
+    const heading = card.querySelector('h3')?.textContent?.trim() || '';
+    const description = card.querySelector('p')?.textContent?.trim() || '';
+    return heading === 'Интернет и личная информация' && description === 'Какие данные нельзя публиковать в интернете.';
+  });
+
+  if (!targetCard) return;
+
+  const STYLE_ID = 'students58-presentation-style';
+  const REVEAL_CSS_ID = 'students58-reveal-css';
+  const REVEAL_THEME_ID = 'students58-reveal-theme';
+  const REVEAL_SCRIPT_ID = 'students58-reveal-script';
+
+  let overlay = null;
+  let deck = null;
+  let scrollY = 0;
+  let previousFocus = null;
+
+  const slidesMarkup = `
+    <section>
+      <h1>Интернет и личная информация</h1>
+      <p>Какие данные нельзя публиковать в интернете 🛡️</p>
+      <p style="font-size:.72em">5–8 классы · Понятно · Полезно</p>
+    </section>
+    <section>
+      <h2>Что такое личная информация?</h2>
+      <ul>
+        <li class="fragment">Данные, по которым можно узнать именно тебя 🙂</li>
+        <li class="fragment">Имя, школа, класс, телефон</li>
+        <li class="fragment">Адрес и места, где ты часто бываешь</li>
+        <li class="fragment">Логины, пароли, коды</li>
+        <li class="fragment">Фото и видео тоже могут выдать лишнее</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Почему это важно?</h2>
+      <ul>
+        <li class="fragment">Мошенники любят открытые профили 🎭</li>
+        <li class="fragment">По данным могут взломать аккаунт</li>
+        <li class="fragment">Можно столкнуться с шантажом и обманом</li>
+        <li class="fragment">Информация быстро копируется</li>
+        <li class="fragment">Удалить всё потом сложно</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Кто может использовать данные?</h2>
+      <ul>
+        <li class="fragment">Незнакомцы в соцсетях</li>
+        <li class="fragment">Фейковые аккаунты и боты</li>
+        <li class="fragment">Мошенники с поддельными сайтами</li>
+        <li class="fragment">Люди, которые случайно пересылают твой контент</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Нельзя публиковать: часть 1</h2>
+      <ul>
+        <li class="fragment">🏠 Домашний адрес</li>
+        <li class="fragment">📞 Номер телефона</li>
+        <li class="fragment">🔑 Пароли</li>
+        <li class="fragment">💬 SMS-коды подтверждения</li>
+        <li class="fragment">🪪 Фото документов</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Нельзя публиковать: часть 2</h2>
+      <ul>
+        <li class="fragment">💳 Данные банковской карты</li>
+        <li class="fragment">📍 Точную геолокацию</li>
+        <li class="fragment">🕒 Когда дома никого нет</li>
+        <li class="fragment">🗓️ Подробный личный график</li>
+        <li class="fragment">Ответы на секретные вопросы</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Фото и видео</h2>
+      <ul>
+        <li class="fragment">Проверь фон: адреса, номера, документы</li>
+        <li class="fragment">Отключай геометки перед публикацией</li>
+        <li class="fragment">Не снимай билеты, пропуска, бейджи</li>
+        <li class="fragment">Сторис «я сейчас тут» может быть рискованной 📌</li>
+      </ul>
+    </section>
+    <section>
+      <h2>О себе лучше не писать</h2>
+      <ul>
+        <li class="fragment">«Я один дома»</li>
+        <li class="fragment">Где лежат деньги/ключи</li>
+        <li class="fragment">Точный маршрут из школы</li>
+        <li class="fragment">Когда семья уехала в отпуск ✈️</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Мини-квиз 🤔</h2>
+      <p>Что нельзя публиковать?</p>
+      <ul>
+        <li class="fragment">A) «Уехали на дачу до воскресенья, дома пусто»</li>
+        <li class="fragment">B) Фото рисунка без личных данных</li>
+        <li class="fragment">C) Скрин с кодом из SMS</li>
+        <li class="fragment">D) Мем без геолокации</li>
+      </ul>
+      <p class="fragment"><strong>Ответ:</strong> нельзя A и C.</p>
+    </section>
+    <section>
+      <h2>Как защитить себя</h2>
+      <ul>
+        <li class="fragment">Закрытый профиль для незнакомцев</li>
+        <li class="fragment">Сложные пароли + 2FA</li>
+        <li class="fragment">Думай перед публикацией</li>
+        <li class="fragment">Добавляй в друзья только знакомых</li>
+        <li class="fragment">При сомнении спроси взрослого 👨‍🏫</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Если уже выложил(а) лишнее</h2>
+      <ul>
+        <li class="fragment">Сразу удали публикацию</li>
+        <li class="fragment">Смени пароли</li>
+        <li class="fragment">Сообщи родителям или учителю</li>
+        <li class="fragment">Заблокируй подозрительные аккаунты</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Главный вывод</h2>
+      <p>Личная информация — это твоя безопасность 💙</p>
+      <p class="fragment">Перед постом: «Это безопасно? Это нужно? Это точно для всех?»</p>
+    </section>
+  `;
+
+  function ensurePresentationStyles() {
+    if (document.getElementById(STYLE_ID)) return;
+
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = `
+      .students58-presentation-overlay { position: fixed; inset: 0; z-index: 2100; background: rgba(9, 14, 40, .68); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 12px; }
+      .students58-presentation-modal { position: relative; width: min(1200px, 100%); height: min(96vh, 100%); border-radius: 16px; overflow: hidden; background: linear-gradient(145deg,#edf3ff,#f6f0ff); box-shadow: 0 22px 50px rgba(16, 26, 74, .45); }
+      .students58-presentation-close { position: absolute; top: 12px; right: 12px; width: 42px; height: 42px; border: 0; border-radius: 999px; background: rgba(29,41,100,.9); color: #fff; font-size: 26px; line-height: 1; cursor: pointer; z-index: 20; }
+      .students58-presentation-close:hover,.students58-presentation-close:focus-visible { outline: 2px solid #7db2ff; outline-offset: 2px; background: #3656ff; }
+      .students58-presentation-modal .reveal { height: 100%; font-size: clamp(22px, 2.2vw, 34px); }
+      .students58-presentation-modal .slides { text-align: left; }
+      .students58-presentation-modal .slides section { border-radius: 14px; color: #1a2858; background: linear-gradient(140deg,#f8fbff,#f4f0ff); padding: 1.2rem 1.45rem; }
+      .students58-presentation-modal h1,.students58-presentation-modal h2 { color: #2a3db1; }
+      .students58-presentation-modal p,.students58-presentation-modal li { font-size: .84em; line-height: 1.35; }
+      .students58-presentation-modal ul { padding-left: 1.05em; margin: 0; }
+      @media (max-width: 900px) {
+        .students58-presentation-overlay { padding: 0; }
+        .students58-presentation-modal { width: 100%; height: 100vh; border-radius: 0; }
+        .students58-presentation-modal .slides section { padding: 1rem 1.1rem; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function loadCss(href, id) {
+    if (document.getElementById(id)) return;
+    const link = document.createElement('link');
+    link.id = id;
+    link.rel = 'stylesheet';
+    link.href = href;
+    document.head.appendChild(link);
+  }
+
+  function loadRevealScript() {
+    if (window.Reveal) return Promise.resolve();
+
+    return new Promise((resolve, reject) => {
+      const existing = document.getElementById(REVEAL_SCRIPT_ID);
+      if (existing) {
+        existing.addEventListener('load', () => resolve(), { once: true });
+        existing.addEventListener('error', () => reject(new Error('Reveal.js не загрузился')), { once: true });
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.id = REVEAL_SCRIPT_ID;
+      script.src = 'https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js';
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('Reveal.js не загрузился'));
+      document.body.appendChild(script);
+    });
+  }
+
+  function cleanupBodyState() {
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
+    window.scrollTo(0, scrollY);
+  }
+
+  function closePresentation() {
+    document.removeEventListener('keydown', onDocumentKeyDown);
+
+    if (deck && typeof deck.destroy === 'function') {
+      deck.destroy();
+    }
+
+    deck = null;
+
+    if (overlay) {
+      overlay.remove();
+      overlay = null;
+    }
+
+    cleanupBodyState();
+
+    if (previousFocus && typeof previousFocus.focus === 'function') {
+      previousFocus.focus();
+    } else {
+      targetCard.focus();
+    }
+  }
+
+  function onDocumentKeyDown(event) {
+    if (event.key === 'Escape' && overlay) {
+      event.preventDefault();
+      closePresentation();
+    }
+  }
+
+  function buildOverlay() {
+    overlay = document.createElement('div');
+    overlay.className = 'students58-presentation-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', 'Презентация: Интернет и личная информация');
+
+    overlay.innerHTML = `
+      <div class="students58-presentation-modal" id="students58-presentation-modal">
+        <button type="button" class="students58-presentation-close" aria-label="Закрыть презентацию">✕</button>
+        <div class="reveal" id="students58-reveal-root">
+          <div class="slides">${slidesMarkup}</div>
+        </div>
+      </div>
+    `;
+
+    overlay.addEventListener('click', (event) => {
+      const modal = overlay.querySelector('#students58-presentation-modal');
+      if (!modal.contains(event.target)) {
+        closePresentation();
+      }
+    });
+
+    overlay.querySelector('.students58-presentation-close')?.addEventListener('click', closePresentation);
+
+    document.body.appendChild(overlay);
+  }
+
+  async function openPresentation() {
+    if (overlay) return;
+
+    previousFocus = document.activeElement;
+    scrollY = window.scrollY;
+
+    ensurePresentationStyles();
+    loadCss('https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css', REVEAL_CSS_ID);
+    loadCss('https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css', REVEAL_THEME_ID);
+
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+
+    buildOverlay();
+
+    try {
+      await loadRevealScript();
+
+      const root = overlay.querySelector('#students58-reveal-root');
+      deck = new window.Reveal(root, {
+        controls: true,
+        progress: true,
+        slideNumber: true,
+        hash: true,
+        transition: 'fade',
+        backgroundTransition: 'fade',
+        center: true
+      });
+      await deck.initialize();
+
+      overlay.querySelector('.students58-presentation-close')?.focus();
+      document.addEventListener('keydown', onDocumentKeyDown);
+    } catch (error) {
+      closePresentation();
+      window.alert('Не удалось открыть презентацию. Проверь подключение к интернету и попробуй снова.');
+    }
+  }
+
+  targetCard.addEventListener('click', (event) => {
+    event.preventDefault();
+    openPresentation();
+  });
+
+  targetCard.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openPresentation();
+    }
+  });
+})();
