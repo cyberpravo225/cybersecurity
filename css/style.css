@@ -7877,6 +7877,17 @@ body[data-page="students-5-8"] #practice-modal ul{
   padding-left:20px;
 }
 
+body[data-page="students-5-8"] #practice-modal .mail-decision-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+  gap:10px;
+}
+
+body[data-page="students-5-8"] #practice-modal .is-picked{
+  box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 60%, transparent) inset;
+  transform:translateY(-1px);
+}
+
 :root[data-theme="light"] body[data-page="students-5-8"] .game-overlay{
   background:color-mix(in srgb, #0f172a 20%, transparent);
 }
