@@ -7867,6 +7867,51 @@ body[data-page="students-5-8"] #practice-modal .game-link-card{
   gap:10px;
 }
 
+body[data-page="students-5-8"] #practice-modal .site-option{
+  position:relative;
+  align-items:center;
+  border-radius:16px;
+  padding:12px 14px;
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+body[data-page="students-5-8"] #practice-modal .site-option:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 24px rgba(2,6,23,.18);
+}
+
+body[data-page="students-5-8"] #practice-modal .site-option input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+
+body[data-page="students-5-8"] #practice-modal .site-option-mark{
+  width:24px;
+  height:24px;
+  min-width:24px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  font-size:14px;
+  font-weight:800;
+  border:1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  background:color-mix(in srgb, var(--panel-bg) 80%, var(--bg));
+  color:transparent;
+  transition:all .18s ease;
+}
+
+body[data-page="students-5-8"] #practice-modal .site-option-text{
+  font-weight:600;
+  line-height:1.4;
+}
+
+body[data-page="students-5-8"] #practice-modal .site-option.is-picked .site-option-mark{
+  color:var(--text);
+  border-color:color-mix(in srgb, var(--accent) 52%, transparent);
+  background:color-mix(in srgb, var(--accent) 22%, var(--bg));
+}
+
 body[data-page="students-5-8"] #practice-modal .game-link-card input{
   margin-top:2px;
   accent-color:color-mix(in srgb, var(--accent) 74%, var(--accent-2) 26%);
@@ -7904,6 +7949,18 @@ body[data-page="students-5-8"] #practice-modal .game-link-card.game-answer-wrong
   background:color-mix(in srgb, #ef4444 34%, var(--bg)) !important;
   color:color-mix(in srgb, #450a0a 38%, var(--text)) !important;
   box-shadow:0 0 0 2px color-mix(in srgb, #ef4444 48%, transparent) inset;
+}
+
+body[data-page="students-5-8"] #practice-modal .site-option.game-answer-correct .site-option-mark{
+  color:#14532d;
+  border-color:#16a34a;
+  background:color-mix(in srgb, #22c55e 45%, #fff);
+}
+
+body[data-page="students-5-8"] #practice-modal .site-option.game-answer-wrong .site-option-mark{
+  color:#7f1d1d;
+  border-color:#dc2626;
+  background:color-mix(in srgb, #ef4444 45%, #fff);
 }
 
 :root[data-theme="light"] body[data-page="students-5-8"] .game-overlay{
