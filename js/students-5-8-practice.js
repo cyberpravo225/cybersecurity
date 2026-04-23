@@ -474,7 +474,6 @@
   let deck = null;
   let scrollY = 0;
   let previousFocus = null;
-  let previousHash = '';
 
   const slidesMarkup = `
     <section>
@@ -666,9 +665,6 @@
 
     cleanupBodyState();
 
-    const cleanUrl = `${window.location.pathname}${window.location.search}${previousHash}`;
-    window.history.replaceState(null, '', cleanUrl);
-
     if (previousFocus && typeof previousFocus.focus === 'function') {
       previousFocus.focus();
     } else {
@@ -715,7 +711,6 @@
     if (overlay) return;
 
     previousFocus = document.activeElement;
-    previousHash = window.location.hash;
     scrollY = window.scrollY;
 
     ensurePresentationStyles();
@@ -739,7 +734,7 @@
         controls: true,
         progress: true,
         slideNumber: true,
-        hash: false,
+        hash: true,
         transition: 'fade',
         backgroundTransition: 'fade',
         center: true
