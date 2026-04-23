@@ -130,6 +130,99 @@
     }
   ];
 
+  const detectiveRounds = [
+    {
+      context: 'Сообщение в школьном чате',
+      message: 'Я из техподдержки дневника. Срочно пришли код из SMS, иначе тебе заблокируют вход.',
+      risk: 'danger',
+      reason: [
+        'Настоящая поддержка не просит коды подтверждения.',
+        'Есть давление временем: «срочно, иначе блокировка».',
+        'Запрос кода — попытка перехватить доступ к аккаунту.'
+      ],
+      safeMove: 'Игнорировать сообщение, сделать скрин и сообщить учителю/родителю.'
+    },
+    {
+      context: 'Письмо от онлайн-игры',
+      message: 'Новая акция уже в профиле. Проверь её через приложение в разделе «События».',
+      risk: 'safe',
+      reason: [
+        'Нет требования отправить пароль или код.',
+        'Предлагают открыть раздел внутри официального приложения.',
+        'Нет запугивания и нереалистичных обещаний.'
+      ],
+      safeMove: 'Проверить акцию только в официальном приложении.'
+    },
+    {
+      context: 'Сайт для голосования за конкурс',
+      message: 'URL: htps://school-vote-prize.com/login. Форма требует логин, пароль и номер карты «для верификации».',
+      risk: 'danger',
+      reason: [
+        'Подозрительный адрес и ошибка в протоколе (htps).',
+        'Запрос банковских данных для «голосования» неадекватен.',
+        'Сайт маскируется под школьную активность.'
+      ],
+      safeMove: 'Не вводить данные, закрыть вкладку и проверить конкурс через официальный канал школы.'
+    },
+    {
+      context: 'Сообщение от друга в мессенджере',
+      message: 'Смотри, это я на видео! https://video-share.example/funny — ссылка выглядит короткой и непонятной.',
+      risk: 'danger',
+      reason: [
+        'Необычное поведение друга и типичная приманка «это ты на видео».',
+        'Ссылка непонятная и не связана с известным сервисом.',
+        'Взломанные аккаунты часто рассылают такие сообщения.'
+      ],
+      safeMove: 'Спросить друга другим способом и не открывать ссылку до подтверждения.'
+    },
+    {
+      context: 'Уведомление от школьной платформы',
+      message: 'Новый материал доступен в твоём кабинете. Открой платформу через свою закладку.',
+      risk: 'safe',
+      reason: [
+        'Сообщение нейтральное, без запроса данных.',
+        'Совет перейти через закладку — признак безопасного сценария.',
+        'Нет сомнительных бонусов или угроз.'
+      ],
+      safeMove: 'Открыть кабинет через привычную закладку и проверить, есть ли материал.'
+    }
+  ];
+
+  const shieldCases = [
+    {
+      incident: 'Однокласснику пришло письмо «Вы выиграли планшет, введите пароль от почты для получения».',
+      options: [
+        { label: 'Быстро ввести пароль, чтобы не потерять приз.', effect: -2, tip: 'Пароль нельзя вводить ради «приза». Это ловушка.' },
+        { label: 'Проверить отправителя, обсудить с учителем и удалить письмо.', effect: 3, tip: 'Отлично: проверка + обращение к взрослому = безопасно.' },
+        { label: 'Переслать всем друзьям: вдруг это правда.', effect: -1, tip: 'Так можно распространить фишинг на других.' }
+      ]
+    },
+    {
+      incident: 'В чате класса неизвестный просит «скинуть фото пропуска школы для проверки списков».',
+      options: [
+        { label: 'Отправить фото, чтобы не было проблем со входом.', effect: -2, tip: 'Документы и пропуска нельзя отправлять незнакомым.' },
+        { label: 'Отказаться, уточнить информацию у классного руководителя.', effect: 3, tip: 'Правильный путь: проверка через официальный канал.' },
+        { label: 'Замазать имя, но отправить фото.', effect: -1, tip: 'Даже частично скрытый документ может быть опасен.' }
+      ]
+    },
+    {
+      incident: 'Друг установил «читы» из случайного сайта, и теперь компьютер просит срочно заплатить за разблокировку.',
+      options: [
+        { label: 'Заплатить, чтобы всё быстро заработало.', effect: -2, tip: 'Платёж мошенникам не гарантирует восстановление.' },
+        { label: 'Отключить интернет, сообщить взрослому и проверить устройство антивирусом.', effect: 3, tip: 'Это грамотный антикризисный план.' },
+        { label: 'Игнорировать окно и продолжать играть.', effect: -1, tip: 'Проблема обычно становится хуже без действий.' }
+      ]
+    },
+    {
+      incident: 'Тебе прислали «домашку в архиве», но файл называется home_task.exe.',
+      options: [
+        { label: 'Открыть файл — вдруг это просто формат.', effect: -2, tip: '.exe — исполняемый файл, это опасно.' },
+        { label: 'Не открывать, попросить прислать файл в привычном формате (pdf/docx).', effect: 3, tip: 'Супер: безопасная проверка перед открытием.' },
+        { label: 'Отправить файл другому, пусть он проверит первым.', effect: -1, tip: 'Так риск переносится на другого человека.' }
+      ]
+    }
+  ];
+
   const scenarios = {
     mail: {
       title: 'Разбери письмо: кибер-детектив',
@@ -140,6 +233,16 @@
       title: 'Проверь сайт за 30 секунд',
       intro: 'Отметь все тревожные признаки сайта. В каждом запуске — новый пример.',
       safeAction: 'Если есть сомнение, закрой страницу и открой сервис вручную.'
+    },
+    detective: {
+      title: 'Фишинг-детектив: чат и сайты',
+      intro: '5 быстрых раундов. Твоя цель — собрать серию правильных решений и не дать себя запутать.',
+      safeAction: 'Лучший детектив всегда проверяет источник, не спешит и не делится кодами/паролями.'
+    },
+    shield: {
+      title: 'Киберщит школы',
+      intro: 'Симулятор командной защиты: выбирай действия в инцидентах и набирай уровень киберщита.',
+      safeAction: 'Сильная команда: проверяет факты, не делится приватными данными и сразу сообщает о рисках.'
     }
   };
 
@@ -400,6 +503,186 @@
     newBtn?.addEventListener('click', renderSiteGame);
   }
 
+  function renderDetectiveGame() {
+    const rounds = shuffle(detectiveRounds);
+    let roundIndex = 0;
+    let score = 0;
+    let streak = 0;
+
+    const renderRound = () => {
+      const current = rounds[roundIndex];
+      renderWithHeightAnimation(() => {
+        content.innerHTML = `
+        <section class="game-panel">
+          <p class="game-score">Раунд ${roundIndex + 1} / ${rounds.length} · Очки: ${score} · Серия: ${streak}</p>
+          <p class="game-subtitle">${escapeHtml(scenarios.detective.intro)}</p>
+          <div class="game-feedback">
+            <p><strong>Сцена:</strong> ${escapeHtml(current.context)}</p>
+            <p>${escapeHtml(current.message)}</p>
+          </div>
+
+          <div class="mail-decision-grid">
+            <button type="button" class="game-button game-button-secondary" data-detective="danger">🚨 Это подозрительно</button>
+            <button type="button" class="game-button game-button-secondary" data-detective="safe">✅ Похоже на нормальное</button>
+          </div>
+
+          <button type="button" class="game-button" id="detective-check-btn">Проверить решение</button>
+          <div class="game-feedback" id="detective-result" aria-live="polite"></div>
+        </section>
+      `;
+      });
+
+      const choiceButtons = Array.from(content.querySelectorAll('[data-detective]'));
+      const checkBtn = content.querySelector('#detective-check-btn');
+      const result = content.querySelector('#detective-result');
+
+      choiceButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          choiceButtons.forEach((item) => item.classList.remove('is-picked'));
+          btn.classList.add('is-picked');
+        });
+      });
+
+      checkBtn?.addEventListener('click', () => {
+        const picked = content.querySelector('[data-detective].is-picked');
+        if (!picked) {
+          showResultBlock(result, '<p><strong>Сделай выбор:</strong> отметь, это безопасно или подозрительно.</p>');
+          return;
+        }
+
+        const isCorrect = picked.dataset.detective === current.risk;
+        score += isCorrect ? 2 : 0;
+        streak = isCorrect ? streak + 1 : 0;
+
+        choiceButtons.forEach((button) => {
+          const correct = button.dataset.detective === current.risk;
+          button.disabled = true;
+          button.classList.add(correct ? 'game-answer-correct' : 'game-answer-wrong');
+        });
+        checkBtn.disabled = true;
+
+        const reasons = current.reason.map((item) => `<li>${escapeHtml(item)}</li>`).join('');
+        const badge = isCorrect ? '🛡️ Верно!' : '🔎 Почти! Разберём внимательно.';
+
+        showResultBlock(
+          result,
+          `<p><strong>${badge}</strong> ${isCorrect ? 'Плюс 2 очка к рейтингу детектива.' : 'В этом раунде очков нет.'}</p><ul>${reasons}</ul><p><strong>Безопасный ход:</strong> ${escapeHtml(current.safeMove)}</p>`
+        );
+
+        const nextBtn = document.createElement('button');
+        nextBtn.type = 'button';
+        nextBtn.className = 'game-button';
+
+        if (roundIndex + 1 < rounds.length) {
+          nextBtn.textContent = 'Следующий раунд';
+          nextBtn.addEventListener('click', () => {
+            roundIndex += 1;
+            renderRound();
+          });
+        } else {
+          const maxScore = rounds.length * 2;
+          const rank = score >= 8 ? 'Эксперт кибер-детектива' : score >= 5 ? 'Уверенный аналитик' : 'Новичок-разведчик';
+          nextBtn.textContent = 'Сыграть снова';
+          nextBtn.addEventListener('click', renderDetectiveGame);
+          if (result) {
+            result.innerHTML += `<p><strong>Итог:</strong> ${score} из ${maxScore}. Твой ранг: ${escapeHtml(rank)}.</p><p>${escapeHtml(scenarios.detective.safeAction)}</p>`;
+            result.classList.add('is-visible');
+          }
+        }
+
+        result?.insertAdjacentElement('afterend', nextBtn);
+      });
+    };
+
+    renderRound();
+  }
+
+  function renderShieldGame() {
+    const rounds = shuffle(shieldCases);
+    let roundIndex = 0;
+    let shieldLevel = 50;
+
+    const renderRound = () => {
+      const current = rounds[roundIndex];
+
+      renderWithHeightAnimation(() => {
+        content.innerHTML = `
+        <section class="game-panel">
+          <p class="game-score">Ситуация ${roundIndex + 1} / ${rounds.length}</p>
+          <p class="game-subtitle">${escapeHtml(scenarios.shield.intro)}</p>
+          <div class="game-feedback">
+            <p><strong>Уровень киберщита:</strong> ${shieldLevel}%</p>
+            <p>${escapeHtml(current.incident)}</p>
+          </div>
+
+          <div class="game-links">
+            ${current.options
+              .map(
+                (option, idx) => `<button type="button" class="game-button game-button-secondary" data-shield="${option.effect}" data-shield-tip="${escapeHtml(option.tip)}">${idx + 1}. ${escapeHtml(option.label)}</button>`
+              )
+              .join('')}
+          </div>
+
+          <div class="game-feedback" id="shield-result" aria-live="polite"></div>
+        </section>
+      `;
+      });
+
+      const buttons = Array.from(content.querySelectorAll('[data-shield]'));
+      const result = content.querySelector('#shield-result');
+      let selected = null;
+
+      buttons.forEach((button) => {
+        button.addEventListener('click', () => {
+          if (selected) return;
+          selected = button;
+
+          const effect = Number(button.dataset.shield || 0);
+          shieldLevel = Math.max(0, Math.min(100, shieldLevel + effect * 8));
+
+          buttons.forEach((item) => {
+            item.disabled = true;
+            const value = Number(item.dataset.shield || 0);
+            item.classList.add(value > 0 ? 'game-answer-correct' : 'game-answer-wrong');
+          });
+
+          const tip = button.dataset.shieldTip || '';
+          const impact = effect > 0 ? 'Щит усилился ✅' : 'Щит просел ⚠️';
+          showResultBlock(result, `<p><strong>${impact}</strong> Текущий уровень: ${shieldLevel}%.</p><p>${escapeHtml(tip)}</p>`);
+
+          const nextBtn = document.createElement('button');
+          nextBtn.type = 'button';
+          nextBtn.className = 'game-button';
+
+          if (roundIndex + 1 < rounds.length) {
+            nextBtn.textContent = 'Следующая ситуация';
+            nextBtn.addEventListener('click', () => {
+              roundIndex += 1;
+              renderRound();
+            });
+          } else {
+            const ending =
+              shieldLevel >= 75
+                ? 'Команда защищена отлично. Ты умеешь принимать зрелые решения в рисковых ситуациях.'
+                : shieldLevel >= 50
+                  ? 'Хороший результат. Ещё немного практики — и киберщит станет железным.'
+                  : 'Щит просел. Повтори тренажёр и обрати внимание на проверку источников и данных.';
+            nextBtn.textContent = 'Пройти тренажёр снова';
+            nextBtn.addEventListener('click', renderShieldGame);
+            if (result) {
+              result.innerHTML += `<p><strong>Финал:</strong> ${shieldLevel}%.</p><p>${escapeHtml(ending)}</p><p>${escapeHtml(scenarios.shield.safeAction)}</p>`;
+              result.classList.add('is-visible');
+            }
+          }
+
+          result?.insertAdjacentElement('afterend', nextBtn);
+        });
+      });
+    };
+
+    renderRound();
+  }
+
   function renderScenario(key) {
     activeScenario = scenarios[key];
     if (!activeScenario) return;
@@ -411,7 +694,17 @@
       return;
     }
 
-    renderSiteGame();
+    if (key === 'site') {
+      renderSiteGame();
+      return;
+    }
+
+    if (key === 'detective') {
+      renderDetectiveGame();
+      return;
+    }
+
+    renderShieldGame();
   }
 
   function openModal(key) {
