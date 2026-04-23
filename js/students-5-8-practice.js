@@ -145,6 +145,48 @@
 
   const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
   let activeScenario = null;
+  let heightAnimTimer = null;
+
+  function animateModalContentHeight(previousHeight) {
+    const startHeight = typeof previousHeight === 'number' ? previousHeight : content.getBoundingClientRect().height;
+    const endHeight = content.scrollHeight;
+
+    if (Math.abs(startHeight - endHeight) < 2) return;
+
+    clearTimeout(heightAnimTimer);
+    content.style.overflow = 'hidden';
+    content.style.height = `${startHeight}px`;
+    content.style.transition = 'height .28s ease';
+
+    requestAnimationFrame(() => {
+      content.style.height = `${endHeight}px`;
+    });
+
+    heightAnimTimer = setTimeout(() => {
+      content.style.transition = '';
+      content.style.height = '';
+      content.style.overflow = '';
+    }, 320);
+  }
+
+  function renderWithHeightAnimation(renderFn) {
+    const before = content.getBoundingClientRect().height;
+    renderFn();
+    animateModalContentHeight(before);
+  }
+
+  function showResultBlock(resultElement, html) {
+    if (!resultElement) return;
+
+    resultElement.classList.remove('is-visible');
+    setTimeout(() => {
+      resultElement.innerHTML = html;
+      requestAnimationFrame(() => {
+        resultElement.classList.add('is-visible');
+        animateModalContentHeight();
+      });
+    }, 80);
+  }
 
   function renderMailGame() {
     const rounds = shuffle(mailCases).slice(0, 3);
@@ -164,7 +206,8 @@
         { label: 'Ответить на письмо и отправить код из SMS', ok: false }
       ]);
 
-      content.innerHTML = `
+      renderWithHeightAnimation(() => {
+        content.innerHTML = `
         <section class="game-panel">
           <p class="game-score">Раунд ${roundIndex + 1} / ${rounds.length} · Очки: ${totalScore}</p>
           <p class="game-subtitle">${escapeHtml(scenarios.mail.intro)}</p>
@@ -195,6 +238,7 @@
           <div class="game-feedback" id="mail-result" aria-live="polite"></div>
         </section>
       `;
+      });
 
       const result = content.querySelector('#mail-result');
       const checkBtn = content.querySelector('#mail-check-btn');
@@ -204,9 +248,7 @@
         const stepBtn = content.querySelector('[data-mail-step].is-picked');
 
         if (!answerBtn || !stepBtn) {
-          if (result) {
-            result.innerHTML = '<p><strong>Выбери оба ответа:</strong> решение по письму и безопасный шаг.</p>';
-          }
+          showResultBlock(result, '<p><strong>Выбери оба ответа:</strong> решение по письму и безопасный шаг.</p>');
           return;
         }
 
@@ -218,9 +260,7 @@
         const clueList = current.clues.map((clue) => `<li>${escapeHtml(clue)}</li>`).join('');
         const verdict = answerOk && stepOk ? 'Отлично! Раунд пройден на 2/2.' : `Раунд: ${points}/2. Разберём ошибки и признаки.`;
 
-        if (result) {
-          result.innerHTML = `<p><strong>${verdict}</strong></p><ul>${clueList}</ul><p>${escapeHtml(current.safeAction)}</p>`;
-        }
+        showResultBlock(result, `<p><strong>${verdict}</strong></p><ul>${clueList}</ul><p>${escapeHtml(current.safeAction)}</p>`);
 
         content.querySelectorAll('[data-mail-answer], [data-mail-step]').forEach((button) => {
           const isCorrect = button.dataset.mailAnswer === 'yes' || button.dataset.mailStep === 'yes';
@@ -245,6 +285,7 @@
           nextBtn.addEventListener('click', renderMailGame);
           if (result) {
             result.innerHTML += `<p><strong>Итог:</strong> ${totalScore} из ${rounds.length * 2}. ${escapeHtml(scenarios.mail.safeAction)}</p>`;
+            result.classList.add('is-visible');
           }
         }
 
@@ -266,7 +307,8 @@
   function renderSiteGame() {
     const current = shuffle(siteCases)[0];
 
-    content.innerHTML = `
+    renderWithHeightAnimation(() => {
+      content.innerHTML = `
       <section class="game-panel" id="practice-quiz">
         <p class="game-subtitle">${escapeHtml(scenarios.site.intro)}</p>
         <div class="game-feedback"><p><strong>URL:</strong> ${escapeHtml(current.url)}</p><p>${escapeHtml(current.details)}</p></div>
@@ -288,6 +330,7 @@
         <div class="game-feedback" id="practice-result" aria-live="polite"></div>
       </section>
     `;
+    });
 
     const checkBtn = content.querySelector('#practice-check-btn');
     const newBtn = content.querySelector('#practice-new-btn');
@@ -333,11 +376,14 @@
       if (!result) return;
 
       if (score === inputs.length) {
-        result.innerHTML = `<p><strong>Отлично!</strong> Ты заметил(а) все риски.</p><p>${escapeHtml(current.safeAction)}</p>`;
+        showResultBlock(result, `<p><strong>Отлично!</strong> Ты заметил(а) все риски.</p><p>${escapeHtml(current.safeAction)}</p>`);
       } else {
-        result.innerHTML = `<p><strong>Результат:</strong> ${score} из ${inputs.length}. Подсказки:</p><ul>${hints
-          .map((hint) => `<li>${escapeHtml(hint)}</li>`)
-          .join('')}</ul><p>${escapeHtml(current.safeAction)}</p>`;
+        showResultBlock(
+          result,
+          `<p><strong>Результат:</strong> ${score} из ${inputs.length}. Подсказки:</p><ul>${hints
+            .map((hint) => `<li>${escapeHtml(hint)}</li>`)
+            .join('')}</ul><p>${escapeHtml(current.safeAction)}</p>`
+        );
       }
     });
 
@@ -397,6 +443,12 @@
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && !modal.hidden) {
       closeModal();
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (!modal.hidden) {
+      animateModalContentHeight();
     }
   });
 })();
