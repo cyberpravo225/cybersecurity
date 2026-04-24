@@ -169,17 +169,7 @@
 
 <div class="resource-block">
 <h2>Лабораторные мини-практики</h2>
-<div class="senior-cards">
-<article class="senior-card">
-<div class="senior-card-icon">🧪</div>
-<h3>Threat modeling</h3>
-<p>Определите активы, угрозы и меры защиты для школьного цифрового сервиса.</p>
-</article>
-<article class="senior-card">
-<div class="senior-card-icon">📊</div>
-<h3>Пост-инцидент отчёт</h3>
-<p>Командная работа: разобрать кейс атаки и предложить план предотвращения.</p>
-</article>
+<div class="senior-cards" id="senior-labs-cards">
 </div>
 </div>
 
@@ -191,56 +181,10 @@
 
 <h2>Игры / симуляции</h2>
 
-<div class="senior-cards">
-
-<a href="#" class="senior-card game">
-
-<div class="senior-card-icon">🕵️</div>
-
-<h3>Расследование инцидента</h3>
-
-<p>Симуляция поиска причины кибератаки.</p>
-
-</a>
-
-
-<a href="#" class="senior-card game">
-
-<div class="senior-card-icon">🧠</div>
-
-<h3>Квиз по криптографии</h3>
-
-<p>Проверьте знания по шифрованию данных.</p>
-
-</a>
-
-
-<a href="#" class="senior-card game">
-
-<div class="senior-card-icon">🛡️</div>
-
-<h3>Защити сеть</h3>
-
-<p>Интерактивная игра по защите компьютерной сети.</p>
-
-</a>
-
+<div class="senior-cards" id="senior-games-cards">
 </div>
 
 </div>
-
-
-
-<div class="resource-block">
-
-<h2>Методическая информация</h2>
-
-<p class="simple-text">
-Рекомендуются проектные задания, анализ киберинцидентов, работа в командах и подготовка собственных исследований.
-</p>
-
-</div>
-
 
 
 </section>
@@ -249,7 +193,18 @@
 
 </div>
 
+<div class="game-overlay" id="senior-practice-overlay" hidden></div>
+<div class="game-modal" id="senior-practice-modal" role="dialog" aria-modal="true" aria-labelledby="senior-practice-title" hidden>
+  <div class="game-modal-header">
+    <button class="game-button game-button-ghost" type="button" id="senior-practice-back-btn">← Назад</button>
+    <h2 id="senior-practice-title" class="game-modal-title">Мини-практика</h2>
+    <button class="game-button game-button-ghost" type="button" id="senior-practice-close-btn" aria-label="Закрыть мини-практику">✕</button>
+  </div>
+  <div class="game-modal-content" id="senior-practice-content"></div>
+</div>
+
 <script src="js/main.js"></script>
+<script src="js/students-9-11-practice.js"></script>
 
 <script src="js/theme-network.js"></script>
 </body>
