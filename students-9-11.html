@@ -1,186 +1,211 @@
-(function initStudents911Practice() {
-  const labsContainer = document.getElementById('senior-labs-cards');
-  const gamesContainer = document.getElementById('senior-games-cards');
-  const overlay = document.getElementById('senior-practice-overlay');
-  const modal = document.getElementById('senior-practice-modal');
-  const titleNode = document.getElementById('senior-practice-title');
-  const contentNode = document.getElementById('senior-practice-content');
-  const closeBtn = document.getElementById('senior-practice-close-btn');
-  const backBtn = document.getElementById('senior-practice-back-btn');
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Школьники 9–11 — Кибербезопасность</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
 
-  if (!labsContainer || !gamesContainer || !overlay || !modal || !titleNode || !contentNode || !closeBtn || !backBtn) {
-    return;
-  }
+<body class="page simple" data-page="students-9-11">
 
-  const cards = [
-    {
-      id: 'threat-model',
-      type: 'lab',
-      icon: '🧪',
-      title: 'Лаба: Threat Modeling школы',
-      description: 'Определи активы, векторы атак и меры защиты для школьного облачного сервиса.',
-      challenge: {
-        intro: 'Выбери 3 критичных актива для модели угроз.',
-        question: 'Что из списка является самым критичным активом школьного портала?',
-        answers: [
-          { text: 'Список тем оформления сайта', correct: false, explain: 'Тема оформления не критична для безопасности данных.' },
-          { text: 'База оценок и персональных данных учеников', correct: true, explain: 'Это чувствительные данные с высоким риском ущерба.' },
-          { text: 'Фоновая анимация главной страницы', correct: false, explain: 'Визуальные элементы не являются приоритетным активом.' }
-        ],
-        success: 'Отлично. Следующий шаг: добавь MFA для учителей и журнал аудита входов.'
-      }
-    },
-    {
-      id: 'forensics-report',
-      type: 'lab',
-      icon: '📊',
-      title: 'Лаба: Пост-инцидент отчёт',
-      description: 'Разбери таймлайн инцидента и выбери корректный план восстановления.',
-      challenge: {
-        intro: 'Сценарий: фишинговая ссылка привела к компрометации учётки администратора.',
-        question: 'Какое действие должно быть первым в плане реагирования?',
-        answers: [
-          { text: 'Написать пост в соцсети о том, что всё под контролем', correct: false, explain: 'Публичные сообщения не решают инцидент технически.' },
-          { text: 'Изолировать скомпрометированную учётку и завершить активные сессии', correct: true, explain: 'Сначала останавливают развитие атаки.' },
-          { text: 'Удалить все логи, чтобы освободить место', correct: false, explain: 'Логи нужны для расследования и отчётности.' }
-        ],
-        success: 'Верно. После изоляции: ротация паролей, проверка IOC и обновление регламентов.'
-      }
-    },
-    {
-      id: 'soc-analyst',
-      type: 'game',
-      icon: '🕵️',
-      title: 'Игра: SOC-аналитик за 5 минут',
-      description: 'Определи, какое событие похоже на реальную атаку, а что — ложная тревога.',
-      challenge: {
-        intro: 'Раунд тревог: ты дежурный аналитик центра мониторинга.',
-        question: 'Какой сигнал наиболее подозрительный?',
-        answers: [
-          { text: 'Один неудачный вход пользователя с опечаткой', correct: false, explain: 'Единичные ошибки входа — обычное явление.' },
-          { text: '150 попыток входа за 2 минуты с разных IP к одной учётке', correct: true, explain: 'Это типичный brute-force / credential stuffing паттерн.' },
-          { text: 'Плановое обновление антивирусных баз', correct: false, explain: 'Это легитимная фоновая активность.' }
-        ],
-        success: 'Точно. Эскалируй инцидент и включай временную блокировку источников.'
-      }
-    },
-    {
-      id: 'crypto-choice',
-      type: 'game',
-      icon: '🧠',
-      title: 'Игра: Крипто-архитектор',
-      description: 'Подбери подход шифрования и хранения ключей для школьного приложения.',
-      challenge: {
-        intro: 'Ты проектируешь защиту данных для электронного дневника.',
-        question: 'Какой вариант наиболее корректный?',
-        answers: [
-          { text: 'Хранить пароли в открытом виде для удобства поддержки', correct: false, explain: 'Пароли должны храниться только в виде устойчивых хешей.' },
-          { text: 'Использовать bcrypt/argon2 для паролей и TLS для передачи данных', correct: true, explain: 'Это базовый современный стандарт защиты.' },
-          { text: 'Шифровать только фронтенд-код, а базу оставить без защиты', correct: false, explain: 'Основные риски часто сосредоточены на стороне данных.' }
-        ],
-        success: 'Супер. Ещё лучше: добавить ротацию ключей и разделение привилегий.'
-      }
-    },
-    {
-      id: 'blue-team',
-      type: 'game',
-      icon: '🛡️',
-      title: 'Игра: Blue Team — защити сеть',
-      description: 'Выбери правильную последовательность действий при сетевой атаке.',
-      challenge: {
-        intro: 'В сети школы замечен аномальный трафик на неизвестные домены.',
-        question: 'Какая последовательность действий наиболее правильная?',
-        answers: [
-          { text: 'Игнорировать до конца учебной смены', correct: false, explain: 'Задержка увеличивает ущерб.' },
-          { text: 'Сразу отключить все серверы без фиксации фактов', correct: false, explain: 'Без фиксации артефактов расследование усложняется.' },
-          { text: 'Собрать телеметрию, ограничить сегмент сети, уведомить команду реагирования', correct: true, explain: 'Это взвешенный и профессиональный подход.' }
-        ],
-        success: 'Отличная реакция. Так работает зрелая стратегия blue team.'
-      }
-    }
-  ];
+<div class="theme-backdrop" aria-hidden="true">
+  <div class="theme-orb theme-orb-one"></div>
+  <div class="theme-orb theme-orb-two"></div>
+  <div class="theme-grid"></div>
+  <canvas class="theme-network" id="theme-network"></canvas>
+</div>
 
-  const cardTemplate = (item) => `
-    <article class="senior-card game" data-practice-id="${item.id}" role="button" tabindex="0" aria-haspopup="dialog">
-      <div class="senior-card-icon">${item.icon}</div>
-      <h3>${item.title}</h3>
-      <p>${item.description}</p>
-    </article>
-  `;
 
-  labsContainer.innerHTML = cards.filter((item) => item.type === 'lab').map(cardTemplate).join('');
-  gamesContainer.innerHTML = cards.filter((item) => item.type === 'game').map(cardTemplate).join('');
 
-  const cardMap = new Map(cards.map((item) => [item.id, item]));
-  const practiceCards = Array.from(document.querySelectorAll('[data-practice-id]'));
-  let activeCard = null;
+<div class="site">
 
-  const openModal = (cardId) => {
-    const data = cardMap.get(cardId);
-    if (!data) return;
+<header class="topbar glass">
 
-    activeCard = data;
-    titleNode.textContent = data.title;
+<a class="back-btn" href="index.html">
+← НАЗАД
+</a>
 
-    contentNode.innerHTML = `
-      <div class="practice-layout">
-        <p><strong>${data.challenge.intro}</strong></p>
-        <p>${data.challenge.question}</p>
-        <div class="practice-answers">
-          ${data.challenge.answers
-            .map(
-              (answer, index) =>
-                `<button class="game-button" type="button" data-answer-index="${index}">${answer.text}</button>`
-            )
-            .join('')}
-        </div>
-        <div class="practice-feedback" id="senior-practice-feedback" aria-live="polite"></div>
-      </div>
-    `;
+<nav class="nav">
 
-    overlay.hidden = false;
-    modal.hidden = false;
-    document.body.classList.add('no-scroll');
-  };
+<button id="theme-toggle-7" class="btn icon-btn" aria-label="Переключить тему" title="Тема">
 
-  const closeModal = () => {
-    activeCard = null;
-    overlay.hidden = true;
-    modal.hidden = true;
-    contentNode.innerHTML = '';
-    document.body.classList.remove('no-scroll');
-  };
+<svg class="icon-theme" width="22" height="22" viewBox="0 0 24 24" fill="none">
 
-  practiceCards.forEach((card) => {
-    const activate = () => openModal(card.dataset.practiceId);
-    card.addEventListener('click', activate);
-    card.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        activate();
-      }
-    });
-  });
+<path class="icon-moon" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>
 
-  contentNode.addEventListener('click', (event) => {
-    const button = event.target.closest('[data-answer-index]');
-    if (!button || !activeCard) return;
+<g class="icon-sun">
+<circle cx="12" cy="12" r="4"/>
+<line x1="12" y1="1" x2="12" y2="4"/>
+<line x1="12" y1="20" x2="12" y2="23"/>
+<line x1="4.2" y1="4.2" x2="6.3" y2="6.3"/>
+<line x1="17.7" y1="17.7" x2="19.8" y2="19.8"/>
+<line x1="1" y1="12" x2="4" y2="12"/>
+<line x1="20" y1="12" x2="23" y2="12"/>
+<line x1="4.2" y1="19.8" x2="6.3" y2="17.7"/>
+<line x1="17.7" y1="6.3" x2="19.8" y2="4.2"/>
+</g>
 
-    const selected = Number(button.dataset.answerIndex);
-    const choice = activeCard.challenge.answers[selected];
-    const feedback = document.getElementById('senior-practice-feedback');
+</svg>
 
-    if (!choice || !feedback) return;
+</button>
 
-    const status = choice.correct ? '✅ Верно.' : '⚠️ Неверно.';
-    const finalTip = choice.correct ? `<p><strong>${activeCard.challenge.success}</strong></p>` : '';
-    feedback.innerHTML = `<p>${status} ${choice.explain}</p>${finalTip}`;
-  });
+</nav>
 
-  closeBtn.addEventListener('click', closeModal);
-  backBtn.addEventListener('click', closeModal);
-  overlay.addEventListener('click', closeModal);
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !modal.hidden) closeModal();
-  });
-})();
+</header>
+
+
+
+<main class="main">
+
+<section class="section container reveal">
+
+<h1>Кибербезопасность для школьников 9–11 классов</h1>
+
+<p class="lead simple-text">
+Продвинутые темы: защита данных, криптография, цифровая безопасность и основы киберзащиты.
+</p>
+
+<div class="audience-hero audience-hero-senior">
+  <p class="audience-hero-title">От пользователя к цифровому защитнику 🚀</p>
+  <p>Старшеклассники изучают практики кибергигиены, правовые аспекты и командный подход к разбору инцидентов.</p>
+  <div class="audience-tags">
+    <span>🔐 MFA и защита учёток</span>
+    <span>⚖️ Цифровая ответственность</span>
+    <span>🛠️ Практика в командах</span>
+  </div>
+</div>
+
+
+<!-- ПРАВИЛА -->
+
+<div class="senior-rules">
+
+<div class="senior-rule">
+<div class="senior-rule-icon">🔐</div>
+<h3>Используйте двухфакторную защиту</h3>
+<p>Включайте двухфакторную аутентификацию для важных аккаунтов.</p>
+</div>
+
+<div class="senior-rule">
+<div class="senior-rule-icon">🧠</div>
+<h3>Защищайте личные данные</h3>
+<p>Не публикуйте конфиденциальную информацию в социальных сетях.</p>
+</div>
+
+<div class="senior-rule">
+<div class="senior-rule-icon">⚠️</div>
+<h3>Проверяйте источники</h3>
+<p>Фишинговые сайты могут выглядеть как настоящие — проверяйте адрес.</p>
+</div>
+
+</div>
+
+
+
+<div class="senior-actions">
+
+<div class="senior-action">
+🔍 Проверяйте адрес сайта перед вводом пароля.
+</div>
+
+<div class="senior-action">
+📩 Не открывайте подозрительные письма и вложения.
+</div>
+
+<div class="senior-action">
+💾 Регулярно обновляйте программы и операционную систему.
+</div>
+
+</div>
+
+
+
+<!-- ПРЕЗЕНТАЦИИ -->
+
+<div class="resource-block">
+
+<h2>Презентации</h2>
+
+<div class="senior-cards">
+
+<a href="#" class="senior-card presentation">
+
+<div class="senior-card-icon">🔑</div>
+
+<h3>Криптография для старших классов</h3>
+
+<p>Основы шифрования и защиты информации.</p>
+
+</a>
+
+
+<a href="#" class="senior-card presentation">
+
+<div class="senior-card-icon">⚖️</div>
+
+<h3>Права в цифровом мире</h3>
+
+<p>Ответственность и правила поведения в интернете.</p>
+
+</a>
+
+
+<a href="#" class="senior-card presentation">
+
+<div class="senior-card-icon">💻</div>
+
+<h3>Этический хакинг</h3>
+
+<p>Введение в поиск уязвимостей и защиту систем.</p>
+
+</a>
+
+</div>
+
+</div>
+
+
+
+<div class="resource-block">
+<h2>Лабораторные мини-практики</h2>
+<div class="senior-cards" id="senior-labs-cards">
+</div>
+</div>
+
+
+
+<!-- ИГРЫ -->
+
+<div class="resource-block">
+
+<h2>Игры / симуляции</h2>
+
+<div class="senior-cards" id="senior-games-cards">
+</div>
+
+</div>
+
+
+</section>
+
+</main>
+
+</div>
+
+<div class="game-overlay" id="senior-practice-overlay" hidden></div>
+<div class="game-modal" id="senior-practice-modal" role="dialog" aria-modal="true" aria-labelledby="senior-practice-title" hidden>
+  <div class="game-modal-header">
+    <button class="game-button game-button-ghost" type="button" id="senior-practice-back-btn">← Назад</button>
+    <h2 id="senior-practice-title" class="game-modal-title">Мини-практика</h2>
+    <button class="game-button game-button-ghost" type="button" id="senior-practice-close-btn" aria-label="Закрыть мини-практику">✕</button>
+  </div>
+  <div class="game-modal-content" id="senior-practice-content"></div>
+</div>
+
+<script src="js/main.js"></script>
+<script src="js/students-9-11-practice.js"></script>
+
+<script src="js/theme-network.js"></script>
+</body>
+</html>
