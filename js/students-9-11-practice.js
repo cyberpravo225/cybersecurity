@@ -14,37 +14,40 @@
 
   const cards = [
     {
-      id: 'threat-model',
+      id: 'asset-priority-lab',
       type: 'lab',
       icon: '🧪',
-      title: 'Лаба: Threat Modeling школы',
-      description: 'Определи активы, векторы атак и меры защиты для школьного облачного сервиса.',
+      title: 'Лаба: Приоритизация активов',
+      description: 'Собери мини-модель угроз для школьного LMS: активы, риски и базовые контрмеры.',
       challenge: {
-        intro: 'Выбери 3 критичных актива для модели угроз.',
-        question: 'Что из списка является самым критичным активом школьного портала?',
+        mode: 'multi',
+        intro: 'Отметь пункты, которые должны войти в верхний приоритет защиты.',
+        question: 'Что нужно отнести к критичным активам и защитным действиям в первую очередь?',
         answers: [
-          { text: 'Список тем оформления сайта', correct: false, explain: 'Тема оформления не критична для безопасности данных.' },
-          { text: 'База оценок и персональных данных учеников', correct: true, explain: 'Это чувствительные данные с высоким риском ущерба.' },
-          { text: 'Фоновая анимация главной страницы', correct: false, explain: 'Визуальные элементы не являются приоритетным активом.' }
+          { text: 'База оценок и персональные данные учеников', correct: true, explain: 'Это ключевой актив с высоким риском утечки.' },
+          { text: 'Включить MFA для учителей и администраторов', correct: true, explain: 'MFA снижает риск захвата учётных записей.' },
+          { text: 'Цвет кнопки входа на сайте', correct: false, explain: 'Визуальные мелочи не влияют на приоритет защиты.' },
+          { text: 'Логи входов и события изменения прав доступа', correct: true, explain: 'Логи нужны для детекта и расследований.' }
         ],
-        success: 'Отлично. Следующий шаг: добавь MFA для учителей и журнал аудита входов.'
+        success: 'Отлично. Мини-отчёт готов: критичные активы выделены, базовые меры определены.'
       }
     },
     {
-      id: 'forensics-report',
+      id: 'incident-timeline-lab',
       type: 'lab',
       icon: '📊',
-      title: 'Лаба: Пост-инцидент отчёт',
-      description: 'Разбери таймлайн инцидента и выбери корректный план восстановления.',
+      title: 'Лаба: Таймлайн инцидента',
+      description: 'Восстанови правильную последовательность реагирования после фишинговой атаки.',
       challenge: {
-        intro: 'Сценарий: фишинговая ссылка привела к компрометации учётки администратора.',
-        question: 'Какое действие должно быть первым в плане реагирования?',
+        mode: 'single',
+        intro: 'Сценарий: злоумышленник получил доступ к учётке сотрудника через поддельное письмо.',
+        question: 'Какой шаг должен быть первым в правильном таймлайне реагирования?',
         answers: [
-          { text: 'Написать пост в соцсети о том, что всё под контролем', correct: false, explain: 'Публичные сообщения не решают инцидент технически.' },
-          { text: 'Изолировать скомпрометированную учётку и завершить активные сессии', correct: true, explain: 'Сначала останавливают развитие атаки.' },
-          { text: 'Удалить все логи, чтобы освободить место', correct: false, explain: 'Логи нужны для расследования и отчётности.' }
+          { text: 'Сразу удалить логи и временные файлы', correct: false, explain: 'Это уничтожит важные артефакты расследования.' },
+          { text: 'Изолировать учётку, завершить сессии и сменить пароль', correct: true, explain: 'Сначала нужно остановить развитие инцидента.' },
+          { text: 'Провести презентацию для класса про фишинг', correct: false, explain: 'Обучение важно, но не является первым шагом реагирования.' }
         ],
-        success: 'Верно. После изоляции: ротация паролей, проверка IOC и обновление регламентов.'
+        success: 'Верно. Далее фиксируем IOC, анализируем масштаб и обновляем регламент реагирования.'
       }
     },
     {
@@ -128,12 +131,19 @@
         <p>${data.challenge.question}</p>
         <div class="practice-answers">
           ${data.challenge.answers
-            .map(
-              (answer, index) =>
-                `<button class="game-button" type="button" data-answer-index="${index}">${answer.text}</button>`
-            )
+            .map((answer, index) => {
+              if (data.challenge.mode === 'multi') {
+                return `<label class="game-link-card"><input type="checkbox" data-answer-index="${index}"> ${answer.text}</label>`;
+              }
+              return `<button class="game-button" type="button" data-answer-index="${index}">${answer.text}</button>`;
+            })
             .join('')}
         </div>
+        ${
+          data.challenge.mode === 'multi'
+            ? '<button class="game-button" type="button" id="senior-practice-check">Проверить выбор</button>'
+            : ''
+        }
         <div class="practice-feedback" id="senior-practice-feedback" aria-live="polite"></div>
       </div>
     `;
@@ -163,6 +173,33 @@
   });
 
   contentNode.addEventListener('click', (event) => {
+    if (event.target.id === 'senior-practice-check') {
+      if (!activeCard || activeCard.challenge.mode !== 'multi') return;
+      const feedback = document.getElementById('senior-practice-feedback');
+      if (!feedback) return;
+
+      const selectedIndexes = Array.from(contentNode.querySelectorAll('input[type="checkbox"][data-answer-index]:checked')).map((node) =>
+        Number(node.dataset.answerIndex)
+      );
+
+      if (!selectedIndexes.length) {
+        feedback.innerHTML = '<p>⚠️ Выбери хотя бы один пункт.</p>';
+        return;
+      }
+
+      const explanations = selectedIndexes
+        .map((index) => activeCard.challenge.answers[index])
+        .filter(Boolean)
+        .map((item) => `<li>${item.correct ? '✅' : '⚠️'} ${item.explain}</li>`)
+        .join('');
+
+      const allCorrect = selectedIndexes.every((index) => activeCard.challenge.answers[index] && activeCard.challenge.answers[index].correct);
+      const status = allCorrect ? '✅ Отличный приоритет.' : '⚠️ Есть лишние или пропущенные пункты.';
+      const finalTip = allCorrect ? `<p><strong>${activeCard.challenge.success}</strong></p>` : '';
+      feedback.innerHTML = `<p>${status}</p><ul>${explanations}</ul>${finalTip}`;
+      return;
+    }
+
     const button = event.target.closest('[data-answer-index]');
     if (!button || !activeCard) return;
 
