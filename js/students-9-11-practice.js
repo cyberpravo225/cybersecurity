@@ -201,11 +201,15 @@
 
     overlay.hidden = false;
     modal.hidden = false;
+    overlay.classList.add('is-open');
+    modal.classList.add('is-open');
     document.body.classList.add('no-scroll');
   };
 
   const closeModal = () => {
     activeCard = null;
+    overlay.classList.remove('is-open');
+    modal.classList.remove('is-open');
     overlay.hidden = true;
     modal.hidden = true;
     contentNode.innerHTML = '';
