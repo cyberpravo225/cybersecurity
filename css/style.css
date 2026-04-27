@@ -8131,6 +8131,22 @@ body[data-page="students-9-11"] .senior-chip-time{
   background:color-mix(in srgb, var(--card-bg) 82%, #8b5cf6 18%);
 }
 
+body[data-page="students-9-11"] #senior-practice-modal .game-button.game-answer-correct,
+body[data-page="students-9-11"] #senior-practice-modal .game-link-card.game-answer-correct{
+  border-color:#16a34a !important;
+  background:color-mix(in srgb, #22c55e 34%, var(--bg)) !important;
+  color:color-mix(in srgb, #052e16 40%, var(--text)) !important;
+  box-shadow:0 0 0 2px color-mix(in srgb, #22c55e 48%, transparent) inset;
+}
+
+body[data-page="students-9-11"] #senior-practice-modal .game-button.game-answer-wrong,
+body[data-page="students-9-11"] #senior-practice-modal .game-link-card.game-answer-wrong{
+  border-color:#dc2626 !important;
+  background:color-mix(in srgb, #ef4444 34%, var(--bg)) !important;
+  color:color-mix(in srgb, #450a0a 38%, var(--text)) !important;
+  box-shadow:0 0 0 2px color-mix(in srgb, #ef4444 48%, transparent) inset;
+}
+
 /* Students 1-4 games: match index-like light/dark palettes */
 :root[data-theme="light"] body[data-page="students-1-4"] .game-overlay{
   background:color-mix(in srgb, #0f172a 22%, transparent);
