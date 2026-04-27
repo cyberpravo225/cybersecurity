@@ -18,21 +18,21 @@
       type: 'lab',
       icon: '📬',
       title: 'Лаба: Почтовая форензика',
-      description: 'Разбор фишинга на уровне SOC.',
-      level: 'Advanced',
+      description: 'Разбор фишинга на уровне центра мониторинга.',
+      level: 'Продвинуто',
       duration: '10 мин',
       challenge: {
         mode: 'multi',
-        intro: 'Входящие учебного портала содержат 7 похожих писем. Ты на дежурстве в команде школьного SOC.',
+        intro: 'Входящие учебного портала содержат 7 похожих писем. Ты на дежурстве в команде школьного центра мониторинга.',
         question: 'Какие признаки подтверждают, что это фишинговая кампания?',
         answers: [
-          { text: 'Домен отправителя похож на школьный, но с подменой символов (rn ↔ m).', correct: true, explain: 'Подмена символов в домене — типовая техника маскировки.' },
-          { text: 'Во всех письмах просят передать код 2FA в ответном письме.', correct: true, explain: 'Код 2FA никогда нельзя передавать, это признак захвата аккаунта.' },
+          { text: 'Домен отправителя похож на школьный, но с подменой похожих символов в адресе.', correct: true, explain: 'Подмена символов в домене — типовая техника маскировки.' },
+          { text: 'Во всех письмах просят передать код двухфакторной защиты в ответном письме.', correct: true, explain: 'Код двухфакторной защиты нельзя передавать, это признак захвата аккаунта.' },
           { text: 'Есть подпись с именем школьного администратора.', correct: false, explain: 'Подпись легко подделывается, сама по себе не доказывает подлинность.' },
           { text: 'Текст давит срочностью: «подтверди в течение 15 минут».', correct: true, explain: 'Манипуляция срочностью повышает шанс ошибки пользователя.' },
           { text: 'Письмо предлагает открыть портал через закладку школы.', correct: false, explain: 'Такой совет обычно повышает безопасность и не является индикатором фишинга.' }
         ],
-        success: 'Отлично: ты выделил ключевые IOC и можешь оформить эскалацию в incident channel.'
+        success: 'Отлично: ты выделил ключевые индикаторы атаки и можешь оформить эскалацию в канал реагирования.'
       }
     },
     {
@@ -40,17 +40,17 @@
       type: 'lab',
       icon: '🌐',
       title: 'Лаба: Проверка сайта',
-      description: 'OSINT-чек за 90 секунд.',
-      level: 'Advanced',
+      description: 'Проверка источников за 90 секунд.',
+      level: 'Продвинуто',
       duration: '8 мин',
       challenge: {
         mode: 'multi',
         intro: 'Перед тобой «портал успеваемости», который обещает бонус за быстрый вход.',
         question: 'Какие факторы делают страницу небезопасной?',
         answers: [
-          { text: 'URL содержит лишние слова verify-security-bonus и отличается от официального домена.', correct: true, explain: 'Добавочные слова в домене часто выдают подделку.' },
-          { text: 'Форма требует логин, пароль, телефон и CVV «для идентификации».', correct: true, explain: 'Для школьного входа CVV и банковские реквизиты не нужны.' },
-          { text: 'На странице есть HTTPS, поэтому можно вводить данные.', correct: false, explain: 'HTTPS защищает канал, но не доказывает честность сайта.' },
+          { text: 'Адрес сайта содержит лишние слова «проверка-защита-бонус» и отличается от официального домена.', correct: true, explain: 'Добавочные слова в домене часто выдают подделку.' },
+          { text: 'Форма требует логин, пароль, телефон и защитный код карты «для идентификации».', correct: true, explain: 'Для школьного входа защитный код карты и банковские реквизиты не нужны.' },
+          { text: 'На странице есть защищённое соединение, поэтому можно вводить данные.', correct: false, explain: 'Защищённое соединение не доказывает честность сайта.' },
           { text: 'Сайт ограничивает время: «осталось 8 минут до блокировки».', correct: true, explain: 'Ложная срочность — классическая схема социальной инженерии.' },
           { text: 'Кнопка «Войти через школьную закладку» ведёт на официальный домен школы.', correct: false, explain: 'Официальный домен — это скорее признак безопасного пути входа.' }
         ],
@@ -61,16 +61,16 @@
       id: 'detective-pro-game',
       type: 'game',
       icon: '🕵️',
-      title: 'Игра: Фишинг-детектив PRO',
+      title: 'Игра: Фишинг-детектив Профи',
       description: 'Найди атаку среди сообщений.',
-      level: 'Pro',
+      level: 'Профи',
       duration: '7 мин',
       challenge: {
         intro: 'Раунд «Смешанная атака»: злоумышленник комбинирует сообщения в разных каналах.',
         question: 'Какой сигнал требует немедленной эскалации?',
         answers: [
           { text: 'Письмо от учителя без ссылок, с просьбой проверить задание в дневнике.', correct: false, explain: 'Это выглядит как штатное сообщение.' },
-          { text: 'Серия сообщений с просьбой выслать код 2FA и скриншот QR для входа.', correct: true, explain: 'Запрос кода и QR — прямой путь к угону аккаунта.' },
+          { text: 'Серия сообщений с просьбой выслать код двухфакторной защиты и снимок кода входа.', correct: true, explain: 'Запрос кода входа — прямой путь к угону аккаунта.' },
           { text: 'Нейтральное уведомление платформы о плановом обновлении через официальный кабинет.', correct: false, explain: 'Сервисная коммуникация без запроса данных обычно безопасна.' },
           { text: 'Сообщение от одноклассника «посмотри фото» с доменом известного сервиса.', correct: false, explain: 'Нужно проверять контекст, но по одному этому признаку эскалация не обязательна.' }
         ],
@@ -83,18 +83,18 @@
       icon: '🛡️',
       title: 'Игра: Киберщит школы',
       description: 'Командное реагирование на инцидент.',
-      level: 'Team',
+      level: 'Команда',
       duration: '9 мин',
       challenge: {
         intro: 'Мониторинг показывает всплеск логинов и обращения к неизвестным доменам из одного сегмента сети.',
         question: 'Какая последовательность действий наиболее правильная?',
         answers: [
           { text: 'Игнорировать тревогу до конца учебной смены.', correct: false, explain: 'Промедление почти всегда увеличивает последствия.' },
-          { text: 'Собрать телеметрию, сегментировать трафик, уведомить IR-команду и администратора.', correct: true, explain: 'Это зрелый подход: и защита, и сохранение данных расследования.' },
+          { text: 'Собрать телеметрию, сегментировать трафик, уведомить команду реагирования и администратора.', correct: true, explain: 'Это зрелый подход: и защита, и сохранение данных расследования.' },
           { text: 'Полностью выключить сеть школы без фиксации фактов.', correct: false, explain: 'Резкая остановка без плана ломает расследование и учебный процесс.' },
           { text: 'Попросить пользователей «просто не открывать ссылки» и ничего больше не делать.', correct: false, explain: 'Только рекомендаций недостаточно при активной атаке.' }
         ],
-        success: 'Сильное командное решение: это уже практика реального incident response.'
+        success: 'Сильное командное решение: это уже практика реального реагирования на инциденты.'
       }
     }
   ];
@@ -105,7 +105,7 @@
       <h3>${item.title}</h3>
       <p>${item.description}</p>
       <div class="senior-card-meta">
-        <span class="senior-chip">${item.level || 'Core'}</span>
+        <span class="senior-chip">${item.level || 'База'}</span>
         <span class="senior-chip senior-chip-time">⏱ ${item.duration || '6 мин'}</span>
       </div>
     </article>
@@ -182,7 +182,8 @@
       const feedback = document.getElementById('senior-practice-feedback');
       if (!feedback) return;
 
-      const selectedIndexes = Array.from(contentNode.querySelectorAll('input[type="checkbox"][data-answer-index]:checked')).map((node) =>
+      const checkboxes = Array.from(contentNode.querySelectorAll('input[type="checkbox"][data-answer-index]'));
+      const selectedIndexes = checkboxes.filter((node) => node.checked).map((node) =>
         Number(node.dataset.answerIndex)
       );
 
@@ -201,6 +202,21 @@
       const status = allCorrect ? '✅ Отличный приоритет.' : '⚠️ Есть лишние или пропущенные пункты.';
       const finalTip = allCorrect ? `<p><strong>${activeCard.challenge.success}</strong></p>` : '';
       feedback.innerHTML = `<p>${status}</p><ul>${explanations}</ul>${finalTip}`;
+
+      checkboxes.forEach((input) => {
+        const index = Number(input.dataset.answerIndex);
+        const answer = activeCard.challenge.answers[index];
+        const option = input.closest('.game-link-card');
+        if (!answer || !option) return;
+        option.classList.remove('game-answer-correct', 'game-answer-wrong');
+        if (answer.correct) {
+          option.classList.add('game-answer-correct');
+          return;
+        }
+        if (input.checked && !answer.correct) {
+          option.classList.add('game-answer-wrong');
+        }
+      });
       return;
     }
 
@@ -212,6 +228,20 @@
     const feedback = document.getElementById('senior-practice-feedback');
 
     if (!choice || !feedback) return;
+
+    const answerButtons = Array.from(contentNode.querySelectorAll('button[data-answer-index]'));
+    answerButtons.forEach((node) => node.classList.remove('game-answer-correct', 'game-answer-wrong'));
+
+    if (choice.correct) {
+      button.classList.add('game-answer-correct');
+    } else {
+      button.classList.add('game-answer-wrong');
+      const correctIndex = activeCard.challenge.answers.findIndex((item) => item.correct);
+      const correctButton = answerButtons.find((node) => Number(node.dataset.answerIndex) === correctIndex);
+      if (correctButton) {
+        correctButton.classList.add('game-answer-correct');
+      }
+    }
 
     const status = choice.correct ? '✅ Верно.' : '⚠️ Неверно.';
     const finalTip = choice.correct ? `<p><strong>${activeCard.challenge.success}</strong></p>` : '';
