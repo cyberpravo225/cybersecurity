@@ -65,6 +65,8 @@
   let total = 0;
   let weaknesses = {};
   let reviewVisible = false;
+  modalEl.hidden = true;
+  showAnswersBtn.hidden = true;
 
   function openModal() {
     modalEl.hidden = false;
