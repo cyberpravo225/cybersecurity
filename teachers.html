@@ -162,31 +162,10 @@
 
 <div class="senior-cards">
 
-<article class="senior-card teacher-survey-card" id="teacher-survey-game">
+<article class="senior-card teacher-survey-card" id="teacher-survey-game" role="button" tabindex="0" aria-label="Открыть быстрый входной опрос">
 <div class="senior-card-icon">📝</div>
 <h3>Быстрый входной опрос</h3>
 <p>Диагностика знаний на старте занятия, чтобы адаптировать темп и сложность.</p>
-<button class="btn teacher-survey-toggle" type="button" id="survey-toggle" aria-expanded="false">Открыть опрос</button>
-
-<div class="teacher-survey-shell" id="survey-shell" hidden>
-  <div class="teacher-survey-top">
-    <p class="teacher-survey-stage">Адаптивный тренажёр знаний</p>
-    <p class="teacher-survey-progress" id="survey-progress">Вопрос 1 из 12</p>
-  </div>
-
-  <h4 class="teacher-survey-question" id="survey-question">Загрузка вопроса…</h4>
-  <div class="teacher-survey-options" id="survey-options"></div>
-
-  <div class="teacher-survey-actions">
-    <button class="btn teacher-survey-btn" type="button" id="survey-next" disabled>Далее</button>
-    <button class="btn teacher-survey-btn ghost" type="button" id="survey-restart">Начать заново</button>
-  </div>
-
-  <div class="teacher-survey-result" id="survey-result" hidden></div>
-  <button class="btn teacher-survey-btn" type="button" id="survey-show-answers" hidden>Посмотреть ответы</button>
-  <div class="teacher-survey-review" id="survey-review" hidden></div>
-  <div class="teacher-survey-hint" id="survey-hint">Выберите вариант ответа, чтобы продолжить.</div>
-</div>
 </article>
 
 <article class="senior-card">
@@ -197,6 +176,29 @@
 
 </div>
 
+</div>
+
+<div class="teacher-survey-modal" id="survey-modal" hidden>
+  <div class="teacher-survey-overlay" id="survey-overlay"></div>
+  <div class="teacher-survey-dialog" role="dialog" aria-modal="true" aria-labelledby="survey-dialog-title">
+    <button class="teacher-survey-close" id="survey-close" type="button" aria-label="Закрыть окно">✕</button>
+    <div class="teacher-survey-shell" id="survey-shell">
+      <div class="teacher-survey-top">
+        <p class="teacher-survey-stage" id="survey-dialog-title">Адаптивный тренажёр знаний</p>
+        <p class="teacher-survey-progress" id="survey-progress">Вопрос 1 из 12</p>
+      </div>
+      <h4 class="teacher-survey-question" id="survey-question">Загрузка вопроса…</h4>
+      <div class="teacher-survey-options" id="survey-options"></div>
+      <div class="teacher-survey-actions">
+        <button class="btn teacher-survey-btn" type="button" id="survey-next" disabled>Далее</button>
+        <button class="btn teacher-survey-btn ghost" type="button" id="survey-restart">Начать заново</button>
+      </div>
+      <div class="teacher-survey-result" id="survey-result" hidden></div>
+      <button class="btn teacher-survey-btn" type="button" id="survey-show-answers" hidden>Посмотреть ответы</button>
+      <div class="teacher-survey-review" id="survey-review" hidden></div>
+      <div class="teacher-survey-hint" id="survey-hint">Выберите вариант ответа, чтобы продолжить.</div>
+    </div>
+  </div>
 </div>
 
 
