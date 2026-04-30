@@ -83,12 +83,16 @@
     nextBtn.disabled = index === cases.length - 1;
   }
 
-  function syncModalToScroll() {
-    modal.style.top = `${window.scrollY}px`;
+  function syncModalTopOffset() {
+    const topbar = document.querySelector('.topbar');
+    const onePercent = Math.round(window.innerHeight * 0.01);
+    const topbarBottom = topbar ? Math.round(topbar.getBoundingClientRect().bottom) : 0;
+    const offset = Math.max(onePercent, topbarBottom + onePercent);
+    modal.style.paddingTop = `${offset}px`;
   }
 
   function openModal() {
-    syncModalToScroll();
+    syncModalTopOffset();
     modal.hidden = false;
     renderCase();
   }
@@ -109,11 +113,11 @@
   });
 
   window.addEventListener('scroll', () => {
-    if (!modal.hidden) syncModalToScroll();
-  });
+    if (!modal.hidden) syncModalTopOffset();
+  }, { passive: true });
 
   window.addEventListener('resize', () => {
-    if (!modal.hidden) syncModalToScroll();
+    if (!modal.hidden) syncModalTopOffset();
   });
 
   prevBtn.addEventListener('click', () => {
