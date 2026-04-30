@@ -3175,6 +3175,10 @@ body.light .game-feature {
   background:linear-gradient(135deg,rgba(47,125,246,.12),rgba(14,165,233,.18));
   border:1px solid rgba(106,164,255,.45);
 }
+.teacher-survey-toggle{
+  margin-top:8px;
+  margin-bottom:10px;
+}
 
 .teacher-survey-top{
   display:flex;
@@ -3237,6 +3241,18 @@ body.light .game-feature {
 .teacher-survey-result h5{margin:0 0 8px;}
 .teacher-survey-result p{margin:6px 0;}
 .teacher-survey-hint{margin-top:12px;font-size:.92rem;opacity:.9;}
+.teacher-survey-review{
+  margin-top:12px;
+  background:rgba(255,255,255,.92);
+  border-radius:14px;
+  padding:12px;
+  border:1px solid rgba(37,99,235,.2);
+}
+.teacher-survey-review-item{
+  padding:10px 0;
+  border-top:1px solid rgba(37,99,235,.15);
+}
+.teacher-survey-review-item:first-of-type{border-top:none;}
 
 :root[data-theme="dark"] .teacher-survey-shell{
   background:linear-gradient(135deg,rgba(37,99,235,.24),rgba(14,116,144,.24));
@@ -3249,6 +3265,10 @@ body.light .game-feature {
 :root[data-theme="dark"] .teacher-survey-result{
   background:rgba(15,23,42,.82);
   border-color:rgba(125,211,252,.42);
+}
+:root[data-theme="dark"] .teacher-survey-review{
+  background:rgba(15,23,42,.88);
+  border-color:rgba(125,211,252,.35);
 }
 
 :root{

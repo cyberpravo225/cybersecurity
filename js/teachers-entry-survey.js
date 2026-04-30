@@ -3,10 +3,14 @@
   if (!root) return;
 
   const questionEl = document.getElementById('survey-question');
+  const toggleBtn = document.getElementById('survey-toggle');
+  const shellEl = document.getElementById('survey-shell');
   const optionsEl = document.getElementById('survey-options');
   const progressEl = document.getElementById('survey-progress');
   const nextBtn = document.getElementById('survey-next');
   const restartBtn = document.getElementById('survey-restart');
+  const showAnswersBtn = document.getElementById('survey-show-answers');
+  const reviewEl = document.getElementById('survey-review');
   const resultEl = document.getElementById('survey-result');
   const hintEl = document.getElementById('survey-hint');
 
@@ -58,6 +62,14 @@
   let idx = 0;
   let total = 0;
   let weaknesses = {};
+  let reviewVisible = false;
+
+  toggleBtn.addEventListener('click', () => {
+    const isHidden = shellEl.hidden;
+    shellEl.hidden = !isHidden;
+    toggleBtn.textContent = isHidden ? 'Скрыть опрос' : 'Открыть опрос';
+    toggleBtn.setAttribute('aria-expanded', String(isHidden));
+  });
 
   function render() {
     const current = bank[idx];
@@ -118,7 +130,10 @@
       <p><strong>Уровень сложности:</strong> ${ending.level}</p>
       <p><strong>Методический план:</strong> ${ending.plan}</p>
       <p><strong>Приоритеты диагностики:</strong> ${focus}</p>
+      <p><strong>Распределение готовности:</strong> базовая защита, критическое мышление, реакция на инциденты и цифровая этика.</p>
+      <p><strong>Формат следующего шага:</strong> 10 минут разогрева + 20 минут практики + 10 минут обсуждения типичных ошибок.</p>
     `;
+    showAnswersBtn.hidden = false;
 
     questionEl.textContent = 'Диагностика завершена ✅';
     optionsEl.innerHTML = '';
@@ -126,6 +141,32 @@
     progressEl.textContent = 'Готово';
     hintEl.textContent = 'Нажмите «Начать заново», чтобы провести опрос для другой группы.';
   }
+
+  function renderAnswersReview() {
+    const items = bank.map((item, i) => {
+      const chosen = item.a[selected[i]];
+      const best = item.a.find((ans) => ans[1] === 2);
+      const isCorrect = chosen && chosen[1] === 2;
+      return `<div class="teacher-survey-review-item">
+        <p><strong>${i + 1}. ${item.q}</strong></p>
+        <p>Ваш ответ: ${chosen ? chosen[0] : '—'} ${isCorrect ? '✅' : '❌'}</p>
+        <p>Рекомендуемый ответ: ${best ? best[0] : '—'}</p>
+      </div>`;
+    }).join('');
+    reviewEl.innerHTML = `<h5>Разбор ответов</h5>${items}`;
+  }
+
+  showAnswersBtn.addEventListener('click', () => {
+    reviewVisible = !reviewVisible;
+    if (reviewVisible) {
+      renderAnswersReview();
+      reviewEl.hidden = false;
+      showAnswersBtn.textContent = 'Скрыть ответы';
+    } else {
+      reviewEl.hidden = true;
+      showAnswersBtn.textContent = 'Посмотреть ответы';
+    }
+  });
 
   nextBtn.addEventListener('click', () => {
     if (selected[idx] === undefined) return;
@@ -144,6 +185,11 @@
     weaknesses = {};
     resultEl.hidden = true;
     resultEl.innerHTML = '';
+    reviewVisible = false;
+    reviewEl.hidden = true;
+    reviewEl.innerHTML = '';
+    showAnswersBtn.hidden = true;
+    showAnswersBtn.textContent = 'Посмотреть ответы';
     render();
   });
 
