@@ -83,7 +83,12 @@
     nextBtn.disabled = index === cases.length - 1;
   }
 
+  function syncModalToScroll() {
+    modal.style.top = `${window.scrollY}px`;
+  }
+
   function openModal() {
+    syncModalToScroll();
     modal.hidden = false;
     renderCase();
   }
@@ -101,6 +106,14 @@
   overlay.addEventListener('click', closeModal);
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && !modal.hidden) closeModal();
+  });
+
+  window.addEventListener('scroll', () => {
+    if (!modal.hidden) syncModalToScroll();
+  });
+
+  window.addEventListener('resize', () => {
+    if (!modal.hidden) syncModalToScroll();
   });
 
   prevBtn.addEventListener('click', () => {
