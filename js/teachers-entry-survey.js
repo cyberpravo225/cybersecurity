@@ -3,8 +3,10 @@
   if (!root) return;
 
   const questionEl = document.getElementById('survey-question');
-  const toggleBtn = document.getElementById('survey-toggle');
-  const shellEl = document.getElementById('survey-shell');
+  const modalEl = document.getElementById('survey-modal');
+  const openCardEl = document.getElementById('teacher-survey-game');
+  const closeBtn = document.getElementById('survey-close');
+  const overlayEl = document.getElementById('survey-overlay');
   const optionsEl = document.getElementById('survey-options');
   const progressEl = document.getElementById('survey-progress');
   const nextBtn = document.getElementById('survey-next');
@@ -64,11 +66,27 @@
   let weaknesses = {};
   let reviewVisible = false;
 
-  toggleBtn.addEventListener('click', () => {
-    const isHidden = shellEl.hidden;
-    shellEl.hidden = !isHidden;
-    toggleBtn.textContent = isHidden ? 'Скрыть опрос' : 'Открыть опрос';
-    toggleBtn.setAttribute('aria-expanded', String(isHidden));
+  function openModal() {
+    modalEl.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modalEl.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  openCardEl.addEventListener('click', openModal);
+  openCardEl.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openModal();
+    }
+  });
+  closeBtn.addEventListener('click', closeModal);
+  overlayEl.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !modalEl.hidden) closeModal();
   });
 
   function render() {
