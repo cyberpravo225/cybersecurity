@@ -69,6 +69,9 @@
   showAnswersBtn.hidden = true;
 
   function openModal() {
+    const centerY = window.scrollY + (window.innerHeight / 2);
+    modalEl.style.height = `${Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)}px`;
+    modalEl.querySelector('.teacher-survey-dialog').style.top = `${centerY}px`;
     modalEl.hidden = false;
     document.body.style.overflow = 'hidden';
   }
@@ -97,6 +100,7 @@
     progressEl.textContent = `Вопрос ${idx + 1} из ${bank.length}`;
     optionsEl.innerHTML = '';
     nextBtn.disabled = selected[idx] === undefined;
+    showAnswersBtn.hidden = true;
 
     current.a.forEach((option, i) => {
       const btn = document.createElement('button');
@@ -211,6 +215,14 @@
     showAnswersBtn.hidden = true;
     showAnswersBtn.textContent = 'Посмотреть ответы';
     render();
+  });
+
+  window.addEventListener('resize', () => {
+    if (!modalEl.hidden) {
+      const centerY = window.scrollY + (window.innerHeight / 2);
+      modalEl.style.height = `${Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)}px`;
+      modalEl.querySelector('.teacher-survey-dialog').style.top = `${centerY}px`;
+    }
   });
 
   render();

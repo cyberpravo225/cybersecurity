@@ -3180,11 +3180,10 @@ body.light .game-feature {
   margin-bottom:10px;
 }
 .teacher-survey-modal{
-  position:fixed;
-  inset:0;
+  position:absolute;
+  inset:0 0 auto 0;
   z-index:1200;
-  display:grid;
-  place-items:center;
+  min-height:100%;
 }
 .teacher-survey-modal[hidden]{
   display:none !important;
@@ -3195,8 +3194,10 @@ body.light .game-feature {
   background:rgba(2,6,23,.6);
 }
 .teacher-survey-dialog{
-  position:relative;
+  position:absolute;
   z-index:1;
+  left:50%;
+  transform:translate(-50%, -50%);
   width:min(760px,92vw);
   max-height:88vh;
   overflow:auto;
