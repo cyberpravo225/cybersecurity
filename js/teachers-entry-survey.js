@@ -151,16 +151,12 @@
       <p><strong>Приоритеты диагностики:</strong> ${focus}</p>
       <p><strong>Распределение готовности:</strong> базовая защита, критическое мышление, реакция на инциденты и цифровая этика.</p>
       <p><strong>Формат следующего шага:</strong> 10 минут разогрева + 20 минут практики + 10 минут обсуждения типичных ошибок.</p>
-      <button class="btn teacher-survey-btn" type="button" id="survey-confirm-results">Я ознакомился с результатами</button>
+      <p><em>Ознакомьтесь с итогом — кнопка разбора ответов станет доступна через пару секунд.</em></p>
     `;
     showAnswersBtn.hidden = true;
-    const confirmBtn = document.getElementById('survey-confirm-results');
-    if (confirmBtn) {
-      confirmBtn.addEventListener('click', () => {
-        showAnswersBtn.hidden = false;
-        confirmBtn.hidden = true;
-      });
-    }
+    setTimeout(() => {
+      if (!resultEl.hidden) showAnswersBtn.hidden = false;
+    }, 2200);
 
     questionEl.textContent = 'Диагностика завершена ✅';
     optionsEl.innerHTML = '';
