@@ -8442,3 +8442,36 @@ flex-wrap:wrap;
 gap:10px;
 margin-top:8px;
 }
+
+.teacher-case-card{cursor:pointer;}
+.teacher-case-modal{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:20px;}
+.teacher-case-modal[hidden]{display:none;}
+.teacher-case-overlay{position:absolute;inset:0;background:rgba(2,6,23,.58);backdrop-filter:blur(2px);}
+.teacher-case-dialog{position:relative;z-index:1;width:min(980px,95vw);max-height:90vh;overflow:auto;border-radius:24px;}
+.teacher-case-shell{padding:24px;background:var(--surface,#fff);border:1px solid rgba(37,99,235,.24);border-radius:24px;box-shadow:0 20px 48px rgba(15,23,42,.22);}
+.teacher-case-close{position:absolute;top:12px;right:12px;background:transparent;border:none;font-size:20px;cursor:pointer;color:inherit;}
+.teacher-case-stage{margin:0;font-weight:700;color:#2563eb;}
+.teacher-case-meta{margin:6px 0 12px;opacity:.8;}
+.teacher-case-name{margin:0 0 10px;}
+.teacher-case-description{margin:0 0 14px;line-height:1.5;}
+.teacher-case-columns{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.teacher-case-column{padding:12px;border-radius:14px;background:rgba(37,99,235,.06);}
+.teacher-case-column h5{margin:0 0 8px;}
+.teacher-case-column ul{margin:0;padding-left:18px;display:grid;gap:6px;}
+.teacher-case-rubric{margin-top:14px;padding:12px;border-radius:14px;background:rgba(16,185,129,.08);}
+.teacher-case-rubric h5{margin:0 0 10px;}
+.teacher-case-rubric-item{padding:10px 0;border-top:1px solid rgba(15,23,42,.12);}
+.teacher-case-rubric-item:first-of-type{border-top:none;}
+.teacher-case-rubric-item p{margin:3px 0;}
+.teacher-case-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap;}
+.teacher-case-btn{padding:10px 14px;}
+
+:root[data-theme="dark"] .teacher-case-shell{background:linear-gradient(160deg,#0b1220,#0f172a);border-color:rgba(96,165,250,.35);color:#e5efff;}
+:root[data-theme="dark"] .teacher-case-column{background:rgba(59,130,246,.14);}
+:root[data-theme="dark"] .teacher-case-rubric{background:rgba(30,64,175,.22);}
+:root[data-theme="dark"] .teacher-case-rubric-item{border-top-color:rgba(148,163,184,.3);}
+:root[data-theme="light"] .teacher-case-shell{background:#fff;color:#0f172a;}
+
+@media (max-width: 760px){
+  .teacher-case-columns{grid-template-columns:1fr;}
+}
