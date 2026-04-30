@@ -3186,6 +3186,9 @@ body.light .game-feature {
   display:grid;
   place-items:center;
 }
+.teacher-survey-modal[hidden]{
+  display:none !important;
+}
 .teacher-survey-overlay{
   position:absolute;
   inset:0;
