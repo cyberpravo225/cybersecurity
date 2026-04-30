@@ -3165,7 +3165,7 @@ body.light .game-feature {
 }
 
 .teacher-survey-card{
-  grid-column:1/-1;
+  cursor:pointer;
 }
 
 .teacher-survey-shell{
@@ -3178,6 +3178,39 @@ body.light .game-feature {
 .teacher-survey-toggle{
   margin-top:8px;
   margin-bottom:10px;
+}
+.teacher-survey-modal{
+  position:fixed;
+  inset:0;
+  z-index:1200;
+  display:grid;
+  place-items:center;
+}
+.teacher-survey-overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(2,6,23,.6);
+}
+.teacher-survey-dialog{
+  position:relative;
+  z-index:1;
+  width:min(760px,92vw);
+  max-height:88vh;
+  overflow:auto;
+  border-radius:20px;
+}
+.teacher-survey-close{
+  position:absolute;
+  right:10px;
+  top:10px;
+  z-index:2;
+  border:none;
+  background:rgba(2,6,23,.65);
+  color:#fff;
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  cursor:pointer;
 }
 
 .teacher-survey-top{
