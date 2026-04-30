@@ -166,8 +166,9 @@
 <div class="senior-card-icon">📝</div>
 <h3>Быстрый входной опрос</h3>
 <p>Диагностика знаний на старте занятия, чтобы адаптировать темп и сложность.</p>
+<button class="btn teacher-survey-toggle" type="button" id="survey-toggle" aria-expanded="false">Открыть опрос</button>
 
-<div class="teacher-survey-shell">
+<div class="teacher-survey-shell" id="survey-shell" hidden>
   <div class="teacher-survey-top">
     <p class="teacher-survey-stage">Адаптивный тренажёр знаний</p>
     <p class="teacher-survey-progress" id="survey-progress">Вопрос 1 из 12</p>
@@ -182,6 +183,8 @@
   </div>
 
   <div class="teacher-survey-result" id="survey-result" hidden></div>
+  <button class="btn teacher-survey-btn" type="button" id="survey-show-answers" hidden>Посмотреть ответы</button>
+  <div class="teacher-survey-review" id="survey-review" hidden></div>
   <div class="teacher-survey-hint" id="survey-hint">Выберите вариант ответа, чтобы продолжить.</div>
 </div>
 </article>
