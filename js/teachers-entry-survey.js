@@ -69,12 +69,6 @@
   showAnswersBtn.hidden = true;
 
   function openModal(event) {
-    const clickY = event && typeof event.clientY === 'number'
-      ? window.scrollY + event.clientY
-      : window.scrollY + openCardEl.getBoundingClientRect().top + (openCardEl.offsetHeight / 2);
-    const centerY = clickY;
-    modalEl.style.height = `${Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)}px`;
-    modalEl.querySelector('.teacher-survey-dialog').style.top = `${centerY}px`;
     modalEl.hidden = false;
   }
 
@@ -216,14 +210,6 @@
     showAnswersBtn.hidden = true;
     showAnswersBtn.textContent = 'Посмотреть ответы';
     render();
-  });
-
-  window.addEventListener('resize', () => {
-    if (!modalEl.hidden) {
-      const centerY = window.scrollY + openCardEl.getBoundingClientRect().top + (openCardEl.offsetHeight / 2);
-      modalEl.style.height = `${Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)}px`;
-      modalEl.querySelector('.teacher-survey-dialog').style.top = `${centerY}px`;
-    }
   });
 
   render();
