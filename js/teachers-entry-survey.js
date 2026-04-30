@@ -68,23 +68,24 @@
   modalEl.hidden = true;
   showAnswersBtn.hidden = true;
 
-  function openModal() {
-    const centerY = window.scrollY + (window.innerHeight / 2);
+  function openModal(event) {
+    const clickY = event && typeof event.clientY === 'number'
+      ? window.scrollY + event.clientY
+      : window.scrollY + openCardEl.getBoundingClientRect().top + (openCardEl.offsetHeight / 2);
+    const centerY = clickY;
     modalEl.style.height = `${Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)}px`;
     modalEl.querySelector('.teacher-survey-dialog').style.top = `${centerY}px`;
     modalEl.hidden = false;
-    document.body.style.overflow = 'hidden';
   }
 
   function closeModal() {
     modalEl.hidden = true;
-    document.body.style.overflow = '';
   }
 
   openCardEl.addEventListener('click', openModal);
-  openCardEl.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
+  openCardEl.addEventListener('keydown', (keyboardEvent) => {
+    if (keyboardEvent.key === 'Enter' || keyboardEvent.key === ' ') {
+      keyboardEvent.preventDefault();
       openModal();
     }
   });
@@ -219,7 +220,7 @@
 
   window.addEventListener('resize', () => {
     if (!modalEl.hidden) {
-      const centerY = window.scrollY + (window.innerHeight / 2);
+      const centerY = window.scrollY + openCardEl.getBoundingClientRect().top + (openCardEl.offsetHeight / 2);
       modalEl.style.height = `${Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)}px`;
       modalEl.querySelector('.teacher-survey-dialog').style.top = `${centerY}px`;
     }
