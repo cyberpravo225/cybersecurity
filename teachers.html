@@ -168,7 +168,7 @@
 <p>Диагностика знаний на старте занятия, чтобы адаптировать темп и сложность.</p>
 </article>
 
-<article class="senior-card">
+<article class="senior-card teacher-case-card" id="teacher-case-game" role="button" tabindex="0" aria-label="Открыть игру кейсов и критериев оценивания">
 <div class="senior-card-icon">🎯</div>
 <h3>Кейс + критерии оценивания</h3>
 <p>Готовый формат проектной работы с понятной рубрикой проверки.</p>
@@ -197,6 +197,34 @@
       <button class="btn teacher-survey-btn" type="button" id="survey-show-answers" hidden>Посмотреть ответы</button>
       <div class="teacher-survey-review" id="survey-review" hidden></div>
       <div class="teacher-survey-hint" id="survey-hint">Выберите вариант ответа, чтобы продолжить.</div>
+    </div>
+  </div>
+</div>
+<div class="teacher-case-modal" id="teacher-case-modal" hidden>
+  <div class="teacher-case-overlay" id="teacher-case-overlay"></div>
+  <div class="teacher-case-dialog" role="dialog" aria-modal="true" aria-labelledby="teacher-case-title">
+    <button class="teacher-case-close" id="teacher-case-close" type="button" aria-label="Закрыть окно">✕</button>
+    <div class="teacher-case-shell">
+      <p class="teacher-case-stage" id="teacher-case-title">Конструктор проектных кейсов + рубрика оценивания</p>
+      <p class="teacher-case-meta" id="teacher-case-meta">Кейс 1 из 40</p>
+      <h4 class="teacher-case-name" id="teacher-case-name">Загрузка кейса…</h4>
+      <p class="teacher-case-description" id="teacher-case-description"></p>
+      <div class="teacher-case-columns">
+        <div class="teacher-case-column">
+          <h5>Задачи команды</h5>
+          <ul id="teacher-case-goals"></ul>
+        </div>
+        <div class="teacher-case-column">
+          <h5>Ограничения и вводные</h5>
+          <ul id="teacher-case-constraints"></ul>
+        </div>
+      </div>
+      <div class="teacher-case-rubric" id="teacher-case-rubric"></div>
+      <div class="teacher-case-actions">
+        <button class="btn teacher-case-btn" id="teacher-case-prev" type="button">← Предыдущий</button>
+        <button class="btn teacher-case-btn" id="teacher-case-random" type="button">Случайный кейс</button>
+        <button class="btn teacher-case-btn" id="teacher-case-next" type="button">Следующий →</button>
+      </div>
     </div>
   </div>
 </div>
@@ -260,5 +288,6 @@
 
 <script src="js/theme-network.js"></script>
 <script src="js/teachers-entry-survey.js"></script>
+<script src="js/teachers-case-game.js"></script>
 </body>
 </html>
