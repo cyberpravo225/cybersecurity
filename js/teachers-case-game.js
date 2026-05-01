@@ -83,16 +83,7 @@
     nextBtn.disabled = index === cases.length - 1;
   }
 
-  function syncModalTopOffset() {
-    const topbar = document.querySelector('.topbar');
-    const onePercent = Math.round(window.innerHeight * 0.01);
-    const topbarBottom = topbar ? Math.round(topbar.getBoundingClientRect().bottom) : 0;
-    const offset = Math.max(onePercent, topbarBottom + onePercent);
-    modal.querySelector('.teacher-case-dialog').style.marginTop = `${offset}px`;
-  }
-
   function openModal() {
-    syncModalTopOffset();
     modal.hidden = false;
     renderCase();
   }
@@ -112,13 +103,6 @@
     if (event.key === 'Escape' && !modal.hidden) closeModal();
   });
 
-  window.addEventListener('scroll', () => {
-    if (!modal.hidden) syncModalTopOffset();
-  }, { passive: true });
-
-  window.addEventListener('resize', () => {
-    if (!modal.hidden) syncModalTopOffset();
-  });
 
   prevBtn.addEventListener('click', () => {
     if (index > 0) index -= 1;
