@@ -42,6 +42,39 @@
     });
 })();
 
+
+/* =========================
+   Smooth animation tuning
+   ========================= */
+(function(){
+  const root = document.documentElement;
+  root.style.setProperty('--cyber-motion-duration-fast', '240ms');
+  root.style.setProperty('--cyber-motion-duration-base', '360ms');
+  root.style.setProperty('--cyber-motion-duration-slow', '520ms');
+  root.style.setProperty('--cyber-motion-ease', 'cubic-bezier(0.22, 1, 0.36, 1)');
+
+  const ensureSmoothTransition = (el, transitions) => {
+    if (!el) return;
+    const current = (el.style.transition || '').trim();
+    el.style.transition = current ? `${current}, ${transitions}` : transitions;
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.test-card, .tip-card, .dictionary-block, .modal, #difficultyModal, #profileModal').forEach((el) => {
+      ensureSmoothTransition(el, 'transform var(--cyber-motion-duration-base) var(--cyber-motion-ease), opacity var(--cyber-motion-duration-base) var(--cyber-motion-ease), box-shadow var(--cyber-motion-duration-base) var(--cyber-motion-ease), max-height var(--cyber-motion-duration-slow) var(--cyber-motion-ease)');
+    });
+
+    document.querySelectorAll('.test-card, .tip-card').forEach((el) => {
+      el.addEventListener('mouseenter', () => {
+        el.style.transform = 'translateY(-2px) scale(1.01)';
+      });
+      el.addEventListener('mouseleave', () => {
+        el.style.transform = '';
+      });
+    });
+  });
+})();
+
 /* =========================
    Global background music
    ========================= */
@@ -859,7 +892,7 @@ document.addEventListener('click', (e) => {
       if (href.startsWith('http') && !href.includes(location.hostname)) return;
       e.preventDefault();
       document.body.classList.add('fade-out');
-      setTimeout(()=> location.href = href, 200); // within animation timing
+      setTimeout(()=> location.href = href, 320); // smoother fade timing
     });
   });
 })();
@@ -1198,14 +1231,22 @@ const closeBtn = document.querySelector(".modal-close")
 if(testCards){
 testCards.forEach(card=>{
 card.addEventListener("click",()=>{
-modal.classList.add("active")
+modal.style.opacity = '0';
+modal.style.transform = 'translateY(8px) scale(.985)';
+modal.classList.add("active");
+requestAnimationFrame(() => {
+  modal.style.opacity = '1';
+  modal.style.transform = 'translateY(0) scale(1)';
+});
 })
 })
 }
 
 if(closeBtn){
 closeBtn.addEventListener("click",()=>{
-modal.classList.remove("active")
+modal.style.opacity = '0';
+modal.style.transform = 'translateY(8px) scale(.985)';
+setTimeout(() => modal.classList.remove("active"), 220)
 })
 }
 
@@ -1222,9 +1263,15 @@ const content = btn.nextElementSibling
 block.classList.toggle("active")
 
 if(content.style.maxHeight){
-content.style.maxHeight = null
-}else{
 content.style.maxHeight = content.scrollHeight + "px"
+requestAnimationFrame(() => {
+  content.style.maxHeight = "0px"
+})
+}else{
+content.style.maxHeight = "0px"
+requestAnimationFrame(() => {
+  content.style.maxHeight = content.scrollHeight + "px"
+})
 }
 
 })
