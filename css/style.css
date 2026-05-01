@@ -8503,15 +8503,17 @@ body[data-page="teachers"] :is(.teacher-survey-modal,.teacher-case-modal,.teache
   inset:0;
   display:flex;
   justify-content:center;
-  align-items:flex-end;
-  padding-inline:5%;
-  padding-bottom:calc(env(safe-area-inset-bottom, 0px) + 72px);
+  align-items:center;
+  padding:20px;
 }
 
 body[data-page="teachers"] :is(.teacher-survey-dialog,.teacher-case-dialog,.teacher-game-dialog){
-  position:fixed;
-  left:50%;
-  bottom:calc(env(safe-area-inset-bottom, 0px) + 72px);
-  transform:translateX(-50%);
+  position:relative;
+  left:auto;
+  top:auto;
+  bottom:auto;
+  transform:none;
   margin:0;
+  max-width:min(760px, 92vw);
+  max-height:calc(100vh - 40px);
 }

@@ -15,7 +15,6 @@
   const reviewEl = document.getElementById('survey-review');
   const resultEl = document.getElementById('survey-result');
   const hintEl = document.getElementById('survey-hint');
-  const dialogEl = modalEl?.querySelector('.teacher-survey-dialog');
 
   const bank = [
     {q:'Ученик получил письмо «Срочно подтвердите пароль». Что делать первым шагом?', a:[['Перейти по ссылке и проверить',0,'phishing'],['Проверить отправителя и адрес ссылки',2,'phishing'],['Ответить письмом и уточнить',0,'communication'],['Переслать другу для совета',1,'communication']]},
@@ -78,19 +77,10 @@
   function openModal(event) {
     alignCardBeforeOpen(openCardEl);
     modalEl.hidden = false;
-    centerDialogInViewport();
   }
 
   function closeModal() {
     modalEl.hidden = true;
-  }
-
-  function centerDialogInViewport() {
-    if (!dialogEl) return;
-    dialogEl.style.position = 'fixed';
-    dialogEl.style.left = '50%';
-    dialogEl.style.bottom = 'calc(env(safe-area-inset-bottom, 0px) + 72px)';
-    dialogEl.style.transform = 'translateX(-50%)';
   }
 
   openCardEl.addEventListener('click', openModal);
@@ -105,13 +95,6 @@
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && !modalEl.hidden) closeModal();
   });
-  window.addEventListener('resize', () => {
-    if (!modalEl.hidden) centerDialogInViewport();
-  });
-  window.addEventListener('scroll', () => {
-    if (!modalEl.hidden) centerDialogInViewport();
-  }, { passive: true });
-
   function render() {
     const current = bank[idx];
     questionEl.textContent = current.q;
@@ -257,7 +240,6 @@
   const prevBtn = document.getElementById('teacher-case-prev');
   const nextBtn = document.getElementById('teacher-case-next');
   const randomBtn = document.getElementById('teacher-case-random');
-  const dialog = modal?.querySelector('.teacher-case-dialog');
 
   const themes = ['Фишинг','Приватность','Пароли','Соцсети','Устройства','Wi‑Fi','ИИ и безопасность','Кибербуллинг'];
   const levels = ['Базовый','Средний','Продвинутый'];
@@ -335,19 +317,9 @@
 
   function openModal() {
     modal.hidden = false;
-    centerDialogInViewport();
     renderCase();
   }
   function closeModal() { modal.hidden = true; }
-
-  function centerDialogInViewport() {
-    if (!dialog) return;
-    dialog.style.position = 'absolute';
-    dialog.style.left = '50%';
-    dialog.style.top = `${window.scrollY + (window.innerHeight / 2)}px`;
-    dialog.style.bottom = 'auto';
-    dialog.style.transform = 'translate(-50%, -50%)';
-  }
 
   card.addEventListener('click', openModal);
   card.addEventListener('keydown', (event) => {
@@ -362,13 +334,6 @@
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && !modal.hidden) closeModal();
   });
-  window.addEventListener('resize', () => {
-    if (!modal.hidden) centerDialogInViewport();
-  });
-  window.addEventListener('scroll', () => {
-    if (!modal.hidden) centerDialogInViewport();
-  }, { passive: true });
-
 
   prevBtn.addEventListener('click', () => {
     if (index > 0) index -= 1;
@@ -392,7 +357,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const content = document.getElementById("teacher-game-content");
   const scenarioCard = document.getElementById("teachers-game-scenario");
   const phishingCard = document.getElementById("teachers-game-phishing");
-  const dialog = modal.querySelector(".teacher-game-dialog");
 
   if (!modal || !overlay || !closeBtn || !title || !description || !content || !scenarioCard || !phishingCard) return;
 
@@ -438,21 +402,12 @@ document.addEventListener("DOMContentLoaded", () => {
     content.innerHTML = game.html;
     alignCardBeforeOpen(sourceCard);
     modal.hidden = false;
-    centerDialogInViewport();
     document.body.classList.add("modal-open");
   };
 
   const closeModal = () => {
     modal.hidden = true;
     document.body.classList.remove("modal-open");
-  };
-
-  const centerDialogInViewport = () => {
-    if (!dialog) return;
-    dialog.style.position = "fixed";
-    dialog.style.left = "50%";
-    dialog.style.bottom = "calc(env(safe-area-inset-bottom, 0px) + 72px)";
-    dialog.style.transform = "translateX(-50%)";
   };
 
   scenarioCard.addEventListener("click", () => openModal("scenario", scenarioCard));
@@ -464,10 +419,4 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !modal.hidden) closeModal();
   });
-  window.addEventListener("resize", () => {
-    if (!modal.hidden) centerDialogInViewport();
-  });
-  window.addEventListener("scroll", () => {
-    if (!modal.hidden) centerDialogInViewport();
-  }, { passive: true });
 });
