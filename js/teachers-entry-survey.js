@@ -15,6 +15,7 @@
   const reviewEl = document.getElementById('survey-review');
   const resultEl = document.getElementById('survey-result');
   const hintEl = document.getElementById('survey-hint');
+  const dialogEl = modalEl?.querySelector('.teacher-survey-dialog');
 
   const bank = [
     {q:'Ученик получил письмо «Срочно подтвердите пароль». Что делать первым шагом?', a:[['Перейти по ссылке и проверить',0,'phishing'],['Проверить отправителя и адрес ссылки',2,'phishing'],['Ответить письмом и уточнить',0,'communication'],['Переслать другу для совета',1,'communication']]},
@@ -70,10 +71,17 @@
 
   function openModal(event) {
     modalEl.hidden = false;
+    centerDialogInViewport();
   }
 
   function closeModal() {
     modalEl.hidden = true;
+  }
+
+  function centerDialogInViewport() {
+    if (!dialogEl) return;
+    dialogEl.style.left = `${window.innerWidth / 2}px`;
+    dialogEl.style.top = `${window.innerHeight / 2}px`;
   }
 
   openCardEl.addEventListener('click', openModal);
@@ -88,6 +96,12 @@
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && !modalEl.hidden) closeModal();
   });
+  window.addEventListener('resize', () => {
+    if (!modalEl.hidden) centerDialogInViewport();
+  });
+  window.addEventListener('scroll', () => {
+    if (!modalEl.hidden) centerDialogInViewport();
+  }, { passive: true });
 
   function render() {
     const current = bank[idx];
