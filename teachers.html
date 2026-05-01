@@ -239,7 +239,7 @@
 
 <div class="senior-cards">
 
-<a href="#" class="senior-card game">
+<article class="senior-card game teacher-game-card" id="teachers-game-scenario" role="button" tabindex="0" aria-label="Открыть задание Игра сценариев">
 
 <div class="senior-card-icon">🧩</div>
 
@@ -247,10 +247,10 @@
 
 <p>Групповое задание по анализу киберинцидента.</p>
 
-</a>
+</article>
 
 
-<a href="#" class="senior-card game">
+<article class="senior-card game teacher-game-card" id="teachers-game-phishing" role="button" tabindex="0" aria-label="Открыть задание Детектив фишинга">
 
 <div class="senior-card-icon">🔎</div>
 
@@ -258,10 +258,23 @@
 
 <p>Тренажёр для обучения определению фишинговых писем.</p>
 
-</a>
+</article>
 
 </div>
 
+</div>
+
+<div class="teacher-game-modal" id="teacher-game-modal" hidden>
+  <div class="teacher-game-overlay" id="teacher-game-overlay"></div>
+  <div class="teacher-game-dialog" role="dialog" aria-modal="true" aria-labelledby="teacher-game-title">
+    <button class="teacher-game-close" id="teacher-game-close" type="button" aria-label="Закрыть окно">✕</button>
+    <div class="teacher-game-shell">
+      <p class="teacher-game-badge">Игры и задания</p>
+      <h3 class="teacher-game-title" id="teacher-game-title">Загрузка…</h3>
+      <p class="teacher-game-description" id="teacher-game-description"></p>
+      <div class="teacher-game-content" id="teacher-game-content"></div>
+    </div>
+  </div>
 </div>
 
 
@@ -289,5 +302,6 @@
 <script src="js/theme-network.js"></script>
 <script src="js/teachers-entry-survey.js"></script>
 <script src="js/teachers-case-game.js"></script>
+<script src="js/teachers-games.js"></script>
 </body>
 </html>
