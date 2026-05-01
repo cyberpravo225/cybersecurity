@@ -80,8 +80,13 @@
 
   function centerDialogInViewport() {
     if (!dialogEl) return;
+    modalEl.style.position = 'absolute';
+    modalEl.style.top = '0';
+    modalEl.style.left = '0';
+    modalEl.style.right = '0';
+    modalEl.style.height = `${Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)}px`;
     dialogEl.style.left = `${window.innerWidth / 2}px`;
-    dialogEl.style.top = `${window.innerHeight / 2}px`;
+    dialogEl.style.top = `${window.scrollY + (window.innerHeight / 2)}px`;
   }
 
   openCardEl.addEventListener('click', openModal);
