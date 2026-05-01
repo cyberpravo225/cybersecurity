@@ -342,10 +342,11 @@
 
   function centerDialogInViewport() {
     if (!dialog) return;
-    dialog.style.position = 'fixed';
+    dialog.style.position = 'absolute';
     dialog.style.left = '50%';
-    dialog.style.bottom = 'calc(env(safe-area-inset-bottom, 0px) + 72px)';
-    dialog.style.transform = 'translateX(-50%)';
+    dialog.style.top = `${window.scrollY + (window.innerHeight / 2)}px`;
+    dialog.style.bottom = 'auto';
+    dialog.style.transform = 'translate(-50%, -50%)';
   }
 
   card.addEventListener('click', openModal);
