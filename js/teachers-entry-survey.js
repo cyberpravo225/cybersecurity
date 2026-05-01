@@ -69,7 +69,14 @@
   modalEl.hidden = true;
   showAnswersBtn.hidden = true;
 
+
+  function alignCardBeforeOpen(cardEl) {
+    if (!cardEl) return;
+    cardEl.scrollIntoView({ block: 'end', inline: 'center', behavior: 'auto' });
+  }
+
   function openModal(event) {
+    alignCardBeforeOpen(openCardEl);
     modalEl.hidden = false;
     centerDialogInViewport();
   }

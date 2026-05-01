@@ -84,7 +84,14 @@
     nextBtn.disabled = index === cases.length - 1;
   }
 
+
+  function alignCardBeforeOpen(cardEl) {
+    if (!cardEl) return;
+    cardEl.scrollIntoView({ block: 'end', inline: 'center', behavior: 'auto' });
+  }
+
   function openModal() {
+    alignCardBeforeOpen(card);
     modal.hidden = false;
     centerDialogInViewport();
     renderCase();

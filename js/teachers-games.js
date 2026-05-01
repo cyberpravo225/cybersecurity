@@ -39,12 +39,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  const openModal = (gameType) => {
+
+  const alignCardBeforeOpen = (cardEl) => {
+    if (!cardEl) return;
+    cardEl.scrollIntoView({ block: "end", inline: "center", behavior: "auto" });
+  };
+
+  const openModal = (gameType, sourceCard) => {
     const game = templates[gameType];
     if (!game) return;
     title.textContent = game.title;
     description.textContent = game.description;
     content.innerHTML = game.html;
+    alignCardBeforeOpen(sourceCard);
     modal.hidden = false;
     centerDialogInViewport();
     document.body.classList.add("modal-open");
@@ -68,10 +75,10 @@ document.addEventListener("DOMContentLoaded", () => {
     dialog.style.transform = "translate(-50%, -50%)";
   };
 
-  scenarioCard.addEventListener("click", () => openModal("scenario"));
-  phishingCard.addEventListener("click", () => openModal("phishing"));
-  scenarioCard.addEventListener("keydown", (event) => event.key === "Enter" && openModal("scenario"));
-  phishingCard.addEventListener("keydown", (event) => event.key === "Enter" && openModal("phishing"));
+  scenarioCard.addEventListener("click", () => openModal("scenario", scenarioCard));
+  phishingCard.addEventListener("click", () => openModal("phishing", phishingCard));
+  scenarioCard.addEventListener("keydown", (event) => event.key === "Enter" && openModal("scenario", scenarioCard));
+  phishingCard.addEventListener("keydown", (event) => event.key === "Enter" && openModal("phishing", phishingCard));
   closeBtn.addEventListener("click", closeModal);
   overlay.addEventListener("click", closeModal);
   document.addEventListener("keydown", (event) => {

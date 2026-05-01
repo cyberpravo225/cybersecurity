@@ -2954,6 +2954,14 @@ gap:20px;
 margin-top:20px;
 }
 
+body[data-page="teachers"] .senior-cards{
+padding-inline:4%;
+}
+
+body[data-page="teachers"] .senior-card{
+scroll-margin-bottom:calc(env(safe-area-inset-bottom, 0px) + 88px);
+}
+
 .senior-card{
 
 background:var(--card-bg);
