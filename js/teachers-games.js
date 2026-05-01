@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const content = document.getElementById("teacher-game-content");
   const scenarioCard = document.getElementById("teachers-game-scenario");
   const phishingCard = document.getElementById("teachers-game-phishing");
+  const dialog = modal.querySelector(".teacher-game-dialog");
 
   if (!modal || !overlay || !closeBtn || !title || !description || !content || !scenarioCard || !phishingCard) return;
 
@@ -45,12 +46,21 @@ document.addEventListener("DOMContentLoaded", () => {
     description.textContent = game.description;
     content.innerHTML = game.html;
     modal.hidden = false;
+    centerDialogInViewport();
     document.body.classList.add("modal-open");
   };
 
   const closeModal = () => {
     modal.hidden = true;
     document.body.classList.remove("modal-open");
+  };
+
+  const centerDialogInViewport = () => {
+    if (!dialog) return;
+    dialog.style.position = "absolute";
+    dialog.style.left = `${window.innerWidth / 2}px`;
+    dialog.style.top = `${window.innerHeight / 2}px`;
+    dialog.style.transform = "translate(-50%, -50%)";
   };
 
   scenarioCard.addEventListener("click", () => openModal("scenario"));
@@ -62,4 +72,10 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !modal.hidden) closeModal();
   });
+  window.addEventListener("resize", () => {
+    if (!modal.hidden) centerDialogInViewport();
+  });
+  window.addEventListener("scroll", () => {
+    if (!modal.hidden) centerDialogInViewport();
+  }, { passive: true });
 });
