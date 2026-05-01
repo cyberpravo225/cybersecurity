@@ -14,6 +14,7 @@
   const prevBtn = document.getElementById('teacher-case-prev');
   const nextBtn = document.getElementById('teacher-case-next');
   const randomBtn = document.getElementById('teacher-case-random');
+  const dialog = modal?.querySelector('.teacher-case-dialog');
 
   const themes = ['Фишинг','Приватность','Пароли','Соцсети','Устройства','Wi‑Fi','ИИ и безопасность','Кибербуллинг'];
   const levels = ['Базовый','Средний','Продвинутый'];
@@ -85,9 +86,18 @@
 
   function openModal() {
     modal.hidden = false;
+    centerDialogInViewport();
     renderCase();
   }
   function closeModal() { modal.hidden = true; }
+
+  function centerDialogInViewport() {
+    if (!dialog) return;
+    dialog.style.position = 'absolute';
+    dialog.style.left = `${window.innerWidth / 2}px`;
+    dialog.style.top = `${window.innerHeight / 2}px`;
+    dialog.style.transform = 'translate(-50%, -50%)';
+  }
 
   card.addEventListener('click', openModal);
   card.addEventListener('keydown', (event) => {
@@ -102,6 +112,12 @@
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && !modal.hidden) closeModal();
   });
+  window.addEventListener('resize', () => {
+    if (!modal.hidden) centerDialogInViewport();
+  });
+  window.addEventListener('scroll', () => {
+    if (!modal.hidden) centerDialogInViewport();
+  }, { passive: true });
 
 
   prevBtn.addEventListener('click', () => {
