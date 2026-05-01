@@ -8496,3 +8496,22 @@ margin-top:8px;
 .teacher-game-description{margin:0 0 14px;opacity:.9;}
 .teacher-game-content :is(ol,ul){margin:0;padding-left:20px;display:grid;gap:8px;}
 :root[data-theme="dark"] .teacher-game-shell{background:linear-gradient(160deg,#0b1220,#0f172a);border-color:rgba(96,165,250,.35);color:#e5efff;}
+
+
+body[data-page="teachers"] :is(.teacher-survey-modal,.teacher-case-modal,.teacher-game-modal){
+  position:fixed;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+  padding-inline:5%;
+  padding-bottom:calc(env(safe-area-inset-bottom, 0px) + 72px);
+}
+
+body[data-page="teachers"] :is(.teacher-survey-dialog,.teacher-case-dialog,.teacher-game-dialog){
+  position:fixed;
+  left:50%;
+  bottom:calc(env(safe-area-inset-bottom, 0px) + 72px);
+  transform:translateX(-50%);
+  margin:0;
+}
