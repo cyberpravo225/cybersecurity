@@ -8498,7 +8498,7 @@ margin-top:8px;
 :root[data-theme="dark"] .teacher-game-shell{background:linear-gradient(160deg,#0b1220,#0f172a);border-color:rgba(96,165,250,.35);color:#e5efff;}
 
 
-body[data-page="teachers"] :is(.teacher-survey-modal,.teacher-case-modal,.teacher-game-modal){
+body[data-page="teachers"] :is(.teacher-survey-modal,.teacher-case-modal,.teacher-game-modal):not([hidden]){
   position:fixed;
   inset:0;
   display:flex;
