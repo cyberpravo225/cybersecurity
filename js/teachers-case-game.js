@@ -88,7 +88,7 @@
     const onePercent = Math.round(window.innerHeight * 0.01);
     const topbarBottom = topbar ? Math.round(topbar.getBoundingClientRect().bottom) : 0;
     const offset = Math.max(onePercent, topbarBottom + onePercent);
-    modal.style.paddingTop = `${offset}px`;
+    modal.querySelector('.teacher-case-dialog').style.marginTop = `${offset}px`;
   }
 
   function openModal() {
