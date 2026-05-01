@@ -64,15 +64,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const centerDialogInViewport = () => {
     if (!dialog) return;
-    modal.style.position = "absolute";
-    modal.style.top = "0";
-    modal.style.left = "0";
-    modal.style.right = "0";
-    modal.style.height = `${Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)}px`;
-    dialog.style.position = "absolute";
-    dialog.style.left = `${window.innerWidth / 2}px`;
-    dialog.style.top = `${window.scrollY + (window.innerHeight / 2)}px`;
-    dialog.style.transform = "translate(-50%, -50%)";
+    dialog.style.position = "fixed";
+    dialog.style.left = "50%";
+    dialog.style.bottom = "calc(env(safe-area-inset-bottom, 0px) + 72px)";
+    dialog.style.transform = "translateX(-50%)";
   };
 
   scenarioCard.addEventListener("click", () => openModal("scenario", scenarioCard));

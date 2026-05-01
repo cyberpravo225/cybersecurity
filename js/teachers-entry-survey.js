@@ -87,13 +87,10 @@
 
   function centerDialogInViewport() {
     if (!dialogEl) return;
-    modalEl.style.position = 'absolute';
-    modalEl.style.top = '0';
-    modalEl.style.left = '0';
-    modalEl.style.right = '0';
-    modalEl.style.height = `${Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)}px`;
-    dialogEl.style.left = `${window.innerWidth / 2}px`;
-    dialogEl.style.top = `${window.scrollY + (window.innerHeight / 2)}px`;
+    dialogEl.style.position = 'fixed';
+    dialogEl.style.left = '50%';
+    dialogEl.style.bottom = 'calc(env(safe-area-inset-bottom, 0px) + 72px)';
+    dialogEl.style.transform = 'translateX(-50%)';
   }
 
   openCardEl.addEventListener('click', openModal);
