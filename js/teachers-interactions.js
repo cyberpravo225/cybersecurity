@@ -334,7 +334,6 @@
   }
 
   function openModal() {
-    alignCardBeforeOpen(card);
     modal.hidden = false;
     centerDialogInViewport();
     renderCase();
