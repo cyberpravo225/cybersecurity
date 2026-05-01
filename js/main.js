@@ -1788,3 +1788,55 @@ searchInput.dispatchEvent(new Event("input"))
     }
   });
 })();
+
+
+/* =========================
+   Teachers modals: smoother case opening
+   ========================= */
+(function(){
+  const isTeachersPage = document.body?.dataset?.page === 'teachers';
+  if (!isTeachersPage) return;
+
+  const animatedModals = [
+    { modal: document.getElementById('teacher-case-modal'), dialog: '.teacher-case-dialog', overlay: '#teacher-case-overlay', close: '#teacher-case-close' },
+    { modal: document.getElementById('survey-modal'), dialog: '.teacher-survey-dialog', overlay: '#survey-overlay', close: '#survey-close' },
+    { modal: document.getElementById('teacher-game-modal'), dialog: '.teacher-game-dialog', overlay: '#teacher-game-overlay', close: '#teacher-game-close' }
+  ].filter((item) => item.modal);
+
+  const openAnim = (modal, dialog) => {
+    modal.style.opacity = '0';
+    if (dialog) dialog.style.transform = 'translateY(14px) scale(.985)';
+    requestAnimationFrame(() => {
+      modal.style.opacity = '1';
+      if (dialog) dialog.style.transform = 'translateY(0) scale(1)';
+    });
+  };
+
+  const closeAnim = (modal, dialog) => {
+    modal.style.opacity = '0';
+    if (dialog) dialog.style.transform = 'translateY(12px) scale(.985)';
+    window.setTimeout(() => {
+      modal.hidden = true;
+    }, 240);
+  };
+
+  animatedModals.forEach(({ modal, dialog: dialogSel, overlay: overlaySel, close: closeSel }) => {
+    const dialog = modal.querySelector(dialogSel);
+    modal.style.transition = 'opacity 320ms cubic-bezier(0.22, 1, 0.36, 1)';
+    if (dialog) dialog.style.transition = 'transform 360ms cubic-bezier(0.22, 1, 0.36, 1)';
+
+    const observer = new MutationObserver(() => {
+      if (!modal.hidden) openAnim(modal, dialog);
+    });
+    observer.observe(modal, { attributes: true, attributeFilter: ['hidden'] });
+
+    const closeTargets = [modal.querySelector(closeSel), modal.querySelector(overlaySel)].filter(Boolean);
+    closeTargets.forEach((target) => {
+      target.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        closeAnim(modal, dialog);
+      }, true);
+    });
+  });
+})();
