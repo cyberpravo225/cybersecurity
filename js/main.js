@@ -1791,7 +1791,7 @@ searchInput.dispatchEvent(new Event("input"))
 
 
 /* =========================
-   Teachers modals: smoother case opening
+   Teachers modals: fixed centered positioning
    ========================= */
 (function(){
   const isTeachersPage = document.body?.dataset?.page === 'teachers';
@@ -1803,18 +1803,37 @@ searchInput.dispatchEvent(new Event("input"))
     { modal: document.getElementById('teacher-game-modal'), dialog: '.teacher-game-dialog', overlay: '#teacher-game-overlay', close: '#teacher-game-close' }
   ].filter((item) => item.modal);
 
+  const centerDialog = (modal, dialog) => {
+    modal.style.position = 'fixed';
+    modal.style.inset = '0';
+    modal.style.display = 'flex';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+
+    if (!dialog) return;
+    dialog.style.position = 'fixed';
+    dialog.style.left = '50%';
+    dialog.style.top = '50%';
+    dialog.style.bottom = 'auto';
+    dialog.style.margin = '0';
+    dialog.style.transform = 'translate(-50%, -50%)';
+    dialog.style.maxHeight = 'calc(100vh - 32px)';
+    dialog.style.width = 'min(92vw, 980px)';
+  };
+
   const openAnim = (modal, dialog) => {
+    centerDialog(modal, dialog);
     modal.style.opacity = '0';
-    if (dialog) dialog.style.transform = 'translateY(14px) scale(.985)';
+    if (dialog) dialog.style.transform = 'translate(-50%, calc(-50% + 14px)) scale(.985)';
     requestAnimationFrame(() => {
       modal.style.opacity = '1';
-      if (dialog) dialog.style.transform = 'translateY(0) scale(1)';
+      if (dialog) dialog.style.transform = 'translate(-50%, -50%) scale(1)';
     });
   };
 
   const closeAnim = (modal, dialog) => {
     modal.style.opacity = '0';
-    if (dialog) dialog.style.transform = 'translateY(12px) scale(.985)';
+    if (dialog) dialog.style.transform = 'translate(-50%, calc(-50% + 12px)) scale(.985)';
     window.setTimeout(() => {
       modal.hidden = true;
     }, 240);
@@ -1822,6 +1841,8 @@ searchInput.dispatchEvent(new Event("input"))
 
   animatedModals.forEach(({ modal, dialog: dialogSel, overlay: overlaySel, close: closeSel }) => {
     const dialog = modal.querySelector(dialogSel);
+    centerDialog(modal, dialog);
+
     modal.style.transition = 'opacity 320ms cubic-bezier(0.22, 1, 0.36, 1)';
     if (dialog) dialog.style.transition = 'transform 360ms cubic-bezier(0.22, 1, 0.36, 1)';
 
@@ -1838,5 +1859,13 @@ searchInput.dispatchEvent(new Event("input"))
         closeAnim(modal, dialog);
       }, true);
     });
+
+    window.addEventListener('resize', () => {
+      if (!modal.hidden) centerDialog(modal, dialog);
+    });
+
+    window.addEventListener('scroll', () => {
+      if (!modal.hidden) centerDialog(modal, dialog);
+    }, { passive: true });
   });
 })();
