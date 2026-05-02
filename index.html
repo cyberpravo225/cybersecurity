@@ -1111,12 +1111,13 @@
       margin-top: 20px;
       padding: 20px 22px;
       border-radius: 18px;
-      border: 1px solid color-mix(in oklab, var(--card-border) 42%, #2563eb 58%);
+      border: 1px solid color-mix(in oklab, var(--card-border) 76%, #60a5fa 24%);
       background:
-        radial-gradient(130% 150% at 0% 0%, rgba(37, 99, 235, .36) 0%, rgba(37, 99, 235, 0) 58%),
-        radial-gradient(120% 140% at 100% 100%, rgba(30, 58, 138, .28) 0%, rgba(30, 58, 138, 0) 62%),
-        linear-gradient(145deg, color-mix(in oklab, var(--card-bg) 76%, #0f172a 24%) 0%, color-mix(in oklab, var(--card-bg) 72%, #1e3a8a 28%) 100%);
-      box-shadow: 0 18px 40px rgba(2, 8, 24, 0.46), inset 0 1px 0 rgba(148, 163, 184, 0.16);
+        radial-gradient(120% 130% at 0% 0%, color-mix(in oklab, #60a5fa 22%, transparent) 0%, transparent 58%),
+        linear-gradient(150deg, color-mix(in oklab, var(--card-bg) 92%, #2563eb 8%) 0%, var(--card-bg) 100%);
+      box-shadow:
+        0 12px 30px color-mix(in oklab, #020617 24%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.09);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -1130,10 +1131,10 @@
       position: absolute;
       right: -24px;
       bottom: -24px;
-      width: 140px;
-      height: 140px;
+      width: 128px;
+      height: 128px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(59,130,246,.42) 0%, rgba(59,130,246,0) 74%);
+      background: radial-gradient(circle, rgba(96,165,250,.28) 0%, rgba(96,165,250,0) 74%);
       pointer-events: none;
     }
     .telegram-promo-banner p {
@@ -1141,6 +1142,7 @@
       font-weight: 700;
       letter-spacing: .1px;
       max-width: 760px;
+      color: color-mix(in oklab, var(--text) 94%, #bfdbfe 6%);
       position: relative;
       z-index: 1;
     }
