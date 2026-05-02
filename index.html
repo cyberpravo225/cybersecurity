@@ -255,6 +255,134 @@
         0 18px 36px rgba(15, 23, 42, 0.2);
     }
 
+    .contacts-banner {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1.25rem;
+      align-items: center;
+      padding: 1.25rem 1.35rem;
+    }
+
+    .contacts-banner-title-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+      margin-bottom: 0.45rem;
+    }
+
+    .contacts-banner-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #fff;
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      box-shadow: 0 8px 22px rgba(185, 28, 28, 0.34);
+    }
+
+    .contacts-banner p {
+      margin: 0;
+      line-height: 1.55;
+    }
+
+    .tests-cta-button {
+      border-radius: 14px;
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      color: #fff;
+      transition: transform 180ms ease, filter 180ms ease, box-shadow 180ms ease;
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.3);
+    }
+
+    .tests-cta-button:hover {
+      transform: translateY(-2px) scale(1.03);
+      filter: brightness(0.92);
+      box-shadow: 0 14px 28px rgba(37, 99, 235, 0.36);
+    }
+
+    .tip-card {
+      display: grid;
+      gap: 1rem;
+      padding: 1.2rem;
+      border-radius: 18px;
+      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.12);
+    }
+
+    .tip-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: fit-content;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      background: #fde047;
+      color: #111827;
+    }
+
+    .tip-main-row {
+      display: grid;
+      grid-template-columns: minmax(92px, 120px) 1fr;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .tip-media-wrap {
+      width: 100%;
+      max-width: 120px;
+    }
+
+    .tip-image {
+      width: 100%;
+      display: block;
+    }
+
+    .tip-title {
+      margin: 0 0 0.45rem;
+    }
+
+    .tip-text {
+      margin: 0;
+      line-height: 1.55;
+    }
+
+    .tip-history-btn {
+      justify-self: end;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      opacity: 0.9;
+      transition: transform 180ms ease, filter 180ms ease;
+    }
+
+    .tip-history-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(0.9);
+    }
+
+    @media (max-width: 800px) {
+      .contacts-banner {
+        grid-template-columns: 1fr;
+      }
+
+      .tests-banner-actions {
+        justify-self: start;
+      }
+
+      .tip-main-row {
+        grid-template-columns: 1fr;
+      }
+
+      .tip-media-wrap {
+        max-width: 92px;
+      }
+    }
+
     body[data-page="home"] .topbar :is(#theme-toggle, #menu-toggle, #performance-toggle, #profile-toggle):active {
       transform: translateY(1px) scale(0.96);
       filter: saturate(1.12);
@@ -1361,8 +1489,10 @@
 
 <a class="card tests-banner contacts-banner reveal" href="useful-contacts.html" aria-label="Перейти к полезным контактам по кибербезопасности">
 <div class="tests-banner-text">
-<span class="contacts-banner-badge">Срочный раздел</span>
+<div class="contacts-banner-title-row">
 <h2>🚨 Киберинцидент? Куда обращаться</h2>
+<span class="contacts-banner-badge">СРОЧНЫЙ РАЗДЕЛ</span>
+</div>
 <p>Полезные контакты: МВД, CERT, персональные данные, банки, мобильные операторы и проверка ссылок.</p>
 </div>
 <div class="tests-banner-actions">
@@ -1380,18 +1510,20 @@
 
 <div class="tip-card reveal">
 
-<span class="tip-label"><span class="tip-label-icon" aria-hidden="true">⚠️</span>Совет дня</span>
+<span class="tip-label"><span class="tip-label-icon" aria-hidden="true">⚠️</span>СОВЕТ ДНЯ</span>
 
+<div class="tip-main-row">
 <div class="tip-media-wrap">
 <img src="assets/earth-hero.svg" class="tip-image" alt="Совет дня">
 </div>
 
 <div class="tip-content">
 
-<h2 class="tip-title"></h2>
+<h2 class="tip-title">НЕ ПЕРЕХОДИТЕ ПО ПОДОЗРИТЕЛЬНЫМ ССЫЛКАМ</h2>
 
 <p class="tip-text"></p>
 
+</div>
 </div>
 
 <a href="tips.html" class="btn primary tip-history-btn">
