@@ -1840,3 +1840,45 @@ searchInput.dispatchEvent(new Event("input"))
     });
   });
 })();
+
+/* =========================
+   Global cinematic UX layer
+   ========================= */
+(function(){
+  const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const revealTargets = document.querySelectorAll('main > *, section, .card, .test-card, .tip-card, .index-like-card, .mode-card, .main-card, .school-card, .resource-block, .method-card, .term-card');
+    revealTargets.forEach((el, index) => {
+      if (el.classList.contains('is-visible')) return;
+      el.classList.add('reveal-on-scroll');
+      el.style.transitionDelay = `${Math.min(index * 28, 220)}ms`;
+    });
+
+    if (!prefersReduced && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+      revealTargets.forEach((el) => io.observe(el));
+    } else {
+      revealTargets.forEach((el) => el.classList.add('is-visible'));
+    }
+
+    const interactive = document.querySelectorAll('button, a, .btn, .nav-link, [role="button"]');
+    interactive.forEach((el) => {
+      el.addEventListener('pointerdown', () => {
+        if (prefersReduced) return;
+        el.animate([
+          { transform: 'scale(1)' },
+          { transform: 'scale(0.97)' },
+          { transform: 'scale(1)' }
+        ], { duration: 220, easing: 'cubic-bezier(.22,1,.36,1)' });
+      });
+    });
+  });
+})();
