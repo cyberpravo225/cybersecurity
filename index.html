@@ -331,27 +331,27 @@
 
     .tip-main-row {
       display: grid;
-      grid-template-columns: minmax(92px, 120px) 1fr;
+      grid-template-columns: auto 1fr;
       align-items: center;
       gap: 1rem;
     }
 
     .tip-media-wrap {
-      width: 100%;
-      max-width: 140px;
-      display: flex;
+      width: max-content;
+      max-width: none;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       overflow: visible;
     }
 
     .tip-image {
       width: auto;
-      max-width: 100%;
+      max-width: min(42vw, 260px);
       height: auto !important;
       max-height: none !important;
       object-fit: contain;
-      object-position: center;
+      object-position: left center;
       display: block;
     }
 
@@ -399,7 +399,12 @@
       }
 
       .tip-media-wrap {
-        max-width: 112px;
+        width: max-content;
+        max-width: none;
+      }
+
+      .tip-image {
+        max-width: min(58vw, 220px);
       }
     }
 
@@ -1534,7 +1539,7 @@
 
 <div class="tip-main-row">
 <div class="tip-media-wrap">
-<img src="assets/earth-hero.svg" class="tip-image" alt="Совет дня" style="width:auto;max-width:100%;height:auto;max-height:none;object-fit:contain;">
+<img src="assets/earth-hero.svg" class="tip-image" alt="Совет дня" style="width:auto;max-width:min(42vw,260px);height:auto;max-height:none;object-fit:contain;">
 </div>
 
 <div class="tip-content">
