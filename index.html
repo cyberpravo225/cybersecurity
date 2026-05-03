@@ -339,13 +339,17 @@
     .tip-media-wrap {
       width: 100%;
       max-width: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       overflow: visible;
     }
 
     .tip-image {
-      width: 100%;
-      max-width: none;
+      width: auto;
+      max-width: 100%;
       height: auto !important;
+      max-height: none !important;
       object-fit: contain;
       object-position: center;
       display: block;
@@ -1530,7 +1534,7 @@
 
 <div class="tip-main-row">
 <div class="tip-media-wrap">
-<img src="assets/earth-hero.svg" class="tip-image" alt="Совет дня">
+<img src="assets/earth-hero.svg" class="tip-image" alt="Совет дня" style="width:auto;max-width:100%;height:auto;max-height:none;object-fit:contain;">
 </div>
 
 <div class="tip-content">
